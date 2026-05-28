@@ -1,0 +1,2979 @@
+{
+  "Common": {
+    "close": "Zamknij",
+    "open": "Otwórz",
+    "copy": "Kopiuj",
+    "copied": "Skopiowano",
+    "loading": "Ładowanie",
+    "language": "Język"
+  },
+  "Nav": {
+    "shop": "Sklep",
+    "shopMenu": "Menu sklepu",
+    "primary": "Kolekcja",
+    "editorial": "Edytorial",
+    "newArrivals": "Nowości",
+    "newDrop": "Nowy drop",
+    "shopAll": "Cała kolekcja",
+    "hoodies": "Bluzy",
+    "tshirts": "T-shirty",
+    "pants": "Spodnie",
+    "lookbook": "Lookbook",
+    "archive": "Archiwum",
+    "vlmAccess": "VLM Access",
+    "account": "Konto",
+    "login": "Logowanie",
+    "cart": "Koszyk",
+    "legal": "Prawne",
+    "terms": "Regulamin",
+    "privacy": "Prywatność",
+    "shipping": "Wysyłka",
+    "returns": "Zwroty",
+    "impressum": "Dane sprzedawcy",
+    "contact": "Kontakt",
+    "vlmTeaserTitle": "VLM Access",
+    "vlmTeaserBody": "Warstwa dostępu do prywatnych dropów.",
+    "vlmTeaserCta": "Sprawdź VLM",
+    "locales": {
+      "pl": "PL",
+      "en": "EN",
+      "de": "DE"
+    },
+    "menu": "Menu",
+    "menswear": "Kolekcja męska",
+    "womenswear": "Kolekcja damska",
+    "vlm": "VLM",
+    "square": "Velmère Square",
+    "loginCta": "Log in",
+    "profile": "Profil",
+    "myOrders": "Moje zamówienia",
+    "vlmBalance": "Saldo VLM",
+    "guestMode": "GOŚĆ"
+  },
+  "Footer": {
+    "tagline": "Ciemny streetwear premium. Limitowane dropy. Dostęp bliżej marki.",
+    "micro": "Velmère łączy ubrania, archiwum i prywatną warstwę dostępu w jednym spokojnym systemie.",
+    "explore": "Odkrywaj",
+    "service": "Obsługa",
+    "shopAll": "Cała kolekcja",
+    "lookbook": "Lookbook",
+    "archive": "Archiwum",
+    "vlmToken": "VLM Access",
+    "legal": "Prawne",
+    "impressum": "Dane sprzedawcy",
+    "terms": "Regulamin",
+    "privacy": "Polityka prywatności",
+    "shipping": "Wysyłka",
+    "returns": "Zwroty",
+    "contact": "Kontakt",
+    "tokenAgreement": "Umowa VLM",
+    "newsletter": "Newsletter",
+    "newsletterText": "Prywatne informacje o dropach, archiwum i VLM. Zapis zostanie aktywowany po finalnej konfiguracji sklepu.",
+    "emailPlaceholder": "Adres email",
+    "subscribeSoon": "Popros o dostep",
+    "rights": "Velmère. Wszelkie prawa zastrzeżone.",
+    "menswear": "Kolekcja męska",
+    "womenswear": "Kolekcja damska",
+    "newDrop": "Nowy drop",
+    "square": "Velmère Square",
+    "riskMicro": "Dostęp VLM jest oddzielony od checkoutu odzieży. Publiczna sprzedaż, wdrożenie kontraktu, audyt, płynność, listing, wartość odsprzedaży ani wynik inwestycyjny nie są obiecane."
+  },
+  "Home": {
+    "heroImageAlt": "Zaawansowany trójwymiarowy wizual neuronowy Velmère z punktami ivory i szampańskim przepływem sygnału",
+    "kicker": "VELMÈRE / LIMITOWANY CIEMNY LUKSUS",
+    "title": "Ciemny luksus.\nPrecyzyjny krój.\nLimitowany dostęp.",
+    "quote": "Powściągliwy streetwear premium oparty na sylwetce, ciężarze i dostępie.",
+    "cta": "Odkryj kolekcję",
+    "secondaryCta": "Sprawdź VLM",
+    "new": "Nowe",
+    "newSectionTitle": "Nowy drop",
+    "newSectionSubtitle": "Trzy podstawowe sylwetki. Zero hałasu. Tylko forma, materiał i ciężar.",
+    "editorialKicker": "Atelier",
+    "editorialTitle": "Atelier bez hałasu",
+    "editorialBody": "Każdy element strony ma prowadzić do produktu. Ruch, światło i technologia pojawiają się tylko wtedy, gdy wzmacniają ubranie.",
+    "editorialImageAlt": "Edytorialna sylwetka Velmère w monochromatycznym świetle",
+    "vlmTeaserKicker": "Prywatny dostęp",
+    "vlmTeaserTitle": "VLM Access",
+    "vlmTeaserBody": "Kompaktowa warstwa dostepu do prywatnych dropow i archiwum. Pozostaje dodatkiem do doswiadczenia odziezowego.",
+    "vlmTeaserCta": "Sprawdź VLM",
+    "sideRubrics": {
+      "atelier": {
+        "kicker": "ATELIER",
+        "title": "Forma przed hałasem.",
+        "body": "Krój, ciężar i proporcja prowadzą kolekcję - technologia zostaje w tle."
+      },
+      "access": {
+        "kicker": "ACCESS",
+        "title": "Dostęp, gdy drop jest gotowy.",
+        "body": "VLM pozostaje kompaktową warstwą dostępu, nie centrum sklepu."
+      }
+    },
+    "neuralBrain": {
+      "aria": "Abstrakcyjny neural atelier Velmère",
+      "kicker": "NEURAL ATELIER",
+      "nodes": {
+        "core": {
+          "title": "Rdzeń dostępu VLM",
+          "body": "Centralny sygnał dostępu łączący ubrania, archiwum i społeczność."
+        },
+        "clothing": {
+          "title": "Sygnał odzieży",
+          "body": "Sylwetki ubrań zasilają warstwę dostępu, ale nie dominują sklepu."
+        },
+        "archive": {
+          "title": "Dostęp do archiwum",
+          "body": "Elementy archiwalne mogą później łączyć się z kwalifikacją portfela."
+        },
+        "drops": {
+          "title": "Prywatne dropy",
+          "body": "Prywatne premiery pozostają głównym kulturowym zastosowaniem dostępu."
+        },
+        "square": {
+          "title": "Społeczność Square",
+          "body": "Notatki i prośby społeczności orbitują wokół tej samej powierzchni dostępu."
+        },
+        "drape": {
+          "title": "Inteligencja materiału",
+          "body": "Masa wizualna traktuje tkaninę, kształt i sygnał jako jeden system marki."
+        },
+        "atelier": {
+          "title": "Trasa atelier",
+          "body": "Krój, ciężar i proporcja pozostają pierwsze."
+        },
+        "access": {
+          "title": "Trasa rejestru",
+          "body": "Przyszłe dane rejestru kontrolują oficjalny stan dostępu."
+        },
+        "signal": {
+          "title": "Nadajnik dropu",
+          "body": "Szampańskie sygnały przechodzą między produktem i węzłami dostępu."
+        }
+      }
+    },
+    "squareTeaserKicker": "Społeczność",
+    "squareTeaserTitle": "Velmère Square",
+    "squareTeaserBody": "Moderowana przestrzeń na notatki dropów, prośby archiwalne i aktualizacje dostępu.",
+    "squareTeaserCta": "Wejdź do Square"
+  },
+  "Product": {
+    "viewProduct": "Zobacz produkt",
+    "details": "Zobacz szczegóły",
+    "productComingSoon": "Produkt w przygotowaniu",
+    "available": "Dostępny",
+    "openProduct": "Otwórz produkt",
+    "garment": "Ubranie",
+    "missingKicker": "Archiwum produktu",
+    "notFound": "Nie znaleziono produktu",
+    "notFoundBody": "Ten produkt jest niedostępny albo został przeniesiony do archiwum Velmère."
+  },
+  "ProductDetail": {
+    "backToShop": "Wróć do sklepu",
+    "imageAlt": "{name}, ujęcie {number}",
+    "selectSize": "Wybierz rozmiar",
+    "sizeGuide": "Tabela rozmiarów",
+    "addToCart": "Dodaj do koszyka",
+    "selectSizeFirst": "Wybierz rozmiar",
+    "details": "Szczegóły",
+    "shippingReturns": "Wysyłka i zwroty",
+    "shippingReturnsBody": "Wysyłka i zwroty zostaną finalnie opisane przed uruchomieniem sprzedaży.",
+    "materialCare": "Materiał i pielęgnacja",
+    "materialCareBody": "Instrukcje pielęgnacji zostaną uzupełnione po potwierdzeniu finalnych danych produkcyjnych.",
+    "checkoutDisabledBody": "Ten produkt jest w przygotowaniu. Checkout zostanie uruchomiony po konfiguracji produktu, płatności, wysyłki, zwrotów, kontaktu i fulfillmentu.",
+    "measurementTable": "Tabela pomiarów",
+    "sizeGuideTitle": "Przewodnik rozmiarów",
+    "closeSizeGuide": "Zamknij tabelę rozmiarów",
+    "size": "Rozmiar",
+    "chest": "Klatka",
+    "length": "Długość",
+    "shoulders": "Ramiona"
+  },
+  "Shop": {
+    "kicker": "Kolekcja",
+    "subtitle": "Limitowane sylwetki Velmère. Krój, ciężar i cisza.",
+    "intro": "",
+    "serviceKicker": "Obsługa",
+    "serviceTitle": "Warstwa obsługi",
+    "archiveKicker": "Archiwum VLM",
+    "archiveTitle": "Wybrany dostęp archiwalny",
+    "archiveBody": "Wybrane archiwalne elementy zostaną odblokowane po pełnej konfiguracji warstwy dostępu VLM.",
+    "archiveCta": "Sprawdź VLM",
+    "title": "Kolekcja"
+  },
+  "Trust": {
+    "securePayment": "Bezpieczna płatność",
+    "trackedShipping": "Śledzona wysyłka",
+    "madeAfterOrder": "Produkcja po zamówieniu",
+    "support": "Obsługa przed zakupem",
+    "supportBeforePurchase": "Obsługa przed zakupem",
+    "limitedDrops": "Limitowane dropy",
+    "returnsPolicy": "Robocza polityka zwrotów",
+    "podNote": ""
+  },
+  "Cart": {
+    "kicker": "Checkout maison",
+    "title": "Koszyk",
+    "empty": "Twój koszyk jest pusty.",
+    "continueShopping": "Kontynuuj zakupy",
+    "checkout": "Przejdź do płatności",
+    "paymentComingSoon": "Płatność w przygotowaniu",
+    "paymentConfigRequired": "Konfiguracja płatności wymagana",
+    "subtotal": "Suma częściowa",
+    "remove": "Usuń",
+    "quantity": "Ilość",
+    "checkoutUnavailable": "Płatność zostanie aktywowana po finalnej konfiguracji sklepu.",
+    "paymentDisabled": "Płatność zostanie aktywowana po finalnej konfiguracji sklepu.",
+    "checkoutFailed": "Nie udało się uruchomić checkoutu.",
+    "openCart": "Otwórz koszyk",
+    "emptyLuxury": {
+      "title": "WYBÓR JEST PUSTY. ROZPOCZNIJ EKSPLORACJĘ.",
+      "body": "W tej sesji nie zapisano jeszcze żadnych elementów. Wróć do kolekcji i zbuduj pierwszy wybór."
+    }
+  },
+  "Checkout": {
+    "successKicker": "Zamówienie przyjęte",
+    "successTitle": "Płatność potwierdzona",
+    "successBody": "Zamówienie zostało przyjęte. Status realizacji zostanie przekazany po weryfikacji zamówienia.",
+    "cancelKicker": "Checkout",
+    "cancelTitle": "Płatność anulowana",
+    "cancelBody": "Płatność nie została pobrana. Możesz wrócić do kolekcji, gdy będziesz gotowy.",
+    "backToShop": "Wróć do sklepu"
+  },
+  "Auth": {
+    "kicker": "Konta klientów",
+    "login": "Logowanie",
+    "email": "Email",
+    "password": "Hasło",
+    "signIn": "Zaloguj się",
+    "signOut": "Wyloguj się",
+    "createAccount": "Utwórz konto",
+    "forgotPassword": "Nie pamiętasz hasła?",
+    "comingSoon": "Logowanie zostanie udostępnione wraz z kontami klientów Velmère.",
+    "pendingActivation": "System kont przygotowany — aktywacja wymaga konfiguracji."
+  },
+  "Vlm": {
+    "kicker": "VLM / ACCESS LAYER",
+    "title": "Dost?p VLM",
+    "description": "VLM jest warstwą dostępu Velmère do prywatnych dropów, archiwum i wybranych przywilejów marki. Oficjalny rejestr definiuje dane kontraktu, reguły dostępu i rekordy bezpieczeństwa.",
+    "supplyLabel": "Total supply",
+    "supplyValue": "1,000,000,000 VLM",
+    "viewRules": "Zobacz umowę VLM",
+    "networks": "Sieci",
+    "legalNote": "VLM jest interfejsem tokena dostępu. Oficjalny rejestr definiuje dane kontraktu, trasę, rekordy audytu i reguły dostępu. Ta strona nie jest poradą inwestycyjną i nie obiecuje zysku, listingu, płynności, wartości odsprzedaży, scarcity ani yield.",
+    "auditNote": "Security review jest wymagany przed publikacją rejestru. Strona nie deklaruje audytu, wdrożonego kontraktu ani live market accessu.",
+    "implementationStatus": "Implementacja wymagana przed zakupem",
+    "verificationModule": "Koncepcyjny moduł weryfikacji",
+    "visualExplanation": "Wizualna symulacja warstwy dostępu. Audyt i implementacja wymagane przed produkcyjnym użyciem.",
+    "conceptual": "Koncepcja",
+    "access": "Dostęp",
+    "launchState": "Stan startu",
+    "preLaunch": "Rejestr wymagany",
+    "walletModule": "Stan portfela",
+    "walletBody": "Obsługa portfela jest pokazana wyłącznie jako stan gotowości. Użytkownicy zachowują custody w swoich portfelach. Zakup jest zablokowany do czasu ukończenia kontraktu, przeglądu prawnego, audytu i konfiguracji startu.",
+    "utilityKicker": "Utility / prawa dostępu",
+    "utilityTitle": "Dostęp bliżej maison.",
+    "utilityBody": "VLM jest warstwą dostępu dla doświadczeń marki: prywatnych dropów, odblokowania archiwum i wybranych przywilejów.",
+    "riskKicker": "Ryzyko i prawo",
+    "riskTitle": "Rejestr i ryzyko",
+    "cryptoRegulationNote": "VLM może podlegać regulacjom dotyczącym kryptoaktywów zależnie od finalnej konstrukcji, jurysdykcji, modelu dystrybucji i funkcji. Przegląd prawny oraz MiCA review są wymagane przed startem.",
+    "networksValue": "EVM-first",
+    "modelCards": {
+      "supply": {
+        "label": "Podaż",
+        "value": "1,000,000,000 VLM"
+      },
+      "network": {
+        "label": "Sieć",
+        "value": "EVM-first"
+      },
+      "minting": {
+        "label": "Minting",
+        "value": "Wyłączony po deployu"
+      },
+      "price": {
+        "label": "Scenariusz startu",
+        "value": "official registry"
+      },
+      "tax": {
+        "label": "Podatek kupno / sprzedaż",
+        "value": "1.5% / 1.5%"
+      },
+      "status": {
+        "label": "Status",
+        "value": "Rejestr wymagany"
+      }
+    },
+    "heroChips": {
+      "preLaunch": "Interfejs startowy",
+      "evmFirst": "EVM-first",
+      "notAudited": "Wymagany przegląd bezpieczeństwa",
+      "launchReady": "Interfejs startowy",
+      "activationPending": "Rejestr wymagany"
+    },
+    "basic": {
+      "kicker": "VLM / WARSTWA DOSTĘPU",
+      "title": "Dostęp VLM",
+      "body": "VLM łączy archiwum, prywatne dropy i wybrane funkcje społecznościowe Velmère przez przyszłą warstwę dostępu trzymaną w portfelu użytkownika.",
+      "wallet": {
+        "title": "Dostęp w portfelu użytkownika.",
+        "body": "VLM jest projektowany dla portfeli non-custodial. Velmère nigdy nie przechowuje seed phrase, kluczy prywatnych ani środków użytkownika."
+      },
+      "risk": {
+        "title": "Czytelne granice.",
+        "body": "Nie ma jeszcze publicznej sprzedaży, wdrożonego kontraktu ani audytu. Ta strona nie jest poradą inwestycyjną i nie obiecuje zysku."
+      },
+      "how": {
+        "title": "Jak zakup działałby po starcie.",
+        "body": "Ścieżka zakupu pozostaje wyłączona do czasu kontraktu, audytu i oficjalnej puli.",
+        "steps": {
+          "wallet": "Zainstaluj MetaMask albo inny obsługiwany portfel non-custodial.",
+          "verify": "Zweryfikuj oficjalny adres kontraktu na stronie Velmère i w explorerze.",
+          "pool": "Użyj oficjalnej strony VLM i zatwierdzonej puli dopiero po starcie.",
+          "seed": "Nigdy nie udostępniaj seed phrase."
+        }
+      }
+    },
+    "accessTree": {
+      "kicker": "Drzewo dostępu",
+      "archive": {
+        "title": "Archiwum",
+        "body": "Wybrane elementy poza publicznym dropem."
+      },
+      "drops": {
+        "title": "Prywatne dropy",
+        "body": "Wcześniejszy lub ograniczony dostęp."
+      },
+      "voice": {
+        "title": "Głos społeczności",
+        "body": "Przyszłe funkcje opinii i wyboru."
+      },
+      "wallet": {
+        "title": "Portfel użytkownika",
+        "body": "Tokeny trzymane non-custodial."
+      },
+      "future": {
+        "title": "Przyszła użyteczność",
+        "body": "Funkcje zależne od wdrożenia."
+      },
+      "square": {
+        "title": "Dostęp Square",
+        "body": "Notatki społeczności i prośby archiwalne mogą później łączyć się z regułami dostępu."
+      }
+    },
+    "proVisual": {
+      "aria": "Zaawansowany wizual orbity dostępu VLM",
+      "kicker": "VLM PRO VISUAL MODEL",
+      "body": "Ścieżka EVM MVP, blokada audytu, multisig treasury i warstwa sygnału Bajak w kontrolowanym diagramie startu.",
+      "nodes": {
+        "evm": "EVM MVP",
+        "audit": "AUDYT",
+        "multisig": "MULTISIG",
+        "lp": "SCENARIUSZ LP",
+        "bajak": "WARSTWA BAJAK"
+      },
+      "dragHint": "Przeciągnij, aby obrócić model. Po puszczeniu zostaje w wybranym miejscu."
+    }
+  },
+  "Newsletter": {
+    "kicker": "Lista prywatna",
+    "title": "Poproś o dostęp.",
+    "body": "Zapis zostanie podłączony po finalnej konfiguracji narzędzi newslettera.",
+    "placeholder": "email@domena.com",
+    "submit": "Wyślij prośbę",
+    "submitted": "Prośba zapisana"
+  },
+  "Lookbook": {
+    "kicker": "Lookbook",
+    "title": "Ciemne sylwetki w ruchu.",
+    "intro": "",
+    "imageAlt": "Zdjęcie lookbook Velmère {number}",
+    "shopCta": "Odkryj kolekcję",
+    "archiveCta": "Zobacz archiwum",
+    "looks": {
+      "form": {
+        "label": "Forma",
+        "body": "Sylwetka utrzymana proporcją, nie hałasem."
+      },
+      "weight": {
+        "label": "Ciężar",
+        "body": "Obecność materiału pokazana bez spektaklu."
+      },
+      "line": {
+        "label": "Linia",
+        "body": "Czyste krawędzie i kontrolowana objętość."
+      },
+      "silence": {
+        "label": "Cisza",
+        "body": "Ubranie pozostaje centrum kadru."
+      }
+    }
+  },
+  "Legal": {
+    "terms": {
+      "kicker": "Prawne / handel",
+      "title": "Regulamin",
+      "updated": "Wersja robocza z dnia 26 maja 2026",
+      "draftNotice": "Full seller address and VAT details will be published before commercial activation. Return address and POD custom-product rules require final legal review.",
+      "intro": "Ten regulamin opisuje e-commerce Velmère prowadzony pod nazwą sprzedawcy Marcin Bajak w Niemczech. Checkout pozostaje wyłączony, dopóki płatności, wysyłka, prawo, podatki i fulfilment nie będą gotowe.",
+      "sections": [
+        {
+          "title": "Sprzedawca i kontakt",
+          "body": "Nazwa sprzedawcy: Marcin Bajak. Kontakt roboczy: velmere141@gmail.com. Kraj działalności: Niemcy. Pełny adres sprzedawcy zostanie dodany przed uruchomieniem sprzedaży."
+        },
+        {
+          "title": "Ceny i waluta",
+          "body": "Ceny sklepu są pokazane w EUR. Wysyłka nie jest wliczona w cenę produktu i będzie naliczana oddzielnie po finalnej konfiguracji stawek."
+        },
+        {
+          "title": "Produkty w przygotowaniu",
+          "body": "Produkty mogą być limitowane, tworzone po zamówieniu lub importowane od partnerów fulfilmentu do przeglądu. Pozostają w przygotowaniu, dopóki warianty, zdjęcia, ceny, mapowanie providerów i zasady realizacji nie zostaną zwalidowane."
+        },
+        {
+          "title": "Produkcja po zamówieniu",
+          "body": "Wybrane produkty mogą być tworzone po zakupie, aby ograniczyć nadprodukcję. Czas produkcji jest oddzielny od czasu dostawy przewoźnika i musi być pokazany przed uruchomieniem checkoutu."
+        },
+        {
+          "title": "Checkout wyłączony do gotowości",
+          "body": "Checkout pozostaje wyłączony, dopóki Stripe, webhooki, zapis zamówień, stawki wysyłki, zwroty, dane kontaktowe, podatki i fulfilment nie będą gotowe produkcyjnie."
+        },
+        {
+          "title": "Zawarcie zamówienia",
+          "body": "Wiążący proces zamówienia powinien zostać opisany dopiero po konfiguracji operatora płatności, maili potwierdzających, statusów zamówień i zasad fulfilmentu."
+        },
+        {
+          "title": "Oddzielenie VLM",
+          "body": "Zakupy odzieży i dostęp VLM są oddzielne. VLM jest roboczą koncepcją warstwy dostępu i nie jest wymagany do publicznego przeglądania ubrań."
+        },
+        {
+          "title": "Ograniczenia token/crypto",
+          "body": "VLM nie jest przedstawiany jako porada inwestycyjna i nie obiecuje zysku, płynności, listingu, yield, wartości odsprzedaży ani rzadkości."
+        },
+        {
+          "title": "Obsąuga i spory",
+          "body": "Obsąuga i sprawy sporne będą prowadzone przez velmere141@gmail.com do czasu publikacji finalnych danych obsługi komercyjnej."
+        },
+        {
+          "title": "Wymagany finalny przegląd",
+          "body": "Ten regulamin jest roboczy i wymaga przeglądu prawnego przed sprzedażą komercyjną."
+        },
+        {
+          "title": "Moderacja Square i dostęp cyfrowy",
+          "body": "Posty, komentarze, polubienia, zgłoszenia i liczniki wyświetleń w Velmère Square są funkcjami społecznościowymi podlegającymi moderacji przed publikacją. Dostęp VLM pozostaje oddzielony od checkoutu odzieży i nie tworzy prawa do zakupu, tradingu, zysku, płynności ani listingu."
+        }
+      ]
+    },
+    "privacy": {
+      "kicker": "Prywatność / RODO",
+      "title": "Polityka prywatności",
+      "updated": "Zaktualizowano: 26 maja 2026",
+      "draftNotice": "Końcowa lista procesorów i okresy retencji wymagają przeglądu prawnego przed startem komercyjnym.",
+      "intro": "Ten projekt opisuje prawdopodobne kategorie danych dla e-commerce modowego z newsletterem, kontem, obsługą, płatnościami, fulfilmentem, zgodą analityczną i opcjonalnymi funkcjami portfela.",
+      "sections": [
+        {
+          "title": "Administrator i kontakt",
+          "body": "Roboczy administrator/kontakt: Marcin Bajak, Niemcy, velmere141@gmail.com. Pełny adres sprzedawcy i wymagane dane ochrony danych zostaną dodane przed startem komercyjnym."
+        },
+        {
+          "title": "Dane, które mogą być zbierane",
+          "body": "Dane kontaktowe, dane zamówień, dane wysyłki, status płatności bez pełnych danych karty, email newslettera, wiadomości do obsługi, publiczny adres portfela jeśli VLM zostanie użyty, cookies i local storage oraz dane analityczne tylko po zgodzie i włączeniu analityki."
+        },
+        {
+          "title": "Cele przetwarzania",
+          "body": "Obsąuga zamówień, obsąuga klienta, zgoda newsletterowa, bezpieczeństwo i fraud, obowiązki prawne, preferencje sklepu, działanie koszyka oraz weryfikacja dostępu portfelem, jeśli funkcje VLM zostaną aktywowane."
+        },
+        {
+          "title": "Procesorzy i dostawcy",
+          "body": "Potencjalni procesorzy to Vercel dla hostingu, Stripe jeśli płatności zostaną włączone, Printful jeśli fulfilment zostanie włączony, Tapstitch/manualny fulfilment jeśli używany, dostawca email/newslettera jeśli włączony, analityka po zgodzie oraz partnerzy wysyłkowi po konfiguracji."
+        },
+        {
+          "title": "Dane płatności",
+          "body": "Jeśli Stripe zostanie włączony, dane karty powinny być obsługiwane przez Stripe. Velmère powinno przechowywać tylko status zamówienia/płatności, nie pełne dane karty."
+        },
+        {
+          "title": "Dane portfela",
+          "body": "Jeśli dostęp VLM zostanie aktywowany, strona może odczytać publiczny adres portfela i saldo tokena. Nie może przechowywać kluczy prywatnych, seed phrase ani środków użytkownika."
+        },
+        {
+          "title": "Cookies i zgoda",
+          "body": "Niezbędne cookies/local storage obsługują język, koszyk i preferencje zgody. Cookies analityczne i piksele marketingowe muszą pozostać wyłączone do czasu zgody. Obecnie analityka i marketing tracking nie są aktywne."
+        },
+        {
+          "title": "Retencja",
+          "body": "Okresy retencji są placeholderami do przeglądu prawnego. Zamówienia, podatki, support, newsletter i bezpieczeństwo mogą wymagać różnych okresów w zależności od finalnych operacji."
+        },
+        {
+          "title": "Prawa użytkownika",
+          "body": "Tam, gdzie stosuje się RODO, prawa mogą obejmować dostęp, sprostowanie, usunięcie, ograniczenie, przenoszenie, sprzeciw, cofnięcie zgody i skargę do organu nadzorczego."
+        },
+        {
+          "title": "Kontakt",
+          "body": "Zapytania prywatności można kierować na velmere141@gmail.com do czasu publikacji finalnych danych działalności."
+        },
+        {
+          "title": "Dane społeczności, portfela i AI",
+          "body": "Polityka prywatności obejmuje publiczne adresy portfeli używane w podglądzie read-only, posty i komentarze Square, polubienia, liczniki wyświetleń, zgłoszenia moderacyjne, zapytania do Angel, przetwarzanie importu produktów/admin, Printful, Tapstitch, Stripe jeśli zostanie włączony, hosting Vercel, newsletter oraz cookies/local storage. Analityka i marketing działają tylko po zgodzie."
+        }
+      ]
+    },
+    "shipping": {
+      "kicker": "Prawne / wysyłka",
+      "title": "Wysyłka",
+      "updated": "Zaktualizowano: 26 maja 2026",
+      "draftNotice": "Stawki i czasy produkcji zostaną potwierdzone przez dostawcę przed startem komercyjnym.",
+      "intro": "Wysyłka jest naliczana oddzielnie i zostanie sfinalizowana przed włączeniem checkoutu.",
+      "sections": [
+        {
+          "title": "Regiony",
+          "body": "Planowane regiony: Europa, USA oraz kierunki międzynarodowe tam, gdzie wspierają je providerzy fulfilmentu."
+        },
+        {
+          "title": "Oddzielna opłata za wysyłkę",
+          "body": "Wysyłka nie jest wliczona w cenę produktu. Finalne stawki, przewoźnicy i czasy dostawy muszą zostać skonfigurowane przed przyjęciem płatności."
+        },
+        {
+          "title": "Wysyłka śledzona",
+          "body": "Wysyłka śledzona jest planowana tam, gdzie wspiera ją provider fulfilmentu i przewoźnik."
+        },
+        {
+          "title": "Produkcja i czas dostawy",
+          "body": "Czas produkcji po zamówieniu jest oddzielny od czasu dostawy przewoźnika. Oba muszą być jasno pokazane przed checkoutem."
+        },
+        {
+          "title": "Cła i podatki",
+          "body": "Cła, podatki, opłaty importowe i brokerskie mogą dotyczyć przesyłek poza UE i muszą zostać wyjaśnione przed startem checkoutu."
+        },
+        {
+          "title": "Blokada checkoutu",
+          "body": "Płatności nie powinny być przyjmowane, dopóki regiony, koszty i zasady fulfilmentu nie są skonfigurowane."
+        }
+      ]
+    },
+    "returns": {
+      "kicker": "Prawne / zwroty",
+      "title": "Zwroty",
+      "updated": "Zaktualizowano: 26 maja 2026",
+      "draftNotice": "Adres zwrotu i zasady produktów POD wymagają finalnego przeglądu prawnego.",
+      "intro": "Zwroty i odstąpienie muszą zostać sfinalizowane przed sprzedażą komercyjną.",
+      "sections": [
+        {
+          "title": "Robocze odstąpienie UE",
+          "body": "Zasady konsumenckiego odstąpienia w UE, w tym 14-dniowy model tam, gdzie ma zastosowanie, wymagają przeglądu prawnego przed startem."
+        },
+        {
+          "title": "Ograniczenia produktów tworzonych po zamówieniu",
+          "body": "Każde ograniczenie dla produktów personalizowanych, tworzonych po zamówieniu lub higienicznie wrażliwych wymaga przeglądu prawnego."
+        },
+        {
+          "title": "Adres zwrotu",
+          "body": "Adres zwrotu zostanie dodany przed uruchomieniem sprzedaży."
+        },
+        {
+          "title": "Warunki stanu produktu",
+          "body": "Stan produktu, metki, opakowanie, kontrola i wyłączenia muszą zostać określone przed przyjmowaniem zamówień."
+        },
+        {
+          "title": "Koszt wysyłki zwrotnej",
+          "body": "Koszt wysyłki zwrotnej po stronie klienta może obowiązywać tylko wtedy, gdy polityka jest prawnie poprawna i jasno pokazana przed zakupem."
+        },
+        {
+          "title": "Metoda zwrotu środków",
+          "body": "Zwroty środków powinny być realizowane przez pierwotną metodą płatności po włączeniu płatności."
+        }
+      ]
+    },
+    "impressum": {
+      "kicker": "Prawne / dane sprzedawcy",
+      "title": "Dane sprzedawcy",
+      "updated": "Zaktualizowano: 26 maja 2026",
+      "draftNotice": "Pełny adres i dane VAT/podatkowe muszą być dodane przed startem komercyjnym.",
+      "intro": "Dane sprzedawcy dla gotowości sklepu kierowanego do Niemiec.",
+      "sections": [
+        {
+          "title": "Nazwa sprzedawcy",
+          "body": "Marcin Bajak"
+        },
+        {
+          "title": "Kraj i kontakt",
+          "body": "Niemcy\nvelmere141@gmail.com"
+        },
+        {
+          "title": "Adres i dane rejestrowe",
+          "body": "Pełny adres sprzedawcy, dane rejestrowe, VAT/podatki i wymagane informacje regulacyjne zostaną dodane przed startem sprzedaży."
+        }
+      ]
+    },
+    "contact": {
+      "kicker": "Obsługa",
+      "title": "Kontakt",
+      "updated": "Zaktualizowano: 26 maja 2026",
+      "draftNotice": "Ta strona wymaga przeglądu prawnego przed pełnym startem komercyjnym.",
+      "intro": "Dane kontaktowe i wsparcie.",
+      "sections": [
+        {
+          "title": "Kontakt",
+          "body": "Marcin Bajak\nvelmere141@gmail.com\nNiemcy\nPełny adres sprzedawcy zostanie dodany przed uruchomieniem sprzedaży."
+        },
+        {
+          "title": "Obsługa zamówień",
+          "body": "Obsługa zamówień zostanie w pełni opisana po konfiguracji checkoutu, fulfillmentu i wysyłki."
+        },
+        {
+          "title": "Kontakt prawny i prywatność",
+          "body": "Zapytania prawne i dotyczące prywatności mogą używać roboczego adresu email do czasu publikacji finalnych danych firmy."
+        }
+      ]
+    },
+    "token": {
+      "kicker": "VLM / dokument prawny",
+      "title": "Umowa VLM",
+      "updated": "Zaktualizowano: 27 maja 2026",
+      "draftNotice": "Ten dokument nie jest ofertą publiczną. Oficjalne dane definiuje rejestr kontraktu.",
+      "intro": "Ten dokument opisuje VLM jako oficjalną warstwę dostępu Velmère do prywatnych dropów, odblokowania archiwum i wybranych przywilejów marki. Nie jest ofertą inwestycyjną i ta strona nie udostępnia interfejsu tradingowego.",
+      "sections": [
+        {
+          "title": "Szybkie podsumowanie",
+          "body": "Oficjalny interfejs jest aktywny jako powierzchnia dostępu. Funkcje chronione wymagają publikacji rejestru. Nie deklaruje się audytu, wdrożonego kontraktu ani publicznej trasy tradingowej."
+        },
+        {
+          "title": "Model dostępu",
+          "body": "VLM jest przeznaczony do prywatnych dropów, funkcji archiwum i wybranych przywilejów marki. Reguły kwalifikacji definiuje oficjalny rejestr."
+        },
+        {
+          "title": "Oficjalny rejestr",
+          "body": "Rejestr definiuje adres kontraktu, sieć, rekord audytu, ABI, okna dostępu i reguły bramy. Brak danych rejestru oznacza, że chroniony dostęp pozostaje zablokowany."
+        },
+        {
+          "title": "Brak interfejsu tradingowego",
+          "body": "Ta strona nie prezentuje ceny, listingu, modelu opłat, obietnicy płynności ani akcji zakupu. Każda przyszła mechanika musi zgadzać się z oficjalnym rejestrem i przeglądem prawnym."
+        },
+        {
+          "title": "Brak obietnic rynkowych",
+          "body": "Velmère nie obiecuje zysku, listingu, płynności, wartości odsprzedaży, rzadkości, yield ani wsparcia rynku."
+        },
+        {
+          "title": "Custody non-custodial",
+          "body": "Użytkownicy trzymają aktywa w swoich portfelach. Velmère nie przechowuje kluczy prywatnych, seed phrase ani środków."
+        },
+        {
+          "title": "VLM Protocol Lab i AMU",
+          "body": "AMU, harmoniczne rho, prime field i wizuale inspirowane Riemannem sa koncepcyjna warstwa tozsamosci. Wewnetrzna nazwa badawcza: Bajak Protocol. Nie zastepuja audytu, custody portfela ani bezpieczenstwa sieci."
+        },
+        {
+          "title": "Kwalifikacja i jurysdykcja",
+          "body": "VLM może podlegać regulacjom crypto-asset zależnie od finalnej struktury, jurysdykcji, modelu dystrybucji i funkcjonalności. Przegląd prawny oraz MiCA są wymagane przed publikacją rejestru."
+        },
+        {
+          "title": "Kontakt",
+          "body": "Marcin Bajak\nvelmere141@gmail.com\nGermany\nPełny adres sprzedawcy zostanie dodany przed aktywacją checkoutu komercyjnego, jeśli wymagają tego przepisy."
+        },
+        {
+          "title": "Finalny przegląd prawny wymagany",
+          "body": "To nie jest finalny dokument prawny i musi zostać sprawdzony przed ofertą, claimem, sprzedażą, airdropem lub zakupem token-gated VLM."
+        }
+      ]
+    },
+    "shared": {
+      "sellerName": "Marcin Bajak",
+      "sellerEmail": "velmere141@gmail.com",
+      "sellerCountry": "Germany",
+      "currency": "EUR"
+    }
+  },
+  "Archive": {
+    "kicker": "ARCHIWUM VELMÈRE",
+    "title": "Sylwetki poza dropem.",
+    "intro": "Archiwum przechowuje elementy, które nie są częścią publicznej kolekcji. Dostęp może być ograniczony przez VLM po pełnej konfiguracji.",
+    "vlmCta": "Sprawdź VLM",
+    "noteKicker": "Nota archiwum",
+    "noteTitle": "Najpierw moda. Potem dostęp.",
+    "noteBody": "Notatki badawcze i systemowe pozostają drugorzędne, aby archiwum czytało się jak zapis ubrań, nie techniczny notes.",
+    "systemNotes": "Notatki systemowe",
+    "garments": {
+      "coat": {
+        "status": "Archive",
+        "title": "Długa ciemna powłoka",
+        "body": "Kontrolowana warstwa zewnętrzna zbudowana na linii, cieniu i powściągliwej objętości."
+      },
+      "hood": {
+        "status": "Concept",
+        "title": "Studium kaptura i masy",
+        "body": "Studium ciężaru, skróconej proporcji i spokojnego napięcia powierzchni."
+      },
+      "trouser": {
+        "status": "VLM Access",
+        "title": "Projekt spodni utility",
+        "body": "Prywatny koncept spodni archiwalnych, wstrzymany do czasu finalizacji zasad dostępu."
+      }
+    }
+  },
+  "Angel": {
+    "openLabel": "Otwórz asystenta Velmère",
+    "closeLabel": "Zamknij asystenta",
+    "kicker": "Asystent Velmère",
+    "title": "Angel",
+    "hudGas": "Status sklepu: preview",
+    "hudNetwork": "Płatności: wyłączone",
+    "hudSynapse": "Dostęp VLM: projekt",
+    "welcome": "Zapytaj o krój, ubrania, dostęp albo archiwum.",
+    "decrypting": "Przygotowuję odpowiedź",
+    "fitAction": "Analiza kroju",
+    "tokenAction": "Dostęp VLM",
+    "fitPrompt": "Analiza kroju: zapytaj o wzrost, wagę i preferowaną sylwetkę, a potem ostrożnie zasugeruj rozmiar Velmère.",
+    "tokenPrompt": "Dostęp VLM: wyjaśnij prywatne dropy, odblokowanie archiwum i dostęp oparty o rejestr bez porad inwestycyjnych.",
+    "placeholder": "Napisz do asystenta...",
+    "neuralError": "Angel nie jest jeszcze skonfigurowany.",
+    "tabLabel": "Angel",
+    "sidePanelHint": "Panel wysuwa się z boku i nie blokuje pracy na stronie. Możesz zostawić go otwartego podczas przeglądania.",
+    "close": "Zamknij"
+  },
+  "Cookie": {
+    "message": "Używamy minimalnego local storage dla preferencji i podstawowego działania sklepu. Nieistotne śledzenie powinno pozostać wyłączone do czasu konfiguracji zgody.",
+    "decline": "Odrzuć",
+    "accept": "Akceptuj"
+  },
+  "Errors": {
+    "notFound": {
+      "title": "Nie znaleziono strony",
+      "body": "Ta ścieżka nie istnieje albo została przeniesiona do archiwum Velmère.",
+      "cta": "Wróć do kolekcji"
+    }
+  },
+  "AdminImport": {
+    "kicker": "Admin / import produktów",
+    "title": "Import produktów",
+    "intro": "Wklej linki do produktów — każdy w nowej linii. System utworzy wersje robocze, które możesz sprawdzić przed publikacją.",
+    "token": "Token admina",
+    "tabs": {
+      "links": "Linki",
+      "printful": "Printful Sync",
+      "csv": "CSV Upload"
+    },
+    "linksLabel": "Linki produktów",
+    "linksPlaceholder": "https://...",
+    "csvLabel": "CSV produktów",
+    "csvPlaceholder": "Wklej zawartość CSV",
+    "printfulBody": "Synchronizacja Printful używa PRINTFUL_API_TOKEN po stronie serwera. Produkty są importowane jako wersje robocze i nie są publikowane automatycznie.",
+    "tapstitchBody": "Produkty Tapstitch importuj przez publiczne linki produktów albo CSV. Importer tworzy wersje robocze do sprawdzenia, nie omija prywatnych paneli i nie publikuje produktów automatycznie.",
+    "aiDescriptionBody": "Generator opisów AI jest wyłącznie pomocą po stronie serwera. Wymaga OPENAI_API_KEY, a każdy wygenerowany opis musi zostać sprawdzony przed publikacją.",
+    "import": "Importuj",
+    "publishComingSoon": "Publikuj jako w przygotowaniu",
+    "publishActive": "Publikuj aktywne",
+    "previewTitle": "Podgląd wersji roboczych",
+    "select": "Wybierz",
+    "image": "Zdjęcie",
+    "detectedTitle": "Wykryty tytuł",
+    "provider": "Provider",
+    "price": "Cena",
+    "variants": "Warianty",
+    "images": "Zdjęcia",
+    "warnings": "Ostrzeżenia",
+    "status": "Status",
+    "action": "Akcja",
+    "openSource": "Otwórz źródło",
+    "emptyPreview": "Brak zaimportowanych wersji roboczych.",
+    "previewOnly": "Utworzono podgląd. Brak bazy danych, więc wersje robocze nie są utrwalane na produkcji.",
+    "persisted": "Wersje robocze zapisane.",
+    "importFailed": "Import nie powiódł się.",
+    "publishFailed": "Publikacja nie powiodła się.",
+    "publishValidated": "Publikacja wersji roboczych została zwalidowana."
+  },
+  "VlmVisual": {
+    "aria": "Koncepcyjny wizual weryfikacji dostępu VLM",
+    "title": "KONCEPCYJNY MODUŁ WERYFIKACJI",
+    "body": "Symulacja warstwy dostępu. Audyt i implementacja wymagane przed produkcyjnym użyciem.",
+    "planned": "planowane",
+    "emission": "MODEL STAŁEJ PODAŻY",
+    "notDeployed": "Nie wdrożony",
+    "auditRequired": "Audyt wymagany"
+  },
+  "VlmStatus": {
+    "contract": {
+      "label": "Kontrakt",
+      "value": "Nie wdrożony",
+      "chip": "Zablokowane"
+    },
+    "audit": {
+      "label": "Audyt",
+      "value": "Wymagany przed startem",
+      "chip": "Wymagany"
+    },
+    "networks": {
+      "label": "Sieci",
+      "value": "EVM planowane MVP / Solana później / Sui później",
+      "chip": "Planowane"
+    },
+    "launch": {
+      "label": "Status",
+      "value": "Rejestr wymagany",
+      "chip": "Rejestr wymagany"
+    },
+    "wallet": {
+      "label": "Portfel",
+      "value": "Moduł w przygotowaniu",
+      "chip": "Podgląd"
+    },
+    "legal": {
+      "label": "Klasyfikacja",
+      "value": "Wymaga przeglądu prawnego",
+      "chip": "Przegląd"
+    },
+    "treasury": {
+      "label": "Treasury",
+      "value": "Multisig wymagany przed startem",
+      "chip": "Wymagane"
+    }
+  },
+  "VlmUtility": {
+    "privateDrops": {
+      "title": "Prywatne dropy",
+      "body": "Potencjalny dostęp do wybranych premier Velmère po aktywacji."
+    },
+    "archive": {
+      "title": "Archiwum VLM",
+      "body": "Funkcje archiwum mogą zostać odblokowane po skonfigurowaniu zasad dostępu."
+    },
+    "privileges": {
+      "title": "Wybrane przywileje",
+      "body": "Robocze przywileje mogą obejmować wcześniejsze informacje, podglądy lub prywatne momenty dostępu."
+    },
+    "voice": {
+      "title": "Głos społeczności",
+      "body": "Przyszłe mechaniki feedbacku społeczności mogą zostać wprowadzone po przeglądzie prawnym i technicznym."
+    },
+    "earlyAccess": {
+      "title": "Wczesny dostęp",
+      "body": "Potencjalny wcześniejszy dostęp do wybranych dropów bez gwarantowanej alokacji lub wartości odsprzedaży."
+    },
+    "communityLayer": {
+      "title": "Eksperymentalna warstwa społeczności",
+      "body": "Eksperyment marki wokół dostępu, tożsamości i udziału, nie roszczenie produktu finansowego."
+    }
+  },
+  "VlmTokenomics": {
+    "kicker": "Robocze tokenomics",
+    "title": "Model alokacji emisji",
+    "body": "Procenty opisują roboczy podział emisji genesis lub przyszłych mintów, nie sztywną całkowitą podaż.",
+    "draftNotice": "Draft tokenomics — not final. Nie ma gwarantowanej rzadkości, zysku, płynności, listingu ani wsparcia rynku.",
+    "public": {
+      "label": "Publiczna emisja dostępu",
+      "note": "Emisja dla społeczności i publicznego dostępu."
+    },
+    "treasury": {
+      "label": "Treasury / rozwój marki",
+      "note": "Rozwój marki, infrastruktura dostępu i rezerwy operacyjne."
+    },
+    "team": {
+      "label": "Zespół / vesting",
+      "note": "Vesting do ustalenia przed startem."
+    },
+    "liquidity": {
+      "label": "Płynność / operacje rynkowe",
+      "note": "Płynność nie jest gwarantowana i wymaga finalnego przeglądu prawnego oraz rynkowego."
+    }
+  },
+  "VlmRoadmap": {
+    "kicker": "Roadmap",
+    "title": "Ścieżka do aktywacji.",
+    "statuses": {
+      "done": "Gotowe",
+      "inProgress": "W toku",
+      "required": "Wymagane",
+      "locked": "Zablokowane"
+    },
+    "steps": {
+      "concept": {
+        "title": "Koncepcja"
+      },
+      "brandAccess": {
+        "title": "Projekt dostępu marki"
+      },
+      "legalReview": {
+        "title": "Przegląd prawny"
+      },
+      "contractArchitecture": {
+        "title": "Architektura kontraktu"
+      },
+      "testnet": {
+        "title": "Prototyp testnet"
+      },
+      "audit": {
+        "title": "Niezależny audyt"
+      },
+      "mainnet": {
+        "title": "Decyzja mainnet"
+      },
+      "activation": {
+        "title": "Aktywacja dostępu"
+      },
+      "staticAnalysis": {
+        "title": "Analiza statyczna"
+      }
+    }
+  },
+  "VlmSecurity": {
+    "kicker": "Plan bezpieczeństwa",
+    "title": "Plan, kod, test, audyt, deploy, monitoring.",
+    "body": "Bezpieczeństwo smart kontraktu nie wynika z samego designu strony. Wymaga implementacji, testów, audytu i monitoringu.",
+    "steps": {
+      "plan": {
+        "title": "Plan",
+        "status": "W toku"
+      },
+      "code": {
+        "title": "Kod",
+        "status": "Nie finalny"
+      },
+      "test": {
+        "title": "Test",
+        "status": "Wymagany"
+      },
+      "audit": {
+        "title": "Audyt",
+        "status": "Wymagany"
+      },
+      "deploy": {
+        "title": "Deploy",
+        "status": "Nie wdrożony"
+      },
+      "monitor": {
+        "title": "Monitoring",
+        "status": "Przyszły"
+      }
+    }
+  },
+  "VlmFaq": {
+    "kicker": "FAQ",
+    "title": "Pytania o VLM",
+    "what": {
+      "q": "Czym jest VLM?",
+      "a": "Planowany token EVM-first do prywatnych dropow, archiwum i wybranych przywilejow Velmère."
+    },
+    "investment": {
+      "q": "Czy VLM jest inwestycją?",
+      "a": "Nie. VLM jest prezentowany jako warstwa dostępu, nie obietnica zysku."
+    },
+    "buy": {
+      "q": "Czy mogę kupić teraz?",
+      "a": "Nie. Nie ma publicznej sprzedazy ani adresu kontraktu. Sekcja zakupu opisuje przyszla sciezke po starcie."
+    },
+    "contract": {
+      "q": "Czy istnieje kontrakt?",
+      "a": "Nie deklarujemy produkcyjnego adresu kontraktu. Najpierw potrzebny jest testnet i audyt."
+    },
+    "audit": {
+      "q": "Czy VLM ma audyt?",
+      "a": "Audyt nie jest deklarowany. Niezalezny przeglad jest wymagany przed pelnym startem."
+    },
+    "dynamic": {
+      "q": "Czy podaż jest dynamiczna?",
+      "a": "Publiczny interfejs VLM nie prezentuje podaży dynamicznej ani nieskończonej. Oficjalne dane muszą pochodzić z rejestru."
+    },
+    "networks": {
+      "q": "Które sieci?",
+      "a": "EVM jest planowaną ścieżką MVP. Solana i Sui pozostają późniejszymi lub koncepcyjnymi kierunkami."
+    },
+    "holders": {
+      "q": "Co otrzymują holderzy?",
+      "a": "Po aktywacji możliwy dostęp do prywatnych dropów, funkcji archiwum i wybranych funkcji społecznościowych."
+    },
+    "custody": {
+      "q": "Jak działają portfele?",
+      "a": "Użytkownicy trzymają aktywa w swoich portfelach. Velmère nie przechowuje kluczy prywatnych ani seed phrase."
+    },
+    "live": {
+      "q": "Czy VLM jest aktywny?",
+      "a": "Strona opisuje publiczny interfejs i model dostepu. Zakup oraz funkcje gated wymagaja wdrozonego kontraktu, rejestru i audytu."
+    },
+    "amu": {
+      "q": "Czym jest AMU?",
+      "a": "AMU = 3162.27766 to konceptualna stała nośna wizualnej symulacji, nie parametr kryptograficzny."
+    },
+    "bajak": {
+      "q": "What is Bajak Protocol?",
+      "a": "Bajak Protocol jest koncepcyjna warstwa wizualna dla projektu dostepu Velmère. Nie zastepuje kryptografii portfela, audytu smart kontraktu ani bezpieczenstwa sieci."
+    },
+    "security": {
+      "q": "Czy Bajak zabezpiecza środki?",
+      "a": "Nie. To warstwa wizualna i koncepcyjna. Bezpieczenstwo zalezy od portfela, kontraktu, testow, multisig i audytu."
+    },
+    "fixedSupply": {
+      "q": "Dlaczego stała podaż?",
+      "a": "Model roboczy uzywa 1,000,000,000 VLM z mintingiem wylaczonym po wdrozeniu, aby uniknac ukrytego mintu po starcie."
+    },
+    "taxes": {
+      "q": "Jakie są podatki?",
+      "a": "Docelowy draft to 1% buy tax, 2.5% sell tax i 0% transfer tax. Wdrozony kontrakt musi zgadzac sie z oficjalnym rejestrem."
+    },
+    "rho": {
+      "q": "Czym jest ρ?",
+      "a": "ρ to liczba plastikowa używana w wizualnej skali harmonicznej. Nie jest parametrem kryptograficznym."
+    },
+    "walletCreation": {
+      "q": "Czy ta strona tworzy portfel?",
+      "a": "Nie. Portfel tworzy zaufane oprogramowanie, np. MetaMask. Strona nie generuje kluczy ani seed phrase."
+    },
+    "taxesFinal": {
+      "q": "Czy mechanika tokena jest finalna?",
+      "a": "Nie prezentujemy tutaj publicznej mechaniki tradingowej. Oficjalny rejestr kontroluje przyszłe dane kontraktu i dostępu."
+    },
+    "auditRequired": {
+      "q": "Dlaczego audyt jest wymagany?",
+      "a": "Ponieważ bezpieczeństwo smart kontraktu wymaga implementacji, testów, analizy statycznej, niezależnego audytu i monitoringu."
+    }
+  },
+  "VlmWallet": {
+    "kicker": "Model non-custodial",
+    "title": "Dostęp VLM",
+    "body": "Połączenie portfela jest wyłącznie stanem podglądu. Wdrożenie kontraktu, przegląd prawny i audyt są wymagane przed jakimkolwiek zakupem.",
+    "currentState": "Aktualny stan portfela",
+    "disabledAction": "Kontrakt niewdrożony — zakup niedostępny",
+    "states": {
+      "disconnected": "Połącz portfel",
+      "connecting": "Łączenie",
+      "connected": "Połączony",
+      "wrong_network": "Nieobsługiwana sieć",
+      "contract_not_deployed": "Kontrakt niewdrożony — zakup niedostępny",
+      "token_not_live": "VLM jest w fazie registry-gated",
+      "eligible": "Dostęp kwalifikowany",
+      "not_eligible": "Brak dostępu VLM",
+      "pending_signature": "Podpis oczekuje",
+      "signature_rejected": "Podpis odrzucony",
+      "transaction_pending": "Transakcja oczekuje",
+      "transaction_success": "Transakcja potwierdzona",
+      "transaction_failed": "Transakcja nieudana"
+    },
+    "providerUnavailable": "provider niedostępny przed startem",
+    "preLaunchBadge": "Rejestr wymagany",
+    "purchaseLocked": "Zakup VLM jest zablokowany do czasu wdrożenia kontraktu, przeglądu prawnego i audytu.",
+    "implementationStatusCta": "Zobacz status wdrożenia"
+  },
+  "BajakProtocol": {
+    "aria": "Koncepcyjny wizual weryfikacji Bajak Protocol oparty na siatce liczb pierwszych",
+    "title": "VLM PROTOCOL LAB — KONCEPCYJNA WARSTWA DOSTĘPU",
+    "body": "Wizualny model dostępu inspirowany strukturami liczbowymi. Wewnętrzna nazwa badawcza: Bajak Protocol. Nie jest audytem bezpieczeństwa ani gwarancją ochrony kontraktu."
+  },
+  "VlmCybersecurity": {
+    "kicker": "Cyberbezpieczeństwo",
+    "title": "Cyberbezpieczeństwo i status audytu",
+    "body": "Warstwa VLM wymaga osobnego procesu bezpieczeństwa: projektu architektury, testów, audytu smart kontraktu, monitoringu i jasnych zasad wdrożenia. Obecna wersja strony pokazuje koncepcję, nie produkcyjne zabezpieczenie.",
+    "principles": {
+      "nonCustodial": {
+        "title": "Non-custodial",
+        "body": "Użytkownicy trzymają aktywa w swoich portfelach. Velmère nie przechowuje kluczy prywatnych, seed phrase ani środków."
+      },
+      "noCustomCrypto": {
+        "title": "Bez własnej kryptografii",
+        "body": "Velmère nie tworzy własnej kryptografii ani nie przechowuje kluczy użytkownika. VLM ma korzystać z istniejących portfeli i standardów sieci."
+      },
+      "tokenGating": {
+        "title": "Tylko token-gating",
+        "body": "Początkowa użyteczność powinna odczytać adres i saldo, a potem sprawdzić kwalifikację. Bez stakingu, pożyczek, yield, bridge i losowych nagród."
+      },
+      "messageSigning": {
+        "title": "Jasne podpisy",
+        "body": "Podpis potwierdza kontrolę portfela. Nie jest to transakcja i nie przenosi środków. Przyszłe logowanie musi zawierać domenę, nonce, czas wygaśnięcia i weryfikację po stronie serwera."
+      },
+      "approvalSafety": {
+        "title": "Bez approvals dla dostępu",
+        "body": "Token-gating tylko odczytuje saldo. Approval nie jest potrzebny, a unlimited approvals nie mogą być domyślne."
+      }
+    },
+    "checklist": {
+      "architecture": {
+        "label": "Architektura kontraktu",
+        "status": "Wymagana"
+      },
+      "standardLibrary": {
+        "label": "Standardowa biblioteka",
+        "status": "OpenZeppelin ERC20 planowane"
+      },
+      "accessControl": {
+        "label": "Kontrola dostępu",
+        "status": "Wymagana"
+      },
+      "mintPolicy": {
+        "label": "Polityka mintu",
+        "status": "Wymagana"
+      },
+      "multisig": {
+        "label": "Treasury multisig",
+        "status": "Wymagane przed startem"
+      },
+      "testnet": {
+        "label": "Wdrożenie testnet",
+        "status": "Wymagane"
+      },
+      "unitTests": {
+        "label": "Testy jednostkowe",
+        "status": "Wymagane"
+      },
+      "fuzzTests": {
+        "label": "Testy fuzz/property",
+        "status": "Rekomendowane"
+      },
+      "staticAnalysis": {
+        "label": "Analiza statyczna",
+        "status": "Wymagana"
+      },
+      "audit": {
+        "label": "Niezależny audyt",
+        "status": "Wymagany"
+      },
+      "bugBounty": {
+        "label": "Bug bounty",
+        "status": "Opcjonalne/przyszłe"
+      },
+      "mainnet": {
+        "label": "Wdrożenie mainnet",
+        "status": "Zablokowane do audytu"
+      },
+      "monitoring": {
+        "label": "Monitoring",
+        "status": "Wymagany po starcie"
+      },
+      "incidentResponse": {
+        "label": "Incident response",
+        "status": "Wymagany"
+      }
+    },
+    "riskTitle": "Kategorie ryzyka do przeglądu",
+    "risks": {
+      "accessControl": "Kontrola dostępu",
+      "logicErrors": "Błędy logiki",
+      "reentrancy": "Reentrancy",
+      "externalCalls": "Niezweryfikowane wywołania",
+      "inputValidation": "Walidacja danych",
+      "integerSafety": "Bezpieczeństwo liczbowe",
+      "upgradeRisk": "Ryzyko proxy/upgrade",
+      "oracleRisk": "Oracles unikane",
+      "dosRisk": "Ryzyka DoS",
+      "randomness": "Losowość unikana"
+    }
+  },
+  "VlmSupply": {
+    "kicker": "Model podaży",
+    "title": "Stała podaż w scenariuszu startowym.",
+    "body": "Obecny model roboczy zakłada 1,000,000,000 VLM i minting wyłączony po wdrożeniu. To scenariusz przedstartowy, nie oferta publiczna.",
+    "sections": {
+      "dynamic": {
+        "title": "Stała podaż",
+        "body": "Total supply w scenariuszu roboczym wynosi 1,000,000,000 VLM."
+      },
+      "emission": {
+        "title": "Mint jednorazowy",
+        "body": "Podaż powinna zostać wybita raz przy wdrożeniu, bez owner mint po starcie."
+      },
+      "genesis": {
+        "title": "Genesis mint",
+        "body": "Pierwsza alokacja i LP muszą być opisane przed startem."
+      },
+      "governance": {
+        "title": "Brak przyszłych mintów",
+        "body": "Jeśli model się zmieni, wymaga nowej komunikacji, przeglądu prawnego i audytu."
+      },
+      "burnLock": {
+        "title": "LP / lock policy",
+        "body": "Zasady puli, locku i treasury muszą być zweryfikowane na testnecie."
+      },
+      "vesting": {
+        "title": "Vesting / multisig",
+        "body": "Role admin i treasury wymagają multisig przed mainnetem."
+      }
+    }
+  },
+  "Ai": {
+    "adminBody": "Gemini może pomóc oczyścić importowane drafty, opisy i alt text. Działa wyłącznie po stronie serwera, a każdy wynik wymaga ręcznego przeglądu.",
+    "generate": "Generuj copy",
+    "failed": "Generowanie AI nie powiodło się."
+  },
+  "CookieConsent": {
+    "title": "Ustawienia cookies",
+    "message": "Używamy niezbędnych plików cookies i pamięci lokalnej do działania sklepu. Analityka i marketing zostaną uruchomione tylko po zgodzie.",
+    "settingsIntro": "Analityka i marketing są obecnie wyłączone, chyba że wyrazisz zgodę. Niezbędna pamięć utrzymuje język, koszyk i decyzję o zgodzie.",
+    "necessary": "Niezbędna pamięć jest zawsze aktywna dla działania sklepu.",
+    "analytics": "Cookies analityczne tylko po zgodzie. Obecnie analityka nie jest aktywna.",
+    "marketing": "Piksele marketingowe tylko po zgodzie. Obecnie piksele marketingowe nie są aktywne.",
+    "accept": "Akceptuję",
+    "decline": "Odrzucam",
+    "settings": "Ustawienia",
+    "save": "Zapisz wybór",
+    "privacyLink": "Polityka prywatności"
+  },
+  "VlmWalletPreview": {
+    "kicker": "Podglad portfela",
+    "title": "Read-only wallet preview",
+    "body": "Polacz portfel, aby zobaczyc przyszle stany dostepu. Zakup VLM pozostaje zablokowany do czasu wdrozenia kontraktu, przegladu prawnego i audytu.",
+    "currentState": "Stan portfela",
+    "future": "później",
+    "preLaunchBadge": "Aktywacja w toku",
+    "readOnly": "Read-only preview. Dostep wymaga wdrozonego kontraktu i rejestru.",
+    "noProvider": "MetaMask nie został wykryty w tej przeglądarce.",
+    "connectedHelper": "Połączono: {address} w sieci {network}. Saldo nie jest odczytywane, dopóki kontrakt nie istnieje.",
+    "purchaseDisabled": "Kontrakt niewdrozony - zakup niedostepny",
+    "implementationStatusCta": "Zobacz status wdrożenia",
+    "states": {
+      "disconnected": "Połącz portfel",
+      "connecting": "Łączenie",
+      "connected": "Podgląd połączony",
+      "wrong_network": "Przełącz na EVM testnet/Base po wdrożeniu",
+      "contract_not_deployed": "Kontrakt niewdrożony - zakup niedostępny",
+      "token_not_live": "Rejestr VLM wymagany",
+      "eligible": "Dostęp kwalifikowany",
+      "not_eligible": "Brak dostępu VLM",
+      "pending_signature": "Podpis oczekuje",
+      "signature_rejected": "Połączenie odrzucone",
+      "transaction_pending": "Transakcja oczekuje",
+      "transaction_success": "Transakcja potwierdzona",
+      "transaction_failed": "Transakcja nieudana"
+    },
+    "addressCheck": {
+      "label": "Sprawdź publiczny adres",
+      "placeholder": "0x...",
+      "empty": "Opcjonalny podgląd formatu publicznego adresu. Nie wpisuj seed phrase ani klucza prywatnego.",
+      "invalid": "Nieprawidłowy format adresu EVM.",
+      "valid": "Format adresu wygląda poprawnie. Dostęp pozostaje zablokowany do czasu wdrożenia kontraktu."
+    },
+    "activationBadge": "Read-only preview",
+    "readOnlyBadge": "Podgląd"
+  },
+  "VlmHowToBuy": {
+    "badge": "Rejestr wymagany",
+    "title": "Jak VLM można kupić po starcie",
+    "body": "To wyłącznie przyszła instrukcja bezpieczeństwa. Obecnie nie ma adresu kontraktu, publicznej sprzedaży ani zatwierdzonej puli.",
+    "notActive": "Dostęp pozostaje zablokowany przez rejestr.",
+    "steps": {
+      "wallet": "Zainstaluj portfel non-custodial, np. MetaMask.",
+      "network": "Dodaj obsługiwaną sieć EVM po wdrożeniu kontraktu.",
+      "officialPage": "Otwórz oficjalną stronę VLM.",
+      "verify": "Sprawdź adres kontraktu na stronie i w explorerze.",
+      "dex": "Użyj zatwierdzonej puli DEX dopiero po starcie.",
+      "confirm": "Potwierdź opłaty i slippage w portfelu.",
+      "seed": "Nigdy nie udostępniaj seed phrase."
+    },
+    "fullGuide": "Otwórz pełny przewodnik 7 kroków"
+  },
+  "AmuCore": {
+    "kicker": "Tożsamość naukowa",
+    "title": "AMU Core",
+    "subtitle": "3162.27766 jako konceptualna nośna Laboratorium VLM.",
+    "body": "AMU w warstwie VLM nie jest parametrem kryptograficznym. To wizualny i koncepcyjny rdzeń symulacji: punkt odniesienia dla siatki liczb pierwszych, przepływu entropii i harmonicznej skali ρ.",
+    "visualOnly": "Tylko wizualnie",
+    "cards": {
+      "amu": {
+        "label": "AMU",
+        "body": "√10⁷ / stała nośna"
+      },
+      "rho": {
+        "label": "ρ",
+        "body": "liczba plastikowa"
+      },
+      "primeField": {
+        "label": "Prime Field",
+        "body": "konceptualna siatka harmoniczna"
+      },
+      "security": {
+        "label": "Status bezpieczeństwa",
+        "body": "warstwa tozsamosci wizualnej"
+      }
+    },
+    "visual": {
+      "aria": "Wizualizacja harmoniczna AMU Core",
+      "accessCheck": "ACCESS CHECK",
+      "preLaunch": "registry-gated",
+      "disclaimer": "VISUAL MODEL / TOZSAMOSC SYSTEMU MARKI"
+    },
+    "harmonicControl": "Harmoniczny indeks n",
+    "formulaDisclaimer": "Formuła koncepcyjna UI — nie kryptografia portfela."
+  },
+  "PrimeFormula": {
+    "disclaimer": "VISUAL MODEL / TOZSAMOSC SYSTEMU MARKI",
+    "cards": {}
+  },
+  "PrimeFieldSimulation": {
+    "aria": "Symulacja prime field z siatką Riemann-shadow",
+    "primeField": "PRIME FIELD",
+    "entropyFlow": "ENTROPY FLOW",
+    "accessCheck": "ACCESS CHECK",
+    "notAudit": "NOT AN AUDIT",
+    "selectedPrime": "Prime",
+    "nodeStable": "Node stable",
+    "auditRequired": "Audit required"
+  },
+  "AccessFormula": {
+    "kicker": "Odwrócony wzór",
+    "title": "Formuła dostępu",
+    "body": "Sprawdza publiczny adres, saldo, sieć i reguły dostępu.",
+    "gate": "Brama VLM",
+    "result": "Aktywacja zablokowana",
+    "disclaimer": "Koncepcyjny model dostepu dla projektu interfejsu.",
+    "labels": {
+      "address": "ADRES",
+      "balance": "SALDO",
+      "network": "SIEĆ",
+      "rules": "REGUŁY",
+      "result": "WYNIK"
+    },
+    "values": {
+      "address": {
+        "missing": "adres brak",
+        "valid": "0x publiczny format"
+      },
+      "balance": {
+        "zero": "0 VLM",
+        "sample": "sample VLM (symulacja)"
+      },
+      "network": {
+        "unsupported": "sieć nieaktywna",
+        "evm": "EVM planowane"
+      },
+      "rules": {
+        "locked": "reguły zablokowane",
+        "draft": "reguły robocze"
+      }
+    },
+    "options": {
+      "address": {
+        "missing": "brak",
+        "valid": "valid"
+      },
+      "balance": {
+        "zero": "0",
+        "sample": "sample"
+      },
+      "network": {
+        "unsupported": "unsupported",
+        "evm": "EVM planned"
+      },
+      "rules": {
+        "locked": "locked",
+        "draft": "draft"
+      }
+    },
+    "reasons": {
+      "missingAddress": "Brakuje publicznego adresu do symulacji.",
+      "contractNotDeployed": "Kontrakt nie jest wdrożony, więc kwalifikacja nie może działać.",
+      "rulesInactive": "Reguły dostępu nie są aktywne przed startem.",
+      "auditRequired": "Audyt i testnet są wymagane przed aktywacją."
+    },
+    "internalNote": "Internal research reference only."
+  },
+  "WalletGenesis": {
+    "kicker": "Wallet Genesis",
+    "title": "Symulacja non-custodial",
+    "body": "Symulacja pokazuje logikę non-custodial: klucz prywatny pozostaje po stronie portfela użytkownika. Velmère może odczytać publiczny adres i sprawdzić dostęp, ale nie przechowuje kluczy.",
+    "securityNote": "Prawdziwe tworzenie portfela obsługuje zaufane oprogramowanie, takie jak MetaMask. Ta animacja nie tworzy portfela.",
+    "amuNote": "AMU pulse pokazuje warstwę wizualną symulacji. Prawdziwy klucz prywatny pozostaje w portfelu użytkownika i nigdy nie jest tworzony przez stronę.",
+    "steps": {
+      "entropy": {
+        "label": "Chmura entropii",
+        "value": "oprogramowanie portfela"
+      },
+      "amu": {
+        "label": "AMU carrier pulse",
+        "value": "warstwa wizualna"
+      },
+      "privateKey": {
+        "label": "Klucz prywatny",
+        "value": "NIGDY NIE POKAZYWANY"
+      },
+      "publicAddress": {
+        "label": "Adres publiczny",
+        "value": "publiczny adres"
+      },
+      "accessPreview": {
+        "label": "Test VLM",
+        "value": "TYLKO PODGLĄD DOSTĘPU"
+      }
+    },
+    "activeStep": "aktywny krok",
+    "prev": "Wstecz",
+    "next": "Dalej"
+  },
+  "CybersecurityStack": {
+    "kicker": "Realny stack bezpieczeństwa",
+    "title": "Cyberbezpieczeństwo: warstwa wizualna kontra realna",
+    "body": "Laboratorium VLM wyjaśnia koncepcję dostępu wizualnie. Nie zabezpiecza środków. Realne bezpieczeństwo wynika z projektu kontraktu, custody portfela, testów, multisig i audytu.",
+    "cards": {
+      "custody": {
+        "title": "Wallet custody",
+        "body": "Użytkownik trzyma klucze. Velmère nigdy nie przechowuje seed phrase ani środków."
+      },
+      "standard": {
+        "title": "Standard kontraktu",
+        "body": "Planowany OpenZeppelin ERC-20."
+      },
+      "accessControl": {
+        "title": "Kontrola dostępu",
+        "body": "Role admin i treasury wymagają multisig przed mainnetem."
+      },
+      "testnet": {
+        "title": "Testnet",
+        "body": "Wymagany przed mainnetem."
+      },
+      "staticAnalysis": {
+        "title": "Analiza statyczna",
+        "body": "Planowane Slither/Mythril."
+      },
+      "audit": {
+        "title": "Niezależny audyt",
+        "body": "Wymagany przed pełnym startem."
+      },
+      "monitoring": {
+        "title": "Monitoring",
+        "body": "Planowany po wdrożeniu."
+      },
+      "incident": {
+        "title": "Incident response",
+        "body": "Polityka wymagana przed startem."
+      }
+    },
+    "visualLayer": {
+      "title": "Warstwa wizualna",
+      "body": "Tożsamość naukowa i symulacje interfejsu. Dają kontekst, ale nie są zabezpieczeniem.",
+      "items": {
+        "amu": "AMU Core",
+        "prime": "Prime Field",
+        "bajak": "Wewnętrzny model Bajak",
+        "genesis": "Wallet Genesis simulation",
+        "formula": "Access formula"
+      }
+    },
+    "realLayer": {
+      "title": "Warstwa realna",
+      "body": "Elementy wymagane, zanim token może działać bezpiecznie w środowisku produkcyjnym.",
+      "items": {
+        "openzeppelin": "OpenZeppelin",
+        "fixedSupply": "Stała podaż",
+        "noOwnerMint": "Brak owner mint",
+        "multisig": "Multisig",
+        "testnet": "Testnet",
+        "staticAnalysis": "Analiza statyczna",
+        "audit": "Niezależny audyt"
+      }
+    }
+  },
+  "BajakProtocolLab": {
+    "kicker": "Laboratorium koncepcyjne",
+    "title": "Bajak Protocol",
+    "subtitle": "Bajak Protocol jest koncepcyjną warstwą wizualną dla projektu dostępu Velmère. Nie zastępuje kryptografii portfela, audytu smart kontraktu ani bezpieczeństwa sieci.",
+    "body": "Bajak Protocol jest koncepcyjną warstwą wizualną dla projektu dostępu Velmère. Nie zastępuje kryptografii portfela, audytu smart kontraktu ani bezpieczeństwa sieci.",
+    "cards": {
+      "amu": {
+        "label": "AMU Core",
+        "body": "3162.27766 jako stała nośna."
+      },
+      "rho": {
+        "label": "Harmoniczne rho",
+        "body": "ρ kształtuje wizualne pierścienie wzrostu."
+      },
+      "primeField": {
+        "label": "Prime Field",
+        "body": "Węzły liczb pierwszych tworzą siatkę dostępu."
+      },
+      "walletGenesis": {
+        "label": "Wallet Genesis",
+        "body": "Flow non-custodial, bez generowania kluczy."
+      },
+      "security": {
+        "label": "Status cyber",
+        "body": "Prawdziwe bezpieczeństwo wynika z portfeli, prostych kontraktów, testów, multisig i audytu."
+      }
+    }
+  },
+  "VlmLaunchScenario": {
+    "kicker": "Route rejestru",
+    "title": "Rejestr VLM i ścieżka startu",
+    "body": "Model operacyjny dla warstwy dostępu EVM. Publiczne dane kontraktu i route będą publikowane przez oficjalny rejestr.",
+    "items": {
+      "name": {
+        "label": "Name",
+        "value": "Velmère Access Token"
+      },
+      "symbol": {
+        "label": "Symbol",
+        "value": "VLM"
+      },
+      "network": {
+        "label": "Network",
+        "value": "EVM-first"
+      },
+      "mvpChain": {
+        "label": "MVP chain",
+        "value": "Base / Sepolia first"
+      },
+      "supply": {
+        "label": "Supply",
+        "value": "1,000,000,000 VLM"
+      },
+      "minting": {
+        "label": "Minting",
+        "value": "Disabled after deployment"
+      },
+      "buyTax": {
+        "label": "Buy tax",
+        "value": "1%"
+      },
+      "sellTax": {
+        "label": "Sell tax",
+        "value": "2.5%"
+      },
+      "transferTax": {
+        "label": "Transfer tax",
+        "value": "0%"
+      },
+      "maxBuyTax": {
+        "label": "Max buy tax",
+        "value": "1% hard cap"
+      },
+      "maxSellTax": {
+        "label": "Max sell tax",
+        "value": "2.5% hard cap"
+      },
+      "liquidity": {
+        "label": "Route",
+        "value": "oficjalny rejestr"
+      },
+      "price": {
+        "label": "Widok rynku",
+        "value": "po publikacji rejestru"
+      },
+      "status": {
+        "label": "Status",
+        "value": "build / rejestr / audyt"
+      }
+    },
+    "safeguards": {
+      "noBlacklist": "No blacklist",
+      "noHoneypot": "No honeypot",
+      "noSellLock": "No hidden sell lock",
+      "noOwnerMint": "No owner mint",
+      "noCustomCrypto": "No custom cryptography",
+      "treasury": "Multisig required"
+    },
+    "warning": "Publiczne dane route zostaną pokazane przez oficjalny rejestr, gdy będą gotowe.",
+    "feeWarning": "Mechanika tradingu musi przejść testnet przed publikacją publicznego route.",
+    "groups": {
+      "core": "Core model",
+      "fees": "Fees",
+      "liquidity": "Launch liquidity",
+      "safety": "Safety rules"
+    },
+    "planned": "Required"
+  },
+  "VlmAccessHeroVisual": {
+    "aria": "Interaktywny wizual warstwy dostępu VLM",
+    "title": "LAUNCH ACCESS ENGINE",
+    "body": "Podgląd gotowości: AMU pulse, prime nodes i blokady wdrożenia. Aktywacja wymaga kontraktu i audytu.",
+    "accessGate": "ACCESS GATE",
+    "previewOnly": "PREVIEW ONLY",
+    "chips": {
+      "notDeployed": "Rejestr kontraktu w toku",
+      "auditRequired": "Przegląd bezpieczeństwa",
+      "preLaunch": "Demo gotowe do startu",
+      "registryPending": "Rejestr kontraktu w toku",
+      "securityReadiness": "Gotowość bezpieczeństwa",
+      "launchDemo": "Demo gotowe do startu",
+      "launchInterface": "Interfejs startu"
+    },
+    "nodes": {
+      "evm": {
+        "label": "EVM",
+        "body": "Planowany MVP na EVM, najpierw Base albo Sepolia testnet."
+      },
+      "sol": {
+        "label": "SOL",
+        "body": "Solana pozostaje późniejszym lub koncepcyjnym kierunkiem."
+      },
+      "sui": {
+        "label": "SUI",
+        "body": "Sui pozostaje późniejszym lub koncepcyjnym kierunkiem."
+      },
+      "audit": {
+        "label": "AUDIT",
+        "body": "Niezależny audyt jest wymagany przed pełnym startem."
+      },
+      "contract": {
+        "label": "CONTRACT",
+        "body": "Kontrakt produkcyjny nie jest wdrożony."
+      },
+      "access": {
+        "label": "ACCESS",
+        "body": "Podgląd dostępu bez transakcji i bez odczytu salda."
+      }
+    }
+  },
+  "SecurityReadinessConsole": {
+    "kicker": "Konsola",
+    "title": "Konsola gotowości bezpieczeństwa",
+    "inputLabel": "Sprawdź publiczny adres",
+    "placeholder": "0x...",
+    "resultLabel": "Wynik gotowości",
+    "result": "registry-gated zablokowany",
+    "disclaimer": "To podgląd gotowości, nie audyt bezpieczeństwa.",
+    "addressStates": {
+      "empty": "Wpisz publiczny adres EVM. Nie wpisuj seed phrase ani klucza prywatnego.",
+      "invalid": "Nieprawidłowy format publicznego adresu EVM.",
+      "valid": "Format publicznego adresu jest poprawny. Sprawdzenie dostępu pozostaje zablokowane do czasu wdrożenia kontraktu."
+    },
+    "checks": {
+      "openzeppelin": "OpenZeppelin ERC-20 planowany",
+      "fixedSupply": "Stała podaż planowana",
+      "mintDisabled": "Mint wyłączony po deployu",
+      "buyTaxCap": "Buy tax hard cap planowany",
+      "sellTaxCap": "Sell tax hard cap planowany",
+      "noBlacklist": "Brak blacklisty planowany",
+      "noHoneypot": "Brak honeypot planowany",
+      "multisig": "Multisig wymagany",
+      "testnet": "Testnet wymagany",
+      "staticAnalysis": "Slither/Mythril planowane",
+      "audit": "Niezależny audyt wymagany"
+    }
+  },
+  "VlmLaunchSwapPreview": {
+    "kicker": "Trasa startowa",
+    "title": "VLM Launch Preview",
+    "badge": "Trading wyłączony",
+    "payLabel": "Wnosisz",
+    "payAsset": "EUR / ETH preview",
+    "payAmount": "400 EUR scenariusz LP",
+    "receiveLabel": "Otrzymujesz",
+    "quote": "1 EUR ≈ 2,500 VLM",
+    "quoteNote": "Na podstawie official registry za VLM, przed opłatami.",
+    "buyFee": {
+      "label": "Opłata buy",
+      "value": "1%"
+    },
+    "sellFee": {
+      "label": "Opłata sell",
+      "value": "registry-defined"
+    },
+    "slippage": {
+      "label": "Price impact",
+      "value": "Wysoki"
+    },
+    "disabledCta": "Kontrakt niewdrożony — trading niedostępny",
+    "note": "Tylko podgląd. Finalna trasa zależy od wdrożonego kontraktu, kompatybilności DEX/routera oraz przeglądu prawnego i bezpieczeństwa."
+  },
+  "VlmContractRegistry": {
+    "kicker": "Rejestr kontraktu",
+    "title": "Status wdrożenia",
+    "badge": "Pending",
+    "rows": {
+      "address": {
+        "label": "Adres kontraktu",
+        "value": "Pending"
+      },
+      "chainId": {
+        "label": "Chain ID",
+        "value": "Pending"
+      },
+      "network": {
+        "label": "Sieć",
+        "value": "EVM-first / Base albo Sepolia testnet najpierw"
+      },
+      "explorer": {
+        "label": "Explorer",
+        "value": "Pending"
+      },
+      "dexRoute": {
+        "label": "Trasa DEX",
+        "value": "Pending"
+      },
+      "pool": {
+        "label": "Pool",
+        "value": "Pending"
+      },
+      "router": {
+        "label": "Kompatybilność routera",
+        "value": "Wymagana"
+      },
+      "audit": {
+        "label": "Raport audytu",
+        "value": "Wymagany"
+      },
+      "treasury": {
+        "label": "Treasury",
+        "value": "Multisig wymagany"
+      }
+    }
+  },
+  "VlmMarketSnapshot": {
+    "kicker": "Snapshot rynku",
+    "title": "Dane gotowości",
+    "body": "Przejrzystość w stylu giełdy dla planowanego modelu. Handel wyłączony do aktywacji.",
+    "cards": {
+      "supply": {
+        "label": "Supply",
+        "value": "1,000,000,000 VLM"
+      },
+      "network": {
+        "label": "Sieć",
+        "value": "EVM-first"
+      },
+      "route": {
+        "label": "Trasa startu",
+        "value": "Base/Sepolia najpierw"
+      },
+      "lp": {
+        "label": "Scenariusz LP",
+        "value": "400 EUR + 1,000,000 VLM"
+      },
+      "price": {
+        "label": "Cena orientacyjna",
+        "value": "official registry"
+      },
+      "fee": {
+        "label": "Fee buy / sell",
+        "value": "registry-defined"
+      },
+      "status": {
+        "label": "Status",
+        "value": "registry-gated"
+      },
+      "contract": {
+        "label": "Kontrakt",
+        "value": "Niewdrożony"
+      }
+    },
+    "readinessTitle": "Dane gotowości",
+    "deploymentTitle": "Status wdrożenia",
+    "readiness": {
+      "supply": {
+        "label": "Podaż",
+        "value": "1 000 000 000 VLM"
+      },
+      "network": {
+        "label": "Sieć",
+        "value": "EVM-first"
+      },
+      "route": {
+        "label": "Trasa startu",
+        "value": "Base/Sepolia najpierw"
+      },
+      "lp": {
+        "label": "Scenariusz LP",
+        "value": "400 EUR +\n1 000 000 VLM"
+      },
+      "price": {
+        "label": "Model ceny",
+        "value": "0,0004 EUR"
+      },
+      "quote": {
+        "label": "Kurs",
+        "value": "1 EUR ≈ 2 500 VLM"
+      },
+      "fee": {
+        "label": "Opłata kupno / sprzedaż",
+        "value": "registry-defined"
+      },
+      "status": {
+        "label": "Status",
+        "value": "Aktywacja w toku"
+      },
+      "registry": {
+        "label": "Rejestr",
+        "value": "W toku"
+      }
+    },
+    "deployment": {
+      "address": {
+        "label": "Adres kontraktu",
+        "value": "W toku"
+      },
+      "chainId": {
+        "label": "Chain ID",
+        "value": "W toku"
+      },
+      "explorer": {
+        "label": "Explorer",
+        "value": "W toku"
+      },
+      "dexRoute": {
+        "label": "Trasa DEX",
+        "value": "W toku"
+      },
+      "pool": {
+        "label": "Pula",
+        "value": "W toku"
+      },
+      "router": {
+        "label": "Kompatybilność routera",
+        "value": "Wymagana"
+      },
+      "audit": {
+        "label": "Audyt",
+        "value": "Wymagany"
+      },
+      "treasury": {
+        "label": "Skarbiec",
+        "value": "Multisig wymagany"
+      },
+      "contract": {
+        "label": "Kontrakt",
+        "value": "W toku"
+      },
+      "route": {
+        "label": "Trasa",
+        "value": "W toku"
+      },
+      "abi": {
+        "label": "ABI",
+        "value": "W toku"
+      },
+      "auditUrl": {
+        "label": "URL audytu",
+        "value": "W toku"
+      },
+      "lp": {
+        "label": "Scenariusz LP",
+        "value": "400 EUR + 1 000 000 VLM"
+      }
+    }
+  },
+  "VlmLiquidityRoute": {
+    "kicker": "Trasa płynności",
+    "title": "Ścieżka DEX przygotowana, aktywacja pending.",
+    "body": "Trasa startowa jest opisana z klarownością znaną z giełdowych interfejsów, ale bez sugestii listingu i bez aktywnej puli DEX.",
+    "clarityNote": "Inspiracja: klarowność interfejsów giełdowych, nie zapowiedź listingu.",
+    "rows": {
+      "lp": {
+        "label": "Planowane initial LP",
+        "value": "400 EUR + 1,000,000 VLM"
+      },
+      "price": {
+        "label": "Cena orientacyjna",
+        "value": "official registry"
+      },
+      "quote": {
+        "label": "Quote",
+        "value": "1 EUR ≈ 2,500 VLM"
+      },
+      "buyFee": {
+        "label": "Access rule",
+        "value": "1%"
+      },
+      "sellFee": {
+        "label": "Exit rule",
+        "value": "registry-defined"
+      },
+      "transferFee": {
+        "label": "Transfer fee",
+        "value": "0%"
+      },
+      "route": {
+        "label": "Trasa",
+        "value": "EVM Registry route pending"
+      },
+      "compatibility": {
+        "label": "Kompatybilność",
+        "value": "Testy routera fee-on-transfer wymagane"
+      },
+      "risk": {
+        "label": "Ryzyko płynności",
+        "value": "Cienkie LP = wysoki price impact"
+      }
+    },
+    "examples": {
+      "buyExample": {
+        "label": "Przykład buy",
+        "value": "Buy za 100 EUR oznacza 1 EUR opłaty przed efektem trasy i slippage."
+      },
+      "sellExample": {
+        "label": "Przykład sell",
+        "value": "Sell za 100 EUR oznacza 2.5 EUR opłaty przed efektem trasy i slippage."
+      },
+      "treasury": {
+        "label": "Odbiorca opłat",
+        "value": "Treasury pending; multisig wymagany przed mainnet."
+      },
+      "burn": {
+        "label": "Burn",
+        "value": "Brak burn, chyba że zostanie wdrożony i ujawniony w kontrakcie."
+      }
+    },
+    "warning": "Mała początkowa płynność może powodować silny price impact. Ta strona nie obiecuje ceny, listingu, wartości odsprzedaży ani płynności."
+  },
+  "VlmWalletFlow": {
+    "kicker": "Przepływ portfela",
+    "title": "Non-custodial przed dostępem.",
+    "body": "Konfiguracja portfela odbywa się w zaufanym oprogramowaniu portfela. Velmère odczytuje wyłącznie publiczny adres po zgodzie użytkownika.",
+    "steps": {
+      "install": {
+        "title": "Zainstaluj portfel",
+        "body": "Użyj zaufanego portfela non-custodial, np. MetaMask."
+      },
+      "create": {
+        "title": "Utwórz portfel",
+        "body": "Utwórz portfel w aplikacji portfela, nigdy na tej stronie."
+      },
+      "store": {
+        "title": "Zabezpiecz odzyskiwanie",
+        "body": "Seed phrase trzymaj offline. Velmère nigdy o niego nie prosi."
+      },
+      "network": {
+        "title": "Dodaj sieć",
+        "body": "Dodaj obsługiwaną sieć EVM po wdrożeniu."
+      },
+      "verify": {
+        "title": "Zweryfikuj kontrakt",
+        "body": "Porównaj oficjalny adres z explorerem."
+      },
+      "connect": {
+        "title": "Połącz preview",
+        "body": "Połącz z Velmère tylko po to, aby udostępnić publiczny adres."
+      },
+      "read": {
+        "title": "Odczyt dostępu",
+        "body": "Przyszły engine dostępu czyta kwalifikację; nie przechowuje środków."
+      }
+    }
+  },
+  "VlmProtocolLabTabs": {
+    "kicker": "Laboratorium protokołu",
+    "title": "Laboratorium VLM",
+    "body": "Symulacje prime-field, AMU i dostępu dla interfejsu startowego VLM.",
+    "internalNote": "Wewnętrzna nazwa badawcza: Bajak Protocol.",
+    "tabs": {
+      "amu": "AMU Core",
+      "prime": "Prime Field",
+      "formula": "Access Formula",
+      "wallet": "Wallet Genesis"
+    }
+  },
+  "SideActionPanel": {
+    "close": "Zamknij panel"
+  },
+  "VlmLaunchDashboard": {
+    "kicker": "VLM / WARSTWA DOSTĘPU",
+    "title": "Dost?p VLM",
+    "description": "VLM to planowany token dostępu do prywatnych dropów, archiwum i wybranych przywilejów Velmère. Ten interfejs pokazuje zamierzony model startu. Handel otwiera się dopiero po wdrożeniu kontraktu, rejestrze, płynności, przeglądzie prawnym i bezpieczeństwa.",
+    "chips": {
+      "launchReady": "Demo gotowe do startu",
+      "evmFirst": "EVM-first",
+      "activationPending": "Aktywacja w toku",
+      "launchInterface": "Interfejs startu",
+      "registryPending": "Rejestr w toku"
+    }
+  },
+  "VlmDashboardPanels": {
+    "wallet": "Portfel",
+    "trade": "Podgląd trade",
+    "registry": "Rejestr kontraktu",
+    "howToBuy": "Jak kupić",
+    "lab": "Protocol lab",
+    "walletTitle": "Podgląd portfela",
+    "walletKicker": "Silnik dostępu przygotowany",
+    "tradeTitle": "Podgląd VLM trade",
+    "tradeKicker": "Interfejs dostępu",
+    "registryTitle": "Rejestr kontraktu",
+    "registryKicker": "Status wdrożenia",
+    "howToBuyTitle": "Jak kupić po aktywacji",
+    "howToBuyKicker": "Przepływ portfela",
+    "labTitle": "VLM Protocol Lab",
+    "labKicker": "Interfejs badawczy",
+    "guide": "Przewodnik"
+  },
+  "VlmTradePreview": {
+    "kicker": "Model cenowy",
+    "title": "Model cenowy startu VLM",
+    "badge": "Interfejs startu",
+    "rows": {
+      "price": {
+        "label": "Cena indykatywna",
+        "value": "0,0004 EUR"
+      },
+      "quote": {
+        "label": "Quote",
+        "value": "1 EUR ≈ 2 500 VLM przed opłatami"
+      },
+      "buyFee": {
+        "label": "Opłata kupna",
+        "value": "1,5%"
+      },
+      "sellFee": {
+        "label": "Opłata sprzedaży",
+        "value": "1,5%"
+      },
+      "transferFee": {
+        "label": "Opłata transferu",
+        "value": "0%"
+      }
+    },
+    "disabledCta": "Handel po wdrożeniu kontraktu",
+    "activationNote": "Pełna aktywacja wymaga rejestru kontraktu, trasy płynności i przeglądu bezpieczeństwa."
+  },
+  "VlmHowToBuySidePanel": {
+    "body": "Skrócony przewodnik po planowanym zakupie po aktywacji. Handel wyłączony do aktywacji rejestru.",
+    "badge": "Aktywacja w toku",
+    "footer": "Nigdy nie udostępniaj seed phrase. Velmère nie tworzy portfeli ani nie prosi o klucze prywatne.",
+    "steps": {
+      "wallet": "Zainstaluj zaufany portfel non-custodial, np. MetaMask.",
+      "network": "Dodaj wspieraną sieć EVM po ogłoszeniu wdrożenia.",
+      "officialPage": "Korzystaj tylko z oficjalnej strony VLM i rejestru kontraktu Velmère.",
+      "verify": "Zweryfikuj adres kontraktu, chain ID i link explorera.",
+      "dex": "Użyj opublikowanej trasy DEX dopiero po aktywacji — trasa w toku.",
+      "confirm": "Sprawdź opłaty, poślizg i wpływ na cenę przed potwierdzeniem.",
+      "seed": "Przechowuj seed phrase offline. Nigdy nie wpisuj go na tej stronie."
+    }
+  },
+  "VlmProtocolLabSidePanel": {
+    "body": "Zakładki badawcze AMU, prime field, formuła dostępu i wallet genesis. Tylko demo.",
+    "tabs": {
+      "amu": "AMU Core",
+      "prime": "Prime Field",
+      "formula": "Access Formula",
+      "wallet": "Wallet Genesis",
+      "security": "Konsola bezpieczeństwa"
+    }
+  },
+  "VlmProtocolLabTeaser": {
+    "kicker": "Protocol lab",
+    "title": "VLM Protocol Lab",
+    "body": "Moduły AMU, prime-field i dostępu są w Pro Lab.",
+    "cta": "Otwórz Pro Lab"
+  },
+  "Account": {
+    "kicker": "Konto klienta",
+    "title": "Panel konta",
+    "status": "System kont przygotowany — aktywacja wymaga konfiguracji.",
+    "loginCta": "Przejdź do logowania",
+    "modules": {
+      "profile": {
+        "title": "Profil",
+        "body": "Imię, język i preferencje kontaktu."
+      },
+      "orders": {
+        "title": "Zamówienia",
+        "body": "Historia Stripe po aktywacji checkoutu."
+      },
+      "saved": {
+        "title": "Zapisane",
+        "body": "Lista życzeń i zapisane sylwetki."
+      },
+      "vlm": {
+        "title": "Dostęp VLM",
+        "body": "Podgląd tieru po aktywacji portfela."
+      },
+      "wallet": {
+        "title": "Adres portfela",
+        "body": "Publiczny adres tylko do odczytu."
+      },
+      "newsletter": {
+        "title": "Newsletter",
+        "body": "Lista prywatna i powiadomienia o dropach."
+      }
+    },
+    "profileEditor": {
+      "kicker": "Podgląd profilu",
+      "defaultBio": "Spokojny profil dostępu dla dropów Velmère, archiwum i aktywności Square.",
+      "edit": "Edytuj profil",
+      "cancel": "Anuluj",
+      "save": "Zapisz podgląd",
+      "wallet": {
+        "label": "Portfel",
+        "value": "Podgląd tylko do odczytu po połączeniu"
+      },
+      "rank": {
+        "label": "Ranga dostępu",
+        "value": "Private build"
+      },
+      "cooldown": {
+        "label": "Zmiana nazwy",
+        "ready": "Możesz zmienić nazwę",
+        "wait": "Następna zmiana: {date}",
+        "rule": "Nazwę i handle można zmienić raz na 30 dni."
+      },
+      "fields": {
+        "displayName": "Nazwa profilu",
+        "handle": "Handle",
+        "bio": "Bio"
+      },
+      "persistenceNote": "To bezpieczny podgląd profilu po stronie frontendu. Prawdziwy zapis wymaga konfiguracji kont i bazy danych.",
+      "emptyPosts": {
+        "title": "DOSTĘP PRZYZNANY. OCZEKIWANIE NA INICJALIZACJĘ.",
+        "body": "Do tego profilu nie przypisano jeszcze publicznych postów."
+      },
+      "emptyOrders": {
+        "title": "BRAK ZARCHIWIZOWANYCH TRANSAKCJI.",
+        "body": "Zamówienia pojawią się tutaj po aktywacji warstwy sprzedaży."
+      }
+    }
+  },
+  "ProductLaunchChecklist": {
+    "kicker": "Start produktów",
+    "title": "Pipeline Printful / Tapstitch",
+    "body": "Import tworzy szkice. Publikacja po walidacji.",
+    "requirements": [
+      "Token Printful po stronie serwera; sync jako szkice z wariantami, zdjęciami i cenami EUR.",
+      "Tapstitch przez CSV, import URL lub mapowanie ręczne.",
+      "Opisy AI przez Angel/admin w PL/EN/DE.",
+      "Walidacja: tytuł, zdjęcia, warianty, cena EUR, profil wysyłki, mapowanie dostawcy.",
+      "Bramka publikacji: produkty active wymagają wszystkich pól."
+    ],
+    "sampleTitle": "Przykładowa gotowość",
+    "ready": "Gotowe do przeglądu",
+    "blocked": "{count} blokad"
+  },
+  "CheckoutReadiness": {
+    "customerPending": "Aktywacja checkoutu w toku.",
+    "adminTitle": "Gotowość checkoutu"
+  },
+  "StoreLaunchRoadmap": {
+    "kicker": "Roadmapa startu",
+    "title": "Sklep, platforma i VLM",
+    "body": "Prawdziwa kolejność startu odzieży i aktywacji VLM.",
+    "phases": {
+      "store": {
+        "kicker": "Sklep",
+        "title": "Start odzieży",
+        "items": [
+          "Sync Printful i import Tapstitch CSV/link",
+          "Szkice z cenami EUR i stawkami wysyłki",
+          "Stripe, VAT, adres sprzedawcy i polityki finalne",
+          "Test zamówienia i mapowanie fulfilmentu"
+        ]
+      },
+      "platform": {
+        "kicker": "Platforma",
+        "title": "Platforma klienta",
+        "items": [
+          "Login/konto z zamówieniami i zapisanymi produktami",
+          "Koszyk i bramki gotowości checkoutu",
+          "Panel admin: produkty, zamówienia, status VLM",
+          "Angel AI i newsletter"
+        ]
+      },
+      "vlm": {
+        "kicker": "VLM",
+        "title": "Aktywacja tokena",
+        "items": [
+          "Testnet Base/Sepolia ERC-20, 1B podaży, opłaty registry-defined",
+          "Slither/Mythril/review i multisig skarbca",
+          "Adres kontraktu, trasa/pool DEX i review prawny",
+          "Mainnet dopiero po bezpieczeństwie i rejestrze"
+        ]
+      }
+    }
+  },
+  "VlmWalletSidePanel": {
+    "safetyNote": "Velmère odczytuje tylko publiczny adres portfela. Klucze prywatne i seed phrase pozostają w aplikacji portfela.",
+    "registryBadge": "Rejestr w toku",
+    "addressLabel": "Sprawdzenie adresu",
+    "footer": "Weryfikacja dostępu wymaga wdrożonego kontraktu i opublikowanego rejestru.",
+    "statusLabel": "Wallet status",
+    "addressPlaceholder": "0x…",
+    "body": "Connect a trusted wallet to preview the access flow. No transactions are sent from this interface.",
+    "noProvider": "MetaMask was not detected in this browser.",
+    "connectedHelper": "Connected: {address}. Access check waits for contract registry.",
+    "addressCheck": {
+      "empty": "Enter a public EVM address to validate format.",
+      "valid": "Valid address format. Access check waits for contract registry.",
+      "invalid": "Invalid EVM address format."
+    },
+    "states": {
+      "disconnected": "Not connected",
+      "connecting": "Connecting…",
+      "connected": "Connected (preview)",
+      "contract_not_deployed": "Contract registry pending",
+      "wrong_network": "Unsupported network",
+      "signature_rejected": "Connection declined"
+    }
+  },
+  "VlmSwapSidePanel": {
+    "disabledCta": "Handel po wdrożeniu kontraktu",
+    "body": "Kalkulator orientacyjny planowanej trasy. To nie jest live market access.",
+    "payLabel": "Access input",
+    "currency": "EUR",
+    "receiveLabel": "Access output",
+    "formulaNote": "Receive ≈ (amount × 0.99) / 0.0004 VLM after registry-defined access rule.",
+    "buyFeeExample": "100 EUR buy → {fee} EUR Access rule (1%)",
+    "sellFeeExample": "100 EUR sell → {fee} EUR Exit rule (registry-defined)",
+    "lpNote": "Planned initial LP: 400 EUR + 1,000,000 VLM. Route pending.",
+    "impactWarning": "Thin initial liquidity can create severe price impact."
+  },
+  "VlmProductionChecklist": {
+    "kicker": "Wymagania produkcyjne",
+    "title": "Sklep, platforma i VLM",
+    "body": "Co musi zostać ukończone przed sprzedażą odzieży i aktywacją tokena.",
+    "phases": {
+      "store": {
+        "kicker": "Store",
+        "title": "Clothing launch",
+        "items": [
+          "Printful / Tapstitch product pipeline",
+          "Stripe checkout and EUR pricing",
+          "Shipping, tax/VAT and legal policies"
+        ]
+      },
+      "platform": {
+        "kicker": "Platform",
+        "title": "Customer platform",
+        "items": [
+          "Login / account",
+          "AI Angel concierge",
+          "Admin for products and orders"
+        ]
+      },
+      "vlm": {
+        "kicker": "VLM",
+        "title": "Token activation",
+        "items": [
+          "Contract deployment and testnet validation",
+          "Security review and audit",
+          "Registry, Registry route and liquidity"
+        ]
+      }
+    }
+  },
+  "LuxuryProductCarousel": {
+    "kicker": "Kolekcja",
+    "title": "Wybrane modele",
+    "prev": "Poprzedni produkt",
+    "next": "Następny produkt",
+    "viewProduct": "Zobacz produkt",
+    "comingSoon": "Wkrótce",
+    "collection": "Velmère",
+    "goTo": "Slajd {index}"
+  },
+  "VlmModeSwitch": {
+    "aria": "Tryb interfejsu VLM",
+    "basic": "Podstawowy",
+    "pro": "Pro",
+    "basicHint": "Prosty przeglad dostepu",
+    "proHint": "Zaawansowany widok techniczny"
+  },
+  "LuxuryActionModal": {
+    "close": "Zamknij"
+  },
+  "VlmActionBar": {
+    "wallet": "Portfel",
+    "trade": "Handel",
+    "registry": "Rejestr",
+    "guide": "Przewodnik",
+    "proLab": "Pro Lab"
+  },
+  "VlmWalletModal": {
+    "intro": "Velmère odczytuje tylko publiczny adres portfela. Klucze prywatne i seed phrase pozostają w aplikacji portfela.",
+    "statusLabel": "Status portfela",
+    "registryBadge": "Rejestr w toku",
+    "addressLabel": "Adres publiczny",
+    "addressPlaceholder": "0x…",
+    "safety": "Nigdy nie wpisuj seed phrase ani klucza prywatnego.",
+    "noProvider": "MetaMask nie został wykryty w tej przeglądarce.",
+    "connectedHelper": "Połączono. Sprawdzenie dostępu czeka na rejestr kontraktu.",
+    "statusHelper": "Połącz lub wklej publiczny adres, aby sprawdzić format.",
+    "addressCheck": {
+      "empty": "Wpisz publiczny adres EVM, aby sprawdzić format.",
+      "valid": "Poprawny format adresu. Sprawdzenie dostępu czeka na rejestr.",
+      "invalid": "Niepoprawny format adresu EVM."
+    },
+    "states": {
+      "disconnected": "Brak połączenia",
+      "connecting": "Łączenie…",
+      "connected": "Połączono (podgląd)",
+      "contract_not_deployed": "Rejestr w toku",
+      "wrong_network": "Nieobsługiwana sieć",
+      "signature_rejected": "Połączenie odrzucone"
+    }
+  },
+  "Wallet": {
+    "walletPreview": "Podgląd portfela",
+    "walletPrivacy": "Velmère odczytuje tylko publiczny adres portfela. Klucze prywatne i seed phrase zostają w aplikacji portfela.",
+    "metamask": "MetaMask",
+    "phantom": "Phantom",
+    "connect": "Połącz",
+    "connecting": "Łączenie…",
+    "connected": "Połączono",
+    "notDetected": "Nie wykryto portfela",
+    "rejected": "Połączenie odrzucone",
+    "disconnect": "Rozłącz",
+    "copyAddress": "Kopiuj adres",
+    "copied": "Skopiowano",
+    "publicAddress": "Adres publiczny",
+    "manualCheck": "Sprawdzenie adresu publicznego",
+    "invalidAddress": "Nieprawidłowy format adresu",
+    "validAddress": "Prawidłowy format adresu publicznego",
+    "registryRequired": "Rejestr wymagany do sprawdzenia dostępu",
+    "neverSeed": "Nigdy nie wpisuj seed phrase ani klucza prywatnego. Velmère nigdy o to nie poprosi.",
+    "previewOnly": "Połączono w trybie podglądu. Handel i dostęp wymagają oficjalnego rejestru kontraktu."
+  },
+  "WalletButton": {
+    "connecting": "{label} / Łączenie…",
+    "notDetected": "{label} niewykryty",
+    "rejected": "Połączenie odrzucone"
+  },
+  "VlmTradeModal": {
+    "body": "Kalkulator modelu startowego. Rejestr wymagany przed handlem.",
+    "payLabel": "Kwota (EUR)",
+    "beforeFeeLabel": "VLM przed opłatą kupna",
+    "afterFeeLabel": "VLM po opłacie kupna 1,5%",
+    "buyFeeExample": "100 EUR kupno → 1,50 EUR opłaty (1,5%)",
+    "sellFeeExample": "100 EUR sprzedaż → 1,50 EUR opłaty (1,5%)",
+    "lpNote": "Planowany LP: 400 EUR + 1 000 000 VLM. Trasa wymagana.",
+    "impactNote": "Cienka początkowa płynność może dać duży price impact.",
+    "disabledCta": "Handel po wdrożeniu kontraktu"
+  },
+  "VlmProTerminal": {
+    "kicker": "Terminal Pro",
+    "title": "Zaawansowane dane startu",
+    "body": "Matematyka tokena, rejestr, bezpieczeństwo, laboratorium AMU, logika portfela i checklista produkcji.",
+    "tokenMath": {
+      "title": "Matematyka tokena",
+      "body": "Model stałej podaży z orientacyjną ceną i opłatami.",
+      "rows": {
+        "supply": {
+          "label": "Podaż",
+          "value": "1 000 000 000 VLM"
+        },
+        "price": {
+          "label": "Model ceny",
+          "value": "0,0004 EUR"
+        },
+        "quote": {
+          "label": "Kurs",
+          "value": "1 EUR ≈ 2 500 VLM przed opłatami"
+        },
+        "buyFee": {
+          "label": "Opłata kupna",
+          "value": "1%"
+        },
+        "sellFee": {
+          "label": "Opłata sprzedaży",
+          "value": "2,5%"
+        },
+        "lp": {
+          "label": "Scenariusz LP",
+          "value": "400 EUR + 1 000 000 VLM"
+        }
+      }
+    },
+    "registry": {
+      "title": "Rejestr kontraktu",
+      "body": "Pola oczekujące do wdrożenia."
+    },
+    "security": {
+      "title": "Stos bezpieczeństwa",
+      "body": "OpenZeppelin ERC-20, stała podaż, brak owner mint, audyt wymagany."
+    },
+    "amuLab": {
+      "title": "Laboratorium AMU",
+      "body": "Wizualna stała nośna i harmoniczne ρ — nie kryptografia."
+    },
+    "walletLogic": {
+      "title": "Logika portfela",
+      "body": "Sprawdzenie adresu publicznego i edukacyjny genesis."
+    },
+    "production": {
+      "title": "Dane produkcyjne",
+      "body": "Trasa płynności i checklista aktywacji."
+    }
+  },
+  "VlmGate": {
+    "kicker": "VLM / WARSTWA DOSTĘPU",
+    "mode": {
+      "basic": "Basic",
+      "pro": "Velmère Pro"
+    },
+    "basicTitle": "ACCESS RESTRICTED.",
+    "proTitle": "The Gate.",
+    "basicBody": "Wprowadź ważny klucz dostępu VLM po publikacji oficjalnego rejestru.",
+    "proBody": "VLM jest oficjalną warstwą dostępu Velmère do prywatnych dropów, archiwum i wybranych przywilejów marki. Rejestr definiuje dane kontraktu i zasady dostępu.",
+    "basicNote": "Wymagany oficjalny rejestr. Strona nigdy nie prosi o seed phrase, klucz prywatny, approval ani transakcję.",
+    "pillars": {
+      "drops": {
+        "label": "Private drops",
+        "body": "Ograniczone okna produktowe i prywatny dostęp do kolekcji.",
+        "status": "LOCKED"
+      },
+      "archive": {
+        "label": "Archive unlock",
+        "body": "Wybrane elementy archiwum i rekordy edytorialowe gated przez reguły VLM.",
+        "status": "LOCKED"
+      },
+      "privileges": {
+        "label": "Brand privileges",
+        "body": "Przyszłe stany dostępu dla appointmentów, list i funkcji społecznościowych.",
+        "status": "REJESTR WYMAGANY"
+      }
+    },
+    "actions": {
+      "wallet": "Portfel",
+      "registry": "Rejestr",
+      "lab": "Pro Lab",
+      "security": "Security"
+    },
+    "summary": {
+      "engine": {
+        "label": "Access engine",
+        "body": "Interfejs sprawdza publiczny adres, status tokena, sieć i reguły rejestru. Nie przechowuje środków."
+      },
+      "registry": {
+        "label": "Oficjalny rejestr",
+        "body": "Adres kontraktu, rekord audytu i dane trasy pojawią się tylko po publikacji w oficjalnym rejestrze."
+      },
+      "custody": {
+        "label": "Non-custodial",
+        "body": "Tworzenie portfela i klucze pozostają w zaufanym oprogramowaniu portfela. Velmère czyta tylko publiczny adres."
+      }
+    },
+    "registry": {
+      "contract": {
+        "label": "Adres kontraktu",
+        "value": "Rejestr nieopublikowany"
+      },
+      "network": {
+        "label": "Siec",
+        "value": "EVM-first"
+      },
+      "explorer": {
+        "label": "Explorer",
+        "value": "Wymagany rekord rejestru"
+      },
+      "route": {
+        "label": "Trasa DEX",
+        "value": "Wymagana trasa plynnosci"
+      },
+      "pool": {
+        "label": "Pula",
+        "value": "Wymagany adres puli"
+      },
+      "audit": {
+        "label": "Rekord bezpieczeństwa",
+        "value": "Security review wymagany"
+      },
+      "treasury": {
+        "label": "Skarbiec / multisig",
+        "value": "Wymagany multisig"
+      },
+      "status": {
+        "label": "Status rejestru",
+        "value": "Aktywacja zablokowana przez rejestr"
+      },
+      "access": {
+        "label": "Reguły dostępu",
+        "value": "Rejestr wymagany"
+      },
+      "archive": {
+        "label": "Brama archiwum",
+        "value": "Zablokowana przez rejestr"
+      },
+      "drops": {
+        "label": "Brama dropów",
+        "value": "Zablokowana przez rejestr"
+      }
+    },
+    "modals": {
+      "walletTitle": "Dostęp portfela",
+      "walletKicker": "Tylko publiczny adres",
+      "registryTitle": "Oficjalny rejestr",
+      "registryKicker": "Publikacja wymagana",
+      "labTitle": "VLM Protocol Lab",
+      "labKicker": "Zaawansowany interfejs dostępu",
+      "securityTitle": "Gotowość bezpieczeństwa",
+      "securityKicker": "Bez kluczy prywatnych"
+    },
+    "heroTitle": "Dostep Velmère, uporzadkowany.",
+    "heroBody": "VLM to warstwa dostepu do prywatnych dropow, archiwum i wybranych przywilejow marki. Aktywacja zalezy od publikacji rejestru, gotowosci kontraktu i zamkniecia prawnego.",
+    "dock": {
+      "overview": "Przeglad",
+      "registry": "Rejestr",
+      "engine": "Silnik",
+      "unlocks": "Odblokowania",
+      "formula": "Formula",
+      "lab": "Lab",
+      "legal": "Legal"
+    },
+    "priceModel": {
+      "kicker": "Model cenowy",
+      "title": "Referencyjna trasa dostepu",
+      "reference": "Cena referencyjna",
+      "quote": "Kurs orientacyjny",
+      "buy": "Buy fee",
+      "sell": "Sell fee",
+      "transfer": "Transfer fee"
+    },
+    "basic": {
+      "accessTierKicker": "Warstwy dostepu",
+      "accessTierTitle": "Sprawdz kwalifikacje dostepu",
+      "calculatorKicker": "Kalkulator utility",
+      "referenceEur": "Kwota referencyjna EUR",
+      "trackerKicker": "Timeline publikacji",
+      "tracker": {
+        "registry": {
+          "label": "Rejestr",
+          "value": "Wymagana publikacja"
+        },
+        "wallet": {
+          "label": "Portfel",
+          "value": "Polaczony dostep"
+        },
+        "route": {
+          "label": "Trasa",
+          "value": "Wymagany routing"
+        },
+        "activation": {
+          "label": "Aktywacja",
+          "value": "Zalezne od rejestru"
+        }
+      }
+    }
+  },
+  "VlmPublic": {
+    "hero": {
+      "kicker": "VLM / ACCESS LAYER",
+      "title": "Techniczny dostęp VLM",
+      "body": "Zaawansowany widok dostępu portfelowego, modelu uruchomienia i architektury bezpieczeństwa VLM."
+    },
+    "model": {
+      "supply": {
+        "label": "Podaz",
+        "value": "1,000,000,000 VLM"
+      },
+      "network": {
+        "label": "Siec",
+        "value": "EVM-first"
+      },
+      "minting": {
+        "label": "Minting",
+        "value": "Wylaczony po wdrozeniu"
+      },
+      "price": {
+        "label": "Scenariusz ceny",
+        "value": "0.0004 EUR"
+      },
+      "tax": {
+        "label": "Buy / sell tax",
+        "value": "1% / 2.5%"
+      },
+      "status": {
+        "label": "Status",
+        "value": "Pre-launch"
+      }
+    },
+    "visual": {
+      "kicker": "VLM VISUAL MODEL",
+      "body": "Centralny sygnal EVM z pozniejszymi wezlami SOL/SUI jako kierunkami rozwoju.",
+      "nodes": {
+        "evm": "EVM / MVP",
+        "sol": "SOL / later",
+        "sui": "SUI / later"
+      }
+    },
+    "wallet": {
+      "kicker": "Portfel",
+      "title": "Podglad portfela.",
+      "body": "Polacz portfel, aby zobaczyc przyszle stany dostepu. Zakup VLM pozostaje zablokowany do czasu wdrozenia kontraktu, przegladu prawnego i audytu.",
+      "points": [
+        "Velmère nie przechowuje kluczy prywatnych.",
+        "Strona moze odczytac publiczny adres.",
+        "Zakup pozostaje zablokowany do czasu kontraktu i audytu."
+      ]
+    },
+    "utility": {
+      "drops": {
+        "title": "Prywatne dropy",
+        "body": "Warstwa dostepu dla wybranych okien produktowych."
+      },
+      "archive": {
+        "title": "Archiwum",
+        "body": "Wybrane materialy archiwalne i kapsuly moga byc bramkowane przez VLM."
+      },
+      "privileges": {
+        "title": "Przywileje marki",
+        "body": "Dostep do wybranych funkcji spolecznosciowych i list marki."
+      }
+    },
+    "howToBuy": {
+      "kicker": "Po starcie",
+      "title": "Jak VLM bylby kupowany po starcie.",
+      "body": "Ta sciezka nie jest aktywna teraz. Nie ma adresu kontraktu ani publicznej sprzedazy.",
+      "steps": {
+        "wallet": "Zainstaluj portfel non-custodial, np. MetaMask.",
+        "network": "Dodaj obslugiwana siec EVM po wdrozeniu kontraktu.",
+        "officialPage": "Otworz oficjalna strone VLM.",
+        "verify": "Sprawdz adres kontraktu na stronie i w explorerze.",
+        "dex": "Uzyj zatwierdzonej puli DEX dopiero po starcie.",
+        "confirm": "Potwierdz oplaty i slippage w portfelu.",
+        "seed": "Nigdy nie udostepniaj seed phrase."
+      }
+    },
+    "contract": {
+      "kicker": "Plan kontraktu",
+      "title": "Prosta architektura ERC-20.",
+      "body": "Plan techniczny musi zostac sprawdzony na testnecie, analiza statyczna i niezaleznym audytem przed pelnym startem.",
+      "rows": {
+        "openzeppelin": "OpenZeppelin ERC-20 base",
+        "fixedSupply": "Fixed supply minted once in constructor",
+        "noMint": "No post-deploy mint",
+        "buyTax": "Buy tax 1%",
+        "sellTax": "Sell tax 2.5%",
+        "transferTax": "Transfer tax 0%",
+        "taxCap": "Hardcoded max tax",
+        "noBlacklist": "No blacklist",
+        "noSellLock": "No sell lock",
+        "noHoneypot": "No honeypot",
+        "noCustomCrypto": "No custom cryptography",
+        "multisig": "Multisig treasury/admin",
+        "testnet": "Testnet first",
+        "staticAnalysis": "Static analysis",
+        "audit": "Independent audit required"
+      }
+    },
+    "feeWarning": "Mechanika tradingu wymaga walidacji na testnecie przed startem. Tokeny fee-on-transfer moga wymagac konkretnego wsparcia routera DEX przed mainnetem.",
+    "risk": {
+      "kicker": "Ryzyko i legal",
+      "title": "Granice dostępu",
+      "body": "Nie ma jeszcze publicznej sprzedaży, wdrożonego kontraktu ani audytu. VLM nie jest poradą inwestycyjną.",
+      "cta": "Zobacz VLM Agreement"
+    },
+    "mode": {
+      "proKicker": "Velmère Pro",
+      "proTitle": "Rozszerzona warstwa dostepu.",
+      "proBody": "Bogatszy widok scenariusza VLM z bocznie ujawnianymi notami modelu, sygnalami self-custody i kompaktowa tozsamoscia protokolu.",
+      "proCards": {
+        "model": {
+          "title": "Czytelnosc modelu",
+          "body": "Stala podaz, twarde limity podatkow i brak mintu po wdrozeniu sa baza."
+        },
+        "custody": {
+          "title": "Custody portfela",
+          "body": "Velmère czyta tylko publiczny adres i nigdy nie prosi o seed phrase ani approval."
+        },
+        "protocol": {
+          "title": "Protokol wizualny",
+          "body": "AMU, rho i prime-field sa jezykiem tozsamosci marki, nie obietnica bezpieczenstwa."
+        }
+      }
+    },
+    "faqLink": {
+      "kicker": "Data room VLM",
+      "title": "Pytania przeniesione poza glowny flow.",
+      "body": "Strona publiczna zostaje skupiona. Szczegolowe odpowiedzi VLM sa w osobnym data roomie na koncu doswiadczenia.",
+      "cta": "Otworz pytania VLM",
+      "back": "Wroc do VLM"
+    },
+    "proIntro": "Tryb Pro pokazuje techniczną architekturę dostępu VLM: stałą podaż, ścieżkę EVM-first, portfele non-custodial, limity podatków, założenia płynności, plan kontraktu i workflow bezpieczeństwa."
+  },
+  "BlockchainSearch": {
+    "kicker": "Terminal explorera",
+    "title": "Wyszukiwarka blockchain",
+    "body": "Wyszukuj publiczne adresy EVM lub hashe transakcji bez zakładania, że kontrakt VLM już istnieje.",
+    "notice": "Kontrakt VLM nie jest jeszcze wdrożony. Wyszukiwanie otwiera tylko publiczne explorery.",
+    "chainLabel": "Sieć",
+    "placeholder": "Wklej adres EVM lub hash transakcji",
+    "submit": "Szukaj w explorerze",
+    "helper": "Użyj publicznego adresu portfela lub hasha transakcji.",
+    "baseExplorer": "Otwórz explorer Base",
+    "streamTitle": "Strumień hex",
+    "engineTitle": "Silnik access score",
+    "score": "Access score: {value}",
+    "chains": {
+      "evm": "EVM",
+      "solana": "Solana później",
+      "sui": "Sui później",
+      "base": "Base",
+      "ethereum": "Ethereum"
+    },
+    "errors": {
+      "empty": "Najpierw wklej adres lub hash transakcji.",
+      "invalid": "Użyj poprawnego adresu EVM albo hasha transakcji.",
+      "planned": "Ta trasa explorera jest przygotowana pod późniejszą obsługą sieci."
+    },
+    "valid": {
+      "address": "Poprawny format adresu EVM.",
+      "tx": "Poprawny format hasha transakcji EVM."
+    }
+  },
+  "Square": {
+    "kicker": "Społeczność",
+    "title": "Velmère Square",
+    "body": "Spokojny feed dropów, notatek dostępu i sygnałów społeczności.",
+    "moderation": "Posty są moderowane przed publikacją. Udostępnianie seed phrase, podszywanie się, scamy i obietnice finansowe są zabronione.",
+    "commentPlaceholder": "Dodaj komentarz do przeglądu moderacji",
+    "comment": "Komentarz",
+    "badges": {
+      "official": "Oficjalne",
+      "moderator": "Moderator",
+      "community": "Społeczność"
+    },
+    "tags": {
+      "community": "Społeczność",
+      "pending": "Oczekuje"
+    },
+    "composer": {
+      "label": "Napisz post Square",
+      "placeholder": "Napisz spokojną notatkę do przeglądu moderacji.",
+      "helper": "Lokalne szkice pozostają prywatne do czasu konta i moderacji.",
+      "submit": "Dodaj notatk?",
+      "localAuthor": "Lokalny podgl?d",
+      "localTitle": "Notatka spo?eczno?ci",
+      "justNow": "Teraz",
+      "image": "Dodaj obraz",
+      "pendingToast": "Szkic dodany do podgl?du moderacji."
+    },
+    "posts": {
+      "official": {
+        "authorName": "Velmère Atelier",
+        "authorHandle": "@velmere",
+        "authorType": "official",
+        "title": "Pierwsze notatki dostępu",
+        "body": "Square łączy sygnały dropów, notatki archiwum i aktualizacje dostępu VLM bez zamieniania sklepu w dashboard.",
+        "tags": [
+          "Oficjalne",
+          "Dostęp"
+        ],
+        "views": "1840",
+        "likes": "248",
+        "commentsCount": "32",
+        "createdAt": "Przypięte"
+      },
+      "lookbook": {
+        "authorName": "Redakcja",
+        "authorHandle": "@lookbook",
+        "authorType": "moderator",
+        "title": "Studium sylwetki: zimowy grafit",
+        "body": "Ciężka bawełna, powściągliwe światło i ciche proporcje wyznaczają kolejny kierunek editorialu.",
+        "tags": [
+          "Lookbook",
+          "Atelier"
+        ],
+        "views": "1260",
+        "likes": "176",
+        "commentsCount": "18",
+        "createdAt": "2h"
+      },
+      "vlm": {
+        "authorName": "Notatki VLM",
+        "authorHandle": "@vlm",
+        "authorType": "official",
+        "title": "Model dostępu przez rejestr",
+        "body": "VLM pozostaje oddzielony od checkoutu odzieży i opiera się na dostępie portfelowym, archiwum oraz logice prywatnych dropów.",
+        "tags": [
+          "VLM",
+          "Rejestr"
+        ],
+        "views": "980",
+        "likes": "141",
+        "commentsCount": "12",
+        "createdAt": "5h"
+      },
+      "community": {
+        "authorName": "Członek Maison",
+        "authorHandle": "@member",
+        "authorType": "community",
+        "title": "Prośba archiwalna: czarne cargos",
+        "body": "Skupiona prośba o cięższe spodnie, matowe okucia i węższe spiętrzenie nogawki.",
+        "tags": [
+          "Społeczność",
+          "Archiwum"
+        ],
+        "views": "730",
+        "likes": "84",
+        "commentsCount": "9",
+        "createdAt": "1d"
+      }
+    },
+    "login": "Zaloguj",
+    "share": "Udostępnij",
+    "shareCopied": "Link skopiowany",
+    "report": "Zgłoś",
+    "detail": "Szczegóły posta",
+    "comments": "Komentarze",
+    "postComment": "Opublikuj",
+    "noComments": "Brak lokalnych komentarzy.",
+    "closeDetail": "Zamknij szczegóły posta",
+    "statuses": {
+      "pending": "Oczekuje na moderację",
+      "approved": "Zatwierdzone",
+      "official": "Oficjalne"
+    },
+    "guestMode": "Tryb gościa",
+    "playground": {
+      "dropQuest": "Misja dropu",
+      "styleArena": "Arena stylu",
+      "archiveRiddle": "Zagadki archiwum",
+      "memberChat": "Czat członków",
+      "rank": "Ranga dostępu"
+    },
+    "difficulty": {
+      "easy": "łatwe wejście",
+      "medium": "tryb atelier",
+      "hard": "wyzwanie pro"
+    }
+  },
+  "VlmClean": {
+    "hero": {
+      "kicker": "VLM / WARSTWA DOSTĘPU",
+      "title": "Token dostępu, nie obietnica zysku.",
+      "body": "VLM to planowana, non-custodial warstwa dostępu do prywatnych dropów, archiwum i wybranych przywilejów Velmère. Podgląd portfela odczytuje publiczny adres tylko po zgodzie; dane kontraktu i publicznej ścieżki pojawią się po publikacji rejestru.",
+      "notice": "",
+      "rails": {
+        "wallet": "dostęp w portfelu",
+        "registry": "sygnał rejestru",
+        "access": "dropy i archiwum"
+      }
+    },
+    "model": {
+      "supply": {
+        "label": "Podaż",
+        "value": "1B VLM"
+      },
+      "network": {
+        "label": "Sieć",
+        "value": "EVM-first"
+      },
+      "minting": {
+        "label": "Minting",
+        "value": "Wyłączony po deployu"
+      },
+      "price": {
+        "label": "Model startu",
+        "value": "Prywatny rejestr"
+      },
+      "tax": {
+        "label": "Buy / sell tax",
+        "value": "1% / 2.5%"
+      },
+      "status": {
+        "label": "Status",
+        "value": "Budowa prywatna"
+      }
+    },
+    "wallet": {
+      "kicker": "Podgląd portfela",
+      "title": "Połączenie bez custody.",
+      "body": "Połącz portfel, aby zobaczyć przyszłe stany dostępu. Strona odczytuje publiczny adres tylko po zgodzie i nigdy nie prosi o seed phrase.",
+      "points": [
+        "Velmère nigdy nie przechowuje kluczy prywatnych ani seed phrase.",
+        "Strona może odczytać publiczny adres i saldo natywne po zgodzie.",
+        "Sprawdzanie dostępu pozostaje read-only do publikacji rejestru."
+      ]
+    },
+    "utility": {
+      "kicker": "Utility / dostęp",
+      "title": "Dostęp bliżej maison.",
+      "body": "VLM jest projektowany jako spokojna warstwa dostępu do doświadczeń marki, nie jako centrum sklepu.",
+      "cards": {
+        "drops": {
+          "title": "Prywatne dropy",
+          "body": "Potencjalny dostęp do wybranych okien premier po aktywacji."
+        },
+        "archive": {
+          "title": "Archiwum VLM",
+          "body": "Wybrane funkcje archiwum mogą zostać odblokowane po skonfigurowaniu zasad dostępu."
+        },
+        "privileges": {
+          "title": "Wybrane przywileje",
+          "body": "Przyszłe funkcje mogą obejmować wcześniejsze informacje, prywatne momenty i sygnały społecznościowe."
+        }
+      }
+    },
+    "howToBuy": {
+      "kicker": "Po starcie",
+      "title": "Jak VLM mógłby być kupowany po starcie.",
+      "body": "Ta ścieżka nie jest teraz aktywna. Nie ma adresu kontraktu i nie ma publicznej sprzedaży.",
+      "steps": {
+        "wallet": "Zainstaluj portfel non-custodial, np. MetaMask.",
+        "network": "Dodaj obsługiwaną sieć EVM po wdrożeniu kontraktu.",
+        "officialPage": "Otwórz oficjalną stronę VLM Velmère.",
+        "verify": "Sprawdź adres kontraktu na stronie i w explorerze.",
+        "dex": "Użyj zatwierdzonej puli DEX dopiero po starcie.",
+        "confirm": "Potwierdź opłaty i slippage w portfelu.",
+        "seed": "Nigdy nie udostępniaj seed phrase."
+      }
+    },
+    "security": {
+      "kicker": "Status bezpieczeństwa",
+      "title": "Nie ma skrótu wokół bezpieczeństwa.",
+      "body": "VLM wymaga architektury, walidacji testnetu, analizy statycznej, niezależnego audytu, multisig i zasad reakcji na incydenty przed pełnym startem.",
+      "cards": {
+        "contract": {
+          "label": "Kontrakt",
+          "value": "Nie wdrożony"
+        },
+        "audit": {
+          "label": "Audyt",
+          "value": "Wymagany przed startem"
+        },
+        "wallet": {
+          "label": "Custody",
+          "value": "Tylko portfel użytkownika"
+        },
+        "treasury": {
+          "label": "Treasury",
+          "value": "Multisig wymagany"
+        }
+      }
+    },
+    "contract": {
+      "kicker": "Plan kontraktu",
+      "title": "Prosta architektura ERC-20.",
+      "body": "Plan techniczny musi przejść testnet, analizę statyczną i niezależny audyt przed pełnym startem.",
+      "rows": {
+        "openzeppelin": "Baza OpenZeppelin ERC-20",
+        "fixedSupply": "Stała podaż wybita raz w konstruktorze",
+        "noMint": "Brak mintu po deployu",
+        "buyTax": "Buy tax 1%",
+        "sellTax": "Sell tax 2.5%",
+        "transferTax": "Transfer tax 0%",
+        "taxCap": "Hardcoded max tax",
+        "noBlacklist": "Brak blacklisty",
+        "noSellLock": "Brak blokady sprzedaży",
+        "noHoneypot": "Brak honeypot",
+        "noCustomCrypto": "Brak własnej kryptografii",
+        "multisig": "Multisig treasury/admin",
+        "testnet": "Najpierw testnet",
+        "staticAnalysis": "Analiza statyczna",
+        "audit": "Niezależny audyt wymagany"
+      }
+    },
+    "feeWarning": "Mechanika tradingu wymaga walidacji na testnecie przed startem. Token fee-on-transfer może wymagać konkretnego wsparcia routera DEX przed mainnetem.",
+    "risk": {
+      "kicker": "Ryzyko i legal",
+      "title": "Granice dostępu",
+      "body": "Nie ma publicznej sprzedaży, wdrożonego kontraktu ani audytu. Ta strona nie obiecuje ceny, listingu, zysku, płynności ani wartości odsprzedaży. Przed publicznym startem wymagany jest przegląd prawny i MiCA.",
+      "cta": "Zobacz umowę VLM"
+    }
+  },
+  "SizeGuide": {
+    "open": "Otwórz tabelę rozmiarów",
+    "close": "Zamknij tabelę rozmiarów",
+    "kicker": "ROZMIARY",
+    "title": "Tabela rozmiarów",
+    "body": "Szybki podgląd wymiarów. Finalne rozmiary będą zależne od produktu i kroju.",
+    "size": "Rozmiar",
+    "chest": "Klatka",
+    "length": "Długość",
+    "shoulder": "Ramię",
+    "note": "Wymiary są robocze i zostaną doprecyzowane przy finalnych produktach."
+  },
+  "VlmBasicPro": {
+    "kicker": "TRYB DOSTĘPU",
+    "title": "Basic minimalny. Pro to silnik.",
+    "body": "Basic pokazuje VLM spokojnie i czytelnie. Pro otwiera techniczną powierzchnię dostępu: portfel, rejestr, bezpieczeństwo i orbitę.",
+    "basic": {
+      "kicker": "VELMÈRE BASIC",
+      "title": "Czysty dostęp.",
+      "items": {
+        "one": "Dostęp do dropu w jednej linii.",
+        "two": "Status portfela bez hałasu.",
+        "three": "Sygnał archiwum, spokojny układ."
+      }
+    },
+    "pro": {
+      "kicker": "VELMÈRE PRO",
+      "title": "Silnik dostępu.",
+      "body": "Tryb Pro pokazuje orbitę VLM, stan portfela, sygnał rejestru i logikę dostępu w technicznej, ale kontrolowanej warstwie.",
+      "items": {
+        "orbit": "Animowana orbita EVM-first z planowanymi szynami sieci.",
+        "wallet": "Read-only podgląd portfela, bez custody i bez seed phrase.",
+        "security": "Audyt, multisig i testnet jako warunki rejestru.",
+        "lp": "Route dostępu i sygnał protokołu bez fake swapu."
+      },
+      "chartShow": "Otwórz wykres sygnału",
+      "chartHide": "Ukryj wykres",
+      "chartLabel": "Sygnał dostępu AMU / podgląd dwóch linii"
+    },
+    "basicHint": "Basic: krótko, czysto, bez nadmiaru.",
+    "proHint": "Pro: techniczna powierzchnia dostępu."
+  }
+}
