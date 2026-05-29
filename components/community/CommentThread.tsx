@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import LiveTimestamp from "@/components/ui/LiveTimestamp";
 import { ChevronDown, MoreVertical, Send, ThumbsDown, ThumbsUp } from "lucide-react";
 import type { SquareComment } from "@/lib/square/types";
 
@@ -76,7 +77,7 @@ export default function CommentThread({ comments, draft, onDraftChange, onSubmit
               <div className="min-w-0">
                 <div className="flex min-w-0 items-center gap-2">
                   <p className="truncate text-sm font-semibold text-white/82">{comment.authorName}</p>
-                  <p className="shrink-0 font-mono text-[10px] uppercase tracking-[0.16em] text-white/34">{comment.createdAt}</p>
+                  <LiveTimestamp seed={`${comment.id}-${comment.createdAt}`} className="shrink-0 font-mono text-[10px] uppercase tracking-[0.16em] text-white/34" />
                   <button type="button" className="ml-auto inline-flex h-8 w-8 items-center justify-center rounded-full text-white/35 luxury-hover hover:bg-white/[0.04] hover:text-white" aria-label="Comment menu">
                     <MoreVertical className="h-4 w-4" aria-hidden="true" />
                   </button>

@@ -1,15 +1,27 @@
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/navigation";
 import LuxurySection from "@/components/layout/LuxurySection";
 import ProfileAccountClient from "@/components/account/ProfileAccountClient";
+import { buildVelmereMetadata } from "@/lib/seo/metadata";
 
 const modules = ["profile", "orders", "saved", "vlm", "wallet", "newsletter"] as const;
+
+export function generateMetadata({ params: { locale } }: { params: { locale: string } }): Metadata {
+  const title = locale === "pl" ? "Konto — Velmère" : locale === "de" ? "Account — Velmère" : "Account — Velmère";
+  const description = locale === "pl"
+    ? "Profil, portfel, zamówienia i dostęp VLM w Velmère."
+    : locale === "de"
+      ? "Profil, Wallet, Bestellungen und VLM Access bei Velmère."
+      : "Profile, wallet, orders, and VLM access at Velmère.";
+  return buildVelmereMetadata({ locale, path: "/account", title, description });
+}
 
 export default async function AccountPage({ params: { locale } }: { params: { locale: string } }) {
   const t = await getTranslations({ locale, namespace: "Account" });
 
   return (
-    <main className="min-h-screen bg-velmere-black text-white">
+    <main className="min-h-[100dvh] bg-velmere-black text-white">
       <LuxurySection className="py-28 md:py-36">
         <section className="mx-auto max-w-3xl rounded-[2rem] border border-white/5 bg-white/[0.035] p-8 md:p-12">
           <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#d4af37]">{t("kicker")}</p>

@@ -10,7 +10,7 @@ const contentSecurityPolicy = [
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://images.unsplash.com",
   "font-src 'self' data:",
-  `connect-src 'self' https://generativelanguage.googleapis.com https://api.stripe.com https://api.printful.com${isDev ? ' ws: http://localhost:*' : ''}`,
+  `connect-src 'self' https://generativelanguage.googleapis.com https://api.stripe.com https://api.printful.com https://*.supabase.co wss://*.supabase.co https://relay.walletconnect.com wss://relay.walletconnect.com https://explorer-api.walletconnect.com${isDev ? ' ws: http://localhost:*' : ''}`,
   "frame-src https://js.stripe.com https://hooks.stripe.com",
   "object-src 'none'",
   "base-uri 'self'",

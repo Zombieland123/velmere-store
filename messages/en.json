@@ -223,11 +223,7 @@
     "checkoutUnavailable": "Payment will be enabled after final store configuration.",
     "paymentDisabled": "Payment will be enabled after final store configuration.",
     "checkoutFailed": "Checkout could not be started.",
-    "openCart": "Open cart",
-    "emptyLuxury": {
-      "title": "YOUR SELECTION IS EMPTY. INITIATE EXPLORATION.",
-      "body": "No pieces are archived in this session yet. Return to the collection and build the first edit."
-    }
+    "openCart": "Open cart"
   },
   "Checkout": {
     "successKicker": "Order received",
@@ -2087,15 +2083,7 @@
         "handle": "Handle",
         "bio": "Bio"
       },
-      "persistenceNote": "This is a safe front-end profile preview. Real persistence requires auth and database configuration.",
-      "emptyPosts": {
-        "title": "ACCESS GRANTED. AWAITING INITIALIZATION.",
-        "body": "No public posts have been attached to this profile yet."
-      },
-      "emptyOrders": {
-        "title": "NO ARCHIVED TRANSACTIONS FOUND.",
-        "body": "Orders will appear here after the commerce layer is activated."
-      }
+      "persistenceNote": "This is a safe front-end profile preview. Real persistence requires auth and database configuration."
     }
   },
   "ProductLaunchChecklist": {

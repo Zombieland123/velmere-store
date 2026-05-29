@@ -4,12 +4,14 @@ import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Link } from "@/navigation";
 import VlmModeTransitionOverlay from "@/components/vlm/VlmModeTransitionOverlay";
+import { useUiSounds } from "@/lib/audio/useUiSounds";
 
 /** VLM Basic/Pro controller. Default is a compact header-style bar, not a side widget. */
 export default function VlmModeSwitch({ inline = false }: { inline?: boolean }) {
   const t = useTranslations("VlmModeSwitch");
   const searchParams = useSearchParams();
   const mode = searchParams.get("mode") === "pro" ? "pro" : "basic";
+  const { playClick, playSystemOn } = useUiSounds();
 
   const control = (
     <div
@@ -28,7 +30,11 @@ export default function VlmModeSwitch({ inline = false }: { inline?: boolean }) 
             href={item.href}
             role="tab"
             aria-selected={active}
-            className={`min-h-10 min-w-24 rounded-full px-4 text-center font-sans text-[10px] font-black uppercase tracking-[0.18em] transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] md:min-w-28 md:px-5 ${
+            onClick={() => {
+              if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(50);
+              item.key === "pro" ? playSystemOn() : playClick();
+            }}
+            className={`min-h-10 min-w-24 rounded-full px-4 text-center font-sans text-[10px] font-black uppercase tracking-[0.18em] transition-colors active:scale-95 md:min-w-28 md:px-5 ${
               active
                 ? item.key === "pro"
                   ? "bg-[linear-gradient(135deg,#d4af37,#3a2f16_58%,#101010)] text-[#FFFFF0] shadow-[0_0_34px_rgba(212,175,55,0.2)]"

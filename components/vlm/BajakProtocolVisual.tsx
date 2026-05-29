@@ -172,7 +172,7 @@ export default function BajakProtocolVisual() {
   return (
     <section className="overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04]">
       <div className="relative h-[360px] md:h-[460px]">
-        <canvas ref={canvasRef} className="h-full w-full" aria-label={t("aria")} role="img" />
+        <canvas ref={canvasRef} className="pointer-events-none h-full w-full touch-pan-y" aria-label={t("aria")} role="img" />
         <div className="absolute inset-x-0 bottom-0 border-t border-white/10 bg-black/64 p-5 backdrop-blur-xl md:p-6">
           <p className="text-[10px] font-black uppercase tracking-[0.28em] text-velmere-gold">{t("title")}</p>
           <p className="mt-3 max-w-3xl text-sm leading-7 text-white/58">{t("body")}</p>

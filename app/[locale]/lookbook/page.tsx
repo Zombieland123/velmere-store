@@ -31,7 +31,7 @@ export default async function LookbookPage({ params: { locale } }: { params: { l
   const t = await getTranslations({ locale, namespace: "Lookbook" });
 
   return (
-    <main className="min-h-screen bg-velmere-black text-white">
+    <main className="min-h-[100dvh] bg-velmere-black text-white">
       <LuxurySection className="py-24 md:py-30">
         <div className="mb-10 grid gap-8 lg:grid-cols-12 lg:items-end">
           <div className="max-w-3xl lg:col-span-8">

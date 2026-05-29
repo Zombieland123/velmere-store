@@ -1,7 +1,6 @@
 "use client";
 
-/* eslint-disable @next/next/no-img-element */
-
+import Image from "next/image";
 import { ChangeEvent, useMemo, useState } from "react";
 import { AlertTriangle, CheckCircle2, ExternalLink, FileUp, LinkIcon, Loader2, RefreshCw, ShieldAlert } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -101,7 +100,7 @@ export default function AdminImportProductsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-velmere-black text-white">
+    <main className="min-h-[100dvh] bg-velmere-black text-white">
       <LuxurySection className="py-28 md:py-36">
         <div className="mb-10 max-w-4xl">
           <p className="luxury-kicker text-velmere-gold/80">{t("kicker")}</p>
@@ -277,11 +276,15 @@ export default function AdminImportProductsPage() {
                         </td>
                         <td className="p-4">
                           {draft.product.images[0]?.url ? (
-                            <img
-                              src={draft.product.images[0].url}
-                              alt=""
-                              className="h-16 w-16 rounded-lg object-cover"
-                            />
+                            <div className="relative h-16 w-16 overflow-hidden rounded-lg">
+                              <Image
+                                src={draft.product.images[0].url}
+                                alt={getLocalizedString(draft.product.title, "pl")}
+                                fill
+                                sizes="64px"
+                                className="object-cover"
+                              />
+                            </div>
                           ) : (
                             <div className="flex h-16 w-16 items-center justify-center rounded-lg border border-white/10 text-white/28">
                               <AlertTriangle className="h-4 w-4" aria-hidden="true" />

@@ -21,7 +21,7 @@ const checks = [
 
 const evmAddress = /^0x[a-fA-F0-9]{40}$/;
 
-export default function SecurityReadinessConsole() {
+export default function SecurityReadinessConsole({ compact = false }: { compact?: boolean } = {}) {
   const t = useTranslations("SecurityReadinessConsole");
   const reducedMotion = useReducedMotion();
   const [address, setAddress] = useState("");
@@ -32,7 +32,7 @@ export default function SecurityReadinessConsole() {
   }, [address]);
 
   return (
-    <section className="mt-8 rounded-[2rem] border border-white/10 bg-black/28 p-5 md:p-6">
+    <section className={`${compact ? "mt-0 rounded-none p-3" : "mt-8 rounded-[2rem] p-5 md:p-6"} border border-white/10 bg-black/28`}>
       <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
         <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.035] p-5">
           <motion.div
@@ -43,7 +43,7 @@ export default function SecurityReadinessConsole() {
           />
           <div className="relative">
             <p className="luxury-kicker text-velmere-gold/80">{t("kicker")}</p>
-            <h3 className="mt-4 font-serif text-3xl leading-tight text-white md:text-4xl">{t("title")}</h3>
+            <h3 className={`${compact ? "mt-3 text-xl" : "mt-4 text-3xl md:text-4xl"} font-serif leading-tight tracking-[0.08em] text-white`}>{t("title")}</h3>
             <label className="mt-6 block font-sans text-[10px] font-semibold uppercase tracking-[0.22em] text-white/42">
               {t("inputLabel")}
             </label>
@@ -54,7 +54,7 @@ export default function SecurityReadinessConsole() {
                 onChange={(event) => setAddress(event.target.value)}
                 placeholder={t("placeholder")}
                 spellCheck={false}
-                className="min-h-10 w-full bg-transparent font-mono text-sm text-white outline-none placeholder:text-white/28"
+                className="min-h-10 w-full min-w-0 bg-transparent font-mono text-xs text-white outline-none placeholder:text-white/28 md:text-sm"
               />
             </div>
             <p
@@ -73,7 +73,7 @@ export default function SecurityReadinessConsole() {
               <p className="font-sans text-[10px] font-semibold uppercase tracking-[0.24em] text-velmere-gold">
                 {t("resultLabel")}
               </p>
-              <p className="mt-3 font-sans text-2xl font-semibold text-white">{t("result")}</p>
+              <p className="mt-3 font-mono text-xl font-semibold text-white tabular-nums md:text-2xl">{t("result")}</p>
               <p className="mt-3 font-sans text-xs leading-6 text-white/58">{t("disclaimer")}</p>
             </div>
             <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-velmere-gold/35 text-velmere-gold">
@@ -91,7 +91,7 @@ export default function SecurityReadinessConsole() {
                   ) : (
                     <CheckCircle2 className="h-4 w-4 shrink-0 text-white/46" aria-hidden="true" />
                   )}
-                  <span className="font-sans text-xs leading-5 text-white/58">{t(`checks.${check}`)}</span>
+                  <span className="terminal-break font-mono text-[11px] leading-5 text-white/58 tabular-nums">{t(`checks.${check}`)}</span>
                 </div>
               );
             })}

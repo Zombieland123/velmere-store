@@ -17,7 +17,12 @@
     "printful:test": "node scripts/printful-smoke-test.mjs"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "@stripe/stripe-js": "^7.9.0",
+    "@supabase/supabase-js": "^2.49.8",
+    "@tanstack/react-query": "^5.90.0",
     "clsx": "^2.1.1",
+    "cmdk": "^1.1.1",
     "ethers": "^6.16.0",
     "framer-motion": "^11.2.6",
     "lucide-react": "^0.378.0",
@@ -26,8 +31,12 @@
     "react": "^18",
     "react-dom": "^18",
     "stripe": "^22.1.1",
+    "swr": "^2.3.6",
     "tailwind-merge": "^2.3.0",
-    "three": "^0.184.0"
+    "three": "^0.184.0",
+    "vaul": "^1.1.2",
+    "viem": "^2.31.0",
+    "wagmi": "^2.15.6"
   },
   "devDependencies": {
     "@types/node": "^20",

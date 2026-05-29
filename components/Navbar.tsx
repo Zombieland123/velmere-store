@@ -10,6 +10,7 @@ import { useCart } from "@/components/CartProvider";
 import { Link, usePathname } from "@/navigation";
 import { useWalletUiStore } from "@/store/useWalletUiStore";
 import VlmModeSwitch from "@/components/vlm/VlmModeSwitch";
+import { useUiSounds } from "@/lib/audio/useUiSounds";
 
 const LOCALES = ["pl", "en", "de"] as const;
 const drawerTransition = { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const };
@@ -32,6 +33,7 @@ export default function Navbar() {
   const { itemCount, openCart, closeCart } = useCart();
   const walletUi = useWalletUiStore();
   const isVlmRoute = pathname.includes("/vlm-token");
+  const { playHover, playClick } = useUiSounds();
 
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -281,15 +283,19 @@ export default function Navbar() {
               type="button"
               aria-expanded={isOpen}
               aria-controls="velmere-shop-drawer"
+              onMouseEnter={playHover}
               onClick={() => {
+                playClick();
                 closeCart();
                 setIsOpen(true);
               }}
-              className="inline-flex h-11 items-center gap-2 rounded-full border border-white/10 px-4 text-[11px] font-semibold uppercase tracking-[0.24em] text-white/72 luxury-hover hover:border-white/20 hover:text-white"
+              data-magnetic
+              className="inline-flex h-11 items-center gap-2 rounded-full border border-white/10 px-4 text-[11px] font-semibold uppercase tracking-[0.24em] text-white/72 luxury-hover hover:border-white/20 hover:text-white active:scale-95"
             >
               <Menu className="h-4 w-4" aria-hidden="true" />
               {t("menu")}
             </button>
+            <span className="hidden h-8 items-center border border-white/10 px-3 font-mono text-[9px] uppercase tracking-[0.2em] text-white/35 md:inline-flex">[⌘K]</span>
             {isVlmRoute ? (
               <div className="hidden lg:block">
                 <VlmModeSwitch inline />
@@ -300,7 +306,9 @@ export default function Navbar() {
           <Link
             href="/"
             aria-label="Velmère"
-            className="absolute left-1/2 -translate-x-1/2 shrink-0 font-sans text-2xl font-semibold uppercase tracking-[0.18em] text-white md:static md:translate-x-0 md:text-3xl"
+            onMouseEnter={playHover}
+            data-magnetic
+            className="absolute left-1/2 -translate-x-1/2 shrink-0 font-sans text-2xl font-semibold uppercase tracking-[0.2em] text-white md:static md:translate-x-0 md:text-3xl"
           >
             VELMÈRE
           </Link>
@@ -343,7 +351,9 @@ export default function Navbar() {
             <Link
               href="/account"
               aria-label={t("loginCta")}
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-white/62 luxury-hover hover:border-[#d4af37] hover:text-white sm:w-auto sm:px-4"
+              onMouseEnter={playHover}
+              data-magnetic
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-white/62 luxury-hover hover:border-[#d4af37] hover:text-white active:scale-95 sm:w-auto sm:px-4"
             >
               <User className="h-4 w-4" aria-hidden="true" />
               <span className="hidden sm:ml-2 sm:inline">{t("loginCta")}</span>
@@ -351,11 +361,14 @@ export default function Navbar() {
             <button
               type="button"
               aria-label={t("cart")}
+              onMouseEnter={playHover}
               onClick={() => {
+                playClick();
                 setIsOpen(false);
                 openCart();
               }}
-              className="relative inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 text-white/72 luxury-hover hover:border-white/20 hover:text-white"
+              data-magnetic
+              className="relative inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 text-white/72 luxury-hover hover:border-white/20 hover:text-white active:scale-95"
             >
               <ShoppingBag className="h-4 w-4" aria-hidden="true" />
               {itemCount > 0 ? (

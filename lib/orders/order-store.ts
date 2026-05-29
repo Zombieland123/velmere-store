@@ -22,6 +22,7 @@ export type OrderLineItem = {
   provider: Product["provider"];
   fulfilmentMode: Product["fulfilmentMode"];
   providerVariantId?: string;
+  selectedSize?: string;
 };
 
 export type OrderRecord = {
@@ -34,6 +35,7 @@ export type OrderRecord = {
   createdAt: string;
   updatedAt: string;
   logs: string[];
+  walletAddress?: string;
 };
 
 const orders = new Map<string, OrderRecord>();
@@ -59,6 +61,7 @@ export function createOrderDraft(input: {
   locale: string;
   cartHash: string;
   lineItems: OrderLineItem[];
+  walletAddress?: string;
 }) {
   const id = `ord_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
   const order: OrderRecord = {
@@ -70,6 +73,7 @@ export function createOrderDraft(input: {
     createdAt: now(),
     updatedAt: now(),
     logs: [`${now()} order draft created`],
+    walletAddress: input.walletAddress,
   };
   orders.set(id, order);
   return order;

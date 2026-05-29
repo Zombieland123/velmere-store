@@ -32,6 +32,7 @@
     max-width: 100%;
     overflow-x: clip;
     overscroll-behavior-x: none;
+    overscroll-behavior-y: auto;
   }
 
   html {
@@ -182,10 +183,12 @@
 
   .luxury-kicker {
     @apply text-[10px] font-black uppercase tracking-[0.35em] text-white/45;
+    text-indent: 0.35em;
   }
 
   .luxury-heading {
-    @apply font-serif text-4xl leading-[0.92] tracking-normal md:text-6xl lg:text-7xl;
+    @apply font-serif leading-[0.92] tracking-normal;
+    font-size: clamp(2.75rem, 8vw, 7.5rem);
   }
 }
 
@@ -207,4 +210,64 @@
   .safe-bottom-6 {
     bottom: calc(env(safe-area-inset-bottom) + 1.5rem);
   }
+
+  .safe-pb {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .safe-pt {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
+/* Crypto-luxury terminal chroming */
+::selection {
+  background: #111;
+  color: #f0e6d2;
+}
+
+::-webkit-scrollbar {
+  width: 2px;
+  height: 2px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.velmere-terminal-marquee {
+  animation: velmere-terminal-marquee 38s linear infinite;
+}
+
+@keyframes velmere-terminal-marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.numeric-terminal,
+.terminal-data {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Performance repair pass: no JS cursor, natural scrolling, isolated decorative layers. */
+.perf-contain-paint {
+  contain: paint;
+}
+
+.scroll-touch {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+.terminal-break {
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }

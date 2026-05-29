@@ -1,10 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 import { useTranslations } from "next-intl";
-
-const ease = [0.16, 1, 0.3, 1] as const;
 
 export default function VlmModeTransitionOverlay({ mode }: { mode: "basic" | "pro" }) {
   const t = useTranslations("VlmModeSwitch");
@@ -24,44 +21,43 @@ export default function VlmModeTransitionOverlay({ mode }: { mode: "basic" | "pr
     setDisplayMode(mode);
     setVisible(true);
 
-    timerRef.current = setTimeout(() => setVisible(false), prefersReduced ? 180 : 1180);
+    timerRef.current = setTimeout(() => setVisible(false), prefersReduced ? 220 : 920);
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
   }, [mode]);
 
+  if (!visible) return null;
+
   const isPro = displayMode === "pro";
 
   return (
-    <AnimatePresence>
-      {visible ? (
-        <motion.div
-          className="pointer-events-none fixed left-1/2 top-28 z-[90] hidden w-[min(38rem,calc(100vw-2rem))] -translate-x-1/2 md:block"
-          initial={{ opacity: 0, y: -18, filter: "blur(12px)" }}
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          exit={{ opacity: 0, y: -12, filter: "blur(10px)" }}
-          transition={{ duration: 0.55, ease }}
-          aria-hidden="true"
+    <div className="pointer-events-none fixed inset-0 z-[250] flex items-center justify-center overflow-hidden" aria-hidden="true">
+      <div
+        className={`absolute inset-0 ${isPro ? "bg-[#020202]" : "bg-[#0b0b0b]"}`}
+        style={{ backdropFilter: "blur(14px)" }}
+      />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(212,175,55,0.12),transparent_42%)]" />
+
+      <div className="relative z-10 w-full max-w-xl px-6">
+        <div
+          className={`rounded-[2rem] border p-8 text-center shadow-[0_30px_90px_rgba(0,0,0,0.45)] ${
+            isPro
+              ? "border-[#d4af37]/25 bg-[#050505]/88"
+              : "border-white/10 bg-[#101010]/90"
+          }`}
+          style={{
+            animation: `${isPro ? "slide-in-left" : "slide-in-right"} 820ms cubic-bezier(0.16,1,0.3,1)`,
+          }}
         >
-          <div className={`overflow-hidden rounded-full border px-5 py-3 shadow-[0_24px_90px_rgba(0,0,0,0.42)] backdrop-blur-2xl ${isPro ? "border-[#d4af37]/30 bg-black/72" : "border-white/12 bg-[#F5F0E8]/92"}`}>
-            <div className="flex items-center justify-between gap-4">
-              <p className={`font-mono text-[10px] font-black uppercase tracking-[0.28em] ${isPro ? "text-[#d4af37]" : "text-black/62"}`}>
-                {isPro ? t("pro") : t("basic")}
-              </p>
-              <motion.span
-                className={`h-px flex-1 ${isPro ? "bg-[#d4af37]/45" : "bg-black/20"}`}
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ duration: 0.95, ease }}
-                style={{ transformOrigin: "left" }}
-              />
-              <p className={`max-w-[19rem] truncate text-[10px] uppercase tracking-[0.18em] ${isPro ? "text-white/45" : "text-black/45"}`}>
-                {isPro ? t("proHint") : t("basicHint")}
-              </p>
-            </div>
-          </div>
-        </motion.div>
-      ) : null}
-    </AnimatePresence>
+          <p className={`font-mono text-[10px] font-semibold uppercase tracking-[0.3em] ${isPro ? "text-[#d4af37]" : "text-white/68"}`}>
+            {isPro ? t("pro") : t("basic")}
+          </p>
+          <p className={`mt-2 text-xs leading-6 ${isPro ? "text-white/58" : "text-white/52"}`}>
+            {isPro ? t("proHint") : t("basicHint")}
+          </p>
+        </div>
+      </div>
+    </div>
   );
 }

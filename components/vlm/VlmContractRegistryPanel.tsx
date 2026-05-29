@@ -3,17 +3,17 @@ import { useTranslations } from "next-intl";
 const rows = ["address", "chainId", "network", "explorer", "dexRoute", "pool", "router", "audit", "treasury"] as const;
 const pendingRows = new Set(["address", "chainId", "explorer", "dexRoute", "pool"]);
 
-export default function VlmContractRegistryPanel() {
+export default function VlmContractRegistryPanel({ compact = false }: { compact?: boolean } = {}) {
   const t = useTranslations("VlmContractRegistry");
 
   return (
-    <section className="rounded-[2rem] border border-white/10 bg-white/[0.035] p-5 md:p-6">
+    <section className={`${compact ? "rounded-none p-3" : "rounded-[2rem] p-5 md:p-6"} border border-white/10 bg-white/[0.035]`}>
       <div className="flex items-start justify-between gap-5">
         <div>
           <p className="font-sans text-[10px] font-semibold uppercase tracking-[0.24em] text-velmere-gold/80">
             {t("kicker")}
           </p>
-          <h2 className="mt-3 font-serif text-3xl leading-tight text-white">{t("title")}</h2>
+          <h2 className={`${compact ? "mt-2 text-xl" : "mt-3 text-3xl"} font-serif leading-tight tracking-[0.08em] text-white`}>{t("title")}</h2>
         </div>
         <span className="rounded-full border border-white/10 px-3 py-2 font-sans text-[10px] font-semibold uppercase tracking-[0.16em] text-white/44">
           {t("badge")}
@@ -31,7 +31,7 @@ export default function VlmContractRegistryPanel() {
                 className={`h-2 w-2 rounded-full ${pendingRows.has(row) ? "bg-white/30" : "bg-velmere-gold/80"}`}
                 aria-hidden="true"
               />
-              <p className="font-sans text-sm leading-6 text-white/68">{t(`rows.${row}.value`)}</p>
+              <p className="terminal-break break-all font-mono text-xs leading-6 text-white/68 tabular-nums md:text-sm">{t(`rows.${row}.value`)}</p>
             </div>
           </div>
         ))}

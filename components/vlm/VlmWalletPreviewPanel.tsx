@@ -1,29 +1,18 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "@/navigation";
 import { ArrowRight, CheckCircle2, Loader2, LockKeyhole, TriangleAlert, WalletCards } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { WalletState } from "@/lib/web3/wallet-state";
 import { VLM_CONTRACTS } from "@/lib/web3/contracts";
-import { clearWalletUiSnapshot, setWalletUiSnapshot } from "@/store/useWalletUiStore";
+import { useWalletUiStore } from "@/store/useWalletUiStore";
+import { useWalletConnect } from "@/lib/wallet/useWalletConnect";
 
 const evmAddress = /^0x[a-fA-F0-9]{40}$/;
 
 function shortenAddress(address: string) {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
-}
-
-function formatEthBalance(hexBalance: string) {
-  try {
-    const wei = BigInt(hexBalance);
-    const eth = BigInt("1000000000000000000");
-    const whole = wei / eth;
-    const frac = (wei % eth).toString().padStart(18, "0").slice(0, 4);
-    return `${whole}.${frac} ETH`;
-  } catch {
-    return "0.0000 ETH";
-  }
 }
 
 function Icon({ state }: { state: WalletState }) {
@@ -38,60 +27,25 @@ function Icon({ state }: { state: WalletState }) {
 export default function VlmWalletPreviewPanel({ compact = false }: { compact?: boolean } = {}) {
   const t = useTranslations("VlmWalletPreview");
   const contractNotDeployed = VLM_CONTRACTS.evm.status === "not_deployed";
-  const [hasProvider, setHasProvider] = useState(false);
-  const [state, setState] = useState<WalletState>("disconnected");
-  const [address, setAddress] = useState("");
-  const [chainId, setChainId] = useState("");
+  const wallet = useWalletConnect();
+  const walletUi = useWalletUiStore();
   const [manualAddress, setManualAddress] = useState("");
 
-  useEffect(() => {
-    setHasProvider(Boolean(window.ethereum));
-  }, []);
-
-  const effectiveState = contractNotDeployed && state !== "connected" ? "contract_not_deployed" : state;
+  const walletState: WalletState = wallet.state === "connecting" ? "connecting" : wallet.connectedWallet ? "connected" : "disconnected";
+  const effectiveState = contractNotDeployed && walletState !== "connected" ? "contract_not_deployed" : walletState;
   const label = t(`states.${effectiveState}`);
   const helper = useMemo(() => {
-    if (state === "connected") return t("connectedHelper", { address: shortenAddress(address), network: chainId || "EVM" });
-    if (!hasProvider) return t("noProvider");
+    if (wallet.connectedWallet) {
+      return t("connectedHelper", {
+        address: shortenAddress(wallet.connectedWallet.address),
+        network: walletUi.network || wallet.connectedWallet.chainId || "EVM",
+      });
+    }
+    if (!wallet.detectedWallets.metamask) return t("noProvider");
     if (contractNotDeployed) return t("readOnly");
     return t("body");
-  }, [address, chainId, contractNotDeployed, hasProvider, state, t]);
+  }, [contractNotDeployed, t, wallet.connectedWallet, wallet.detectedWallets.metamask, walletUi.network]);
   const manualAddressState = !manualAddress.trim() ? "empty" : evmAddress.test(manualAddress.trim()) ? "valid" : "invalid";
-
-  async function connectMetaMask() {
-    if (!window.ethereum) {
-      setState("wrong_network");
-      clearWalletUiSnapshot();
-      return;
-    }
-    try {
-      setState("connecting");
-      const accounts = (await window.ethereum.request({ method: "eth_requestAccounts" })) as string[];
-      const nextChain = (await window.ethereum.request({ method: "eth_chainId" })) as string;
-      const nextAddress = accounts[0] ?? "";
-      const balanceHex = nextAddress
-        ? ((await window.ethereum.request({ method: "eth_getBalance", params: [nextAddress, "latest"] })) as string)
-        : "0x0";
-      const balanceLabel = formatEthBalance(balanceHex);
-      setAddress(nextAddress);
-      setChainId(nextChain);
-      setState("connected");
-      if (nextAddress) {
-        setWalletUiSnapshot({
-          connected: true,
-          shortAddress: shortenAddress(nextAddress),
-          fullAddress: nextAddress,
-          chainType: "evm",
-          network: nextChain || "EVM",
-          tokenBalanceLabel: balanceLabel,
-          accessStatusLabel: t("readOnlyBadge"),
-        });
-      }
-    } catch {
-      setState("signature_rejected");
-      clearWalletUiSnapshot();
-    }
-  }
 
   return (
     <div className={`rounded-3xl border border-white/10 bg-white/[0.035] ${compact ? "p-5 md:p-6" : "p-6 md:p-8"}`}>
@@ -115,11 +69,11 @@ export default function VlmWalletPreviewPanel({ compact = false }: { compact?: b
       <div className="mt-6 grid gap-3 sm:grid-cols-2">
         <button
           type="button"
-          onClick={connectMetaMask}
-          disabled={!hasProvider || state === "connecting"}
-          className="flex min-h-12 items-center justify-between rounded-full border border-white/12 px-5 font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-white/62 transition-colors hover:border-white/25 hover:text-white disabled:cursor-not-allowed disabled:text-white/34"
+          onClick={() => void wallet.connectMetaMask()}
+          disabled={!wallet.detectedWallets.metamask || wallet.state === "connecting" || Boolean(wallet.connectedWallet)}
+          className="flex min-h-12 items-center justify-between rounded-full border border-white/12 px-5 font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-white/62 transition-transform duration-200 hover:border-white/25 hover:text-white active:scale-95 disabled:cursor-not-allowed disabled:text-white/34"
         >
-          MetaMask
+          MetaMask / Injected
           <WalletCards className="h-4 w-4" aria-hidden="true" />
         </button>
         <button
@@ -144,7 +98,7 @@ export default function VlmWalletPreviewPanel({ compact = false }: { compact?: b
             {t("activationBadge")}
           </span>
         </div>
-        <p className="mt-4 font-sans text-xs leading-6 text-white/48">{helper}</p>
+        <p className="mt-4 break-all font-mono text-xs leading-6 text-white/48 tabular-nums">{helper}</p>
       </div>
 
       <label className="mt-5 block font-sans text-[10px] font-semibold uppercase tracking-[0.22em] text-white/40">
@@ -155,7 +109,7 @@ export default function VlmWalletPreviewPanel({ compact = false }: { compact?: b
         onChange={(event) => setManualAddress(event.target.value)}
         placeholder={t("addressCheck.placeholder")}
         spellCheck={false}
-        className="mt-3 min-h-12 w-full rounded-full border border-white/10 bg-black/24 px-5 font-mono text-sm text-white outline-none placeholder:text-white/26"
+        className="mt-3 min-h-12 w-full min-w-0 rounded-full border border-white/10 bg-black/24 px-5 font-mono text-xs text-white outline-none placeholder:text-white/26 md:text-sm"
       />
       <p className={`mt-2 font-sans text-xs leading-6 ${manualAddressState === "valid" ? "text-velmere-gold" : manualAddressState === "invalid" ? "text-red-200/80" : "text-white/42"}`}>
         {t(`addressCheck.${manualAddressState}`)}

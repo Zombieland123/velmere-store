@@ -13,7 +13,7 @@ export default function VlmTokenomicsVisual() {
   const t = useTranslations("VlmTokenomics");
 
   return (
-    <section className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 md:p-8">
+    <section className="rounded-none border border-white/15 bg-white/[0.02] p-4 backdrop-blur-md md:p-5">
       <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
         <div>
           <p className="luxury-kicker text-velmere-gold/80">{t("kicker")}</p>
@@ -31,10 +31,10 @@ export default function VlmTokenomicsVisual() {
                 <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/66">
                   {t(`${segment.key}.label`)}
                 </p>
-                <p className="font-sans text-2xl font-semibold text-white">{segment.value}%</p>
+                <p className="font-mono text-2xl font-semibold tabular-nums text-white">{segment.value}%</p>
               </div>
-              <div className="h-3 overflow-hidden rounded-full bg-white/[0.08]">
-                <div className={`h-full rounded-full ${segment.color}`} style={{ width: `${segment.value}%` }} />
+              <div className="h-3 overflow-hidden rounded-none bg-white/[0.08]">
+                <div className={`h-full rounded-none ${segment.color}`} style={{ width: `${segment.value}%` }} />
               </div>
               <p className="mt-2 text-xs leading-6 text-white/44">{t(`${segment.key}.note`)}</p>
             </article>

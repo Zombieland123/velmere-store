@@ -219,7 +219,7 @@ export default function VlmAccessGatePage() {
   const mode = searchParams.get("mode") === "pro" ? "pro" : "basic";
 
   return (
-    <main className="min-h-screen overflow-x-clip bg-black pb-24 text-[#FFFFF0] md:pb-0">
+    <main className="min-h-[100dvh] overflow-x-clip bg-black pb-24 text-[#FFFFF0] md:pb-0">
       <VlmModeTransitionOverlay mode={mode} />
       <MobileModePill />
       <section className="mx-auto w-full max-w-[88rem] overflow-x-clip px-5 py-24 sm:px-6 lg:px-12 lg:py-32 2xl:px-16">

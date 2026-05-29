@@ -56,8 +56,8 @@ export default function VlmWalletModalContent() {
               </div>
               <div>
                 <p className="font-medium text-[#FFFFF0]">{connectedWallet.label}</p>
-                <p className="text-sm text-[#FFFFF0]/80">{connectedWallet.address}</p>
-                <p className="text-xs text-white/48">
+                <p className="break-all font-mono text-xs text-[#FFFFF0]/80 tabular-nums md:text-sm">{connectedWallet.address}</p>
+                <p className="break-all font-mono text-xs text-white/48 tabular-nums">
                   {t("publicAddress")}: {connectedWallet.chainType.toUpperCase()}
                   {connectedWallet.chainId && ` (Chain: ${connectedWallet.chainId})`}
                 </p>
@@ -123,7 +123,7 @@ export default function VlmWalletModalContent() {
           onChange={(e) => setManualAddress(e.target.value)}
           placeholder="0x1234...89ab"
           spellCheck={false}
-          className="mt-2 min-h-11 w-full rounded-full border border-white/10 bg-[#0a0a0a] px-4 font-mono text-sm text-[#FFFFF0] outline-none transition-colors focus:border-[#d4af37]/30"
+          className="mt-2 min-h-11 w-full min-w-0 rounded-full border border-white/10 bg-[#0a0a0a] px-4 font-mono text-xs text-[#FFFFF0] outline-none transition-colors focus:border-[#d4af37]/30 md:text-sm"
         />
         <p
           className={`mt-2 text-xs ${

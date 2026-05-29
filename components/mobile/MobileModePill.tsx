@@ -22,7 +22,7 @@ export default function MobileModePill() {
             key={item.key}
             href={item.href}
             aria-current={active ? "page" : undefined}
-            className={`inline-flex min-h-11 min-w-[6.25rem] items-center justify-center rounded-full px-5 font-sans text-[10px] font-black uppercase tracking-[0.18em] transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+            className={`inline-flex min-h-11 min-w-[6.25rem] items-center justify-center rounded-full px-5 font-sans text-[10px] font-black uppercase tracking-[0.18em] luxury-hover ${
               active ? "bg-[#F5F0E8] text-black" : "text-white/52 hover:text-white"
             }`}
           >

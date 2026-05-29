@@ -36,7 +36,7 @@ export default function LegalDraftPage({
   sections,
 }: LegalDraftPageProps) {
   return (
-    <main className="min-h-screen bg-velmere-black text-white">
+    <main className="min-h-[100dvh] bg-velmere-black text-white">
       <LuxurySection className="py-28 md:py-36">
         <article className="mx-auto max-w-3xl">
           <p className="luxury-kicker text-velmere-gold/80">{kicker}</p>

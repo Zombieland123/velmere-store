@@ -13,9 +13,18 @@ export default function AngelTeaser() {
 
   useEffect(() => {
     const closeAngel = () => setOpen(false);
+    const openAngelFromCommand = () => {
+      closeCart();
+      window.dispatchEvent(new Event("velmere:close-square-panels"));
+      setOpen(true);
+    };
     window.addEventListener("velmere:close-angel", closeAngel);
-    return () => window.removeEventListener("velmere:close-angel", closeAngel);
-  }, []);
+    window.addEventListener("velmere:angel:open", openAngelFromCommand);
+    return () => {
+      window.removeEventListener("velmere:close-angel", closeAngel);
+      window.removeEventListener("velmere:angel:open", openAngelFromCommand);
+    };
+  }, [closeCart]);
 
   const openAngel = () => {
     closeCart();

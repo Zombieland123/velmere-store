@@ -223,11 +223,7 @@
     "checkoutUnavailable": "Die Zahlung wird nach finaler Shop-Konfiguration aktiviert.",
     "paymentDisabled": "Die Zahlung wird nach finaler Shop-Konfiguration aktiviert.",
     "checkoutFailed": "Checkout konnte nicht gestartet werden.",
-    "openCart": "Warenkorb öffnen",
-    "emptyLuxury": {
-      "title": "DEINE AUSWAHL IST LEER. EXPLORATION STARTEN.",
-      "body": "In dieser Sitzung wurden noch keine Stücke archiviert. Kehre zur Kollektion zurück und erstelle die erste Auswahl."
-    }
+    "openCart": "Warenkorb öffnen"
   },
   "Checkout": {
     "successKicker": "Bestellung erhalten",
@@ -2087,15 +2083,7 @@
         "handle": "Handle",
         "bio": "Bio"
       },
-      "persistenceNote": "Dies ist eine sichere Frontend-Profilvorschau. Echte Speicherung benötigt Auth- und Datenbankkonfiguration.",
-      "emptyPosts": {
-        "title": "ZUGANG GEWÄHRT. INITIALISIERUNG AUSSTEHEND.",
-        "body": "Diesem Profil sind noch keine öffentlichen Beiträge zugeordnet."
-      },
-      "emptyOrders": {
-        "title": "KEINE ARCHIVIERTEN TRANSAKTIONEN GEFUNDEN.",
-        "body": "Bestellungen erscheinen hier nach Aktivierung der Commerce-Ebene."
-      }
+      "persistenceNote": "Dies ist eine sichere Frontend-Profilvorschau. Echte Speicherung benötigt Auth- und Datenbankkonfiguration."
     }
   },
   "ProductLaunchChecklist": {

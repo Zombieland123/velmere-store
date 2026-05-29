@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useMounted } from "@/lib/hooks/useMounted";
 import { Copy, ChevronDown, LogOut } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { ConnectedWallet } from "@/lib/wallet/types";
@@ -19,6 +20,11 @@ export default function WalletStatusChip({
   const t = useTranslations("Wallet");
   const [copiedAddress, setCopiedAddress] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const mounted = useMounted();
+
+  if (!mounted) {
+    return <div className="h-8 w-40 animate-pulse rounded-full border border-white/10 bg-white/[0.035]" aria-hidden="true" />;
+  }
 
   if (!connectedWallet) {
     return null;
@@ -68,7 +74,7 @@ export default function WalletStatusChip({
               <p className="text-xs font-medium text-[#FFFFF0]">
                 {connectedWallet.label}
               </p>
-              <p className="mt-1 text-xs text-white/60 font-mono">
+              <p className="mt-1 break-all font-mono text-xs text-white/60">
                 {connectedWallet.address}
               </p>
               <p className="mt-1 text-xs text-[#d4af37]/60">

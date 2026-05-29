@@ -23,6 +23,7 @@ export default function AngelPanel({ open, onClose }: AngelPanelProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!open) return undefined;
@@ -33,18 +34,23 @@ export default function AngelPanel({ open, onClose }: AngelPanelProps) {
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [onClose, open]);
 
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+  }, [messages, loading]);
+
   const sendMessage = async (text: string) => {
     const trimmed = text.trim();
     if (!trimmed || loading) return;
     setError(null);
-    setMessages((current) => [...current, { role: "user", content: trimmed }]);
+    const nextMessages: ChatMessage[] = [...messages, { role: "user", content: trimmed }];
+    setMessages(nextMessages);
     setInput("");
     setLoading(true);
     try {
       const response = await fetch("/api/angel", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: trimmed, locale }),
+        body: JSON.stringify({ message: trimmed, locale, history: messages }),
       });
       const data = await response.json();
       if (!response.ok || !data.reply) throw new Error(data.error ?? t("neuralError"));
@@ -109,9 +115,10 @@ export default function AngelPanel({ open, onClose }: AngelPanelProps) {
               {loading ? (
                 <p className="flex items-center gap-2 font-sans text-xs uppercase tracking-[0.16em] text-white/42">
                   <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-                  {t("decrypting")}
+                  Angel is thinking...
                 </p>
               ) : null}
+              <div ref={messagesEndRef} />
             </div>
 
             {error ? <p className="text-sm leading-6 text-red-200/80">{error}</p> : null}

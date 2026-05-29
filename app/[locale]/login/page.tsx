@@ -12,7 +12,7 @@ export default async function LoginPage({ params: { locale } }: { params: { loca
   ];
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-velmere-black text-white">
+    <main className="relative min-h-[100dvh] overflow-x-hidden bg-velmere-black text-white">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_22%,rgba(212,175,55,0.12),transparent_28%),radial-gradient(circle_at_84%_14%,rgba(255,255,255,0.06),transparent_26%)]" />
       <LuxurySection className="relative z-[1] py-28 md:py-40">
         <section className="mx-auto grid max-w-5xl gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-stretch">

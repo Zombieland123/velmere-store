@@ -4,7 +4,6 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/navigation";
 import LuxurySection from "@/components/layout/LuxurySection";
 import BajakProtocolVisual from "@/components/vlm/BajakProtocolVisual";
-import ScrambleText from "@/components/ui/ScrambleText";
 
 const GARMENTS = [
   {
@@ -31,16 +30,14 @@ export default async function ArchivePage({ params: { locale } }: { params: { lo
   const t = await getTranslations({ locale, namespace: "Archive" });
 
   return (
-    <main className="min-h-screen bg-velmere-black text-white">
+    <main className="min-h-[100dvh] bg-velmere-black text-white">
       <LuxurySection className="pb-16 pt-32 md:pb-24">
         <section className="grid gap-10 lg:grid-cols-12 lg:items-end">
           <div className="lg:col-span-8">
             <p className="luxury-kicker text-velmere-gold/80">{t("kicker")}</p>
-            <ScrambleText
-              as="h1"
-              text={t("title")}
-              className="mt-6 block max-w-4xl font-serif text-6xl leading-[0.9] text-white md:text-8xl"
-            />
+            <h1 className="mt-6 max-w-4xl font-serif text-6xl leading-[0.9] text-white md:text-8xl">
+              {t("title")}
+            </h1>
           </div>
           <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 text-sm leading-7 text-white/56 lg:col-span-4">
             <p>{t("intro")}</p>

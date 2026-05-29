@@ -6,7 +6,7 @@ export default async function VlmTokenFaqPage({ params: { locale } }: { params: 
   const t = await getTranslations({ locale, namespace: "VlmPublic.faqLink" });
 
   return (
-    <main className="min-h-screen bg-black text-[#FFFFF0]">
+    <main className="min-h-[100dvh] bg-black text-[#FFFFF0]">
       <section className="mx-auto max-w-5xl px-6 py-24 md:px-12 md:py-32">
         <Link
           href="/vlm-token"

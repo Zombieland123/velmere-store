@@ -5,7 +5,6 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { CircleDot, Cpu, Eye, Network, Orbit, ShieldCheck, WalletCards } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import ScrambleText from "@/components/ui/ScrambleText";
 
 const basicItems = ["one", "two", "three"] as const;
 const proItems = ["orbit", "wallet", "security", "lp"] as const;
@@ -21,10 +20,10 @@ function BasicCard({ reducedMotion }: { reducedMotion: boolean }) {
   return (
     <motion.article
       key="basic"
-      initial={reducedMotion ? { opacity: 0 } : { opacity: 0, x: "-22%", scale: 0.975, filter: "blur(10px)" }}
-      animate={{ opacity: 1, x: 0, scale: 1, filter: "blur(0px)" }}
-      exit={reducedMotion ? { opacity: 0 } : { opacity: 0, x: "18%", scale: 0.975, filter: "blur(10px)" }}
-      transition={{ duration: 1.05, ease: [0.16, 1, 0.3, 1] }}
+      initial={reducedMotion ? { opacity: 0 } : { opacity: 0, x: "-105%", scale: 0.98 }}
+      animate={{ opacity: 1, x: 0, scale: 1 }}
+      exit={reducedMotion ? { opacity: 0 } : { opacity: 0, x: "105%", scale: 0.98 }}
+      transition={{ duration: 0.72, ease: [0.16, 1, 0.3, 1] }}
       className="relative mx-auto w-full max-w-none overflow-hidden rounded-[2rem] border border-black/10 bg-[#F5F0E8] p-5 text-black shadow-[0_24px_90px_rgba(0,0,0,0.22)] md:p-8 xl:p-10"
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_84%_16%,rgba(0,0,0,0.06),transparent_30%)]" />
@@ -99,17 +98,17 @@ function ProCard({ reducedMotion }: { reducedMotion: boolean }) {
   return (
     <motion.article
       key="pro"
-      initial={reducedMotion ? { opacity: 0 } : { opacity: 0, x: "22%", scale: 0.965, filter: "blur(12px)" }}
-      animate={{ opacity: 1, x: 0, scale: 1, filter: "blur(0px)" }}
-      exit={reducedMotion ? { opacity: 0 } : { opacity: 0, x: "-18%", scale: 0.965, filter: "blur(12px)" }}
-      transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+      initial={reducedMotion ? { opacity: 0 } : { opacity: 0, x: "105%", scale: 0.965 }}
+      animate={{ opacity: 1, x: 0, scale: 1 }}
+      exit={reducedMotion ? { opacity: 0 } : { opacity: 0, x: "-105%", scale: 0.965 }}
+      transition={{ duration: 0.78, ease: [0.16, 1, 0.3, 1] }}
       className="relative mx-auto w-full max-w-none overflow-hidden rounded-[2.4rem] border border-[#d4af37]/24 bg-[#030303] p-5 text-white shadow-[0_40px_140px_rgba(0,0,0,0.62)] md:p-7 xl:p-10"
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_74%_36%,rgba(212,175,55,0.18),transparent_34%)]" />
       <div className="relative z-[1] grid gap-8 xl:grid-cols-[0.34fr_0.66fr] xl:items-start">
         <div>
           <p className="font-sans text-[10px] font-black uppercase tracking-[0.34em] text-[#d4af37]">{t("pro.kicker")}</p>
-          <ScrambleText as="h3" text={t("pro.title")} className="mt-5 block max-w-[9ch] font-serif text-4xl leading-[0.94] text-white md:text-5xl xl:text-[4.4rem]" />
+          <h3 className="mt-5 max-w-[9ch] font-serif text-4xl leading-[0.94] text-white md:text-5xl xl:text-[4.4rem]">{t("pro.title")}</h3>
           <p className="mt-6 max-w-lg font-sans text-sm leading-7 text-white/64">{t("pro.body")}</p>
           <button type="button" onClick={() => setChartOpen((value) => !value)} className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-full border border-[#d4af37]/30 bg-[#d4af37]/10 px-5 font-mono text-[9px] uppercase tracking-[0.18em] text-[#d4af37] transition hover:bg-[#d4af37]/15">
             <Eye className="h-4 w-4" /> {chartOpen ? t("pro.chartHide") : t("pro.chartShow")}
@@ -157,8 +156,8 @@ export default function VlmBasicProShowcase() {
   const mode = searchParams.get("mode") === "pro" ? "pro" : "basic";
 
   return (
-    <section id="vlm-mode" className="mx-auto w-full max-w-[88rem] overflow-hidden px-5 py-16 sm:px-6 lg:px-12 2xl:px-16 md:py-24">
-      <div className="mx-auto mb-8 w-full max-w-5xl">
+    <section id="vlm-mode" className="mx-auto w-full max-w-none overflow-hidden px-4 py-14 sm:px-6 lg:px-12 2xl:px-20 md:py-20">
+      <div className="mx-auto mb-8 w-full max-w-none">
         <p className="luxury-kicker text-velmere-gold/80">{t("kicker")}</p>
         <h2 className="mt-4 max-w-4xl font-serif text-4xl leading-tight text-white md:text-5xl">{t("title")}</h2>
         <p className="mt-4 max-w-3xl text-sm leading-7 text-white/54">{t("body")}</p>

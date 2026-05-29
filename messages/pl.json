@@ -223,11 +223,7 @@
     "checkoutUnavailable": "Płatność zostanie aktywowana po finalnej konfiguracji sklepu.",
     "paymentDisabled": "Płatność zostanie aktywowana po finalnej konfiguracji sklepu.",
     "checkoutFailed": "Nie udało się uruchomić checkoutu.",
-    "openCart": "Otwórz koszyk",
-    "emptyLuxury": {
-      "title": "WYBÓR JEST PUSTY. ROZPOCZNIJ EKSPLORACJĘ.",
-      "body": "W tej sesji nie zapisano jeszcze żadnych elementów. Wróć do kolekcji i zbuduj pierwszy wybór."
-    }
+    "openCart": "Otwórz koszyk"
   },
   "Checkout": {
     "successKicker": "Zamówienie przyjęte",
@@ -2087,15 +2083,7 @@
         "handle": "Handle",
         "bio": "Bio"
       },
-      "persistenceNote": "To bezpieczny podgląd profilu po stronie frontendu. Prawdziwy zapis wymaga konfiguracji kont i bazy danych.",
-      "emptyPosts": {
-        "title": "DOSTĘP PRZYZNANY. OCZEKIWANIE NA INICJALIZACJĘ.",
-        "body": "Do tego profilu nie przypisano jeszcze publicznych postów."
-      },
-      "emptyOrders": {
-        "title": "BRAK ZARCHIWIZOWANYCH TRANSAKCJI.",
-        "body": "Zamówienia pojawią się tutaj po aktywacji warstwy sprzedaży."
-      }
+      "persistenceNote": "To bezpieczny podgląd profilu po stronie frontendu. Prawdziwy zapis wymaga konfiguracji kont i bazy danych."
     }
   },
   "ProductLaunchChecklist": {

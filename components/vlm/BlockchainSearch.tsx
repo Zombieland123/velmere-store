@@ -93,12 +93,12 @@ export default function BlockchainSearch() {
           <div className="mt-6 grid gap-4 md:grid-cols-2">
             <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
               <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/42">{t("streamTitle")}</p>
-              <div className="mt-4 h-28 overflow-hidden font-mono text-xs text-white/58">
+              <div className="pointer-events-none mt-4 max-h-[250px] overflow-y-scroll scroll-touch pr-1 font-mono text-xs text-white/58 md:h-28 md:overflow-hidden md:pr-0">
                 <div className="space-y-2 motion-safe:animate-[ledger-scroll_10s_linear_infinite]">
                   {[...hexStream, ...hexStream].map((item, index) => (
-                    <div key={`${item}-${index}`} className="flex items-center justify-between gap-4">
-                      <span>{item}</span>
-                      <span className="text-[#d4af37]">{(index + 3) * 7}</span>
+                    <div key={`${item}-${index}`} className="flex items-center justify-between gap-4 border-b border-white/5 py-1">
+                      <span className="break-all text-[11px] md:text-xs">{item}</span>
+                      <span className="tabular-nums text-[#d4af37]">{(index + 3) * 7}</span>
                     </div>
                   ))}
                 </div>
@@ -107,8 +107,8 @@ export default function BlockchainSearch() {
             <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
               <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/42">{t("engineTitle")}</p>
               <div className="mt-4 space-y-3 font-mono text-xs text-white/58">
-                <p>AMU = 3162.27766</p>
-                <p>ρ = 1.324717957244746</p>
+                <p className="break-all tabular-nums">AMU = 3162.27766</p>
+                <p className="break-all tabular-nums">ρ = 1.324717957244746</p>
                 <p>{t("score", { value: query.trim() ? Math.min(97, 42 + query.trim().length).toString() : "42" })}</p>
               </div>
               <a

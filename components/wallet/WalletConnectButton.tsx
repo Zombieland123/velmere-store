@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import type { WalletKind, ConnectedWallet, WalletConnectionState } from "@/lib/wallet/types";
+import { useUiSounds } from "@/lib/audio/useUiSounds";
 
 type WalletConnectButtonProps = {
   kind: WalletKind;
@@ -108,6 +109,7 @@ export default function WalletConnectButton({
   const config = WALLET_CONFIG[kind];
   const isThisWalletConnected = connectedWallet?.kind === kind;
   const isLoading = state === "connecting" && !isThisWalletConnected;
+  const { playClick, playHover } = useUiSounds();
 
   const getButtonText = () => {
     if (isThisWalletConnected && connectedWallet) {
@@ -136,13 +138,19 @@ export default function WalletConnectButton({
   return (
     <button
       type="button"
-      onClick={onConnect}
+      data-magnetic
+      onMouseEnter={playHover}
+      onClick={() => {
+        playClick();
+        if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(45);
+        onConnect();
+      }}
       disabled={getButtonDisabled()}
       className={`
         flex min-h-[44px] w-full items-center justify-between rounded-full
         border border-white/10 bg-white/[0.035] px-5
         font-sans text-[10px] font-semibold uppercase tracking-[0.16em]
-        transition-all duration-200
+        transition-all duration-200 active:scale-95
         hover:bg-white/[0.07] hover:border-[#d4af37]/30
         active:border-[#d4af37] active:bg-white/[0.08]
         disabled:opacity-40 disabled:cursor-not-allowed

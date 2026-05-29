@@ -10,8 +10,8 @@ export default function NotFound() {
   const t = useTranslations("Errors.notFound");
 
   return (
-    <main className="min-h-screen bg-velmere-black text-white">
-      <LuxurySection className="flex min-h-screen items-center justify-center py-28 md:py-36">
+    <main className="min-h-[100dvh] bg-velmere-black text-white">
+      <LuxurySection className="flex min-h-[100dvh] items-center justify-center py-28 md:py-36">
         <motion.div {...fadeUp} className="mx-auto max-w-3xl text-center">
           <p className="luxury-kicker text-velmere-gold/80">404</p>
           <h1 className="mt-6 font-serif text-5xl leading-tight text-white md:text-7xl">{t("title")}</h1>
