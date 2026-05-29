@@ -1,7 +1,1 @@
-{
-  "framework": "nextjs",
-  "installCommand": "corepack enable && corepack prepare pnpm@9.15.9 --activate && pnpm install --no-frozen-lockfile",
-  "buildCommand": "pnpm run vercel:preflight && pnpm run build",
-  "devCommand": "pnpm run dev",
-  "outputDirectory": ".next"
-}
+{"installCommand":"npm install","buildCommand":"npm run build","framework":"nextjs"}
