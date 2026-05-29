@@ -40,7 +40,7 @@ export default function VlmWalletSidePanel() {
     }
     try {
       setState("connecting");
-      const accounts = (await window.ethereum.request({ method: "eth_requestAccounts" })) as string[];
+      const accounts = (await (window.ethereum as any).request({ method: "eth_requestAccounts" })) as string[];
       setAddress(accounts[0] ?? "");
       setState("connected");
     } catch {
@@ -104,3 +104,4 @@ export default function VlmWalletSidePanel() {
     </div>
   );
 }
+
