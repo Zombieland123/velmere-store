@@ -1,11 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { formatEther } from "viem";
 import { useAccount, useBalance, useChainId, useConnect, useDisconnect } from "wagmi";
 import type { WalletKind, ConnectedWallet, WalletConnectionState } from "./types";
 import { clearWalletUiSnapshot, setWalletUiSnapshot } from "@/store/useWalletUiStore";
-import { isMobileViewport, openMetaMaskMobileDapp, openPhantomMobileBrowser } from "@/lib/wallet/mobile-deeplinks";
+import { consumePendingMobileWallet, isMobileViewport, openMetaMaskMobileDapp, openPhantomMobileBrowser } from "@/lib/wallet/mobile-deeplinks";
 
 type PhantomSolanaProvider = {
   isPhantom?: boolean;
@@ -18,6 +18,7 @@ declare global {
   interface Window {
     phantom?: { solana?: PhantomSolanaProvider; ethereum?: unknown };
     solana?: PhantomSolanaProvider;
+    ethereum?: unknown;
   }
 }
 
@@ -43,6 +44,10 @@ function getPhantomProvider() {
   return provider?.isPhantom ? provider : undefined;
 }
 
+function hasEvmProvider() {
+  return typeof window !== "undefined" && Boolean(window.ethereum);
+}
+
 export function useWalletConnect() {
   const { address, connector, isConnected, isConnecting } = useAccount();
   const chainId = useChainId();
@@ -53,13 +58,7 @@ export function useWalletConnect() {
   const [phantomConnecting, setPhantomConnecting] = useState(false);
   const [phantomDetected, setPhantomDetected] = useState(false);
   const [lastError, setLastError] = useState<WalletConnectionState | null>(null);
-
-  useEffect(() => {
-    const detect = () => setPhantomDetected(Boolean(getPhantomProvider()));
-    detect();
-    const timer = window.setTimeout(detect, 800);
-    return () => window.clearTimeout(timer);
-  }, []);
+  const autoAttempted = useRef(false);
 
   const metamaskConnector = useMemo(
     () => connectors.find((item) => isMetaMaskConnector(item.name)) ?? connectors[0],
@@ -99,29 +98,11 @@ export function useWalletConnect() {
         ? "rejected"
         : "idle";
 
-  useEffect(() => {
-    if (!connectedWallet) {
-      clearWalletUiSnapshot();
-      return;
-    }
-
-    const isPhantom = connectedWallet.kind === "phantom";
-    setWalletUiSnapshot({
-      connected: true,
-      shortAddress: connectedWallet.shortAddress,
-      fullAddress: connectedWallet.address,
-      chainType: connectedWallet.chainType,
-      network: isPhantom ? "Solana / Phantom" : connectedWallet.chainId ? `Chain ${connectedWallet.chainId}` : "EVM",
-      tokenBalanceLabel: isPhantom ? "Connected via Phantom" : formatNativeBalance(balance?.value, balance?.symbol ?? "ETH"),
-      accessStatusLabel: isPhantom ? "phantom-linked access" : "wallet-linked access",
-    });
-  }, [balance?.symbol, balance?.value, connectedWallet]);
-
   const connectMetaMask = useCallback(async () => {
     setLastError(null);
-    const hasInjectedProvider = typeof window !== "undefined" && Boolean((window as Window & { ethereum?: unknown }).ethereum);
+    if (connectedWallet) return;
 
-    if (!hasInjectedProvider && isMobileViewport()) {
+    if (!hasEvmProvider() && isMobileViewport()) {
       openMetaMaskMobileDapp();
       return;
     }
@@ -132,11 +113,16 @@ export function useWalletConnect() {
       return;
     }
 
-    await connectAsync({ connector: metamaskConnector });
-  }, [connectAsync, metamaskConnector]);
+    try {
+      await connectAsync({ connector: metamaskConnector });
+    } catch {
+      setLastError("rejected");
+    }
+  }, [connectAsync, connectedWallet, metamaskConnector]);
 
   const connectPhantom = useCallback(async () => {
     setLastError(null);
+    if (connectedWallet) return;
     const provider = getPhantomProvider();
 
     if (!provider) {
@@ -159,14 +145,52 @@ export function useWalletConnect() {
     } finally {
       setPhantomConnecting(false);
     }
+  }, [connectedWallet]);
+
+  useEffect(() => {
+    const detect = () => setPhantomDetected(Boolean(getPhantomProvider()));
+    detect();
+    const timer = window.setTimeout(detect, 800);
+    return () => window.clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    if (autoAttempted.current || connectedWallet) return;
+    const pending = consumePendingMobileWallet();
+    if (!pending) return;
+    autoAttempted.current = true;
+    const timer = window.setTimeout(() => {
+      if (pending === "metamask") void connectMetaMask();
+      if (pending === "phantom") void connectPhantom();
+    }, 450);
+    return () => window.clearTimeout(timer);
+  }, [connectMetaMask, connectPhantom, connectedWallet]);
+
+  useEffect(() => {
+    if (!connectedWallet) {
+      clearWalletUiSnapshot();
+      return;
+    }
+
+    const isPhantom = connectedWallet.kind === "phantom";
+    setWalletUiSnapshot({
+      connected: true,
+      shortAddress: connectedWallet.shortAddress,
+      fullAddress: connectedWallet.address,
+      chainType: connectedWallet.chainType,
+      network: isPhantom ? "Solana / Phantom" : connectedWallet.chainId ? `Chain ${connectedWallet.chainId}` : "EVM",
+      tokenBalanceLabel: isPhantom ? "SOL balance linked" : formatNativeBalance(balance?.value, balance?.symbol ?? "ETH"),
+      accessStatusLabel: isPhantom ? "phantom-linked access" : "wallet-linked access",
+    });
+  }, [balance?.symbol, balance?.value, connectedWallet]);
 
   const connect = useCallback(
     (kind: WalletKind) => {
+      if (connectedWallet) return Promise.resolve();
       if (kind === "metamask") return connectMetaMask();
       return connectPhantom();
     },
-    [connectMetaMask, connectPhantom],
+    [connectMetaMask, connectPhantom, connectedWallet],
   );
 
   const disconnectWallet = useCallback(() => {

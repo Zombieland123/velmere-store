@@ -25,10 +25,11 @@ import {
 import { useLocale, useTranslations } from "next-intl";
 import type { SquareComment, SquarePost } from "@/lib/square/types";
 import { useWalletUiStore } from "@/store/useWalletUiStore";
-import { useWalletConnect } from "@/lib/wallet/useWalletConnect";
 import CommentThread from "@/components/community/CommentThread";
 import LiveTimestamp from "@/components/ui/LiveTimestamp";
 import { createSquarePostRequest, useSquarePosts } from "@/lib/hooks/useSquarePosts";
+import { useVelmereAuth } from "@/components/auth/AuthGate";
+import { Link } from "@/navigation";
 
 const seedPostKeys = ["official", "lookbook", "vlm", "community"] as const;
 
@@ -44,10 +45,10 @@ const copy = {
     os: "COMMUNITY OS",
     map: "Square map",
     intro: "A restrained community feed for drops, access notes and atelier signals.",
-    walletGate: "Connect wallet to unlock rooms, quests and access ranks.",
+    walletGate: "Log in to publish, comment and unlock member rooms. Guests can read the public feed.",
     guest: "Guest mode",
     guestBody: "Read public posts. Posting and rooms stay local until account + moderation are live.",
-    connect: "Connect wallet",
+    connect: "Log in / register",
     balance: "Wallet preview",
     composer: "Write a post. It stays local until moderation is active.",
     placeholder: "Share a drop signal, fit note or archive clue…",
@@ -74,10 +75,10 @@ const copy = {
     os: "COMMUNITY OS",
     map: "Mapa Square",
     intro: "Spokojny feed społeczności: dropy, notatki dostępu i sygnały atelier.",
-    walletGate: "Połącz portfel, aby odblokować pokoje, misje i rangę dostępu.",
+    walletGate: "Zaloguj się, aby publikować, komentować i odblokować pokoje memberów. Goście mogą czytać feed.",
     guest: "Tryb gościa",
     guestBody: "Czytaj publiczne posty. Publikacja i pokoje zostają lokalne do czasu konta i moderacji.",
-    connect: "Połącz portfel",
+    connect: "Zaloguj / zarejestruj",
     balance: "Podgląd portfela",
     composer: "Napisz post. Zostaje lokalny do czasu moderacji.",
     placeholder: "Dodaj sygnał dropu, notatkę stylu albo wskazówkę archiwum…",
@@ -104,10 +105,10 @@ const copy = {
     os: "COMMUNITY OS",
     map: "Square-Karte",
     intro: "Ein ruhiger Community-Feed für Drops, Access-Notizen und Atelier-Signale.",
-    walletGate: "Wallet verbinden, um Räume, Quests und Access-Ränge freizuschalten.",
+    walletGate: "Einloggen, um zu posten, zu kommentieren und Member-Räume freizuschalten. Gäste können den öffentlichen Feed lesen.",
     guest: "Gastmodus",
     guestBody: "Öffentliche Posts lesen. Posting und Räume bleiben lokal bis Account + Moderation live sind.",
-    connect: "Wallet verbinden",
+    connect: "Login / registrieren",
     balance: "Wallet-Vorschau",
     composer: "Post schreiben. Bleibt lokal bis Moderation aktiv ist.",
     placeholder: "Drop-Signal, Fit-Notiz oder Archiv-Hinweis teilen…",
@@ -147,7 +148,7 @@ export default function VelmereSquareClient() {
   const locale = useLocale() as "pl" | "en" | "de";
   const text = copy[locale] ?? copy.en;
   const walletUi = useWalletUiStore();
-  const wallet = useWalletConnect();
+  const { authenticated } = useVelmereAuth();
 
   const [liked, setLiked] = useState<Record<string, boolean>>({});
   const [viewBoosts, setViewBoosts] = useState<Record<string, number>>({});
@@ -197,6 +198,11 @@ export default function VelmereSquareClient() {
 
   function openComposer() {
     navigator.vibrate?.(30);
+    if (!authenticated) {
+      setToast(locale === "pl" ? "Zaloguj się, aby publikować w Square." : locale === "de" ? "Einloggen, um in Square zu posten." : "Log in to publish in Square.");
+      setTimeout(() => setToast(""), 2200);
+      return;
+    }
     window.dispatchEvent(new Event("velmere:close-angel"));
     setSelectedPostId(null);
     setComposerOpen(true);
@@ -266,6 +272,11 @@ export default function VelmereSquareClient() {
   }
 
   async function addComment(postId: string) {
+    if (!authenticated) {
+      setToast(locale === "pl" ? "Komentarze są dostępne po logowaniu." : locale === "de" ? "Kommentare sind nach Login verfügbar." : "Comments unlock after login.");
+      setTimeout(() => setToast(""), 2200);
+      return;
+    }
     const body = (commentDrafts[postId] ?? "").trim();
     if (!body) return;
     navigator.vibrate?.(35);
@@ -322,28 +333,28 @@ export default function VelmereSquareClient() {
             <div className="border-b border-white/10 p-4">
               <p className="font-sans text-[10px] font-black uppercase tracking-[0.24em] text-white/40">{text.map}</p>
               <p className="mt-2 text-xs leading-6 text-white/45">{text.walletGate}</p>
-              {!walletUi.connected ? (
-                <button type="button" onClick={() => void wallet.connectMetaMask()} className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-[#d4af37]/30 bg-[#d4af37]/10 px-4 text-[10px] font-black uppercase tracking-[0.18em] text-[#d4af37] transition hover:bg-[#d4af37]/15 active:scale-95">
+              {!authenticated ? (
+                <Link href="/login" className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-[#d4af37]/30 bg-[#d4af37]/10 px-4 text-[10px] font-black uppercase tracking-[0.18em] text-[#d4af37] transition hover:bg-[#d4af37]/15 active:scale-95">
                   <Wallet className="h-3.5 w-3.5" aria-hidden="true" />
                   {text.connect}
-                </button>
+                </Link>
               ) : (
                 <div className="mt-4 rounded-2xl border border-[#d4af37]/25 bg-[#d4af37]/10 p-3">
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-[#d4af37]">{text.balance}</p>
-                  <p className="mt-1 font-mono text-xs text-white/72">{shortAddress(walletUi.fullAddress)}</p>
-                  <p className="mt-1 font-mono text-xs text-white/46">{walletUi.tokenBalanceLabel || walletUi.network || "EVM"}</p>
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-[#d4af37]">Member mode</p>
+                  <p className="mt-1 font-mono text-xs text-white/72">Publishing and comments enabled</p>
+                  <p className="mt-1 font-mono text-xs text-white/46">{walletUi.connected ? `${shortAddress(walletUi.fullAddress)} · ${walletUi.tokenBalanceLabel || walletUi.network || "EVM"}` : "Wallet optional"}</p>
                 </div>
               )}
             </div>
             <div>
               {roomItems.map(({ key, icon: Icon, progress }) => (
-                <button key={key} type="button" disabled={!walletUi.connected} className="group flex min-h-11 w-full items-center gap-3 border-b border-white/10 px-4 py-3 text-left transition hover:bg-white/[0.035] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-55">
+                <button key={key} type="button" disabled={!authenticated} className="group flex min-h-11 w-full items-center gap-3 border-b border-white/10 px-4 py-3 text-left transition hover:bg-white/[0.035] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-55">
                   <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#d4af37]/25 bg-[#d4af37]/10 text-[#d4af37]"><Icon className="h-4 w-4" /></span>
                   <span className="min-w-0 flex-1">
                     <span className="block text-xs font-semibold text-white/72">{text.rooms[key]}</span>
                     <span className="mt-2 block h-1 overflow-hidden rounded-full bg-white/10"><span className="block h-full rounded-full bg-[#d4af37]" style={{ width: `${progress}%` }} /></span>
                   </span>
-                  <LockKeyhole className={`h-3.5 w-3.5 ${walletUi.connected ? "text-white/24" : "text-[#d4af37]/70"}`} />
+                  <LockKeyhole className={`h-3.5 w-3.5 ${authenticated ? "text-white/24" : "text-[#d4af37]/70"}`} />
                 </button>
               ))}
             </div>
@@ -419,7 +430,7 @@ export default function VelmereSquareClient() {
         <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start">
           <section className="rounded-[1.25rem] border border-white/10 bg-[#1A1A1C] p-5">
             <p className="font-sans text-[10px] font-black uppercase tracking-[0.24em] text-[#d4af37]">{text.guest}</p>
-            <p className="mt-3 text-sm leading-7 text-white/56">{walletUi.connected ? `${shortAddress(walletUi.fullAddress)} · ${walletUi.tokenBalanceLabel || "EVM"}` : text.guestBody}</p>
+            <p className="mt-3 text-sm leading-7 text-white/56">{authenticated ? (walletUi.connected ? `${shortAddress(walletUi.fullAddress)} · ${walletUi.tokenBalanceLabel || "EVM"}` : "Signed in · wallet optional") : text.guestBody}</p>
           </section>
           <section className="rounded-[1.25rem] border border-white/10 bg-[#1A1A1C] p-5">
             <p className="font-sans text-[10px] font-black uppercase tracking-[0.24em] text-white/38">{text.rightTitle}</p>

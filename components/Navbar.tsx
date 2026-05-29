@@ -80,13 +80,14 @@ export default function Navbar() {
   ];
 
   const drawerLinks = [
+    { href: `/shop`, label: "All products" },
     ...topLinks,
     { href: `/shop?sort=new`, label: t("newDrop") },
     { href: `/lookbook`, label: t("lookbook") },
     { href: `/archive`, label: t("archive") },
     { href: `/square`, label: t("square") },
     { href: `/vlm-token`, label: t("vlm") },
-    { href: `/dashboard`, label: "Dashboard / Account" },
+    { href: `/account`, label: "Account / Dashboard" },
   ];
 
   const legalLinks = [
@@ -103,6 +104,7 @@ export default function Navbar() {
     : "Connect wallet";
 
   const connectWalletFromMenu = (kind: "metamask" | "phantom") => {
+    if (walletUi.connected) return;
     navigator.vibrate?.(25);
     void wallet.connect(kind);
   };
@@ -142,7 +144,7 @@ export default function Navbar() {
               </div>
 
               <nav className="py-7" aria-label={t("shopMenu")}>
-                <p className="luxury-kicker text-white/38">{t("primary")}</p>
+                <p className="luxury-kicker text-white/38">Commerce / Universe</p>
                 <div className="mt-4 space-y-1">
                   {drawerLinks.map((link) => (
                     <Link key={link.href} href={link.href} onClick={closeDrawerAfterNavigation} className="flex min-h-11 items-center border-b border-white/10 py-3 font-sans text-sm font-semibold uppercase tracking-[0.18em] text-white/84 transition-colors hover:text-velmere-gold">
@@ -165,10 +167,12 @@ export default function Navbar() {
                         <div className="flex justify-between gap-3"><span>Balance</span><span className="text-white/72">{walletUi.tokenBalanceLabel || "Connected"}</span></div>
                       </div>
                     ) : null}
-                    <div className="mt-4 grid grid-cols-2 gap-2">
-                      <button type="button" onClick={() => connectWalletFromMenu("metamask")} className="min-h-11 rounded-full border border-[#c8a96a]/25 bg-[#c8a96a]/10 px-3 font-mono text-[9px] font-semibold uppercase tracking-[0.14em] text-[#c8a96a] transition hover:bg-[#c8a96a]/15 active:scale-95">MetaMask</button>
-                      <button type="button" onClick={() => connectWalletFromMenu("phantom")} className="min-h-11 rounded-full border border-white/10 bg-white/[0.045] px-3 font-mono text-[9px] font-semibold uppercase tracking-[0.14em] text-white/70 transition hover:bg-white/[0.08] active:scale-95">Phantom</button>
-                    </div>
+                    {!walletUi.connected ? (
+                      <div className="mt-4 grid grid-cols-2 gap-2">
+                        <button type="button" onClick={() => connectWalletFromMenu("metamask")} className="min-h-11 rounded-full border border-[#c8a96a]/25 bg-[#c8a96a]/10 px-3 font-mono text-[9px] font-semibold uppercase tracking-[0.14em] text-[#c8a96a] transition hover:bg-[#c8a96a]/15 active:scale-95">MetaMask</button>
+                        <button type="button" onClick={() => connectWalletFromMenu("phantom")} className="min-h-11 rounded-full border border-white/10 bg-white/[0.045] px-3 font-mono text-[9px] font-semibold uppercase tracking-[0.14em] text-white/70 transition hover:bg-white/[0.08] active:scale-95">Phantom</button>
+                      </div>
+                    ) : null}
                     {walletUi.connected ? (
                       <button type="button" onClick={() => wallet.disconnect()} className="mt-2 min-h-11 w-full rounded-full border border-white/10 bg-white/[0.035] px-3 font-mono text-[9px] font-semibold uppercase tracking-[0.16em] text-white/55 transition hover:border-red-400/30 hover:text-red-200 active:scale-95">Disconnect</button>
                     ) : null}
@@ -204,29 +208,30 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-[50] border-b border-white/10 bg-[#0B0B0D]/92 backdrop-blur-2xl shadow-[0_18px_70px_rgba(0,0,0,0.42)]">
+      <header className="fixed inset-x-0 top-0 z-[50] border-b border-white/10 bg-[#080809]/94 text-white shadow-[0_18px_70px_rgba(0,0,0,0.58)] backdrop-blur-2xl supports-[backdrop-filter]:bg-[#080809]/88">
         <div className="relative flex min-h-[72px] w-full max-w-none items-center gap-3 px-4 pt-[env(safe-area-inset-top)] md:h-20 md:px-6 md:pt-0 xl:px-8">
-          <button ref={menuButtonRef} type="button" aria-expanded={isOpen} aria-controls="velmere-shop-drawer" onMouseEnter={playHover} onClick={() => { playClick(); closeCart(); setIsOpen(true); }} className="relative z-10 inline-flex h-11 shrink-0 items-center gap-2 rounded-full border border-white/10 bg-[#151517] px-4 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/72 transition hover:border-white/20 hover:bg-[#1F1F22] hover:text-white active:scale-95">
+          <button ref={menuButtonRef} type="button" aria-expanded={isOpen} aria-controls="velmere-shop-drawer" onMouseEnter={playHover} onClick={() => { playClick(); closeCart(); setIsOpen(true); }} className="relative z-20 inline-flex h-11 shrink-0 items-center gap-2 rounded-full border border-white/10 bg-[#151517] px-4 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/72 transition hover:border-white/20 hover:bg-[#1F1F22] hover:text-white active:scale-95">
             <Menu className="h-4 w-4" aria-hidden="true" />
             <span className="hidden sm:inline">{t("menu")}</span>
           </button>
 
-          <Link href="/" aria-label="Velmère" onMouseEnter={playHover} className="absolute left-1/2 -translate-x-1/2 shrink-0 whitespace-nowrap font-sans text-[1.45rem] font-semibold uppercase tracking-[0.22em] text-white max-[370px]:text-[1.22rem] max-[370px]:tracking-[0.16em] md:static md:translate-x-0 md:text-3xl">
-            VELMÈRE
-          </Link>
-
-          <nav aria-label="Primary" className="hidden min-w-0 items-center gap-1 lg:flex">
-            {topLinks.map((link) => (
-              <Link key={link.href} href={link.href} onMouseEnter={playHover} className="rounded-full px-3 py-2 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-white/48 transition hover:bg-white/[0.05] hover:text-white xl:px-4">
-                {link.label}
-              </Link>
-            ))}
-          </nav>
+          <div className="pointer-events-none absolute left-1/2 top-1/2 z-10 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-7 whitespace-nowrap">
+            <Link href="/" aria-label="Velmère" onMouseEnter={playHover} className="pointer-events-auto font-sans text-[1.45rem] font-semibold uppercase tracking-[0.22em] text-white drop-shadow-[0_2px_18px_rgba(0,0,0,0.8)] max-[370px]:text-[1.22rem] max-[370px]:tracking-[0.16em] md:text-3xl">
+              VELMÈRE
+            </Link>
+            <nav aria-label="Primary" className="pointer-events-auto hidden items-center gap-2 lg:flex">
+              {topLinks.map((link) => (
+                <Link key={link.href} href={link.href} onMouseEnter={playHover} className="rounded-full px-3 py-2 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-white/62 transition hover:bg-white/[0.05] hover:text-white xl:px-4">
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+          </div>
 
           <div className="min-w-0 flex-1" />
           {isVlmRoute ? <div className="hidden lg:block"><VlmModeSwitch inline /></div> : null}
 
-          <div className="relative z-10 ml-auto flex min-w-0 items-center justify-end gap-2">
+          <div className="relative z-20 ml-auto flex min-w-0 items-center justify-end gap-2">
             <AudioToggleButton />
             <div className="hidden rounded-full border border-white/10 bg-[#151517] p-1 sm:flex">
               {LOCALES.map((item) => (
@@ -245,7 +250,7 @@ export default function Navbar() {
                 {walletOpen ? (
                   <motion.div initial={{ opacity: 0, y: 8, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 8, scale: 0.98 }} transition={{ duration: 0.18 }} className="absolute right-0 mt-3 w-80 overflow-hidden rounded-2xl border border-white/10 bg-[#1A1A1C] p-4 shadow-2xl shadow-black/60">
                     <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-[#c8a96a]">{walletUi.connected ? "Wallet connected" : "Wallet access"}</p>
-                    <p className="mt-3 break-all font-mono text-xs text-white/70">{walletUi.connected ? walletUi.fullAddress : "Choose a wallet. On mobile this opens the wallet app browser when no injected provider is present."}</p>
+                    <p className="mt-3 break-all font-mono text-xs text-white/70">{walletUi.connected ? walletUi.fullAddress : "Choose a wallet. Mobile opens the wallet browser, then Velmère auto-requests connection."}</p>
                     {walletUi.connected ? (
                       <div className="mt-4 grid gap-2 rounded-xl border border-white/10 bg-black/24 p-3 font-mono text-[10px] uppercase tracking-[0.14em] text-white/45">
                         <div className="flex justify-between gap-3"><span>Network</span><span className="text-white/70">{walletUi.network || "Wallet"}</span></div>
@@ -268,7 +273,7 @@ export default function Navbar() {
                 ) : null}
               </AnimatePresence>
             </div>
-            <Link href="/dashboard" aria-label="Dashboard" onMouseEnter={playHover} className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-[#151517] font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-white/62 transition hover:border-[#d4af37] hover:bg-[#1F1F22] hover:text-white active:scale-95 sm:w-auto sm:px-4">
+            <Link href="/account" aria-label="Account" onMouseEnter={playHover} className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-[#151517] font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-white/72 transition hover:border-[#d4af37] hover:bg-[#1F1F22] hover:text-white active:scale-95 sm:w-auto sm:px-4">
               <User className="h-4 w-4" aria-hidden="true" />
               <span className="hidden sm:ml-2 sm:inline">Account</span>
             </Link>

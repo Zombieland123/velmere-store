@@ -39,7 +39,7 @@ export function useVelmereAuth() {
 
   useEffect(() => {
     const sync = () => {
-      setAuthenticated(readLocalSession() || Boolean(walletUi.connected));
+      setAuthenticated(readLocalSession());
       setReady(true);
     };
     sync();
@@ -47,7 +47,7 @@ export function useVelmereAuth() {
     return () => window.removeEventListener("velmere:auth-changed", sync);
   }, [walletUi.connected]);
 
-  return { ready, authenticated: authenticated || Boolean(walletUi.connected) };
+  return { ready, authenticated, walletConnected: Boolean(walletUi.connected) };
 }
 
 export default function AuthGate({
@@ -102,7 +102,7 @@ export default function AuthGate({
         <div className="mt-6 grid gap-2 rounded-2xl border border-white/10 bg-black/25 p-4 text-left font-mono text-[10px] uppercase tracking-[0.14em] text-white/38">
           <p>[ GOOGLE OAUTH ] :: PREPARED</p>
           <p>[ EMAIL AUTH ] :: VALIDATION ACTIVE</p>
-          <p>[ WALLET BINDING ] :: OPTIONAL</p>
+          <p>[ WALLET BINDING ] :: OPTIONAL AFTER LOGIN</p>
         </div>
       </div>
     </main>

@@ -115,6 +115,9 @@ export default function WalletConnectButton({
     if (isThisWalletConnected && connectedWallet) {
       return connectedWallet.shortAddress;
     }
+    if (connectedWallet && !isThisWalletConnected) {
+      return "Already connected";
+    }
     
     switch (state) {
       case "connecting":
@@ -129,7 +132,7 @@ export default function WalletConnectButton({
   };
 
   const getButtonDisabled = () => {
-    if (isThisWalletConnected) return true;
+    if (connectedWallet) return true;
     if (state === "connecting") return true;
     return false;
   };

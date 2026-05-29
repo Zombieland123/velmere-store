@@ -54,7 +54,7 @@ export default function Home() {
             </div>
           </motion.div>
 
-          <motion.div {...fadeUp} transition={{ ...fadeUp.transition, delay: 0.08 }} className="lg:col-span-7">
+          <motion.div {...fadeUp} transition={{ ...fadeUp.transition, delay: 0.08 }} className="lg:col-span-7 lg:pl-4">
             <NeuralBrainVisual />
           </motion.div>
         </div>

@@ -4,7 +4,6 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/navigation";
 import LuxurySection from "@/components/layout/LuxurySection";
 import BajakProtocolVisual from "@/components/vlm/BajakProtocolVisual";
-import TokenGate from "@/components/ui/TokenGate";
 
 const GARMENTS = [
   {
@@ -43,8 +42,7 @@ export default async function ArchivePage({ params: { locale } }: { params: { lo
           </div>
         </section>
 
-        <TokenGate className="mx-auto mt-12 w-full max-w-none px-4 md:px-8">
-          <section className="grid gap-4 md:grid-cols-3">
+        <section className="mx-auto mt-12 grid w-full max-w-none gap-4 px-4 md:grid-cols-3 md:px-8">
             {GARMENTS.map((garment, index) => (
               <article key={garment.key} className="group overflow-hidden rounded-[1.5rem] border border-white/10 bg-[#1A1A1C] shadow-[0_26px_90px_rgba(0,0,0,0.36)]">
                 <div className="relative aspect-[4/5] max-h-[34rem] overflow-hidden">
@@ -63,8 +61,7 @@ export default async function ArchivePage({ params: { locale } }: { params: { lo
                 </div>
               </article>
             ))}
-          </section>
-        </TokenGate>
+        </section>
       </LuxurySection>
 
       <section className="bg-[#D8D5CF] py-14 text-black md:py-20">
