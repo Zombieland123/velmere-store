@@ -126,12 +126,12 @@ export default function CommentThread({ comments, draft, onDraftChange, onSubmit
         })}
       </div>
 
-      <div className="sticky bottom-0 mt-6 flex gap-2 border-t border-white/10 bg-[#050505]/95 pt-4 backdrop-blur-xl">
+      <div className="mt-6 flex gap-2 rounded-2xl border border-white/10 bg-[#202024] p-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)]">
         <input
           value={draft}
           onChange={(event) => onDraftChange(event.target.value)}
           placeholder={labels.placeholder}
-          className="min-h-11 min-w-0 flex-1 rounded-full border border-white/10 bg-[#111] px-4 text-sm text-white outline-none placeholder:text-white/30 focus:border-velmere-gold/40"
+          className="min-h-11 min-w-0 flex-1 rounded-full border border-white/10 bg-white/[0.045] px-4 text-[16px] text-white outline-none placeholder:text-white/30 focus:border-velmere-gold/40"
         />
         <button type="button" onClick={onSubmit} className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-velmere-gold/30 px-4 text-velmere-gold luxury-hover hover:bg-velmere-gold/10" aria-label={labels.post}>
           <Send className="h-4 w-4" aria-hidden="true" />

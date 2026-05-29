@@ -110,7 +110,7 @@ function ProCard({ reducedMotion }: { reducedMotion: boolean }) {
           <p className="font-sans text-[10px] font-black uppercase tracking-[0.34em] text-[#d4af37]">{t("pro.kicker")}</p>
           <h3 className="mx-auto mt-5 max-w-[9ch] font-serif text-4xl leading-[0.94] text-white md:text-5xl lg:mx-0 xl:text-[4.4rem]">{t("pro.title")}</h3>
           <p className="mx-auto mt-6 max-w-lg font-sans text-sm leading-7 text-white/64 lg:mx-0">{t("pro.body")}</p>
-          <button type="button" onClick={() => setChartOpen((value) => !value)} className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-full border border-[#d4af37]/30 bg-[#d4af37]/10 px-5 font-mono text-[9px] uppercase tracking-[0.18em] text-[#d4af37] transition hover:bg-[#d4af37]/15">
+          <button type="button" onClick={() => setChartOpen((value) => !value)} className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-full border border-[#d4af37]/30 bg-[#d4af37]/10 px-5 font-mono text-[9px] uppercase tracking-[0.18em] text-[#d4af37] transition hover:bg-[#d4af37]/15 active:scale-95">
             <Eye className="h-4 w-4" /> {chartOpen ? t("pro.chartHide") : t("pro.chartShow")}
           </button>
           <div className="mt-7 grid gap-3 sm:grid-cols-2 xl:grid-cols-1">

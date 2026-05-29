@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "@/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -20,6 +21,7 @@ type AuthValues = z.infer<typeof authSchema>;
 
 export default function AuthFormClient({ labels }: { labels: { email: string; password: string; signIn: string } }) {
   const [status, setStatus] = useState<"idle" | "loading" | "ready">("idle");
+  const router = useRouter();
   const form = useForm<AuthValues>({ resolver: zodResolver(authSchema), defaultValues: { email: "", password: "" } });
 
   const onSubmit = async () => {
@@ -27,6 +29,7 @@ export default function AuthFormClient({ labels }: { labels: { email: string; pa
     await new Promise((resolve) => window.setTimeout(resolve, 700));
     setVelmereLocalSession(true);
     setStatus("ready");
+    window.setTimeout(() => router.push("/account"), 180);
   };
 
   return (
@@ -37,13 +40,13 @@ export default function AuthFormClient({ labels }: { labels: { email: string; pa
       </div>
 
       <div className="mt-7 grid gap-3 sm:grid-cols-2">
-        <button type="button" onClick={() => { setVelmereLocalSession(true); setStatus("ready"); }} className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full border border-white/10 bg-black/25 px-4 font-mono text-[10px] font-black uppercase tracking-[0.16em] text-white/62 transition hover:border-white/20 hover:text-white active:scale-95"><Chrome className="h-4 w-4" /> Continue with Google</button>
-        <button type="button" onClick={() => { setVelmereLocalSession(true); setStatus("ready"); }} className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full border border-[#c8a96a]/25 bg-[#c8a96a]/10 px-4 font-mono text-[10px] font-black uppercase tracking-[0.16em] text-[#c8a96a] transition hover:bg-[#c8a96a]/15 active:scale-95"><WalletCards className="h-4 w-4" /> Continue with wallet</button>
+        <button type="button" onClick={() => { setStatus("ready"); setVelmereLocalSession(true); window.setTimeout(() => router.push("/account"), 120); }} className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full border border-white/10 bg-black/25 px-4 font-mono text-[10px] font-black uppercase tracking-[0.16em] text-white/62 transition hover:border-white/20 hover:text-white active:scale-95"><Chrome className="h-4 w-4" /> Continue with Google</button>
+        <button type="button" onClick={() => { setStatus("ready"); setVelmereLocalSession(true); window.setTimeout(() => router.push("/account"), 120); }} className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full border border-[#c8a96a]/25 bg-[#c8a96a]/10 px-4 font-mono text-[10px] font-black uppercase tracking-[0.16em] text-[#c8a96a] transition hover:bg-[#c8a96a]/15 active:scale-95"><WalletCards className="h-4 w-4" /> Continue with wallet</button>
       </div>
 
       <div className="mt-7 space-y-5">
-        <label className="block"><span className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/52">{labels.email}</span><input type="email" {...form.register("email")} placeholder="member@velmere.com" className="mt-3 h-14 w-full rounded-full border border-white/10 bg-black/35 px-5 text-white outline-none placeholder:text-white/22 focus:border-[#c8a96a]/50" />{form.formState.errors.email ? <p className="mt-2 font-mono text-[10px] text-red-500/80">[SYS_ERR] :: {form.formState.errors.email.message}</p> : null}</label>
-        <label className="block"><span className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/52">{labels.password}</span><input type="password" {...form.register("password")} placeholder="Symbol + number + uppercase" className="mt-3 h-14 w-full rounded-full border border-white/10 bg-black/35 px-5 text-white outline-none placeholder:text-white/22 focus:border-[#c8a96a]/50" />{form.formState.errors.password ? <p className="mt-2 font-mono text-[10px] text-red-500/80">[SYS_ERR] :: {form.formState.errors.password.message}</p> : null}</label>
+        <label className="block"><span className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/52">{labels.email}</span><input type="email" {...form.register("email")} placeholder="member@velmere.com" className="mt-3 h-14 w-full rounded-full border border-white/10 bg-black/35 px-5 text-[16px] text-white outline-none placeholder:text-white/22 focus:border-[#c8a96a]/50" />{form.formState.errors.email ? <p className="mt-2 font-mono text-[10px] text-red-500/80">[SYS_ERR] :: {form.formState.errors.email.message}</p> : null}</label>
+        <label className="block"><span className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/52">{labels.password}</span><input type="password" {...form.register("password")} placeholder="Symbol + number + uppercase" className="mt-3 h-14 w-full rounded-full border border-white/10 bg-black/35 px-5 text-[16px] text-white outline-none placeholder:text-white/22 focus:border-[#c8a96a]/50" />{form.formState.errors.password ? <p className="mt-2 font-mono text-[10px] text-red-500/80">[SYS_ERR] :: {form.formState.errors.password.message}</p> : null}</label>
         <button type="submit" disabled={status === "loading"} className="flex min-h-14 w-full items-center justify-center gap-2 rounded-full border border-[#c8a96a]/25 bg-[#c8a96a]/10 px-6 font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-[#c8a96a] transition hover:bg-[#c8a96a]/15 disabled:cursor-not-allowed disabled:opacity-40 active:scale-95">{status === "loading" ? <Loader2 className="h-4 w-4 animate-spin" /> : null}{status === "ready" ? "[ ACCESS REQUEST VALIDATED ]" : labels.signIn}</button>
       </div>
     </form>

@@ -53,7 +53,7 @@ export function useVelmereAuth() {
 export default function AuthGate({
   children,
   title = "MEMBER ACCESS REQUIRED",
-  body = "This area opens after account activation or wallet connection.",
+  body = "This area opens after account activation. Wallet binding stays optional inside the console.",
 }: AuthGateProps) {
   const { ready, authenticated } = useVelmereAuth();
   const walletUi = useWalletUiStore();

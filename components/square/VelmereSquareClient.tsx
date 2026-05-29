@@ -185,7 +185,6 @@ export default function VelmereSquareClient() {
 
   const { data, mutate, isLoading } = useSquarePosts(locale, seedPosts);
   const posts = data?.posts ?? seedPosts;
-  const selectedPost = posts.find((post) => post.id === selectedPostId) ?? null;
 
   useEffect(() => {
     const closePanels = () => {
@@ -267,7 +266,8 @@ export default function VelmereSquareClient() {
     navigator.vibrate?.(30);
     window.dispatchEvent(new Event("velmere:close-angel"));
     setComposerOpen(false);
-    setSelectedPostId(post.id);
+    setSelectedPostId((current) => current === post.id ? null : post.id);
+    window.setTimeout(() => document.getElementById(`square-${post.id}`)?.scrollIntoView({ behavior: "smooth", block: "center" }), 40);
     setViewBoosts((current) => ({ ...current, [post.id]: (current[post.id] ?? 0) + 1 }));
   }
 
@@ -397,7 +397,7 @@ export default function VelmereSquareClient() {
               const views = post.views + (viewBoosts[post.id] ?? 0);
               const comments = [...(post.comments ?? []), ...(commentsByPost[post.id] ?? [])];
               return (
-                <motion.article key={post.id} variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0 } }} transition={{ type: "spring", stiffness: 300, damping: 30 }} className="group overflow-hidden rounded-xl border border-white/5 bg-[#1A1A1C] shadow-[0_26px_90px_rgba(0,0,0,0.34)]">
+                <motion.article key={post.id} variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0 } }} transition={{ type: "spring", stiffness: 300, damping: 30 }} id={`square-${post.id}`} className={`group overflow-hidden rounded-xl border bg-[#1A1A1C] shadow-[0_26px_90px_rgba(0,0,0,0.34)] transition-colors ${selectedPostId === post.id ? "border-[#d4af37]/25" : "border-white/5"}`}>
                   <button type="button" onClick={() => openPost(post)} className="block w-full p-5 text-left transition hover:bg-white/[0.018] active:scale-[0.995] md:p-6">
                     <div className="flex items-start gap-4">
                       <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.035] font-serif text-xl text-white">{post.authorName.slice(0, 1)}</span>
@@ -418,9 +418,24 @@ export default function VelmereSquareClient() {
                   <div className="flex flex-wrap items-center gap-2 border-t border-white/10 px-5 py-3 text-xs text-white/45 md:px-6">
                     <span className="inline-flex items-center gap-1.5"><Eye className="h-3.5 w-3.5" />{views}</span>
                     <button type="button" onClick={() => { navigator.vibrate?.(40); setLiked((current) => ({ ...current, [post.id]: !current[post.id] })); }} className="inline-flex min-h-11 items-center gap-1.5 rounded-full px-3 py-1 transition hover:bg-white/[0.04] active:scale-95"><Heart className={`h-3.5 w-3.5 ${liked[post.id] ? "fill-[#d4af37] text-[#d4af37]" : ""}`} />{post.likes + (liked[post.id] ? 1 : 0)}</button>
-                    <span className="inline-flex items-center gap-1.5"><MessageCircle className="h-3.5 w-3.5" />{post.commentsCount + comments.length}</span>
+                    <button type="button" onClick={() => openPost(post)} className="inline-flex min-h-11 items-center gap-1.5 rounded-full px-3 py-1 transition hover:bg-white/[0.04] active:scale-95"><MessageCircle className="h-3.5 w-3.5" />{post.commentsCount + comments.length}</button>
                     <button type="button" onClick={() => void sharePost(post)} className="inline-flex min-h-11 items-center gap-1.5 rounded-full px-3 py-1 transition hover:bg-white/[0.04] active:scale-95"><Share2 className="h-3.5 w-3.5" />{t("share")}</button>
                   </div>
+                  <AnimatePresence initial={false}>
+                    {selectedPostId === post.id ? (
+                      <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }} className="overflow-hidden border-t border-white/10 bg-[#161618]">
+                        <div className="p-5 md:p-6">
+                          <CommentThread
+                            comments={comments}
+                            draft={commentDrafts[post.id] ?? ""}
+                            onDraftChange={(value) => setCommentDrafts((current) => ({ ...current, [post.id]: value }))}
+                            onSubmit={() => void addComment(post.id)}
+                            labels={{ title: text.comment, placeholder: authenticated ? text.commentPlaceholder : (locale === "pl" ? "Zaloguj się, aby komentować…" : locale === "de" ? "Einloggen, um zu kommentieren…" : "Log in to comment…"), post: text.postComment, reply: text.reply, replies: text.replies, empty: text.noComments }}
+                          />
+                        </div>
+                      </motion.div>
+                    ) : null}
+                  </AnimatePresence>
                 </motion.article>
               );
             })}
@@ -464,35 +479,6 @@ export default function VelmereSquareClient() {
               <button type="button" onClick={() => void submitLocalPost()} className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-full bg-[#F5F0E8] px-5 text-[10px] font-black uppercase tracking-[0.16em] text-black transition-transform hover:bg-white active:scale-95">
                 <Send className="h-4 w-4" /> {text.publish}
               </button>
-            </div>
-          </motion.aside>
-        ) : null}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {selectedPost ? (
-          <motion.aside initial={{ x: "105%", opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: "105%", opacity: 0 }} transition={{ type: "spring", stiffness: 300, damping: 30 }} className="fixed inset-x-3 top-24 z-[94] flex max-h-[calc(100dvh-7rem)] flex-col overflow-hidden rounded-[1.35rem] border border-white/18 bg-[#1A1A1C] shadow-[0_32px_120px_rgba(0,0,0,0.95)] overscroll-contain md:bottom-4 md:left-auto md:right-4 md:w-[min(42rem,calc(100vw-2rem))]">
-            <div className="flex items-center justify-between gap-4 border-b border-white/10 bg-[#202024] p-5">
-              <p className="font-serif text-2xl text-white">{selectedPost.title}</p>
-              <button type="button" onClick={() => setSelectedPostId(null)} className="rounded-full border border-white/10 p-2 text-white/60 hover:text-white"><X className="h-4 w-4" /></button>
-            </div>
-            <div className="overflow-y-auto bg-[#1A1A1C] p-5">
-              <p className="text-sm leading-7 text-white/65">{selectedPost.body}</p>
-              {selectedPost.imageUrl ? <div className="relative mt-5 aspect-[16/7] overflow-hidden rounded-[1rem] border border-white/10"><Image src={selectedPost.imageUrl} alt={selectedPost.title} fill sizes="640px" className="object-cover grayscale contrast-125" /></div> : null}
-              <CommentThread
-                comments={[...(selectedPost.comments ?? []), ...(commentsByPost[selectedPost.id] ?? [])]}
-                draft={commentDrafts[selectedPost.id] ?? ""}
-                onDraftChange={(value) => setCommentDrafts((current) => ({ ...current, [selectedPost.id]: value }))}
-                onSubmit={() => void addComment(selectedPost.id)}
-                labels={{
-                  title: text.comment,
-                  placeholder: text.commentPlaceholder,
-                  post: text.postComment,
-                  reply: text.reply,
-                  replies: text.replies,
-                  empty: text.noComments,
-                }}
-              />
             </div>
           </motion.aside>
         ) : null}

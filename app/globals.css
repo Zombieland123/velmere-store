@@ -302,3 +302,12 @@
   background: #333;
   border-radius: 999px;
 }
+
+
+/* Velmère final tactile pass */
+html { scrollbar-gutter: stable; -webkit-text-size-adjust: 100%; }
+body { overflow-x: hidden; background: #080809; color: #e8e3d8; -webkit-tap-highlight-color: rgba(255,255,255,0.08); }
+button, a, input, textarea, select { touch-action: manipulation; }
+input, textarea, select { font-size: 16px; }
+.velmere-fluid-title { font-size: clamp(3rem, 8vw, 8.5rem); line-height: .9; letter-spacing: -0.035em; }
+@media (hover: none) { .hover\:scale-105:hover { transform: none; } }

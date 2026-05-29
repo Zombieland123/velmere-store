@@ -214,14 +214,15 @@ export default function Navbar() {
             <Menu className="h-4 w-4" aria-hidden="true" />
             <span className="hidden sm:inline">{t("menu")}</span>
           </button>
+          {isVlmRoute ? <div className="absolute left-[7.15rem] top-1/2 z-20 hidden -translate-y-1/2 xl:flex 2xl:left-[7.9rem]"><VlmModeSwitch inline /></div> : null}
 
-          <div className="pointer-events-none absolute left-1/2 top-1/2 z-10 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-7 whitespace-nowrap">
-            <Link href="/" aria-label="Velmère" onMouseEnter={playHover} className="pointer-events-auto font-sans text-[1.45rem] font-semibold uppercase tracking-[0.22em] text-white drop-shadow-[0_2px_18px_rgba(0,0,0,0.8)] max-[370px]:text-[1.22rem] max-[370px]:tracking-[0.16em] md:text-3xl">
+          <div className="pointer-events-none absolute left-1/2 top-1/2 z-10 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-5 whitespace-nowrap xl:gap-7">
+            <Link href="/" aria-label="Velmère" onMouseEnter={playHover} className="pointer-events-auto font-sans text-[1.45rem] font-semibold uppercase tracking-[0.22em] text-white drop-shadow-[0_2px_18px_rgba(0,0,0,0.8)] max-[370px]:text-[1.22rem] max-[370px]:tracking-[0.16em] md:text-[1.9rem]">
               VELMÈRE
             </Link>
             <nav aria-label="Primary" className="pointer-events-auto hidden items-center gap-2 lg:flex">
               {topLinks.map((link) => (
-                <Link key={link.href} href={link.href} onMouseEnter={playHover} className="rounded-full px-3 py-2 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-white/62 transition hover:bg-white/[0.05] hover:text-white xl:px-4">
+                <Link key={link.href} href={link.href} onMouseEnter={playHover} className="rounded-full px-2.5 py-2 font-mono text-[9px] xl:text-[10px] font-semibold uppercase tracking-[0.18em] text-white/62 transition hover:bg-white/[0.05] hover:text-white xl:px-4">
                   {link.label}
                 </Link>
               ))}
@@ -229,8 +230,6 @@ export default function Navbar() {
           </div>
 
           <div className="min-w-0 flex-1" />
-          {isVlmRoute ? <div className="hidden lg:block"><VlmModeSwitch inline /></div> : null}
-
           <div className="relative z-20 ml-auto flex min-w-0 items-center justify-end gap-2">
             <AudioToggleButton />
             <div className="hidden rounded-full border border-white/10 bg-[#151517] p-1 sm:flex">
