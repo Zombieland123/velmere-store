@@ -60,5 +60,5 @@
   "engines": {
     "node": "20.x"
   },
-  "packageManager": "pnpm@9.15.9"
+  "packageManager": "npm@10.8.2"
 }

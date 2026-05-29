@@ -80,11 +80,11 @@
   },
   "Home": {
     "heroImageAlt": "Fortgeschrittenes dreidimensionales Velmère Neural-Access-Visual mit Ivory-Knoten und Champagner-Signalfluss",
-    "kicker": "VELMÈRE / LIMITIERTER DUNKLER LUXUS",
-    "title": "Dunkler Luxus.\nPräziser Schnitt.\nLimitierter Zugang.",
-    "quote": "Reduzierter Premium-Streetwear, gebaut auf Silhouette, Gewicht und Zugang.",
-    "cta": "Kollektion entdecken",
-    "secondaryCta": "VLM ansehen",
+    "kicker": "VELMÈRE / PRIVATER DARK UNIFORM",
+    "title": "Leise eintreten.\nAufmerksamkeit halten.\nSignal hinterlassen.",
+    "quote": "Schwere Silhouetten für Ruhe, Autorität und spürbare Seltenheit.",
+    "cta": "Kollektion öffnen",
+    "secondaryCta": "VLM freischalten",
     "new": "Neu",
     "newSectionTitle": "Neuer Drop",
     "newSectionSubtitle": "Drei ruhige Silhouetten. Kein Lärm. Nur Form, Material und Gewicht.",
@@ -114,15 +114,15 @@
       "nodes": {
         "core": {
           "title": "VLM Access Core",
-          "body": "Das zentrale Access-Signal verbindet Kleidung, Archiv und Community-Routen."
+          "body": "Ein privates Signal verbindet Garments, Archiv und Member-Zugang ohne den Store in Lärm zu verwandeln."
         },
         "clothing": {
           "title": "Clothing Signal",
-          "body": "Garment-Silhouetten speisen die Zugangsebene, ohne den Store zu dominieren."
+          "body": "Das Kleidungsstück bleibt zuerst: Schnitt, Gewicht, Silhouette und kontrollierte Seltenheit."
         },
         "archive": {
           "title": "Archivzugang",
-          "body": "Archivst?cke k?nnen sp?ter mit Wallet-linked Eligibility verbunden werden."
+          "body": "Das Archiv wird Privileg-Ebene, keine Wand aus schweren Bildern."
         },
         "drops": {
           "title": "Private Drops",
@@ -709,7 +709,7 @@
     "hudGas": "Shop-Status: Preview",
     "hudNetwork": "Zahlungen: deaktiviert",
     "hudSynapse": "VLM Zugang: Entwurf",
-    "welcome": "Frage nach Fit, Kleidungsstücken, Zugang oder Archiv.",
+    "welcome": "Frag Angel nach Fit, Drop-Logik, Archivstimmung oder dem saubersten Weg durch den Store.",
     "decrypting": "Antwort wird vorbereitet",
     "fitAction": "Fit Analyse",
     "tokenAction": "VLM Zugang",
@@ -2791,8 +2791,8 @@
   "VlmClean": {
     "hero": {
       "kicker": "VLM / ZUGANGSEBENE",
-      "title": "Zugangstoken, kein Gewinnversprechen.",
-      "body": "VLM ist die geplante non-custodial Zugangsebene für private Drops, Archivzugang und ausgewählte Velmère Privilegien. Die Wallet-Vorschau liest eine öffentliche Adresse nur nach Zustimmung; Contract- und Routen-Daten erscheinen nach Veröffentlichung der Registry.",
+      "title": "Access Layer, kein Gewinnversprechen.",
+      "body": "VLM ist als private Utility-Ebene für Drops, Archiv und ausgewählte Velmère Privilegien geplant. Es liest nur öffentliche Wallet-Zustände nach Zustimmung und verlangt niemals Custody.",
       "notice": "",
       "rails": {
         "wallet": "Wallet-eigener Zugang",
@@ -2936,11 +2936,11 @@
   },
   "VlmBasicPro": {
     "kicker": "ZUGANGSMODUS",
-    "title": "Basic ist minimal. Pro ist der Engine.",
-    "body": "Basic hält VLM ruhig und lesbar. Pro öffnet die technische Access-Fläche: Wallet-Status, Registry-Signal, Sicherheit und Orbit.",
+    "title": "Basic beruhigt die Marke. Pro zeigt die Maschine.",
+    "body": "Basic hält die Seite minimal und filmisch. Pro öffnet eine kontrollierte Exchange-Grade Ebene: Wallet-Status, Access-Signale, Security und Registry-Logik.",
     "basic": {
       "kicker": "VELMÈRE BASIC",
-      "title": "Klarer Zugang.",
+      "title": "Leiser Zugang.",
       "items": {
         "one": "Drop-Zugang in einer Linie.",
         "two": "Wallet-Status ohne Lärm.",
@@ -2949,8 +2949,8 @@
     },
     "pro": {
       "kicker": "VELMÈRE PRO",
-      "title": "Access Engine.",
-      "body": "Pro zeigt VLM-Orbit, Wallet-Status, Registry-Signal und Access-Logik in einer technischen, aber kontrollierten Ebene.",
+      "title": "Signal Engine.",
+      "body": "Pro ist das technische Backstage: Wallet-State, Registry Confidence, AMU Signal und VLM Access Logic in einer präzisen Terminal-Fläche.",
       "items": {
         "orbit": "Animierter EVM-first Access-Orbit mit geplanten Network Rails.",
         "wallet": "Read-only Wallet-Vorschau, keine Custody, keine Seed Phrase.",
@@ -2961,7 +2961,7 @@
       "chartHide": "Chart ausblenden",
       "chartLabel": "AMU-Zugangssignal / Zwei-Linien-Vorschau"
     },
-    "basicHint": "Basic: kurz, klar, ohne Übermaß.",
+    "basicHint": "Basic entfernt Reibung: ein Signal, ein Weg, kein visueller Lärm.",
     "proHint": "Pro: technische Access-Fläche."
   }
 }

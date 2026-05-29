@@ -38,25 +38,13 @@ export default function AngelTeaser() {
         type="button"
         onClick={openAngel}
         aria-label={t("openLabel")}
-        className="group fixed left-0 top-1/2 z-[90] hidden -translate-y-1/2 md:flex"
+        className="group fixed bottom-[calc(env(safe-area-inset-bottom)+4.85rem)] right-4 z-[90] flex min-h-12 items-center gap-2 rounded-full border border-[#d4af37]/25 bg-[#F5F0E8] px-3 text-black shadow-[0_20px_70px_rgba(0,0,0,0.55)] ring-1 ring-white/10 backdrop-blur-2xl transition hover:border-[#d4af37]/45 hover:bg-white active:scale-95 md:bottom-8 md:right-8 md:bg-[#1A1A1C]/95 md:px-4 md:text-[#d4af37]"
       >
-        <span className="flex min-h-[120px] w-11 flex-col items-center justify-center gap-2 rounded-r-2xl border border-l-0 border-[#d4af37]/20 bg-[#FFFFF0]/92 text-black shadow-[8px_0_32px_rgba(0,0,0,0.25)] transition-all group-hover:w-12 group-hover:bg-[#FFFFF0]">
-          <Sparkles className="h-4 w-4 text-[#d4af37]" aria-hidden="true" />
-          <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.28em] [writing-mode:vertical-rl]">
-            {t("tabLabel")}
-          </span>
+        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#d4af37]/20 md:bg-[#d4af37]/10">
+          <Sparkles className="h-4 w-4" aria-hidden="true" />
         </span>
+        <span className="hidden font-mono text-[10px] font-black uppercase tracking-[0.22em] text-white/70 md:inline">Angel</span>
       </button>
-
-      <button
-        type="button"
-        onClick={openAngel}
-        aria-label={t("openLabel")}
-        className="fixed right-4 z-[90] flex min-h-11 w-11 items-center justify-center rounded-full border border-[#d4af37]/25 bg-[#FFFFF0]/95 text-black shadow-md md:hidden safe-bottom-6"
-      >
-        <Sparkles className="h-4 w-4 text-[#d4af37]" aria-hidden="true" />
-      </button>
-
       <AngelPanel open={open} onClose={() => setOpen(false)} />
     </>
   );

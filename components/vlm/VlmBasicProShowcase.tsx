@@ -24,14 +24,14 @@ function BasicCard({ reducedMotion }: { reducedMotion: boolean }) {
       animate={{ opacity: 1, x: 0, scale: 1 }}
       exit={reducedMotion ? { opacity: 0 } : { opacity: 0, x: "105%", scale: 0.98 }}
       transition={{ duration: 0.72, ease: [0.16, 1, 0.3, 1] }}
-      className="relative mx-auto w-full max-w-none overflow-hidden rounded-[2rem] border border-black/10 bg-[#F5F0E8] p-5 text-black shadow-[0_24px_90px_rgba(0,0,0,0.22)] md:p-8 xl:p-10"
+      className="relative mx-auto w-full max-w-none overflow-hidden rounded-[2rem] border border-black/10 bg-[#F5F0E8] p-5 text-center text-black shadow-[0_24px_90px_rgba(0,0,0,0.22)] md:p-8 lg:text-left xl:p-10"
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_84%_16%,rgba(0,0,0,0.06),transparent_30%)]" />
       <div className="relative z-[1] grid gap-6 lg:grid-cols-[0.42fr_1.58fr] lg:items-stretch">
         <div>
           <p className="font-sans text-[10px] font-black uppercase tracking-[0.32em] text-black/45">{t("basic.kicker")}</p>
-          <h3 className="mt-5 max-w-[8ch] font-serif text-5xl leading-[0.9] md:text-7xl">{t("basic.title")}</h3>
-          <p className="mt-6 max-w-sm text-sm leading-7 text-black/62">{t("basicHint")}</p>
+          <h3 className="mx-auto mt-5 max-w-[8ch] font-serif text-5xl leading-[0.9] md:text-7xl lg:mx-0">{t("basic.title")}</h3>
+          <p className="mx-auto mt-6 max-w-sm text-sm leading-7 text-black/62 lg:mx-0">{t("basicHint")}</p>
         </div>
         <div className="grid gap-3 md:grid-cols-3">
           {basicItems.map((item, index) => (
@@ -102,14 +102,14 @@ function ProCard({ reducedMotion }: { reducedMotion: boolean }) {
       animate={{ opacity: 1, x: 0, scale: 1 }}
       exit={reducedMotion ? { opacity: 0 } : { opacity: 0, x: "-105%", scale: 0.965 }}
       transition={{ duration: 0.78, ease: [0.16, 1, 0.3, 1] }}
-      className="relative mx-auto w-full max-w-none overflow-hidden rounded-[2.4rem] border border-[#d4af37]/24 bg-[#030303] p-5 text-white shadow-[0_40px_140px_rgba(0,0,0,0.62)] md:p-7 xl:p-10"
+      className="relative mx-auto w-full max-w-none overflow-hidden rounded-[2.4rem] border border-[#d4af37]/24 bg-[#030303] p-5 text-center text-white shadow-[0_40px_140px_rgba(0,0,0,0.62)] md:p-7 lg:text-left xl:p-10"
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_74%_36%,rgba(212,175,55,0.18),transparent_34%)]" />
       <div className="relative z-[1] grid gap-8 xl:grid-cols-[0.34fr_0.66fr] xl:items-start">
         <div>
           <p className="font-sans text-[10px] font-black uppercase tracking-[0.34em] text-[#d4af37]">{t("pro.kicker")}</p>
-          <h3 className="mt-5 max-w-[9ch] font-serif text-4xl leading-[0.94] text-white md:text-5xl xl:text-[4.4rem]">{t("pro.title")}</h3>
-          <p className="mt-6 max-w-lg font-sans text-sm leading-7 text-white/64">{t("pro.body")}</p>
+          <h3 className="mx-auto mt-5 max-w-[9ch] font-serif text-4xl leading-[0.94] text-white md:text-5xl lg:mx-0 xl:text-[4.4rem]">{t("pro.title")}</h3>
+          <p className="mx-auto mt-6 max-w-lg font-sans text-sm leading-7 text-white/64 lg:mx-0">{t("pro.body")}</p>
           <button type="button" onClick={() => setChartOpen((value) => !value)} className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-full border border-[#d4af37]/30 bg-[#d4af37]/10 px-5 font-mono text-[9px] uppercase tracking-[0.18em] text-[#d4af37] transition hover:bg-[#d4af37]/15">
             <Eye className="h-4 w-4" /> {chartOpen ? t("pro.chartHide") : t("pro.chartShow")}
           </button>
@@ -157,10 +157,10 @@ export default function VlmBasicProShowcase() {
 
   return (
     <section id="vlm-mode" className="mx-auto w-full max-w-none overflow-hidden px-4 py-14 sm:px-6 lg:px-12 2xl:px-20 md:py-20">
-      <div className="mx-auto mb-8 w-full max-w-none">
+      <div className="mx-auto mb-8 w-full max-w-none text-center lg:text-left">
         <p className="luxury-kicker text-velmere-gold/80">{t("kicker")}</p>
-        <h2 className="mt-4 max-w-4xl font-serif text-4xl leading-tight text-white md:text-5xl">{t("title")}</h2>
-        <p className="mt-4 max-w-3xl text-sm leading-7 text-white/54">{t("body")}</p>
+        <h2 className="mx-auto mt-4 max-w-4xl font-serif text-4xl leading-tight text-white md:text-5xl lg:mx-0">{t("title")}</h2>
+        <p className="mx-auto mt-4 max-w-3xl text-sm leading-7 text-white/54 lg:mx-0">{t("body")}</p>
       </div>
       <AnimatePresence mode="wait" initial={false}>{mode === "pro" ? <ProCard key="pro-card" reducedMotion={reducedMotion} /> : <BasicCard key="basic-card" reducedMotion={reducedMotion} />}</AnimatePresence>
     </section>

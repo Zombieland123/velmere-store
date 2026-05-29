@@ -31,13 +31,13 @@ export default function Home() {
     <main className="bg-velmere-black text-velmere-ivory">
       <section className="w-full px-4 pb-16 pt-28 md:px-8 md:pb-24 md:pt-36">
         <div className="grid gap-8 lg:grid-cols-12 lg:items-center">
-          <motion.div {...fadeUp} className="lg:col-span-5">
+          <motion.div {...fadeUp} className="text-center lg:col-span-5 lg:text-left">
             <p className="luxury-kicker text-velmere-gold/80">{t("kicker")}</p>
-            <h1 className="mt-6 whitespace-pre-line font-serif text-5xl leading-[0.94] tracking-normal text-white md:text-7xl">
+            <h1 className="mx-auto mt-6 max-w-[10ch] whitespace-pre-line font-serif text-5xl leading-[0.94] tracking-normal text-white md:text-7xl lg:mx-0">
               {t("title")}
             </h1>
-            <p className="mt-6 max-w-xl text-base leading-8 text-white/62 md:text-lg">{t("quote")}</p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <p className="mx-auto mt-6 max-w-xl text-base leading-8 text-white/62 md:text-lg lg:mx-0">{t("quote")}</p>
+            <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row lg:justify-start">
               <Link
                 href="/shop"
                 className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-[#F5F0E8] px-6 text-[11px] font-semibold uppercase tracking-[0.22em] text-black transition-colors hover:bg-white"
@@ -112,7 +112,7 @@ export default function Home() {
       <section className="bg-[#F5F0E8] py-16 text-black md:py-24">
         <LuxurySection>
           <div className="grid gap-8 lg:grid-cols-12 lg:items-center">
-            <div className="lg:col-span-5">
+            <div className="text-center lg:col-span-5 lg:text-left">
               <p className="text-[10px] font-black uppercase tracking-[0.34em] text-black/42">{t("editorialKicker")}</p>
               <h2 className="mt-5 font-serif text-4xl leading-tight md:text-6xl">{t("editorialTitle")}</h2>
               <p className="mt-6 text-base leading-8 text-black/64">{t("editorialBody")}</p>

@@ -80,11 +80,11 @@
   },
   "Home": {
     "heroImageAlt": "Advanced three-dimensional Velmère neural access visual with ivory nodes and champagne signal flow",
-    "kicker": "VELMÈRE / LIMITED DARK LUXURY",
-    "title": "Dark luxury.\nPrecise cut.\nLimited access.",
-    "quote": "Restrained premium streetwear built around silhouette, weight and access.",
+    "kicker": "VELMÈRE / PRIVATE DARK UNIFORM",
+    "title": "Enter quietly.\nOwn the room.\nLeave a signal.",
+    "quote": "Heavyweight silhouettes cut for restraint, attention and quiet authority.",
     "cta": "Explore collection",
-    "secondaryCta": "View VLM",
+    "secondaryCta": "Unlock VLM",
     "new": "New",
     "newSectionTitle": "New drop",
     "newSectionSubtitle": "Three quiet silhouettes. No noise. Only form, material, and weight.",
@@ -113,16 +113,16 @@
       "kicker": "NEURAL ATELIER",
       "nodes": {
         "core": {
-          "title": "VLM Access Core",
-          "body": "The central access signal connecting garments, archive and community routes."
+          "title": "VLM access core",
+          "body": "A private signal routing garments, archive and member access without turning the store into noise."
         },
         "clothing": {
           "title": "Clothing signal",
-          "body": "Garment silhouettes feed the access layer without taking over the store."
+          "body": "The garment stays first: cut, weight, silhouette and controlled scarcity."
         },
         "archive": {
           "title": "Archive access",
-          "body": "Archive pieces can later connect to wallet-linked eligibility."
+          "body": "Archive visibility becomes a privilege layer, not a public wall of oversized images."
         },
         "drops": {
           "title": "Private drops",
@@ -709,7 +709,7 @@
     "hudGas": "Store status: preview",
     "hudNetwork": "Payments: disabled",
     "hudSynapse": "VLM access: draft",
-    "welcome": "Ask about fit, garments, access, or the archive.",
+    "welcome": "Ask Angel for fit, drop logic, archive mood or the cleanest way through the store.",
     "decrypting": "Preparing response",
     "fitAction": "Fit analysis",
     "tokenAction": "VLM access",
@@ -2791,8 +2791,8 @@
   "VlmClean": {
     "hero": {
       "kicker": "VLM / ACCESS LAYER",
-      "title": "Access token, not a profit promise.",
-      "body": "VLM is the planned non-custodial access layer for private drops, archive access and selected Velmère privileges. Wallet preview can read a public address only after permission; contract and public route data appear when the registry is published.",
+      "title": "Access layer, not a profit promise.",
+      "body": "VLM is planned as a private utility layer for drops, archive visibility and selected Velmère privileges. It reads only public wallet state after permission and never asks for custody.",
       "notice": "",
       "rails": {
         "wallet": "wallet-owned access",
@@ -2936,11 +2936,11 @@
   },
   "VlmBasicPro": {
     "kicker": "ACCESS MODE",
-    "title": "Basic is minimal. Pro is the engine.",
-    "body": "Basic keeps VLM calm and readable. Pro opens the technical access surface: wallet state, registry signal, security and orbit view.",
+    "title": "Basic calms the brand. Pro reveals the machine.",
+    "body": "Basic keeps the page minimal and cinematic. Pro opens a controlled exchange-grade layer: wallet state, access signals, security checks and registry logic.",
     "basic": {
       "kicker": "VELMÈRE BASIC",
-      "title": "Clean access.",
+      "title": "Quiet access.",
       "items": {
         "one": "Drop access in one line.",
         "two": "Wallet status without noise.",
@@ -2949,8 +2949,8 @@
     },
     "pro": {
       "kicker": "VELMÈRE PRO",
-      "title": "Access engine.",
-      "body": "Pro mode shows the VLM orbit, wallet state, registry signal and access logic in a technical but controlled layer.",
+      "title": "Signal engine.",
+      "body": "Pro mode is the technical backstage: wallet state, registry confidence, AMU signal and VLM access logic in one precise terminal surface.",
       "items": {
         "orbit": "Animated EVM-first access orbit with planned network rails.",
         "wallet": "Read-only wallet preview, no custody, no seed phrase.",
@@ -2961,7 +2961,7 @@
       "chartHide": "Hide chart",
       "chartLabel": "AMU access signal / two-line preview"
     },
-    "basicHint": "Basic: short, clean, no excess.",
+    "basicHint": "Basic removes friction: one signal, one path, no visual noise.",
     "proHint": "Pro: technical access surface."
   }
 }

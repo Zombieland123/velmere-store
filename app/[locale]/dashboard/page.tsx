@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import DashboardClient from "@/components/dashboard/DashboardClient";
+import AuthGate from "@/components/auth/AuthGate";
 import { buildVelmereMetadata } from "@/lib/seo/metadata";
 
 export function generateMetadata({ params: { locale } }: { params: { locale: string } }): Metadata {
@@ -7,5 +8,9 @@ export function generateMetadata({ params: { locale } }: { params: { locale: str
 }
 
 export default function DashboardPage() {
-  return <DashboardClient />;
+  return (
+    <AuthGate title="DASHBOARD ACCESS LOCKED" body="Account console, wallet assets, security settings and order history open after login, registration or wallet connection.">
+      <DashboardClient />
+    </AuthGate>
+  );
 }

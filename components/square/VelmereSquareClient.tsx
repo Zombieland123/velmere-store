@@ -301,7 +301,7 @@ export default function VelmereSquareClient() {
   }
 
   return (
-    <main className="relative min-h-[100dvh] overflow-x-hidden bg-[#070708] pb-28 pt-24 text-[#FFFFF0]">
+    <main className="relative min-h-[100dvh] overflow-x-hidden bg-[#0A0A0C] pb-28 pt-24 text-[#FFFFF0]">
       <div className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(circle_at_8%_18%,rgba(212,175,55,0.065),transparent_26%),radial-gradient(circle_at_88%_12%,rgba(255,255,255,0.04),transparent_25%)]" />
       <div className="relative z-[1] mx-auto grid w-full max-w-none gap-5 px-4 sm:px-6 lg:grid-cols-[18rem_minmax(0,1fr)_20rem] xl:px-10 2xl:px-16">
         <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start">
@@ -350,7 +350,7 @@ export default function VelmereSquareClient() {
           </section>
         </aside>
 
-        <section className="min-w-0 space-y-4">
+        <section className="min-w-0 space-y-4 lg:pt-6">
           <section className="rounded-[1.25rem] border border-white/10 bg-[#1A1A1C] p-5 md:p-7">
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
               <div>

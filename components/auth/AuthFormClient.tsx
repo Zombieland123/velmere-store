@@ -4,7 +4,8 @@ import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Loader2 } from "lucide-react";
+import { Chrome, Loader2, WalletCards } from "lucide-react";
+import { setVelmereLocalSession } from "@/components/auth/AuthGate";
 
 const authSchema = z.object({
   email: z.string().email("EMAIL_FORMAT_INVALID"),
@@ -24,6 +25,7 @@ export default function AuthFormClient({ labels }: { labels: { email: string; pa
   const onSubmit = async () => {
     setStatus("loading");
     await new Promise((resolve) => window.setTimeout(resolve, 700));
+    setVelmereLocalSession(true);
     setStatus("ready");
   };
 
@@ -32,6 +34,11 @@ export default function AuthFormClient({ labels }: { labels: { email: string; pa
       <div className="flex items-center justify-between gap-4 border-b border-white/10 pb-6">
         <div><p className="font-mono text-[10px] font-black uppercase tracking-[0.26em] text-white/42">Secure account console</p><h2 className="mt-2 font-serif text-3xl">Velmère Account</h2></div>
         <span className="rounded-full border border-[#c8a96a]/30 bg-[#c8a96a]/10 px-3 py-1 font-mono text-[10px] text-[#c8a96a]">ZOD</span>
+      </div>
+
+      <div className="mt-7 grid gap-3 sm:grid-cols-2">
+        <button type="button" onClick={() => { setVelmereLocalSession(true); setStatus("ready"); }} className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full border border-white/10 bg-black/25 px-4 font-mono text-[10px] font-black uppercase tracking-[0.16em] text-white/62 transition hover:border-white/20 hover:text-white active:scale-95"><Chrome className="h-4 w-4" /> Continue with Google</button>
+        <button type="button" onClick={() => { setVelmereLocalSession(true); setStatus("ready"); }} className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full border border-[#c8a96a]/25 bg-[#c8a96a]/10 px-4 font-mono text-[10px] font-black uppercase tracking-[0.16em] text-[#c8a96a] transition hover:bg-[#c8a96a]/15 active:scale-95"><WalletCards className="h-4 w-4" /> Continue with wallet</button>
       </div>
 
       <div className="mt-7 space-y-5">

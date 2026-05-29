@@ -222,15 +222,15 @@ export default function VlmAccessGatePage() {
     <main className="min-h-[100dvh] overflow-x-clip bg-black pb-24 text-[#FFFFF0] md:pb-0">
       <VlmModeTransitionOverlay mode={mode} />
       <MobileModePill />
-      <section className="mx-auto w-full max-w-[88rem] overflow-x-clip px-5 py-24 sm:px-6 lg:px-12 lg:py-32 2xl:px-16">
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:gap-14 xl:gap-20">
-          <motion.div {...entrance} className="min-w-0 space-y-8">
+      <section className="w-full max-w-none overflow-x-clip px-4 py-24 sm:px-6 lg:px-8 lg:py-32 2xl:px-12">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:gap-10 xl:gap-14">
+          <motion.div {...entrance} className="min-w-0 space-y-8 text-center lg:text-left">
             <div>
               <p className="luxury-kicker text-velmere-gold/80">{t("hero.kicker")}</p>
-              <h1 className="mt-5 max-w-[10ch] font-serif text-5xl leading-[0.9] text-white md:text-6xl xl:text-[4.9rem]">
+              <h1 className="mx-auto mt-5 max-w-[10ch] font-serif text-5xl leading-[0.9] text-white md:text-6xl xl:text-[4.9rem] lg:mx-0">
                 {t("hero.title")}
               </h1>
-              <p className="mt-6 max-w-xl font-sans text-base leading-8 text-white/70">{t("hero.body")}</p>
+              <p className="mx-auto mt-6 max-w-xl font-sans text-base leading-8 text-white/70 lg:mx-0">{t("hero.body")}</p>
             </div>
             <ModelCards />
             <div className="grid gap-3 rounded-3xl border border-velmere-gold/20 bg-velmere-gold/[0.045] p-5 md:grid-cols-3 md:p-6">
@@ -243,7 +243,7 @@ export default function VlmAccessGatePage() {
             </div>
           </motion.div>
 
-          <motion.div {...entrance} className="min-w-0 lg:sticky lg:top-28">
+          <motion.div {...entrance} className="min-w-0 lg:sticky lg:top-28 lg:scale-[1.06] xl:scale-[1.12] lg:origin-center">
             <VlmProVisual />
           </motion.div>
         </div>
@@ -251,7 +251,7 @@ export default function VlmAccessGatePage() {
 
       <VlmBasicProShowcase />
 
-      <section id="wallet-preview" className="mx-auto grid w-full max-w-[88rem] scroll-mt-28 gap-8 overflow-x-clip px-5 py-16 sm:px-6 lg:px-12 md:py-24 lg:grid-cols-[0.95fr_1.05fr] 2xl:px-16">
+      <section id="wallet-preview" className="mx-auto grid w-full max-w-none scroll-mt-28 gap-8 overflow-x-clip px-4 py-16 sm:px-6 lg:px-8 md:py-24 lg:grid-cols-[0.95fr_1.05fr] 2xl:px-12">
         <motion.div {...entrance}>
           <p className="luxury-kicker text-velmere-gold/80">{t("wallet.kicker")}</p>
           <h2 className="mt-4 font-serif text-4xl leading-tight text-white md:text-5xl">{t("wallet.title")}</h2>

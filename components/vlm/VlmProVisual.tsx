@@ -60,7 +60,7 @@ export default function VlmProVisual() {
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
       style={{ transformStyle: "preserve-3d", rotateX: rotation.x, rotateY: rotation.y }}
-      className="mobile-scroll-safe-canvas relative mx-auto aspect-square max-h-[360px] w-full max-w-full overflow-hidden rounded-[2rem] border border-white/10 bg-[#050505] touch-pan-y pointer-events-none md:aspect-[16/9] md:min-h-[26rem] md:max-h-none md:pointer-events-auto md:touch-none md:cursor-grab md:active:cursor-grabbing"
+      className="mobile-scroll-safe-canvas relative mx-auto aspect-square max-h-[420px] w-full max-w-full overflow-hidden rounded-[2rem] border border-white/10 bg-[#050505] touch-pan-y pointer-events-none md:aspect-[16/9] md:min-h-[30rem] xl:min-h-[34rem] md:max-h-none md:pointer-events-auto md:touch-none md:cursor-grab md:active:cursor-grabbing"
       title={t("proVisual.dragHint")}
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,rgba(212,175,55,0.18),rgba(255,255,255,0.035)_30%,rgba(0,0,0,0)_72%),repeating-linear-gradient(90deg,rgba(255,255,255,0.022)_0,rgba(255,255,255,0.022)_1px,transparent_1px,transparent_58px),repeating-linear-gradient(0deg,rgba(255,255,255,0.016)_0,rgba(255,255,255,0.016)_1px,transparent_1px,transparent_58px)]" />

@@ -80,11 +80,11 @@
   },
   "Home": {
     "heroImageAlt": "Zaawansowany trójwymiarowy wizual neuronowy Velmère z punktami ivory i szampańskim przepływem sygnału",
-    "kicker": "VELMÈRE / LIMITOWANY CIEMNY LUKSUS",
-    "title": "Ciemny luksus.\nPrecyzyjny krój.\nLimitowany dostęp.",
-    "quote": "Powściągliwy streetwear premium oparty na sylwetce, ciężarze i dostępie.",
-    "cta": "Odkryj kolekcję",
-    "secondaryCta": "Sprawdź VLM",
+    "kicker": "VELMÈRE / PRYWATNY CIEMNY UNIFORM",
+    "title": "Wejdź cicho.\nPrzejmij uwagę.\nZostaw sygnał.",
+    "quote": "Ciężkie sylwetki projektowane pod spokój, autorytet i rzadkość zanim padnie pierwsze słowo.",
+    "cta": "Otwórz kolekcję",
+    "secondaryCta": "Odblokuj VLM",
     "new": "Nowe",
     "newSectionTitle": "Nowy drop",
     "newSectionSubtitle": "Trzy podstawowe sylwetki. Zero hałasu. Tylko forma, materiał i ciężar.",
@@ -114,15 +114,15 @@
       "nodes": {
         "core": {
           "title": "Rdzeń dostępu VLM",
-          "body": "Centralny sygnał dostępu łączący ubrania, archiwum i społeczność."
+          "body": "Prywatny sygnał łączący ubrania, archiwum i dostęp memberów bez zamieniania sklepu w hałas."
         },
         "clothing": {
           "title": "Sygnał odzieży",
-          "body": "Sylwetki ubrań zasilają warstwę dostępu, ale nie dominują sklepu."
+          "body": "Ubranie zostaje pierwsze: krój, ciężar, sylwetka i kontrolowana rzadkość."
         },
         "archive": {
           "title": "Dostęp do archiwum",
-          "body": "Elementy archiwalne mogą później łączyć się z kwalifikacją portfela."
+          "body": "Archiwum staje się warstwą przywileju, nie ścianą ciężkich zdjęć."
         },
         "drops": {
           "title": "Prywatne dropy",
@@ -709,7 +709,7 @@
     "hudGas": "Status sklepu: preview",
     "hudNetwork": "Płatności: wyłączone",
     "hudSynapse": "Dostęp VLM: projekt",
-    "welcome": "Zapytaj o krój, ubrania, dostęp albo archiwum.",
+    "welcome": "Zapytaj Angel o fit, logikę dropu, klimat archiwum albo najczystszą ścieżkę przez sklep.",
     "decrypting": "Przygotowuję odpowiedź",
     "fitAction": "Analiza kroju",
     "tokenAction": "Dostęp VLM",
@@ -2791,8 +2791,8 @@
   "VlmClean": {
     "hero": {
       "kicker": "VLM / WARSTWA DOSTĘPU",
-      "title": "Token dostępu, nie obietnica zysku.",
-      "body": "VLM to planowana, non-custodial warstwa dostępu do prywatnych dropów, archiwum i wybranych przywilejów Velmère. Podgląd portfela odczytuje publiczny adres tylko po zgodzie; dane kontraktu i publicznej ścieżki pojawią się po publikacji rejestru.",
+      "title": "Warstwa dostępu, nie obietnica zysku.",
+      "body": "VLM jest planowaną prywatną warstwą utility dla dropów, archiwum i wybranych przywilejów Velmère. Czyta tylko publiczny stan portfela po zgodzie i nigdy nie prosi o custody.",
       "notice": "",
       "rails": {
         "wallet": "dostęp w portfelu",
@@ -2936,11 +2936,11 @@
   },
   "VlmBasicPro": {
     "kicker": "TRYB DOSTĘPU",
-    "title": "Basic minimalny. Pro to silnik.",
-    "body": "Basic pokazuje VLM spokojnie i czytelnie. Pro otwiera techniczną powierzchnię dostępu: portfel, rejestr, bezpieczeństwo i orbitę.",
+    "title": "Basic uspokaja markę. Pro pokazuje maszynę.",
+    "body": "Basic zostawia stronę minimalną i filmową. Pro otwiera kontrolowaną warstwę exchange-grade: portfel, sygnały dostępu, bezpieczeństwo i logikę registry.",
     "basic": {
       "kicker": "VELMÈRE BASIC",
-      "title": "Czysty dostęp.",
+      "title": "Cichy dostęp.",
       "items": {
         "one": "Dostęp do dropu w jednej linii.",
         "two": "Status portfela bez hałasu.",
@@ -2949,8 +2949,8 @@
     },
     "pro": {
       "kicker": "VELMÈRE PRO",
-      "title": "Silnik dostępu.",
-      "body": "Tryb Pro pokazuje orbitę VLM, stan portfela, sygnał rejestru i logikę dostępu w technicznej, ale kontrolowanej warstwie.",
+      "title": "Silnik sygnału.",
+      "body": "Pro to techniczne backstage: stan portfela, pewność registry, sygnał AMU i logika dostępu VLM w jednej precyzyjnej powierzchni terminalowej.",
       "items": {
         "orbit": "Animowana orbita EVM-first z planowanymi szynami sieci.",
         "wallet": "Read-only podgląd portfela, bez custody i bez seed phrase.",
@@ -2961,7 +2961,7 @@
       "chartHide": "Ukryj wykres",
       "chartLabel": "Sygnał dostępu AMU / podgląd dwóch linii"
     },
-    "basicHint": "Basic: krótko, czysto, bez nadmiaru.",
+    "basicHint": "Basic usuwa tarcie: jeden sygnał, jedna ścieżka, zero wizualnego szumu.",
     "proHint": "Pro: techniczna powierzchnia dostępu."
   }
 }

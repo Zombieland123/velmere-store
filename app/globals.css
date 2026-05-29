@@ -84,8 +84,17 @@
   }
 
   ::selection {
-    background: var(--velmere-gold);
-    color: var(--velmere-graphite);
+    background: #1A1A1C;
+    color: #F5F0E8;
+  }
+
+  @media (max-width: 767px) {
+    body {
+      background:
+        radial-gradient(circle at 50% -10%, rgba(245, 240, 232, 0.055), transparent 34%),
+        radial-gradient(circle at 88% 12%, rgba(200, 169, 106, 0.045), transparent 28%),
+        #030303;
+    }
   }
 
   /* Hide scrollbar for Chrome, Safari and Opera */

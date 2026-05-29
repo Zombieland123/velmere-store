@@ -351,10 +351,10 @@ export default function NeuralBrainVisual() {
         key={active.key}
         initial={reducedMotion ? false : { opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        className="rounded-2xl border border-white/10 bg-white/[0.035] p-4 md:p-5"
+        className="mx-auto max-w-md rounded-2xl border border-white/10 bg-[#1A1A1C]/88 p-4 text-center shadow-2xl shadow-black/30 md:max-w-md md:p-4 lg:ml-auto lg:mr-0 lg:text-left"
       >
         <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#d4af37]">{active.title}</p>
-        <p className="mt-2 text-xs leading-6 text-white/52">{active.body}</p>
+        <p className="mt-2 text-[11px] leading-5 text-white/50">{active.body}</p>
       </motion.div>
     </div>
   );

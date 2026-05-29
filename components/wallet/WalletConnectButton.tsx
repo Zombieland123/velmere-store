@@ -120,7 +120,7 @@ export default function WalletConnectButton({
       case "connecting":
         return t("connecting", { label: config.label });
       case "not_installed":
-        return t("notDetected", { label: config.label });
+        return `Open ${config.label}`;
       case "rejected":
         return t("rejected");
       default:
@@ -131,7 +131,6 @@ export default function WalletConnectButton({
   const getButtonDisabled = () => {
     if (isThisWalletConnected) return true;
     if (state === "connecting") return true;
-    if (state === "not_installed") return true;
     return false;
   };
 
