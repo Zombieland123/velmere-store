@@ -301,24 +301,24 @@ export default function VelmereSquareClient() {
   }
 
   return (
-    <main className="relative min-h-[100dvh] overflow-x-hidden bg-black pb-28 pt-24 text-[#FFFFF0]">
+    <main className="relative min-h-[100dvh] overflow-x-hidden bg-[#070708] pb-28 pt-24 text-[#FFFFF0]">
       <div className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(circle_at_8%_18%,rgba(212,175,55,0.065),transparent_26%),radial-gradient(circle_at_88%_12%,rgba(255,255,255,0.04),transparent_25%)]" />
-      <div className="relative z-[1] mx-auto grid w-full max-w-none gap-5 px-4 sm:px-6 lg:grid-cols-[18rem_minmax(0,1fr)_18rem] xl:px-10 2xl:px-16">
+      <div className="relative z-[1] mx-auto grid w-full max-w-none gap-5 px-4 sm:px-6 lg:grid-cols-[18rem_minmax(0,1fr)_20rem] xl:px-10 2xl:px-16">
         <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start">
-          <section className="rounded-[1.25rem] border border-[#d4af37]/20 bg-[#060606] p-5 shadow-[0_24px_80px_rgba(0,0,0,0.34)]">
+          <section className="rounded-[1.25rem] border border-[#d4af37]/20 bg-[#1A1A1C] p-5 shadow-[0_24px_80px_rgba(0,0,0,0.34)]">
             <p className="font-sans text-[10px] font-black uppercase tracking-[0.28em] text-[#d4af37]">{text.os}</p>
             <h1 className="mt-3 font-serif text-3xl leading-none text-white">{t("title")}</h1>
             <p className="mt-4 text-sm leading-7 text-white/58">{text.intro}</p>
           </section>
 
-          <section className="rounded-[1.25rem] border border-white/10 bg-[#060606] p-4">
+          <section className="rounded-[1.25rem] border border-white/10 bg-[#1A1A1C] p-4">
             <div className="flex gap-3">
               <ShieldCheck className="mt-1 h-4 w-4 shrink-0 text-[#d4af37]" aria-hidden="true" />
               <p className="text-xs leading-6 text-white/56">{t("moderation")}</p>
             </div>
           </section>
 
-          <section className="overflow-hidden rounded-[1.25rem] border border-white/10 bg-[#060606]">
+          <section className="overflow-hidden rounded-[1.25rem] border border-white/10 bg-[#1A1A1C]">
             <div className="border-b border-white/10 p-4">
               <p className="font-sans text-[10px] font-black uppercase tracking-[0.24em] text-white/40">{text.map}</p>
               <p className="mt-2 text-xs leading-6 text-white/45">{text.walletGate}</p>
@@ -351,7 +351,7 @@ export default function VelmereSquareClient() {
         </aside>
 
         <section className="min-w-0 space-y-4">
-          <section className="rounded-[1.25rem] border border-white/10 bg-[#060606] p-5 md:p-7">
+          <section className="rounded-[1.25rem] border border-white/10 bg-[#1A1A1C] p-5 md:p-7">
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
               <div>
                 <p className="luxury-kicker text-[#d4af37]">{t("kicker")}</p>
@@ -364,14 +364,14 @@ export default function VelmereSquareClient() {
             </div>
           </section>
 
-          <button type="button" onClick={openComposer} className="flex min-h-14 w-full items-center gap-4 rounded-[1.05rem] border border-white/10 bg-[#060606] px-4 text-left transition hover:border-[#d4af37]/25 hover:bg-[#0c0c0c] active:scale-[0.99]">
+          <button type="button" onClick={openComposer} className="flex min-h-14 w-full items-center gap-4 rounded-[1.05rem] border border-white/10 bg-[#1A1A1C] px-4 text-left transition hover:border-[#d4af37]/25 hover:bg-[#0c0c0c] active:scale-[0.99]">
             <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[#d4af37]/25 bg-[#d4af37]/10 text-[#d4af37]"><Plus className="h-4 w-4" /></span>
             <span className="text-sm text-white/62">{text.composer}</span>
           </button>
 
           <motion.div variants={{ show: { transition: { staggerChildren: 0.08 } } }} initial="hidden" animate="show" className="space-y-4">
             {isLoading ? [0, 1, 2].map((item) => (
-              <div key={item} className="overflow-hidden rounded-[1.2rem] border border-white/10 bg-[#060606] p-5 shadow-[0_26px_90px_rgba(0,0,0,0.34)] md:p-6">
+              <div key={item} className="overflow-hidden rounded-xl border border-white/5 bg-[#1A1A1C] p-5 shadow-[0_26px_90px_rgba(0,0,0,0.34)] md:p-6">
                 <div className="flex gap-4">
                   <div className="h-10 w-10 animate-pulse rounded-full bg-white/5" />
                   <div className="flex-1">
@@ -386,7 +386,7 @@ export default function VelmereSquareClient() {
               const views = post.views + (viewBoosts[post.id] ?? 0);
               const comments = [...(post.comments ?? []), ...(commentsByPost[post.id] ?? [])];
               return (
-                <motion.article key={post.id} variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0 } }} transition={{ type: "spring", stiffness: 300, damping: 30 }} className="group overflow-hidden rounded-[1.2rem] border border-white/10 bg-[#060606] shadow-[0_26px_90px_rgba(0,0,0,0.34)]">
+                <motion.article key={post.id} variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0 } }} transition={{ type: "spring", stiffness: 300, damping: 30 }} className="group overflow-hidden rounded-xl border border-white/5 bg-[#1A1A1C] shadow-[0_26px_90px_rgba(0,0,0,0.34)]">
                   <button type="button" onClick={() => openPost(post)} className="block w-full p-5 text-left transition hover:bg-white/[0.018] active:scale-[0.995] md:p-6">
                     <div className="flex items-start gap-4">
                       <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.035] font-serif text-xl text-white">{post.authorName.slice(0, 1)}</span>
@@ -417,11 +417,11 @@ export default function VelmereSquareClient() {
         </section>
 
         <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start">
-          <section className="rounded-[1.25rem] border border-white/10 bg-[#060606] p-5">
+          <section className="rounded-[1.25rem] border border-white/10 bg-[#1A1A1C] p-5">
             <p className="font-sans text-[10px] font-black uppercase tracking-[0.24em] text-[#d4af37]">{text.guest}</p>
             <p className="mt-3 text-sm leading-7 text-white/56">{walletUi.connected ? `${shortAddress(walletUi.fullAddress)} · ${walletUi.tokenBalanceLabel || "EVM"}` : text.guestBody}</p>
           </section>
-          <section className="rounded-[1.25rem] border border-white/10 bg-[#060606] p-5">
+          <section className="rounded-[1.25rem] border border-white/10 bg-[#1A1A1C] p-5">
             <p className="font-sans text-[10px] font-black uppercase tracking-[0.24em] text-white/38">{text.rightTitle}</p>
             <div className="mt-4 space-y-3 text-sm leading-6 text-white/58">
               <p className="flex gap-3"><Bell className="mt-1 h-4 w-4 text-[#d4af37]" />{text.rightOne}</p>
@@ -438,7 +438,7 @@ export default function VelmereSquareClient() {
 
       <AnimatePresence>
         {composerOpen ? (
-          <motion.aside initial={{ x: "105%", opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: "105%", opacity: 0 }} transition={{ type: "spring", stiffness: 300, damping: 30 }} className="fixed inset-x-3 top-24 z-[95] flex max-h-[calc(100dvh-7rem)] flex-col rounded-[1.35rem] border border-white/12 bg-[#050505] p-5 pb-[calc(env(safe-area-inset-bottom)+1.25rem)] shadow-[0_32px_120px_rgba(0,0,0,0.88)] overscroll-contain md:bottom-4 md:left-auto md:right-4 md:w-[min(34rem,calc(100vw-2rem))]">
+          <motion.aside initial={{ x: "105%", opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: "105%", opacity: 0 }} transition={{ type: "spring", stiffness: 300, damping: 30 }} className="fixed inset-x-3 top-24 z-[95] flex max-h-[calc(100dvh-7rem)] flex-col rounded-[1.35rem] border border-white/12 bg-[#1A1A1C] p-5 pb-[calc(env(safe-area-inset-bottom)+1.25rem)] shadow-[0_32px_120px_rgba(0,0,0,0.88)] overscroll-contain md:bottom-4 md:left-auto md:right-4 md:w-[min(34rem,calc(100vw-2rem))]">
             <div className="flex items-center justify-between gap-4 border-b border-white/10 pb-4">
               <p className="font-serif text-2xl text-white">{text.composer}</p>
               <button type="button" onClick={() => setComposerOpen(false)} className="rounded-full border border-white/10 p-2 text-white/60 hover:text-white"><X className="h-4 w-4" /></button>
@@ -460,12 +460,12 @@ export default function VelmereSquareClient() {
 
       <AnimatePresence>
         {selectedPost ? (
-          <motion.aside initial={{ x: "105%", opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: "105%", opacity: 0 }} transition={{ type: "spring", stiffness: 300, damping: 30 }} className="fixed inset-x-3 top-24 z-[94] flex max-h-[calc(100dvh-7rem)] flex-col overflow-hidden rounded-[1.35rem] border border-white/18 bg-[#050505] shadow-[0_32px_120px_rgba(0,0,0,0.95)] overscroll-contain md:bottom-4 md:left-auto md:right-4 md:w-[min(42rem,calc(100vw-2rem))]">
-            <div className="flex items-center justify-between gap-4 border-b border-white/10 bg-[#080808] p-5">
+          <motion.aside initial={{ x: "105%", opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: "105%", opacity: 0 }} transition={{ type: "spring", stiffness: 300, damping: 30 }} className="fixed inset-x-3 top-24 z-[94] flex max-h-[calc(100dvh-7rem)] flex-col overflow-hidden rounded-[1.35rem] border border-white/18 bg-[#1A1A1C] shadow-[0_32px_120px_rgba(0,0,0,0.95)] overscroll-contain md:bottom-4 md:left-auto md:right-4 md:w-[min(42rem,calc(100vw-2rem))]">
+            <div className="flex items-center justify-between gap-4 border-b border-white/10 bg-[#202024] p-5">
               <p className="font-serif text-2xl text-white">{selectedPost.title}</p>
               <button type="button" onClick={() => setSelectedPostId(null)} className="rounded-full border border-white/10 p-2 text-white/60 hover:text-white"><X className="h-4 w-4" /></button>
             </div>
-            <div className="overflow-y-auto bg-[#050505] p-5">
+            <div className="overflow-y-auto bg-[#1A1A1C] p-5">
               <p className="text-sm leading-7 text-white/65">{selectedPost.body}</p>
               {selectedPost.imageUrl ? <div className="relative mt-5 aspect-[16/7] overflow-hidden rounded-[1rem] border border-white/10"><Image src={selectedPost.imageUrl} alt={selectedPost.title} fill sizes="640px" className="object-cover grayscale contrast-125" /></div> : null}
               <CommentThread

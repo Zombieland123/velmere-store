@@ -1,10 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Link } from "@/navigation";
 import { Drawer } from "vaul";
-import { Loader2, ShoppingBag, X } from "lucide-react";
+import { Loader2, Minus, Plus, ShoppingBag, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useCart } from "@/components/CartProvider";
 import { formatMoney } from "@/lib/products/catalog";
@@ -21,7 +22,7 @@ export default function CartDrawer() {
   const trust = useTranslations("Trust");
   const pathname = usePathname();
   const locale = useLocale();
-  const { items, isOpen, closeCart, removeItem, updateSize, subtotal, itemCount, currency } = useCart();
+  const { items, isOpen, closeCart, removeItem, updateSize, addItem, subtotal, itemCount, currency } = useCart();
   const wallet = useWalletConnect();
   const [checkoutState, setCheckoutState] = useState<"idle" | "loading" | "failed">("idle");
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
@@ -34,10 +35,7 @@ export default function CartDrawer() {
   const vatAmount = Math.max(0, subtotal - netAmount);
   const checkoutAllowed = items.length > 0 && hasStripePublishableKey && agreedPolicies && agreedToken && checkoutState !== "loading";
 
-  useEffect(() => {
-    closeCart();
-  }, [closeCart, pathname]);
-
+  useEffect(() => closeCart(), [closeCart, pathname]);
   useEffect(() => {
     if (!isOpen) {
       setCheckoutError(null);
@@ -45,9 +43,7 @@ export default function CartDrawer() {
     }
   }, [isOpen]);
 
-  const haptic = () => {
-    if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(40);
-  };
+  const haptic = () => navigator.vibrate?.(35);
 
   const startCheckout = async () => {
     if (!checkoutAllowed) return;
@@ -93,40 +89,31 @@ export default function CartDrawer() {
   return (
     <Drawer.Root open={isOpen} onOpenChange={(open) => !open && closeCart()}>
       <Drawer.Portal>
-        <Drawer.Overlay className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-3xl" />
-        <Drawer.Content className="fixed right-0 top-0 z-[110] flex h-[100dvh] min-h-[100dvh] w-full max-w-md flex-col border-l border-white/10 bg-black/95 text-white shadow-[-40px_0_120px_rgba(0,0,0,0.55)] outline-none safe-pt">
+        <Drawer.Overlay className="fixed inset-0 z-[100] bg-black/55 backdrop-blur-xl" />
+        <Drawer.Content className="fixed bottom-4 right-4 top-4 z-[110] flex h-[calc(100dvh-2rem)] w-[min(31rem,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#1A1A1C] text-white shadow-2xl shadow-black/50 outline-none">
           <div className="mx-auto mt-3 h-1 w-14 rounded-full bg-white/20 md:hidden" aria-hidden="true" />
-          <header className="flex items-center justify-between border-b border-white/10 px-6 py-5">
+          <header className="flex items-center justify-between border-b border-white/10 px-5 py-5">
             <div>
               <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-velmere-gold/80">{t("kicker")}</p>
-              <Drawer.Title className="mt-2 font-serif text-3xl tracking-[0.08em] text-white">{t("title")}</Drawer.Title>
-              <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.2em] text-white/30">ORDER BOOK / {itemCount} UNIT(S)</p>
+              <Drawer.Title className="mt-2 font-serif text-3xl tracking-[0.08em] text-white">ORDER BOOK</Drawer.Title>
+              <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.2em] text-white/35">{itemCount} UNIT(S) // STRIPE READY</p>
             </div>
             <Drawer.Close asChild>
-              <button
-                type="button"
-                aria-label={common("close")}
-                className="flex h-11 w-11 items-center justify-center rounded-none border border-white/10 text-white/62 transition-colors hover:border-white/25 hover:text-white active:scale-95"
-              >
+              <button type="button" aria-label={common("close")} className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-black/20 text-white/62 transition-colors hover:border-white/25 hover:text-white active:scale-95">
                 <X className="h-5 w-5" aria-hidden="true" />
               </button>
             </Drawer.Close>
           </header>
 
-          <div className="min-h-0 flex-1 overflow-y-auto scroll-touch px-0 py-0 no-scrollbar">
+          <div className="min-h-0 flex-1 overflow-y-auto scroll-touch px-0 py-0 luxury-scrollbar">
             {items.length === 0 ? (
               <div className="flex h-full flex-col items-center justify-center px-8 text-center">
-                <div className="flex h-16 w-16 items-center justify-center rounded-none border border-white/10 bg-white/[0.035]">
+                <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 bg-[#242428]">
                   <ShoppingBag className="h-7 w-7 text-white/38" aria-hidden="true" />
                 </div>
-                <p className="mt-6 max-w-xs font-mono text-[11px] uppercase leading-7 tracking-[0.22em] text-white/40">
-                  YOUR SELECTION IS EMPTY. INITIATE EXPLORATION.
-                </p>
+                <p className="mt-6 max-w-xs font-mono text-[11px] uppercase leading-7 tracking-[0.22em] text-white/42">YOUR SELECTION IS EMPTY. INITIATE EXPLORATION.</p>
                 <Drawer.Close asChild>
-                  <Link
-                    href="/shop"
-                    className="mt-8 inline-flex min-h-12 items-center rounded-none border border-white/12 px-6 font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-white/70 transition-colors hover:border-white/25 hover:text-white active:scale-95"
-                  >
+                  <Link href="/shop" className="mt-8 inline-flex min-h-12 items-center rounded-full border border-white/12 bg-[#242428] px-6 font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-white/70 transition-colors hover:border-white/25 hover:text-white active:scale-95">
                     {t("continueShopping")}
                   </Link>
                 </Drawer.Close>
@@ -134,56 +121,34 @@ export default function CartDrawer() {
             ) : (
               <ul className="divide-y divide-white/5">
                 {items.map((item, index) => (
-                  <li key={`${item.id}-${item.size}`} className="grid gap-3 border-b border-white/5 px-6 py-5">
-                    <div className="flex items-start justify-between gap-4">
+                  <li key={`${item.id}-${item.size}`} className="grid gap-4 border-b border-white/5 px-5 py-5">
+                    <div className="grid grid-cols-[5rem_minmax(0,1fr)] gap-4">
+                      <div className="relative h-24 overflow-hidden rounded-xl border border-white/10 bg-black/40">
+                        {item.image ? <Image src={item.image} alt={item.name} fill sizes="80px" className="object-cover grayscale" /> : <div className="h-full w-full bg-white/5" />}
+                      </div>
                       <div className="min-w-0">
                         <div className="mb-2 flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.18em] text-emerald-300/70">
                           <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-300" aria-hidden="true" />
                           [ {index % 2 === 0 ? "ALLOCATED" : "READY"} ]
                         </div>
-                        <h3 className="break-words font-mono text-[12px] font-semibold uppercase tracking-[0.16em] text-white">
-                          {item.name}
-                        </h3>
+                        <h3 className="break-words font-mono text-[12px] font-semibold uppercase tracking-[0.16em] text-white">{item.name}</h3>
+                        <div className="mt-3 grid grid-cols-2 gap-2 font-mono text-[10px] uppercase tracking-[0.14em] text-white/42">
+                          <span>SIZE: <b className="font-normal text-white/72">{item.size}</b></span>
+                          <span>QTY: <b className="font-normal tabular-nums text-white/72">{item.quantity}</b></span>
+                          <span className="col-span-2 break-all">PX: <b className="font-normal tabular-nums text-white/72">{formatMoney({ amount: item.price * item.quantity, currency: item.currency }, locale)}</b></span>
+                        </div>
                       </div>
-                      <p className="shrink-0 font-mono text-sm tabular-nums text-white/76">
-                        {formatMoney({ amount: item.price * item.quantity, currency: item.currency }, locale)}
-                      </p>
                     </div>
 
-                    <div className="grid grid-cols-1 gap-2 font-mono text-[10px] uppercase tracking-[0.16em] text-white/42 sm:grid-cols-3">
-                      <span>SIZE: <b className="font-normal text-white/72">{item.size}</b></span>
-                      <span>QTY: <b className="font-normal tabular-nums text-white/72">{item.quantity}</b></span>
-                      <span className="break-all">PX: <b className="font-normal tabular-nums text-white/72">{formatMoney({ amount: item.price, currency: item.currency }, locale)}</b></span>
-                    </div>
-
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       {SIZES.map((size) => (
-                        <button
-                          key={size}
-                          type="button"
-                          onClick={() => {
-                            haptic();
-                            updateSize(item.id, item.size, size);
-                          }}
-                          className={`flex h-9 min-w-9 items-center justify-center rounded-none border px-2 font-mono text-[10px] transition-colors active:scale-95 ${
-                            item.size === size
-                              ? "border-velmere-gold bg-velmere-gold text-black"
-                              : "border-white/12 text-white/52 hover:border-white/25 hover:text-white"
-                          }`}
-                        >
+                        <button key={size} type="button" onClick={() => { haptic(); updateSize(item.id, item.size, size); }} className={`flex h-9 min-w-9 items-center justify-center rounded-full border px-2 font-mono text-[10px] transition-colors active:scale-95 ${item.size === size ? "border-velmere-gold bg-velmere-gold text-black" : "border-white/12 bg-black/20 text-white/52 hover:border-white/25 hover:text-white"}`}>
                           {size}
                         </button>
                       ))}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          haptic();
-                          removeItem(item.id, item.size);
-                        }}
-                        className="ml-auto min-h-9 border border-white/10 px-3 font-mono text-[9px] font-semibold uppercase tracking-[0.18em] text-white/42 transition-colors hover:text-white active:scale-95"
-                      >
-                        {t("remove")}
-                      </button>
+                      <button type="button" aria-label="Decrease quantity" onClick={() => removeItem(item.id, item.size)} className="ml-auto flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-white/50 hover:text-white active:scale-95"><Minus className="h-3 w-3" /></button>
+                      <span className="flex h-9 min-w-9 items-center justify-center rounded-full border border-white/10 font-mono text-[10px] text-white/70">{item.quantity}</span>
+                      <button type="button" aria-label="Increase quantity" onClick={() => { haptic(); addItem({ ...item, quantity: 1 }); }} className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-white/50 hover:text-white active:scale-95"><Plus className="h-3 w-3" /></button>
                     </div>
                   </li>
                 ))}
@@ -191,72 +156,24 @@ export default function CartDrawer() {
             )}
           </div>
 
-          <footer className="border-t border-white/10 bg-black/70 px-6 py-5 safe-pb">
+          <footer className="border-t border-white/10 bg-[#151517] px-5 py-5 safe-pb">
             <div className="grid gap-2 font-mono text-[9px] uppercase tracking-[0.16em] text-white/38 sm:grid-cols-2">
-              <span>{trust("securePayment")}</span>
-              <span>{trust("trackedShipping")}</span>
-              <span>{trust("madeAfterOrder")}</span>
-              <span>{trust("support")}</span>
+              <span>{trust("securePayment")}</span><span>{trust("trackedShipping")}</span><span>{trust("madeAfterOrder")}</span><span>{trust("support")}</span>
             </div>
-
-            <div className="mt-5 space-y-2 border-y border-white/5 py-3 font-mono text-[10px] uppercase tracking-[0.16em] text-white/54">
-              <div className="flex items-center justify-between gap-3">
-                <span>Net Price</span>
-                <span className="tabular-nums text-white/72">{formatMoney({ amount: netAmount, currency }, locale)}</span>
-              </div>
-              <div className="flex items-center justify-between gap-3">
-                <span>VAT / MwSt 19%</span>
-                <span className="tabular-nums text-white/72">{formatMoney({ amount: vatAmount, currency }, locale)}</span>
-              </div>
-              <div className="flex items-center justify-between gap-3 pt-2 text-white/70">
-                <span>Gross Price</span>
-                <span className="tabular-nums text-white">{formatMoney({ amount: subtotal, currency }, locale)}</span>
-              </div>
+            <div className="mt-5 space-y-2 border-y border-white/10 py-4 font-mono text-[10px] uppercase tracking-[0.16em] text-white/42">
+              <div className="flex items-center justify-between gap-3"><span>Net Price</span><span className="tabular-nums text-white/72">{formatMoney({ amount: netAmount, currency }, locale)}</span></div>
+              <div className="flex items-center justify-between gap-3"><span>VAT / MwSt 19%</span><span className="tabular-nums text-white/72">{formatMoney({ amount: vatAmount, currency }, locale)}</span></div>
+              <div className="flex items-center justify-between gap-3 pt-2 text-white/70"><span>Gross Price</span><span className="tabular-nums text-white">{formatMoney({ amount: subtotal, currency }, locale)}</span></div>
             </div>
-
-            <div className="mt-4 grid gap-3 border border-white/10 bg-white/[0.025] p-3 font-mono text-[10px] leading-5 text-white/54">
-              <label className="flex gap-3">
-                <input
-                  type="checkbox"
-                  checked={agreedPolicies}
-                  onChange={(event) => setAgreedPolicies(event.target.checked)}
-                  className="mt-1 h-4 w-4 shrink-0 accent-velmere-gold"
-                />
-                <span>
-                  I accept the <Link href="/terms" className="text-velmere-gold underline-offset-4 hover:underline">Terms of Service</Link> and <Link href="/returns" className="text-velmere-gold underline-offset-4 hover:underline">Refund Policy / Widerrufsbelehrung</Link>.
-                </span>
-              </label>
-              <label className="flex gap-3">
-                <input
-                  type="checkbox"
-                  checked={agreedToken}
-                  onChange={(event) => setAgreedToken(event.target.checked)}
-                  className="mt-1 h-4 w-4 shrink-0 accent-velmere-gold"
-                />
-                <span>
-                  I acknowledge the <Link href="/token-agreement" className="text-velmere-gold underline-offset-4 hover:underline">Token Agreement</Link> terms regarding VLM Access.
-                </span>
-              </label>
+            <div className="mt-4 grid gap-3 rounded-xl border border-white/10 bg-[#202024] p-3 font-mono text-[10px] leading-5 text-white/54">
+              <label className="flex gap-3"><input type="checkbox" checked={agreedPolicies} onChange={(event) => setAgreedPolicies(event.target.checked)} className="mt-1 h-4 w-4 shrink-0 accent-velmere-gold" /><span>I accept the <Link href="/legal/terms" className="text-velmere-gold underline-offset-4 hover:underline">Terms</Link> and <Link href="/returns" className="text-velmere-gold underline-offset-4 hover:underline">Refund Policy / Widerrufsbelehrung</Link>.</span></label>
+              <label className="flex gap-3"><input type="checkbox" checked={agreedToken} onChange={(event) => setAgreedToken(event.target.checked)} className="mt-1 h-4 w-4 shrink-0 accent-velmere-gold" /><span>I acknowledge the <Link href="/token-agreement" className="text-velmere-gold underline-offset-4 hover:underline">Token Agreement</Link> terms regarding VLM Access.</span></label>
             </div>
-
-            <button
-              type="button"
-              data-magnetic
-              disabled={!checkoutAllowed}
-              onClick={startCheckout}
-              className="mt-5 flex min-h-14 w-full items-center justify-center gap-2 rounded-none border border-white/10 px-6 font-mono text-[11px] font-semibold uppercase tracking-[0.2em] text-white/34 transition-transform enabled:cursor-pointer enabled:bg-white enabled:text-black enabled:hover:bg-velmere-gold disabled:cursor-not-allowed disabled:opacity-40 active:scale-95"
-            >
+            <button type="button" disabled={!checkoutAllowed} onClick={startCheckout} className="mt-5 flex min-h-14 w-full items-center justify-center gap-2 rounded-full border border-white/10 px-6 font-mono text-[11px] font-semibold uppercase tracking-[0.2em] text-white/34 transition-transform enabled:cursor-pointer enabled:bg-white enabled:text-black enabled:hover:bg-velmere-gold disabled:cursor-not-allowed disabled:opacity-40 active:scale-95">
               {checkoutState === "loading" && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
               {hasStripePublishableKey ? `${t("checkout")} (${itemCount})` : t("paymentConfigRequired")}
             </button>
-            <p className="mt-3 font-mono text-[10px] leading-5 text-white/38">
-              {hasStripePublishableKey ? "Stripe checkout unlocks after both legal gates are accepted." : t("paymentDisabled")}
-            </p>
-            {checkoutError && (
-              <p className="mt-3 border border-velmere-gold/20 bg-velmere-gold/[0.08] p-3 font-mono text-[10px] leading-5 text-white/64">
-                {checkoutError}
-              </p>
-            )}
+            {checkoutError ? <p className="mt-3 rounded-xl border border-velmere-gold/20 bg-velmere-gold/[0.08] p-3 font-mono text-[10px] leading-5 text-white/64">{checkoutError}</p> : null}
           </footer>
         </Drawer.Content>
       </Drawer.Portal>

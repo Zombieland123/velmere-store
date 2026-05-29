@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useRef } from "react";
+import { useCallback } from "react";
+import { useAudioStore } from "@/store/useAudioStore";
 
 type ToneName = "hover" | "click" | "systemOn";
 
@@ -12,9 +13,9 @@ type ToneConfig = {
 };
 
 const TONES: Record<ToneName, ToneConfig> = {
-  hover: { frequency: 1180, duration: 0.014, gain: 0.012, type: "square" },
-  click: { frequency: 82, duration: 0.052, gain: 0.04, type: "sine" },
-  systemOn: { frequency: 47, duration: 0.28, gain: 0.028, type: "sawtooth" },
+  hover: { frequency: 1180, duration: 0.014, gain: 0.009, type: "square" },
+  click: { frequency: 82, duration: 0.052, gain: 0.032, type: "sine" },
+  systemOn: { frequency: 47, duration: 0.28, gain: 0.024, type: "sawtooth" },
 };
 
 let sharedContext: AudioContext | null = null;
@@ -31,8 +32,8 @@ function getContext() {
 
 function playTone(tone: ToneName) {
   const now = typeof performance !== "undefined" ? performance.now() : Date.now();
-  if (tone === "hover" && now - lastHoverAt < 70) return;
-  if (now - lastAnyToneAt < 18) return;
+  if (tone === "hover" && now - lastHoverAt < 120) return;
+  if (now - lastAnyToneAt < 28) return;
   if (tone === "hover") lastHoverAt = now;
   lastAnyToneAt = now;
 
@@ -71,12 +72,12 @@ function playTone(tone: ToneName) {
 }
 
 export function useUiSounds() {
-  const enabledRef = useRef(true);
+  const isMuted = useAudioStore((state) => state.isMuted);
 
   const play = useCallback((tone: ToneName) => {
-    if (!enabledRef.current) return;
+    if (isMuted) return;
     playTone(tone);
-  }, []);
+  }, [isMuted]);
 
   return {
     playHover: useCallback(() => play("hover"), [play]),

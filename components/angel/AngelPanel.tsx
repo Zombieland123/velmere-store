@@ -74,7 +74,7 @@ export default function AngelPanel({ open, onClose }: AngelPanelProps) {
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: "112%", opacity: 0 }}
           transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-          className="fixed bottom-4 right-4 top-24 z-[240] flex w-[min(30rem,calc(100vw-1.5rem))] flex-col overflow-hidden rounded-[2.25rem] border border-[#d4af37]/22 bg-[#050505]/98 text-[#FFFFF0] shadow-[0_40px_140px_rgba(0,0,0,0.86)] ring-1 ring-white/6 backdrop-blur-xl md:bottom-6 md:right-6"
+          className="fixed bottom-4 right-4 top-4 z-[240] flex h-[calc(100dvh-2rem)] w-[min(30rem,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#1A1A1C] text-[#FFFFF0] shadow-[0_40px_140px_rgba(0,0,0,0.86)] ring-1 ring-white/6 backdrop-blur-xl "
         >
           <header className="relative flex items-start justify-between gap-4 border-b border-white/10 px-5 py-5 before:pointer-events-none before:absolute before:inset-0 before:bg-[radial-gradient(circle_at_20%_10%,rgba(212,175,55,0.09),transparent_46%)]">
             <div className="relative z-[1]">
@@ -92,7 +92,7 @@ export default function AngelPanel({ open, onClose }: AngelPanelProps) {
             </button>
           </header>
 
-          <div className="flex-1 space-y-4 overflow-y-auto bg-[radial-gradient(circle_at_20%_10%,rgba(255,255,255,0.035),transparent_45%)] p-5 luxury-scrollbar">
+          <div className="flex-1 space-y-4 overflow-y-auto bg-[#1A1A1C] p-5 luxury-scrollbar">
             <div className="grid gap-2 sm:grid-cols-3">
               {[t("hudGas"), t("hudNetwork"), t("hudSynapse")].map((label) => (
                 <p key={label} className="rounded-2xl border border-white/5 bg-white/[0.03] px-3 py-2 font-sans text-[10px] uppercase tracking-[0.14em] text-white/48">
@@ -144,7 +144,7 @@ export default function AngelPanel({ open, onClose }: AngelPanelProps) {
               value={input}
               onChange={(event) => setInput(event.target.value)}
               placeholder={t("placeholder")}
-              className="min-h-[44px] flex-1 rounded-full border border-white/10 bg-black/65 px-5 text-sm text-white outline-none placeholder:text-white/34 focus:border-[#d4af37]/40"
+              className="min-h-[44px] flex-1 rounded-full border border-white/10 bg-[#111113] px-5 text-sm text-white outline-none placeholder:text-white/34 focus:border-[#d4af37]/40"
             />
             <button type="submit" disabled={loading} className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-[#d4af37]/30 bg-[#d4af37]/10 text-[#d4af37] disabled:opacity-40">
               <Send className="h-4 w-4" aria-hidden="true" />

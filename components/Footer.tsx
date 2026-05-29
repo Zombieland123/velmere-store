@@ -17,21 +17,21 @@ export default function Footer() {
   ];
 
   const serviceLinks = [
-    { href: "/shipping", label: t("shipping") },
+    { href: "/legal/shipping", label: t("shipping") },
     { href: "/returns", label: t("returns") },
     { href: "/contact", label: t("contact") },
   ];
 
   const legalLinks = [
     { href: "/impressum", label: t("impressum") },
-    { href: "/terms", label: t("terms") },
-    { href: "/privacy", label: t("privacy") },
+    { href: "/legal/terms", label: t("terms") },
+    { href: "/legal/privacy", label: t("privacy") },
     { href: "/token-agreement", label: t("tokenAgreement") },
   ];
 
   return (
-    <footer className="border-t border-white/10 bg-[#0A0A0A] text-white">
-      <div className="mx-auto max-w-7xl px-6 py-12 md:px-12 md:py-16">
+    <footer className="relative border-t border-white/10 bg-[#101012] text-white">
+      <div className="mx-auto max-w-none px-6 py-12 md:px-12 md:py-16">
         <div className="grid gap-8 lg:grid-cols-[1.2fr_0.7fr_0.7fr_0.7fr_1fr]">
           <div>
             <Link href="/" className="inline-flex font-sans text-3xl font-semibold uppercase tracking-[0.18em]">
@@ -91,6 +91,7 @@ export default function Footer() {
           <p className="mt-3 max-w-4xl text-[10px] uppercase tracking-[0.18em] text-white/24">{t("riskMicro")}</p>
         </div>
       </div>
+      <p className="absolute bottom-3 right-4 font-mono text-[9px] uppercase tracking-[0.18em] text-white/25">v1.0.0-rc.3 // AMU KERNEL</p>
     </footer>
   );
 }

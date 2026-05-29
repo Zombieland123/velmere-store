@@ -42,10 +42,10 @@ export default async function AccountPage({ params: { locale } }: { params: { lo
           </div>
 
           <Link
-            href="/login"
+            href="/dashboard"
             className="mt-10 inline-flex min-h-12 items-center justify-center rounded-full border border-white/10 px-6 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/62 transition-colors hover:border-white/20 hover:text-white"
           >
-            {t("loginCta")}
+            Open dashboard
           </Link>
         </section>
       </LuxurySection>

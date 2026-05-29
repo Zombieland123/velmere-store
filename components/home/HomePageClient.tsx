@@ -29,7 +29,7 @@ export default function Home() {
 
   return (
     <main className="bg-velmere-black text-velmere-ivory">
-      <LuxurySection className="pb-16 pt-28 md:pb-24 md:pt-36">
+      <section className="w-full px-4 pb-16 pt-28 md:px-8 md:pb-24 md:pt-36">
         <div className="grid gap-8 lg:grid-cols-12 lg:items-center">
           <motion.div {...fadeUp} className="lg:col-span-5">
             <p className="luxury-kicker text-velmere-gold/80">{t("kicker")}</p>
@@ -58,7 +58,7 @@ export default function Home() {
             <NeuralBrainVisual />
           </motion.div>
         </div>
-      </LuxurySection>
+      </section>
 
       <HomeSideRubrics />
 

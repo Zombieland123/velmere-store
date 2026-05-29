@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import VelmereSquareClient from "@/components/square/VelmereSquareClient";
+import TokenGate from "@/components/ui/TokenGate";
 import { buildVelmereMetadata } from "@/lib/seo/metadata";
 
 export function generateMetadata({ params: { locale } }: { params: { locale: string } }): Metadata {
@@ -13,5 +14,5 @@ export function generateMetadata({ params: { locale } }: { params: { locale: str
 }
 
 export default function SquarePage() {
-  return <VelmereSquareClient />;
+  return <TokenGate><VelmereSquareClient /></TokenGate>;
 }
