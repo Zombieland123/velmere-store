@@ -334,10 +334,10 @@ export default function NeuralBrainVisual() {
   const active = translatedNodes.find((node) => node.key === activeNode) ?? translatedNodes[0];
 
   return (
-    <div className="space-y-3 overflow-x-clip">
+    <div className="mx-auto w-full max-w-[430px] space-y-3 overflow-x-clip md:max-w-none">
       <div
         ref={wrapperRef}
-        className="mobile-scroll-safe-canvas relative aspect-square max-h-[360px] overflow-hidden rounded-[2rem] border border-white/10 bg-[#050505] md:aspect-[4/3] md:max-h-none md:h-[460px] lg:h-[540px] xl:h-[600px]"
+        className="mobile-scroll-safe-canvas relative mx-auto aspect-square max-h-[360px] overflow-hidden rounded-[2rem] border border-white/10 bg-[#050505] md:aspect-[4/3] md:max-h-none md:h-[460px] lg:h-[540px] xl:h-[600px]"
       >
         <canvas
           ref={canvasRef}
@@ -351,7 +351,7 @@ export default function NeuralBrainVisual() {
         key={active.key}
         initial={reducedMotion ? false : { opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mx-auto max-w-md rounded-2xl border border-white/10 bg-[#1A1A1C]/88 p-4 text-center shadow-2xl shadow-black/30 md:max-w-md md:p-4 lg:ml-auto lg:mr-0 lg:text-left"
+        className="mx-auto w-full max-w-xl rounded-2xl border border-white/10 bg-[#1A1A1C]/88 p-4 text-center shadow-2xl shadow-black/30 md:p-4 lg:text-left"
       >
         <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#d4af37]">{active.title}</p>
         <p className="mt-2 text-[11px] leading-5 text-white/50">{active.body}</p>

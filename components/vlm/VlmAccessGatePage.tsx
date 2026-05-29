@@ -22,6 +22,7 @@ import VlmProVisual from "@/components/vlm/VlmProVisual";
 import VlmWalletPreviewPanel from "@/components/vlm/VlmWalletPreviewPanel";
 import VlmModeTransitionOverlay from "@/components/vlm/VlmModeTransitionOverlay";
 import MobileModePill from "@/components/mobile/MobileModePill";
+import VlmModeChoicePrompt from "@/components/vlm/VlmModeChoicePrompt";
 
 const modelCards = ["supply", "network", "minting", "price", "tax", "status"] as const;
 const utilityCards = [
@@ -221,6 +222,7 @@ export default function VlmAccessGatePage() {
   return (
     <main className="min-h-[100dvh] overflow-x-clip bg-black pb-24 text-[#FFFFF0] md:pb-0">
       <VlmModeTransitionOverlay mode={mode} />
+      <VlmModeChoicePrompt mode={mode} />
       <MobileModePill />
       <section className="w-full max-w-none overflow-x-clip px-4 py-24 sm:px-6 lg:px-8 lg:py-32 2xl:px-12">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:gap-10 xl:gap-14">

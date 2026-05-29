@@ -90,12 +90,12 @@ export default function CartDrawer() {
     <Drawer.Root open={isOpen} onOpenChange={(open) => !open && closeCart()}>
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 z-[100] bg-black/55 backdrop-blur-xl" />
-        <Drawer.Content className="fixed bottom-4 right-4 top-4 z-[110] flex h-[calc(100dvh-2rem)] w-[min(31rem,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#1A1A1C] text-white shadow-2xl shadow-black/50 outline-none">
+        <Drawer.Content className="fixed bottom-2 right-2 top-2 z-[110] flex h-[calc(100dvh-1rem)] w-[calc(100vw-1rem)] flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#1A1A1C] text-white shadow-2xl shadow-black/50 outline-none md:bottom-4 md:right-4 md:top-4 md:h-[calc(100dvh-2rem)] md:w-[min(31rem,calc(100vw-2rem))]">
           <div className="mx-auto mt-3 h-1 w-14 rounded-full bg-white/20 md:hidden" aria-hidden="true" />
-          <header className="flex items-center justify-between border-b border-white/10 px-5 py-5">
+          <header className="flex items-center justify-between border-b border-white/10 px-4 py-4 md:px-5 md:py-5">
             <div>
               <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-velmere-gold/80">{t("kicker")}</p>
-              <Drawer.Title className="mt-2 font-serif text-3xl tracking-[0.08em] text-white">ORDER BOOK</Drawer.Title>
+              <Drawer.Title className="mt-2 font-serif text-2xl tracking-[0.08em] text-white md:text-3xl">ORDER BOOK</Drawer.Title>
               <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.2em] text-white/35">{itemCount} UNIT(S) // STRIPE READY</p>
             </div>
             <Drawer.Close asChild>
@@ -107,11 +107,11 @@ export default function CartDrawer() {
 
           <div className="min-h-0 flex-1 overflow-y-auto scroll-touch px-0 py-0 luxury-scrollbar">
             {items.length === 0 ? (
-              <div className="flex h-full flex-col items-center justify-center px-8 text-center">
+              <div className="flex h-full min-h-[18rem] flex-col items-center justify-center px-6 py-8 text-center">
                 <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 bg-[#242428]">
                   <ShoppingBag className="h-7 w-7 text-white/38" aria-hidden="true" />
                 </div>
-                <p className="mt-6 max-w-xs font-mono text-[11px] uppercase leading-7 tracking-[0.22em] text-white/42">YOUR SELECTION IS EMPTY. INITIATE EXPLORATION.</p>
+                <p className="mt-5 max-w-[15rem] font-mono text-[10px] uppercase leading-6 tracking-[0.18em] text-white/42 md:max-w-xs md:text-[11px] md:leading-7 md:tracking-[0.22em]">YOUR SELECTION IS EMPTY. INITIATE EXPLORATION.</p>
                 <Drawer.Close asChild>
                   <Link href="/shop" className="mt-8 inline-flex min-h-12 items-center rounded-full border border-white/12 bg-[#242428] px-6 font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-white/70 transition-colors hover:border-white/25 hover:text-white active:scale-95">
                     {t("continueShopping")}
@@ -156,24 +156,33 @@ export default function CartDrawer() {
             )}
           </div>
 
-          <footer className="border-t border-white/10 bg-[#151517] px-5 py-5 safe-pb">
-            <div className="grid gap-2 font-mono text-[9px] uppercase tracking-[0.16em] text-white/38 sm:grid-cols-2">
-              <span>{trust("securePayment")}</span><span>{trust("trackedShipping")}</span><span>{trust("madeAfterOrder")}</span><span>{trust("support")}</span>
-            </div>
-            <div className="mt-5 space-y-2 border-y border-white/10 py-4 font-mono text-[10px] uppercase tracking-[0.16em] text-white/42">
-              <div className="flex items-center justify-between gap-3"><span>Net Price</span><span className="tabular-nums text-white/72">{formatMoney({ amount: netAmount, currency }, locale)}</span></div>
-              <div className="flex items-center justify-between gap-3"><span>VAT / MwSt 19%</span><span className="tabular-nums text-white/72">{formatMoney({ amount: vatAmount, currency }, locale)}</span></div>
-              <div className="flex items-center justify-between gap-3 pt-2 text-white/70"><span>Gross Price</span><span className="tabular-nums text-white">{formatMoney({ amount: subtotal, currency }, locale)}</span></div>
-            </div>
-            <div className="mt-4 grid gap-3 rounded-xl border border-white/10 bg-[#202024] p-3 font-mono text-[10px] leading-5 text-white/54">
-              <label className="flex gap-3"><input type="checkbox" checked={agreedPolicies} onChange={(event) => setAgreedPolicies(event.target.checked)} className="mt-1 h-4 w-4 shrink-0 accent-velmere-gold" /><span>I accept the <Link href="/legal/terms" className="text-velmere-gold underline-offset-4 hover:underline">Terms</Link> and <Link href="/returns" className="text-velmere-gold underline-offset-4 hover:underline">Refund Policy / Widerrufsbelehrung</Link>.</span></label>
-              <label className="flex gap-3"><input type="checkbox" checked={agreedToken} onChange={(event) => setAgreedToken(event.target.checked)} className="mt-1 h-4 w-4 shrink-0 accent-velmere-gold" /><span>I acknowledge the <Link href="/token-agreement" className="text-velmere-gold underline-offset-4 hover:underline">Token Agreement</Link> terms regarding VLM Access.</span></label>
-            </div>
-            <button type="button" disabled={!checkoutAllowed} onClick={startCheckout} className="mt-5 flex min-h-14 w-full items-center justify-center gap-2 rounded-full border border-white/10 px-6 font-mono text-[11px] font-semibold uppercase tracking-[0.2em] text-white/34 transition-transform enabled:cursor-pointer enabled:bg-white enabled:text-black enabled:hover:bg-velmere-gold disabled:cursor-not-allowed disabled:opacity-40 active:scale-95">
-              {checkoutState === "loading" && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
-              {hasStripePublishableKey ? `${t("checkout")} (${itemCount})` : t("paymentConfigRequired")}
-            </button>
-            {checkoutError ? <p className="mt-3 rounded-xl border border-velmere-gold/20 bg-velmere-gold/[0.08] p-3 font-mono text-[10px] leading-5 text-white/64">{checkoutError}</p> : null}
+          <footer className="max-h-[50dvh] shrink-0 overflow-y-auto border-t border-white/10 bg-[#151517] px-4 py-4 safe-pb luxury-scrollbar md:max-h-none md:overflow-visible md:px-5 md:py-5">
+            {items.length === 0 ? (
+              <div className="flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-[#202024] px-4 py-3 font-mono text-[9px] uppercase tracking-[0.16em] text-white/40">
+                <span>No allocation active</span>
+                <span className="text-[#c8a96a]/70">0.00 EUR</span>
+              </div>
+            ) : (
+              <>
+                <div className="grid gap-2 font-mono text-[9px] uppercase tracking-[0.16em] text-white/38 sm:grid-cols-2">
+                  <span>{trust("securePayment")}</span><span>{trust("trackedShipping")}</span><span>{trust("madeAfterOrder")}</span><span>{trust("support")}</span>
+                </div>
+                <div className="mt-4 space-y-2 border-y border-white/10 py-3 font-mono text-[10px] uppercase tracking-[0.16em] text-white/42 md:mt-5 md:py-4">
+                  <div className="flex items-center justify-between gap-3"><span>Net Price</span><span className="tabular-nums text-white/72">{formatMoney({ amount: netAmount, currency }, locale)}</span></div>
+                  <div className="flex items-center justify-between gap-3"><span>VAT / MwSt 19%</span><span className="tabular-nums text-white/72">{formatMoney({ amount: vatAmount, currency }, locale)}</span></div>
+                  <div className="flex items-center justify-between gap-3 pt-2 text-white/70"><span>Gross Price</span><span className="tabular-nums text-white">{formatMoney({ amount: subtotal, currency }, locale)}</span></div>
+                </div>
+                <div className="mt-3 grid gap-2 rounded-xl border border-white/10 bg-[#202024] p-3 font-mono text-[9px] leading-5 text-white/54 md:mt-4 md:gap-3 md:text-[10px]">
+                  <label className="flex gap-3"><input type="checkbox" checked={agreedPolicies} onChange={(event) => setAgreedPolicies(event.target.checked)} className="mt-1 h-4 w-4 shrink-0 accent-velmere-gold" /><span>I accept the <Link href="/legal/terms" className="text-velmere-gold underline-offset-4 hover:underline">Terms</Link> and <Link href="/returns" className="text-velmere-gold underline-offset-4 hover:underline">Refund Policy / Widerrufsbelehrung</Link>.</span></label>
+                  <label className="flex gap-3"><input type="checkbox" checked={agreedToken} onChange={(event) => setAgreedToken(event.target.checked)} className="mt-1 h-4 w-4 shrink-0 accent-velmere-gold" /><span>I acknowledge the <Link href="/token-agreement" className="text-velmere-gold underline-offset-4 hover:underline">Token Agreement</Link> terms regarding VLM Access.</span></label>
+                </div>
+                <button type="button" disabled={!checkoutAllowed} onClick={startCheckout} className="mt-4 flex min-h-13 w-full items-center justify-center gap-2 rounded-full border border-white/10 px-6 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-white/34 transition-transform enabled:cursor-pointer enabled:bg-white enabled:text-black enabled:hover:bg-velmere-gold disabled:cursor-not-allowed disabled:opacity-40 active:scale-95 md:mt-5 md:min-h-14 md:text-[11px] md:tracking-[0.2em]">
+                  {checkoutState === "loading" && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
+                  {hasStripePublishableKey ? `${t("checkout")} (${itemCount})` : t("paymentConfigRequired")}
+                </button>
+                {checkoutError ? <p className="mt-3 rounded-xl border border-velmere-gold/20 bg-velmere-gold/[0.08] p-3 font-mono text-[10px] leading-5 text-white/64">{checkoutError}</p> : null}
+              </>
+            )}
           </footer>
         </Drawer.Content>
       </Drawer.Portal>

@@ -68,7 +68,7 @@
     "contact": "Kontakt",
     "tokenAgreement": "VLM-Vereinbarung",
     "newsletter": "Newsletter",
-    "newsletterText": "Private Informationen zu Drops, Archiv und VLM. Die Anmeldung wird nach finaler Shop-Konfiguration aktiviert.",
+    "newsletterText": "Hinterlasse ein Signal für private Drops, Archivzugang und Square-Updates.",
     "emailPlaceholder": "E-Mail-Adresse",
     "subscribeSoon": "Zugang anfragen",
     "rights": "Velmère. Alle Rechte vorbehalten.",
@@ -114,7 +114,7 @@
       "nodes": {
         "core": {
           "title": "VLM Access Core",
-          "body": "Ein privates Signal verbindet Garments, Archiv und Member-Zugang ohne den Store in Lärm zu verwandeln."
+          "body": "Ein privates Signal für Kleidung, Archiv und Member Access, ohne den Store laut zu machen."
         },
         "clothing": {
           "title": "Clothing Signal",
@@ -244,7 +244,20 @@
     "createAccount": "Konto erstellen",
     "forgotPassword": "Passwort vergessen?",
     "comingSoon": "Login wird mit Velmère Kundenkonten verfügbar.",
-    "pendingActivation": "Kontosystem vorbereitet — Aktivierung ausstehend."
+    "pendingActivation": "Kontosystem vorbereitet — Aktivierung ausstehend.",
+    "consoleKicker": "Sichere Account-Konsole",
+    "accountTitle": "Velmère Account",
+    "accountBody": "Verwalte Profil, Bestellungen, Sicherheit und optionale Wallet-Verknüpfungen. Google OAuth wartet auf Produktionsschlüssel.",
+    "continueGoogle": "Mit Google fortfahren",
+    "prepared": "bereit",
+    "metamaskWallet": "MetaMask Wallet",
+    "metamaskBody": "EVM Wallet-Binding",
+    "phantomWallet": "Phantom Wallet",
+    "phantomBody": "Solana Wallet-Binding",
+    "orEmail": "oder E-Mail-Zugang",
+    "passwordPlaceholder": "Symbol + Zahl + Großbuchstabe",
+    "validated": "[ ZUGRIFF VALIDIERТ ]",
+    "localSessionNotice": "Staging-Session. Production OAuth benötigt API-Schlüssel."
   },
   "Vlm": {
     "kicker": "VLM / ACCESS LAYER",
@@ -2227,7 +2240,15 @@
     "basic": "Einfach",
     "pro": "Pro",
     "basicHint": "Einfache Zugangsübersicht",
-    "proHint": "Erweiterte technische Ansicht"
+    "proHint": "Erweiterte technische Ansicht",
+    "choiceKicker": "VLM ACCESS INTERFACE",
+    "choiceTitle": "Wähle deine Zugangsebene.",
+    "choiceBody": "Basic hält den Store ruhig. Pro öffnet den technischen Raum: Registry, Security, Wallet-Status und AMU-Signal. Du kannst später im Header wechseln.",
+    "choiceBasicTitle": "Basic — ruhige Ansicht",
+    "choiceBasicBody": "Für Drops, Archivnotizen und einfache Access-Logik ohne Terminal-Dichte.",
+    "choiceProTitle": "Pro — Terminalraum",
+    "choiceProBody": "Für Registry-Status, Security-Signale, AMU-Baseline, Wallet-Vorschau und Launch-Infrastruktur.",
+    "choiceFootnote": "Keine Transaktion wird angefordert. Es wird nur die Interface-Ebene geändert."
   },
   "LuxuryActionModal": {
     "close": "Schließen"
@@ -2955,13 +2976,21 @@
         "orbit": "Animierter EVM-first Access-Orbit mit geplanten Network Rails.",
         "wallet": "Read-only Wallet-Vorschau, keine Custody, keine Seed Phrase.",
         "security": "Audit, Multisig und Testnet als Registry-Bedingungen.",
-        "lp": "Access-Route und Protokollsignal ohne Fake-Swap UI."
+        "lp": "Access-Route und Protokollsignal ohne Fake-Swap UI.",
+        "registry": "Registry-first Zugriffsdaten und offizielle Contract-Identität.",
+        "cyber": "Cybersecurity-Layer: Audit Lock, Multisig-Status und Contract Notes.",
+        "amu": "AMU hält das System am Velmère-Basissignal verankert.",
+        "moderation": "Angel Moderation bereitet Square-Entscheidungen vor: allow, review, block.",
+        "concierge": "Angel Concierge: Produktführung, Square-Moderation und Drop-Signal-Triage.",
+        "signals": "Signalboard für Allocation Windows, Registry Updates und Routenbereitschaft.",
+        "vault": "Private Vault-Architektur für Archivräume, Account-Status und künftige VLM-Privilegien.",
+        "forensics": "Security-Forensics für Wallet-Status, falsches Netzwerk und öffentliche Contract-Prüfung."
       },
       "chartShow": "Signalchart öffnen",
       "chartHide": "Chart ausblenden",
       "chartLabel": "AMU-Zugangssignal / Zwei-Linien-Vorschau"
     },
-    "basicHint": "Basic entfernt Reibung: ein Signal, ein Weg, kein visueller Lärm.",
+    "basicHint": "Eine ruhige Access-Übersicht für Drops, Archiv und Kollektion ohne Terminal-Dichte.",
     "proHint": "Pro: technische Access-Fläche."
   }
 }

@@ -17,7 +17,7 @@ export default function VlmModeSwitch({ inline = false }: { inline?: boolean }) 
     <div
       role="tablist"
       aria-label={t("aria")}
-      className={`inline-flex rounded-full border border-white/10 bg-[#121214]/88 p-1 shadow-[0_18px_60px_rgba(0,0,0,0.48)] backdrop-blur-2xl ${inline ? "origin-left scale-[0.78] 2xl:scale-[0.86]" : ""}`}
+      className={`inline-flex rounded-full border border-white/10 bg-[#121214]/88 p-1 shadow-[0_18px_60px_rgba(0,0,0,0.48)] backdrop-blur-2xl ${inline ? "origin-left scale-[0.60] 2xl:scale-[0.66]" : ""}`}
     >
       {[
         { key: "basic", href: "/vlm-token#vlm-mode", label: t("basic") },
@@ -34,7 +34,7 @@ export default function VlmModeSwitch({ inline = false }: { inline?: boolean }) 
               if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(50);
               item.key === "pro" ? playSystemOn() : playClick();
             }}
-            className={`min-h-10 ${inline ? "min-w-[4.35rem] px-2.5" : "min-w-24 px-4 md:min-w-28 md:px-5"} rounded-full text-center font-sans text-[10px] font-black uppercase tracking-[0.2em] transition-colors active:scale-95 ${
+            className={`min-h-10 ${inline ? "min-w-[3.55rem] px-1.5" : "min-w-24 px-4 md:min-w-28 md:px-5"} rounded-full text-center font-sans text-[8px] font-black uppercase tracking-[0.22em] transition-colors active:scale-95 ${
               active
                 ? item.key === "pro"
                   ? "bg-[linear-gradient(135deg,#d4af37,#3a2f16_58%,#101010)] text-[#FFFFF0] shadow-[0_0_34px_rgba(212,175,55,0.2)]"

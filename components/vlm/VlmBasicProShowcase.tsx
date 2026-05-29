@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { CircleDot, Cpu, Eye, Network, Orbit, ShieldCheck, WalletCards } from "lucide-react";
+import { CircleDot, Cpu, Eye, KeyRound, LockKeyhole, Network, Orbit, Radar, ShieldCheck, WalletCards } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 const basicItems = ["one", "two", "three"] as const;
-const proItems = ["orbit", "wallet", "security", "lp"] as const;
+const proItems = ["orbit", "wallet", "security", "lp", "registry", "cyber", "amu", "moderation", "concierge", "signals", "vault", "forensics"] as const;
 const amuControls = [
   { label: "AMU", value: "3162.2776", width: 78 },
   { label: "ρ", value: "1.3247", width: 58 },
@@ -30,7 +30,7 @@ function BasicCard({ reducedMotion }: { reducedMotion: boolean }) {
       <div className="relative z-[1] grid gap-6 lg:grid-cols-[0.42fr_1.58fr] lg:items-stretch">
         <div>
           <p className="font-sans text-[10px] font-black uppercase tracking-[0.32em] text-black/45">{t("basic.kicker")}</p>
-          <h3 className="mx-auto mt-5 max-w-[8ch] font-serif text-5xl leading-[0.9] md:text-7xl lg:mx-0">{t("basic.title")}</h3>
+          <h3 className="mx-auto mt-5 max-w-[8ch] font-serif text-4xl leading-[0.92] md:text-6xl lg:mx-0">{t("basic.title")}</h3>
           <p className="mx-auto mt-6 max-w-sm text-sm leading-7 text-black/62 lg:mx-0">{t("basicHint")}</p>
         </div>
         <div className="grid gap-3 md:grid-cols-3">
@@ -139,10 +139,10 @@ function ProCard({ reducedMotion }: { reducedMotion: boolean }) {
           </AnimatePresence>
         </div>
       </div>
-      <div className="relative z-[1] mt-8 grid auto-rows-fr gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="relative z-[1] mt-8 grid auto-rows-fr gap-3 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-6">
         {proItems.map((item, index) => {
-          const Icon = item === "orbit" ? Orbit : item === "wallet" ? WalletCards : item === "security" ? ShieldCheck : Cpu;
-          return <motion.div key={item} initial={reducedMotion ? false : { opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 + index * 0.06, duration: 0.48, ease: [0.16, 1, 0.3, 1] }} className="flex min-h-36 flex-col justify-between rounded-[1.35rem] border border-white/10 bg-black/70 p-5 backdrop-blur-xl"><Icon className="h-5 w-5 text-[#d4af37]" /><p className="mt-4 font-sans text-xs leading-6 text-white/62">{t(`pro.items.${item}`)}</p></motion.div>;
+          const Icon = item === "orbit" ? Orbit : item === "wallet" ? WalletCards : item === "security" ? ShieldCheck : item === "registry" ? KeyRound : item === "cyber" ? LockKeyhole : item === "amu" ? Radar : item === "vault" ? Network : item === "forensics" ? Eye : Cpu;
+          return <motion.div key={item} initial={reducedMotion ? false : { opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 + index * 0.06, duration: 0.48, ease: [0.16, 1, 0.3, 1] }} className="flex min-h-36 flex-col justify-between rounded-[1.35rem] border border-white/10 bg-black/70 p-5 backdrop-blur-xl transition hover:border-[#d4af37]/25 hover:bg-[#10100d] active:scale-[0.985]"><Icon className="h-5 w-5 text-[#d4af37]" /><p className="mt-4 font-sans text-xs leading-6 text-white/62">{t(`pro.items.${item}`)}</p></motion.div>;
         })}
       </div>
     </motion.article>

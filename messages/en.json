@@ -68,7 +68,7 @@
     "contact": "Contact",
     "tokenAgreement": "VLM Agreement",
     "newsletter": "Newsletter",
-    "newsletterText": "Private information on drops, archive, and VLM. Signup will be enabled after final store configuration.",
+    "newsletterText": "Leave a signal for private drop notes, archive access and Square updates.",
     "emailPlaceholder": "Email address",
     "subscribeSoon": "Request access",
     "rights": "Velmère. All rights reserved.",
@@ -114,7 +114,7 @@
       "nodes": {
         "core": {
           "title": "VLM access core",
-          "body": "A private signal routing garments, archive and member access without turning the store into noise."
+          "body": "A private signal routing garments, archive and member access while keeping the store calm."
         },
         "clothing": {
           "title": "Clothing signal",
@@ -244,7 +244,20 @@
     "createAccount": "Create account",
     "forgotPassword": "Forgot password?",
     "comingSoon": "Login will be available with Velmère customer accounts.",
-    "pendingActivation": "Account system prepared — activation pending configuration."
+    "pendingActivation": "Account system prepared — activation pending configuration.",
+    "consoleKicker": "Secure account console",
+    "accountTitle": "Velmère Account",
+    "accountBody": "Access your profile, orders, security settings and optional wallet bindings. Google OAuth is staged until production keys are connected.",
+    "continueGoogle": "Continue with Google",
+    "prepared": "prepared",
+    "metamaskWallet": "MetaMask Wallet",
+    "metamaskBody": "EVM wallet binding",
+    "phantomWallet": "Phantom Wallet",
+    "phantomBody": "Solana wallet binding",
+    "orEmail": "or email access",
+    "passwordPlaceholder": "Symbol + number + uppercase",
+    "validated": "[ ACCESS REQUEST VALIDATED ]",
+    "localSessionNotice": "Staging session. Production OAuth requires API keys."
   },
   "Vlm": {
     "kicker": "VLM / ACCESS LAYER",
@@ -2227,7 +2240,15 @@
     "basic": "Basic",
     "pro": "Pro",
     "basicHint": "Simple access overview",
-    "proHint": "Advanced technical view"
+    "proHint": "Advanced technical view",
+    "choiceKicker": "VLM ACCESS INTERFACE",
+    "choiceTitle": "Choose your access layer.",
+    "choiceBody": "Basic keeps the store quiet. Pro opens the technical room: registry, security, wallet state and AMU signal. You can switch later from the header.",
+    "choiceBasicTitle": "Basic — quiet view",
+    "choiceBasicBody": "For browsing drops, archive notes and simple access logic without terminal density.",
+    "choiceProTitle": "Pro — terminal room",
+    "choiceProBody": "For registry state, security signals, AMU baseline, wallet previews and launch infrastructure.",
+    "choiceFootnote": "No transaction is requested. This only changes the interface layer."
   },
   "LuxuryActionModal": {
     "close": "Close"
@@ -2955,13 +2976,21 @@
         "orbit": "Animated EVM-first access orbit with planned network rails.",
         "wallet": "Read-only wallet preview, no custody, no seed phrase.",
         "security": "Audit, multisig and testnet shown as registry conditions.",
-        "lp": "Access route and protocol signal without fake swap UI."
+        "lp": "Access route and protocol signal without fake swap UI.",
+        "registry": "Registry-first access records and official contract identity.",
+        "cyber": "Cybersecurity layer: audit lock, multisig status and phishing-resistant contract notes.",
+        "amu": "AMU baseline keeps the system anchored to the Velmère signal constant.",
+        "moderation": "Angel moderation lane prepares Square review, block and allow decisions.",
+        "concierge": "Angel concierge routing: product guidance, Square moderation and drop signal triage.",
+        "signals": "Signal board for allocation windows, public registry updates and route readiness.",
+        "vault": "Private vault architecture for archive rooms, account states and future VLM privileges.",
+        "forensics": "Security forensics layer for wallet state, wrong-network detection and public contract verification."
       },
       "chartShow": "Open signal chart",
       "chartHide": "Hide chart",
       "chartLabel": "AMU access signal / two-line preview"
     },
-    "basicHint": "Basic removes friction: one signal, one path, no visual noise.",
+    "basicHint": "A calm access overview for browsing, archive visibility and drop context without terminal density.",
     "proHint": "Pro: technical access surface."
   }
 }

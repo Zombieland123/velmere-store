@@ -311,3 +311,11 @@ button, a, input, textarea, select { touch-action: manipulation; }
 input, textarea, select { font-size: 16px; }
 .velmere-fluid-title { font-size: clamp(3rem, 8vw, 8.5rem); line-height: .9; letter-spacing: -0.035em; }
 @media (hover: none) { .hover\:scale-105:hover { transform: none; } }
+
+
+/* Velmère final UX polish */
+html { scroll-behavior: smooth; }
+body { background: #080809; }
+a, button { touch-action: manipulation; }
+input, textarea, select { font-size: 16px; }
+.velmere-route-glow { box-shadow: 0 0 0 1px rgba(255,255,255,0.06), 0 24px 90px rgba(0,0,0,0.38); }

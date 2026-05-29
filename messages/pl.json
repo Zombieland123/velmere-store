@@ -68,7 +68,7 @@
     "contact": "Kontakt",
     "tokenAgreement": "Umowa VLM",
     "newsletter": "Newsletter",
-    "newsletterText": "Prywatne informacje o dropach, archiwum i VLM. Zapis zostanie aktywowany po finalnej konfiguracji sklepu.",
+    "newsletterText": "Zostaw sygnał dla prywatnych dropów, archiwum i aktualizacji Square.",
     "emailPlaceholder": "Adres email",
     "subscribeSoon": "Popros o dostep",
     "rights": "Velmère. Wszelkie prawa zastrzeżone.",
@@ -114,7 +114,7 @@
       "nodes": {
         "core": {
           "title": "Rdzeń dostępu VLM",
-          "body": "Prywatny sygnał łączący ubrania, archiwum i dostęp memberów bez zamieniania sklepu w hałas."
+          "body": "Prywatny sygnał łączący ubrania, archiwum i dostęp członkowski bez robienia hałasu ze sklepu."
         },
         "clothing": {
           "title": "Sygnał odzieży",
@@ -244,7 +244,20 @@
     "createAccount": "Utwórz konto",
     "forgotPassword": "Nie pamiętasz hasła?",
     "comingSoon": "Logowanie zostanie udostępnione wraz z kontami klientów Velmère.",
-    "pendingActivation": "System kont przygotowany — aktywacja wymaga konfiguracji."
+    "pendingActivation": "System kont przygotowany — aktywacja wymaga konfiguracji.",
+    "consoleKicker": "Bezpieczna konsola konta",
+    "accountTitle": "Konto Velmère",
+    "accountBody": "Zarządzaj profilem, zamówieniami, bezpieczeństwem i opcjonalnym powiązaniem portfela. Google OAuth czeka na produkcyjne klucze.",
+    "continueGoogle": "Kontynuuj przez Google",
+    "prepared": "gotowe",
+    "metamaskWallet": "Portfel MetaMask",
+    "metamaskBody": "Powiązanie portfela EVM",
+    "phantomWallet": "Portfel Phantom",
+    "phantomBody": "Powiązanie portfela Solana",
+    "orEmail": "albo dostęp email",
+    "passwordPlaceholder": "Symbol + cyfra + wielka litera",
+    "validated": "[ DOSTĘP ZWERYFIKOWANY ]",
+    "localSessionNotice": "Sesja testowa. Produkcyjny OAuth wymaga kluczy API."
   },
   "Vlm": {
     "kicker": "VLM / ACCESS LAYER",
@@ -2227,7 +2240,15 @@
     "basic": "Podstawowy",
     "pro": "Pro",
     "basicHint": "Prosty przeglad dostepu",
-    "proHint": "Zaawansowany widok techniczny"
+    "proHint": "Zaawansowany widok techniczny",
+    "choiceKicker": "INTERFEJS DOSTĘPU VLM",
+    "choiceTitle": "Wybierz warstwę dostępu.",
+    "choiceBody": "Basic zostawia sklep spokojny. Pro otwiera pokój techniczny: registry, security, stan portfela i sygnał AMU. Później możesz zmienić tryb w headerze.",
+    "choiceBasicTitle": "Basic — spokojny widok",
+    "choiceBasicBody": "Do przeglądania dropów, archiwum i prostej logiki dostępu bez gęstości terminala.",
+    "choiceProTitle": "Pro — pokój terminalowy",
+    "choiceProBody": "Do stanu registry, sygnałów bezpieczeństwa, AMU baseline, podglądu portfela i infrastruktury launchu.",
+    "choiceFootnote": "Nie wysyłamy transakcji. To zmienia tylko warstwę interfejsu."
   },
   "LuxuryActionModal": {
     "close": "Zamknij"
@@ -2955,13 +2976,21 @@
         "orbit": "Animowana orbita EVM-first z planowanymi szynami sieci.",
         "wallet": "Read-only podgląd portfela, bez custody i bez seed phrase.",
         "security": "Audyt, multisig i testnet jako warunki rejestru.",
-        "lp": "Route dostępu i sygnał protokołu bez fake swapu."
+        "lp": "Route dostępu i sygnał protokołu bez fake swapu.",
+        "registry": "Warstwa rejestru: oficjalna tożsamość kontraktu i rekordy dostępu.",
+        "cyber": "Cyberbezpieczeństwo: audit lock, multisig i odporne na phishing notatki kontraktu.",
+        "amu": "AMU utrzymuje system przy stałej bazowej Velmère.",
+        "moderation": "Tor moderacji Angel przygotowuje decyzje Square: allow, review, block.",
+        "concierge": "Angel concierge: doradztwo produktowe, moderacja Square i selekcja sygnałów dropu.",
+        "signals": "Tablica sygnałów dla okien alokacji, registry i gotowości tras.",
+        "vault": "Architektura prywatnego vaultu dla archiwum, kont i przyszłych przywilejów VLM.",
+        "forensics": "Warstwa security forensics dla stanu portfela, złej sieci i weryfikacji kontraktu."
       },
       "chartShow": "Otwórz wykres sygnału",
       "chartHide": "Ukryj wykres",
       "chartLabel": "Sygnał dostępu AMU / podgląd dwóch linii"
     },
-    "basicHint": "Basic usuwa tarcie: jeden sygnał, jedna ścieżka, zero wizualnego szumu.",
+    "basicHint": "Spokojny podgląd dostępu do dropów, archiwum i kontekstu kolekcji bez gęstości terminala.",
     "proHint": "Pro: techniczna powierzchnia dostępu."
   }
 }
