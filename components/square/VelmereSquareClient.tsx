@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -170,6 +170,7 @@ export default function VelmereSquareClient() {
   const [composer, setComposer] = useState("");
   const [imagePreview, setImagePreview] = useState("");
   const [toast, setToast] = useState("");
+  const toastTimerRef = useRef<number | null>(null);
 
   const seedPosts = useMemo<SquarePost[]>(() => seedPostKeys.map((key, index) => ({
     id: key,
@@ -217,9 +218,10 @@ export default function VelmereSquareClient() {
     };
   }, [selectedPostId, composerOpen]);
 
-  function showToast(message: string, duration = 2200) {
+  function showToast(message: string, duration = 2600) {
+    if (toastTimerRef.current) window.clearTimeout(toastTimerRef.current);
     setToast(message);
-    window.setTimeout(() => setToast(""), duration);
+    toastTimerRef.current = window.setTimeout(() => setToast(""), duration);
   }
 
   function openComposer() {
@@ -436,7 +438,7 @@ export default function VelmereSquareClient() {
         </aside>
       </div>
 
-      <button type="button" onClick={openComposer} aria-label={text.openComposer} className="fixed right-4 z-[110] flex h-16 w-16 items-center justify-center rounded-[1.35rem] border border-[#d4af37]/35 bg-black/90 text-[#d4af37] shadow-[0_0_70px_rgba(212,175,55,0.26)] backdrop-blur-2xl luxury-hover hover:scale-[1.02] active:scale-95 safe-bottom-24 md:right-8">
+      <button type="button" onClick={openComposer} aria-label={text.openComposer} className="fixed right-3 top-1/2 z-[140] flex h-16 w-16 -translate-y-1/2 items-center justify-center rounded-[1.35rem] border border-[#d4af37]/35 bg-black/90 text-[#d4af37] shadow-[0_0_70px_rgba(212,175,55,0.26)] backdrop-blur-2xl luxury-hover hover:scale-[1.02] active:scale-95 md:right-6">
         <Plus className="h-6 w-6" />
       </button>
 
@@ -503,7 +505,7 @@ export default function VelmereSquareClient() {
         ) : null}
       </AnimatePresence>
 
-      <AnimatePresence>{toast ? <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 18 }} className="fixed bottom-24 left-1/2 z-[220] max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-full border border-white/10 bg-black/90 px-5 py-3 text-center text-xs text-white/72 shadow-2xl backdrop-blur-xl">{toast}</motion.div> : null}</AnimatePresence>
+      <AnimatePresence>{toast ? <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 18 }} className="fixed left-1/2 top-[calc(env(safe-area-inset-top)+5.75rem)] z-[260] max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-full border border-red-500/30 bg-[#241111]/95 px-5 py-3 text-center font-mono text-[10px] font-black uppercase tracking-[0.12em] text-red-200 shadow-[0_22px_80px_rgba(0,0,0,0.7)] backdrop-blur-xl">{toast}</motion.div> : null}</AnimatePresence>
     </main>
   );
 }

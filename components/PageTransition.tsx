@@ -10,10 +10,11 @@ export default function PageTransition({ children }: { children: React.ReactNode
   return (
     <motion.div
       key={pathname}
-      initial={prefersReducedMotion ? false : { opacity: 0, y: 22, scale: 0.988, filter: "blur(14px)" }}
-      animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
-      transition={{ duration: prefersReducedMotion ? 0 : 0.66, ease: [0.16, 1, 0.3, 1] }}
-      className="relative z-10 flex-grow overflow-x-clip"
+      initial={prefersReducedMotion ? false : { opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={prefersReducedMotion ? undefined : { opacity: 0 }}
+      transition={{ duration: prefersReducedMotion ? 0 : 0.46, ease: [0.16, 1, 0.3, 1] }}
+      className="relative z-10 flex-grow overflow-x-clip will-change-opacity"
     >
       {children}
     </motion.div>
