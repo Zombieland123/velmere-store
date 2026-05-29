@@ -96,7 +96,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   const externalOnly = product.fulfilmentMode === "external_link" && product.externalUrl;
 
   function handleAddToCart() {
-    if (!selectedVariant || !purchasable) return;
+    if (!product || !selectedVariant || !purchasable) return;
     navigator.vibrate?.(45);
     addItem({
       id: product.id,
@@ -316,3 +316,4 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     </main>
   );
 }
+
