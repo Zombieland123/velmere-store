@@ -88,3 +88,4 @@ export type ProductImportDraft = {
   warnings: string[];
   validationErrors: string[];
 };
+
