@@ -31,7 +31,7 @@ function buildCatalogContext(locale: "pl" | "en" | "de") {
     status: product.status,
     provider: product.provider,
     fulfilmentMode: product.fulfilmentMode,
-    categories: product.categories,
+    collection: product.collection,
     tags: product.tags,
     variants: product.variants.map((variant) => ({
       id: variant.id,
