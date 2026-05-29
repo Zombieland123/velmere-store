@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/navigation";
 import { Cpu, Layers3, ShieldCheck, X } from "lucide-react";
 
-const STORAGE_KEY = "velmere-vlm-mode-choice-v3";
+const STORAGE_KEY = "velmere-vlm-mode-choice-v4";
 
 export default function VlmModeChoicePrompt({ mode }: { mode: "basic" | "pro" }) {
   const t = useTranslations("VlmModeSwitch");
@@ -16,10 +16,22 @@ export default function VlmModeChoicePrompt({ mode }: { mode: "basic" | "pro" })
   useEffect(() => {
     const seen = window.sessionStorage.getItem(STORAGE_KEY);
     if (!seen) {
-      const timer = window.setTimeout(() => setOpen(true), 420);
-      return () => window.clearTimeout(timer);
+      window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+      setOpen(true);
     }
   }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    const previousBody = document.body.style.overflow;
+    const previousHtml = document.documentElement.style.overflow;
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousBody;
+      document.documentElement.style.overflow = previousHtml;
+    };
+  }, [open]);
 
   const choose = () => {
     navigator.vibrate?.(35);
@@ -31,7 +43,7 @@ export default function VlmModeChoicePrompt({ mode }: { mode: "basic" | "pro" })
     <AnimatePresence>
       {open ? (
         <motion.div
-          className="fixed inset-0 z-[240] flex items-center justify-center bg-black/64 px-4 backdrop-blur-2xl"
+          className="fixed inset-0 z-[240] flex items-center justify-center bg-[#09090A]/92 px-4 backdrop-blur-md"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -44,7 +56,7 @@ export default function VlmModeChoicePrompt({ mode }: { mode: "basic" | "pro" })
             animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
             exit={{ opacity: 0, y: 16, scale: 0.98, filter: "blur(8px)" }}
             transition={{ type: "spring", stiffness: 220, damping: 28 }}
-            className="relative w-full max-w-[38rem] overflow-hidden rounded-[2rem] border border-white/10 bg-[#1A1A1C] p-5 text-white shadow-[0_40px_140px_rgba(0,0,0,0.74)] md:p-7"
+            className="relative w-full max-w-[40rem] overflow-hidden rounded-[2rem] border border-white/12 bg-[#1A1A1C] p-5 text-white shadow-[0_40px_140px_rgba(0,0,0,0.74)] md:p-8"
           >
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_15%,rgba(212,175,55,0.16),transparent_28%),linear-gradient(135deg,rgba(255,255,255,0.04),transparent_36%)]" />
             <button type="button" onClick={choose} className="absolute right-4 top-4 z-[2] flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/28 text-white/45 transition hover:text-white active:scale-95" aria-label="Close"><X className="h-4 w-4" /></button>

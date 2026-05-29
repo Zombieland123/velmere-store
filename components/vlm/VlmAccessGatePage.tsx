@@ -193,6 +193,38 @@ function ContractPlanSection() {
   );
 }
 
+function ScientificProtocolSection() {
+  const rows = [
+    { label: "MÖBIUS BOOK", value: "continuous access path", body: "A visual metaphor for a route that returns to the wearer: archive, garment, signal, repeat." },
+    { label: "GOLDEN RATIO", value: "1.618 layout bias", body: "Used as a design-grid reference for card proportions, calm whitespace and the VLM orbital interface." },
+    { label: "PRIME LATTICE", value: "2 / 3 / 5 / 7 rhythm", body: "Prime-number spacing drives the terminal tick marks, staggered reveals and controlled asymmetry." },
+    { label: "ANTI-GRAVITY STUDY", value: "weight without noise", body: "A cinematic language for heavy garments that visually float without losing structural mass." },
+  ];
+
+  return (
+    <section className="mx-auto max-w-none px-4 py-16 sm:px-6 lg:px-8 md:py-24 2xl:px-12">
+      <motion.div {...entrance} className="rounded-[2rem] border border-[#d4af37]/16 bg-[linear-gradient(135deg,rgba(212,175,55,0.08),rgba(255,255,255,0.025)_38%,rgba(0,0,0,0.18))] p-5 md:p-8">
+        <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+          <div>
+            <p className="luxury-kicker text-velmere-gold/80">VLM / SCIENTIFIC LORE</p>
+            <h2 className="mt-4 max-w-xl font-serif text-4xl leading-tight text-white md:text-6xl">Geometry as a brand interface.</h2>
+            <p className="mt-5 max-w-xl font-sans text-sm leading-7 text-white/62">Möbius, AMU, prime rhythm and golden-ratio spacing are used here as visual systems for the platform — design logic, not financial or scientific promises.</p>
+          </div>
+          <div className="grid gap-[1px] overflow-hidden rounded-[1.25rem] border border-white/10 bg-white/10 sm:grid-cols-2">
+            {rows.map((row) => (
+              <article key={row.label} className="bg-[#121214] p-5">
+                <p className="font-mono text-[10px] font-black uppercase tracking-[0.22em] text-[#d4af37]">{row.label}</p>
+                <p className="mt-3 font-serif text-2xl leading-tight text-white">{row.value}</p>
+                <p className="mt-3 text-xs leading-6 text-white/48">{row.body}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </motion.div>
+    </section>
+  );
+}
+
 function RiskSection() {
   const t = useTranslations("VlmClean");
 
@@ -280,6 +312,7 @@ export default function VlmAccessGatePage() {
           <UtilitySection />
           <HowToBuySection />
           <VlmLaunchScenario />
+          <ScientificProtocolSection />
           <ContractPlanSection />
           <SecuritySection />
           <BajakProtocolLab />

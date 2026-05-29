@@ -214,7 +214,7 @@ export default function Navbar() {
             <Menu className="h-4 w-4" aria-hidden="true" />
             <span className="hidden sm:inline">{t("menu")}</span>
           </button>
-          {isVlmRoute ? <div className="absolute left-[12.25rem] top-1/2 z-20 hidden -translate-y-1/2 xl:flex 2xl:left-[14rem]"><VlmModeSwitch inline /></div> : null}
+          {isVlmRoute ? <div className="absolute left-[15.25rem] top-1/2 z-20 hidden -translate-y-1/2 xl:flex 2xl:left-[17rem]"><VlmModeSwitch inline /></div> : null}
 
           <div className="pointer-events-none absolute left-1/2 top-1/2 z-10 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-5 whitespace-nowrap xl:gap-7">
             <Link href="/" aria-label="Velmère" onMouseEnter={playHover} className="pointer-events-auto font-sans text-[1.45rem] font-semibold uppercase tracking-[0.22em] text-white drop-shadow-[0_2px_18px_rgba(0,0,0,0.8)] max-[370px]:text-[1.22rem] max-[370px]:tracking-[0.16em] md:text-[1.9rem]">
