@@ -102,7 +102,7 @@ export default function ShopPage() {
                   </div>
                   <div className="pt-5">
                     <p className="font-mono text-[9px] font-black uppercase tracking-[0.22em] text-[#d4af37]/70">{matrix.locked}</p>
-                    <h3 className="mt-3 font-serif text-2xl text-white/82">{typeof slot === 'string' ? slot : slot.name}</h3>
+                    <h3 className="mt-3 font-serif text-2xl text-white/82">{String(slot)}</h3>
                     <p className="mt-2 text-sm leading-6 text-velmere-muted">{locale === "pl" ? "Miejsce przyszłego dropu." : locale === "de" ? "Platz für einen kommenden Drop." : "Reserved for a future drop."}</p>
                   </div>
                 </div>
@@ -154,4 +154,5 @@ export default function ShopPage() {
     </main>
   );
 }
+
 
