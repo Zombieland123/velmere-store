@@ -96,7 +96,7 @@ export default function CartDrawer() {
             <div>
               <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-velmere-gold/80">{t("kicker")}</p>
               <Drawer.Title className="mt-2 font-serif text-2xl tracking-[0.08em] text-white md:text-3xl">{t("orderBook")}</Drawer.Title>
-              <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.2em] text-white/35">{itemCount} {t("units")} // STRIPE</p>
+              <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.2em] text-white/35">{itemCount} {t("units")}</p>
             </div>
             <Drawer.Close asChild>
               <button type="button" aria-label={common("close")} className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-black/20 text-white/62 transition-colors hover:border-white/25 hover:text-white active:scale-95">
@@ -189,3 +189,4 @@ export default function CartDrawer() {
     </Drawer.Root>
   );
 }
+
