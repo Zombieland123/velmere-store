@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { usePathname } from "@/navigation";
+import { usePathname } from "next/navigation";
 
 const LOCALES = new Set(["pl", "en", "de"]);
 
@@ -13,3 +13,4 @@ export default function HtmlLangSync() {
   }, [pathname]);
   return null;
 }
+
