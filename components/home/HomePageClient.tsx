@@ -36,7 +36,7 @@ export default function Home() {
             <h1 className="mx-auto mt-6 max-w-[10ch] whitespace-pre-line font-serif text-5xl leading-[0.94] tracking-normal text-white md:text-7xl lg:mx-0">
               {t("title")}
             </h1>
-            <p className="mx-auto mt-6 max-w-xl text-base leading-8 text-white/62 md:text-lg lg:mx-0">{t("quote")}</p>
+            <p className="mx-auto mt-6 max-w-xl text-base leading-8 text-velmere-grey-soft md:text-lg lg:mx-0">{t("quote")}</p>
             <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row lg:justify-start">
               <Link
                 href="/shop"
@@ -92,7 +92,7 @@ export default function Home() {
                   alt={getLocalizedString(product.images[0].alt, locale)}
                   fill
                   sizes="(min-width: 768px) 33vw, 100vw"
-                  className="object-cover grayscale contrast-125 transition-transform duration-500 group-hover:scale-[1.02]"
+                  className="object-cover contrast-105 transition-transform duration-500 group-hover:scale-[1.02]"
                 />
               </div>
               <div className="p-5">
@@ -123,7 +123,7 @@ export default function Home() {
                 alt={t("editorialImageAlt")}
                 fill
                 sizes="(min-width: 1024px) 58vw, 100vw"
-                className="object-cover grayscale contrast-125"
+                className="object-cover contrast-105"
               />
             </div>
           </div>
@@ -153,7 +153,7 @@ export default function Home() {
           <div>
             <p className="luxury-kicker text-velmere-gold/70">{t("squareTeaserKicker")}</p>
             <h2 className="mt-4 font-serif text-3xl leading-tight text-white md:text-5xl">{t("squareTeaserTitle")}</h2>
-            <p className="mt-4 max-w-2xl text-sm leading-7 text-white/58">{t("squareTeaserBody")}</p>
+            <p className="mt-4 max-w-2xl text-sm leading-7 text-velmere-grey-soft">{t("squareTeaserBody")}</p>
           </div>
           <Link
             href="/square"
@@ -166,7 +166,7 @@ export default function Home() {
           <div>
             <p className="luxury-kicker text-velmere-gold/70">{t("vlmTeaserKicker")}</p>
             <h2 className="mt-4 font-serif text-3xl leading-tight text-white md:text-5xl">{t("vlmTeaserTitle")}</h2>
-            <p className="mt-4 max-w-2xl text-sm leading-7 text-white/58">{t("vlmTeaserBody")}</p>
+            <p className="mt-4 max-w-2xl text-sm leading-7 text-velmere-grey-soft">{t("vlmTeaserBody")}</p>
           </div>
           <Link
             href="/vlm-token"

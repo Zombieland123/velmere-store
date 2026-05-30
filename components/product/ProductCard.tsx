@@ -33,17 +33,17 @@ export default function ProductCard({ product }: ProductCardProps) {
   if (!isProMode) {
     return (
       <Link href={`/shop/${product.slug}`} className="block" data-product-card>
-        <article className="border-y border-white/15 py-5 font-mono text-white">
+        <article className="border-y border-white/10 py-5 text-velmere-ivory">
           <div className="grid grid-cols-[1fr_auto] items-start gap-5">
             <div>
-              <p className="text-[11px] uppercase tracking-[0.18em] text-white/42">
+              <p className="velmere-label">
                 {purchasable ? productT("available") : productT("productComingSoon")}
               </p>
-              <h3 className="mt-2 text-base uppercase tracking-[0.08em] text-[#FFFFF0]">{title}</h3>
-              <p className="mt-2 max-w-md text-xs leading-6 text-white/48">{description}</p>
+              <h3 className="mt-2 text-base font-semibold uppercase tracking-[0.08em] text-velmere-ivory">{title}</h3>
+              <p className="mt-2 max-w-md text-sm leading-6 text-velmere-muted">{description}</p>
             </div>
             <div className="text-right">
-              <p className="text-sm tabular-nums text-white/72">{formatMoney(product.price, locale)}</p>
+              <p className="font-mono text-sm tabular-nums text-velmere-grey-soft">{formatMoney(product.price, locale)}</p>
               <p className="mt-3 text-[10px] uppercase tracking-[0.16em] text-white/34">
                 {product.variants.map((variant) => variant.size ?? variant.title).join(" / ")}
               </p>
@@ -71,7 +71,7 @@ export default function ProductCard({ product }: ProductCardProps) {
               alt={getLocalizedString(image.alt, locale)}
               fill
               sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-              className="object-cover object-center grayscale contrast-125 transition-transform duration-700 group-hover:scale-[1.035]"
+              className="object-cover object-center contrast-105 transition-transform duration-700 group-hover:scale-[1.025]"
             />
           ) : null}
           {hoverImage && hoverImage.url !== image?.url ? (
@@ -80,7 +80,7 @@ export default function ProductCard({ product }: ProductCardProps) {
               alt=""
               fill
               sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-              className="object-cover object-center grayscale contrast-125 opacity-0 transition-opacity duration-700 group-hover:opacity-100"
+              className="object-cover object-center contrast-105 opacity-0 transition-opacity duration-700 group-hover:opacity-100"
             />
           ) : null}
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(212,175,55,0.12),transparent_42%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
@@ -120,8 +120,8 @@ export default function ProductCard({ product }: ProductCardProps) {
           </div>
 
           <div className="mt-5 flex items-end justify-between gap-4">
-            <p className="font-mono text-lg tabular-nums text-white/72">{formatMoney(product.price, locale)}</p>
-            <p className="text-[11px] uppercase tracking-[0.18em] text-white/42">
+            <p className="font-mono text-lg tabular-nums text-velmere-gold">{formatMoney(product.price, locale)}</p>
+            <p className="velmere-label">
               {purchasable ? productT("viewProduct") : productT("details")}
             </p>
           </div>

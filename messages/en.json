@@ -44,11 +44,21 @@
     "womenswear": "Women's Collection",
     "vlm": "VLM",
     "square": "Velmère Square",
-    "loginCta": "Log in",
+    "loginCta": "Zaloguj",
     "profile": "Profile",
     "myOrders": "My orders",
     "vlmBalance": "VLM balance",
-    "guestMode": "GUEST"
+    "guestMode": "GUEST",
+    "connectWallet": "Connect wallet",
+    "walletConnected": "Wallet connected",
+    "walletAccess": "Wallet access",
+    "walletHelper": "Choose a wallet. Mobile opens the wallet browser and returns here.",
+    "network": "Network",
+    "balance": "Balance",
+    "access": "Access",
+    "disconnectWallet": "Disconnect wallet",
+    "drawerShop": "Shop / Community",
+    "walletReady": "MetaMask / Phantom mobile ready"
   },
   "Footer": {
     "tagline": "Dark premium streetwear. Limited drops. Access closer to the brand.",
@@ -67,16 +77,17 @@
     "returns": "Returns",
     "contact": "Contact",
     "tokenAgreement": "VLM Agreement",
-    "newsletter": "Newsletter",
-    "newsletterText": "Leave a signal for private drop notes, archive access and Square updates.",
+    "newsletter": "Private list",
+    "newsletterText": "Leave an email signal for drop notes and archive access.",
     "emailPlaceholder": "Email address",
-    "subscribeSoon": "Request access",
+    "subscribeSoon": "Leave email",
     "rights": "Velmère. All rights reserved.",
     "menswear": "Men's Collection",
     "womenswear": "Women's Collection",
     "newDrop": "New drop",
     "square": "Velmère Square",
-    "riskMicro": "VLM access is separated from clothing checkout. No public sale, contract deployment, audit, liquidity, listing, resale value or investment outcome is promised."
+    "riskMicro": "VLM is an access layer, not an investment. Details live in the VLM section.",
+    "newsletterOffline": "The private list opens after production mail settings are connected."
   },
   "Home": {
     "heroImageAlt": "Advanced three-dimensional Velmère neural access visual with ivory nodes and champagne signal flow",
@@ -210,7 +221,7 @@
     "podNote": ""
   },
   "Cart": {
-    "kicker": "Maison checkout",
+    "kicker": "Velmère cart",
     "title": "Cart",
     "empty": "Your cart is empty.",
     "continueShopping": "Continue shopping",
@@ -223,7 +234,20 @@
     "checkoutUnavailable": "Payment will be enabled after final store configuration.",
     "paymentDisabled": "Payment will be enabled after final store configuration.",
     "checkoutFailed": "Checkout could not be started.",
-    "openCart": "Open cart"
+    "openCart": "Open cart",
+    "orderBook": "Order book",
+    "units": "unit(s)",
+    "emptyLong": "Your selection is empty. Begin with the collection.",
+    "noAllocation": "No allocation active",
+    "netPrice": "Net price",
+    "vat": "VAT / MwSt 19%",
+    "grossPrice": "Gross price",
+    "acceptTermsPrefix": "I accept the",
+    "terms": "Terms",
+    "and": "and",
+    "refundPolicy": "Refund Policy / Widerrufsbelehrung",
+    "acceptTokenPrefix": "I acknowledge the",
+    "tokenAgreement": "Token Agreement"
   },
   "Checkout": {
     "successKicker": "Order received",
@@ -246,7 +270,7 @@
     "comingSoon": "Login will be available with Velmère customer accounts.",
     "pendingActivation": "Account system prepared — activation pending configuration.",
     "consoleKicker": "Secure account console",
-    "accountTitle": "Velmère Account",
+    "accountTitle": "Konto Velmère",
     "accountBody": "Access your profile, orders, security settings and optional wallet bindings. Google OAuth is staged until production keys are connected.",
     "continueGoogle": "Continue with Google",
     "prepared": "prepared",
@@ -257,7 +281,20 @@
     "orEmail": "or email access",
     "passwordPlaceholder": "Symbol + number + uppercase",
     "validated": "[ ACCESS REQUEST VALIDATED ]",
-    "localSessionNotice": "Staging session. Production OAuth requires API keys."
+    "localSessionNotice": "Staging session. Production OAuth requires API keys.",
+    "gateTitle": "Account access locked",
+    "gateBody": "Log in or create an account to manage profile, avatar, password, orders and optional Web3 bindings.",
+    "gateKicker": "Account gate",
+    "loginRegister": "Log in / register",
+    "previewConsole": "Preview console",
+    "walletPreview": "Wallet preview",
+    "walletPreviewBody": "Wallets are optional bindings after account login. Connect one wallet at a time.",
+    "evmPreview": "EVM access preview",
+    "solanaPreview": "Solana access preview",
+    "disconnectWallet": "Disconnect wallet",
+    "googlePrepared": "Google OAuth :: prepared",
+    "emailActive": "Email auth :: local session active",
+    "walletOptional": "Wallet binding :: optional"
   },
   "Vlm": {
     "kicker": "VLM / ACCESS LAYER",
@@ -1036,7 +1073,7 @@
     "currentState": "Current wallet state",
     "disabledAction": "Contract not deployed - purchase unavailable",
     "states": {
-      "disconnected": "Connect wallet",
+      "disconnected": "Połącz portfel",
       "connecting": "Connecting",
       "connected": "Connected",
       "wrong_network": "Unsupported network",
@@ -1209,18 +1246,18 @@
   },
   "VlmWalletPreview": {
     "kicker": "Wallet preview",
-    "title": "Read-only wallet preview",
+    "title": "Podgląd portfela tylko do odczytu",
     "body": "Connect a wallet to preview future access states. VLM purchase remains locked until contract deployment, legal review and audit.",
     "currentState": "Wallet state",
     "future": "later",
     "preLaunchBadge": "Activation pending",
-    "readOnly": "Read-only preview. Access requires deployed contract and registry.",
+    "readOnly": "Podgląd tylko do odczytu. Access requires deployed contract and registry.",
     "noProvider": "MetaMask was not detected in this browser.",
     "connectedHelper": "Connected: {address} on {network}. Balance is not read until a contract exists.",
     "purchaseDisabled": "Contract not deployed - purchase unavailable",
     "implementationStatusCta": "View implementation status",
     "states": {
-      "disconnected": "Connect wallet",
+      "disconnected": "Połącz portfel",
       "connecting": "Connecting",
       "connected": "Connected preview",
       "wrong_network": "Switch to EVM testnet/Base after deployment",
@@ -1241,7 +1278,7 @@
       "invalid": "Invalid EVM address format.",
       "valid": "Address format looks valid. Access remains locked until contract deployment."
     },
-    "activationBadge": "Read-only preview",
+    "activationBadge": "Podgląd tylko do odczytu",
     "readOnlyBadge": "Preview"
   },
   "VlmHowToBuy": {
@@ -2042,7 +2079,7 @@
   },
   "Account": {
     "kicker": "Customer account",
-    "title": "Account dashboard",
+    "title": "Panel konta",
     "status": "Account system prepared — activation pending configuration.",
     "loginCta": "Go to login",
     "modules": {
@@ -2079,7 +2116,7 @@
       "save": "Save local preview",
       "wallet": {
         "label": "Wallet",
-        "value": "Read-only preview after connection"
+        "value": "Podgląd tylko do odczytu after connection"
       },
       "rank": {
         "label": "Access rank",
@@ -2974,7 +3011,7 @@
       "body": "Pro mode is the technical backstage: wallet state, registry confidence, AMU signal and VLM access logic in one precise terminal surface.",
       "items": {
         "orbit": "Animated EVM-first access orbit with planned network rails.",
-        "wallet": "Read-only wallet preview, no custody, no seed phrase.",
+        "wallet": "Podgląd portfela tylko do odczytu, no custody, no seed phrase.",
         "security": "Audit, multisig and testnet shown as registry conditions.",
         "lp": "Access route and protocol signal without fake swap UI.",
         "registry": "Registry-first access records and official contract identity.",

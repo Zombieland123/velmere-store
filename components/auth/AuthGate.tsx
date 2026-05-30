@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useState, type ReactNode } from "react";
 import { LockKeyhole, ShieldCheck, UserPlus } from "lucide-react";
 import { Link } from "@/navigation";
+import { useTranslations } from "next-intl";
 import { useWalletUiStore } from "@/store/useWalletUiStore";
 import { useWalletConnect } from "@/lib/wallet/useWalletConnect";
 
@@ -62,10 +63,13 @@ function WalletPreviewButton({ icon, title, body, onClick, disabled }: { icon: s
 
 export default function AuthGate({
   children,
-  title = "ACCOUNT ACCESS LOCKED",
-  body = "Log in or create an account to manage profile, avatar, password, orders and optional Web3 bindings.",
+  title,
+  body,
 }: AuthGateProps) {
+  const authT = useTranslations("Auth");
   const { ready, authenticated } = useVelmereAuth();
+  const gateTitle = title ?? authT("gateTitle");
+  const gateBody = body ?? authT("gateBody");
   const walletUi = useWalletUiStore();
   const wallet = useWalletConnect();
 
@@ -89,23 +93,23 @@ export default function AuthGate({
       <div className="relative z-[1] mx-auto grid max-w-5xl gap-5 lg:grid-cols-[1fr_0.8fr] lg:items-stretch">
         <section className="overflow-hidden rounded-[2rem] border border-white/10 bg-[#1A1A1C] p-6 shadow-[0_42px_140px_rgba(0,0,0,0.72)] md:p-9">
           <div className="flex h-14 w-14 items-center justify-center rounded-full border border-[#c8a96a]/25 bg-[#c8a96a]/10 text-[#c8a96a]"><LockKeyhole className="h-5 w-5" aria-hidden="true" /></div>
-          <p className="mt-7 font-mono text-[10px] font-black uppercase tracking-[0.26em] text-[#c8a96a]">[ ACCOUNT_GATE ]</p>
-          <h1 className="mt-4 max-w-2xl font-serif text-4xl leading-[0.96] text-white md:text-6xl">{title}</h1>
-          <p className="mt-5 max-w-xl text-sm leading-7 text-white/56">{body}</p>
+          <p className="mt-7 font-mono text-[10px] font-black uppercase tracking-[0.26em] text-[#c8a96a]">{authT("gateKicker")}</p>
+          <h1 className="mt-4 max-w-2xl font-serif text-4xl leading-[0.96] text-white md:text-6xl">{gateTitle}</h1>
+          <p className="mt-5 max-w-xl text-sm leading-7 text-white/56">{gateBody}</p>
           <div className="mt-8 grid gap-3 sm:grid-cols-2">
-            <Link href="/login" className="inline-flex min-h-[3.25rem] items-center justify-center gap-3 rounded-2xl bg-white px-6 font-mono text-[10px] font-black uppercase tracking-[0.18em] text-black transition hover:bg-[#F5F0E8] active:scale-[0.985]"><UserPlus className="h-4 w-4" aria-hidden="true" />Log in / register</Link>
-            <button type="button" onClick={() => setVelmereLocalSession(true)} className="inline-flex min-h-[3.25rem] items-center justify-center gap-3 rounded-2xl border border-[#c8a96a]/30 bg-[#c8a96a]/10 px-6 font-mono text-[10px] font-black uppercase tracking-[0.18em] text-[#c8a96a] transition hover:bg-[#c8a96a]/15 active:scale-[0.985]"><ShieldCheck className="h-4 w-4" aria-hidden="true" />Preview console</button>
+            <Link href="/login" className="inline-flex min-h-[3.25rem] items-center justify-center gap-3 rounded-2xl bg-white px-6 font-mono text-[10px] font-black uppercase tracking-[0.18em] text-black transition hover:bg-[#F5F0E8] active:scale-[0.985]"><UserPlus className="h-4 w-4" aria-hidden="true" />{authT("loginRegister")}</Link>
+            <button type="button" onClick={() => setVelmereLocalSession(true)} className="inline-flex min-h-[3.25rem] items-center justify-center gap-3 rounded-2xl border border-[#c8a96a]/30 bg-[#c8a96a]/10 px-6 font-mono text-[10px] font-black uppercase tracking-[0.18em] text-[#c8a96a] transition hover:bg-[#c8a96a]/15 active:scale-[0.985]"><ShieldCheck className="h-4 w-4" aria-hidden="true" />{authT("previewConsole")}</button>
           </div>
         </section>
         <aside className="rounded-[2rem] border border-white/10 bg-[#151517] p-5 shadow-2xl shadow-black/50 md:p-6">
-          <p className="font-mono text-[10px] font-black uppercase tracking-[0.24em] text-[#c8a96a]">Wallet preview</p>
-          <p className="mt-3 text-sm leading-7 text-white/48">Wallets are optional bindings after account login. Connect one wallet at a time.</p>
+          <p className="font-mono text-[10px] font-black uppercase tracking-[0.24em] text-[#c8a96a]">{authT("walletPreview")}</p>
+          <p className="mt-3 text-sm leading-7 text-white/48">{authT("walletPreviewBody")}</p>
           <div className="mt-5 grid gap-3">
-            <WalletPreviewButton icon="/wallets/metamask.svg" title="MetaMask wallet" body={walletUi.connected ? walletUi.shortAddress : "EVM access preview"} disabled={walletUi.connected && walletUi.chainType === "solana"} onClick={() => void wallet.connectMetaMask()} />
-            <WalletPreviewButton icon="/wallets/phantom.svg" title="Phantom wallet" body={walletUi.connected ? walletUi.shortAddress : "Solana access preview"} disabled={walletUi.connected && walletUi.chainType === "evm"} onClick={() => void wallet.connectPhantom()} />
+            <WalletPreviewButton icon="/wallets/metamask.svg" title={authT("metamaskWallet")} body={walletUi.connected ? walletUi.shortAddress : authT("evmPreview")} disabled={walletUi.connected && walletUi.chainType === "solana"} onClick={() => void wallet.connectMetaMask()} />
+            <WalletPreviewButton icon="/wallets/phantom.svg" title={authT("phantomWallet")} body={walletUi.connected ? walletUi.shortAddress : authT("solanaPreview")} disabled={walletUi.connected && walletUi.chainType === "evm"} onClick={() => void wallet.connectPhantom()} />
           </div>
-          {walletUi.connected ? <button type="button" onClick={() => wallet.disconnect()} className="mt-4 min-h-12 w-full rounded-2xl border border-white/10 bg-black/24 font-mono text-[10px] uppercase tracking-[0.16em] text-white/55 transition hover:text-red-200 active:scale-[0.985]">Disconnect wallet</button> : null}
-          <div className="mt-5 rounded-2xl border border-white/10 bg-black/24 p-4 font-mono text-[10px] uppercase tracking-[0.14em] text-white/38"><p>[ GOOGLE OAUTH ] :: PREPARED</p><p>[ EMAIL AUTH ] :: LOCAL SESSION ACTIVE</p><p>[ WALLET BINDING ] :: OPTIONAL</p></div>
+          {walletUi.connected ? <button type="button" onClick={() => wallet.disconnect()} className="mt-4 min-h-12 w-full rounded-2xl border border-white/10 bg-black/24 font-mono text-[10px] uppercase tracking-[0.16em] text-white/55 transition hover:text-red-200 active:scale-[0.985]">{authT("disconnectWallet")}</button> : null}
+          <div className="mt-5 rounded-2xl border border-white/10 bg-black/24 p-4 font-mono text-[10px] uppercase tracking-[0.14em] text-white/38"><p>{authT("googlePrepared")}</p><p>{authT("emailActive")}</p><p>{authT("walletOptional")}</p></div>
         </aside>
       </div>
     </main>

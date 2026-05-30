@@ -55,7 +55,7 @@ export default async function RootLayout({
       <Web3Provider>
         <CartProvider>
           <Navbar />
-          <PageTransition>{children}</PageTransition>
+          <div id="main-content" tabIndex={-1}><PageTransition>{children}</PageTransition></div>
           <Footer />
           <CookieConsent />
           <CartDrawer />

@@ -47,6 +47,7 @@ const copy = {
     walletGate: "Log in to publish, comment and unlock member rooms. Guests can read the public feed.",
     guest: "Guest mode",
     guestBody: "Read public posts. Publishing, replies and member rooms unlock after login.",
+    signedIn: "Signed in · wallet optional",
     connect: "Log in / register",
     balance: "Wallet preview",
     composer: "Write a post. It stays local until moderation is active.",
@@ -64,7 +65,7 @@ const copy = {
     copied: "Encrypted signal copied.",
     pending: "Local signal created. Manual moderation will be required later.",
     openComposer: "Create Square signal",
-    rightTitle: "Live board",
+    rightTitle: "Tablica na żywo",
     rightOne: "Drop signals",
     rightTwo: "Archive riddles",
     rightThree: "Rewards after wallet access",
@@ -78,9 +79,10 @@ const copy = {
     os: "COMMUNITY OS",
     map: "Mapa Square",
     intro: "Spokojna tablica publicznych sygnałów. Czytanie jest otwarte; publikacja wymaga konta i moderacji.",
-    walletGate: "Zaloguj się, aby publikować, komentować i odblokować pokoje memberów. Goście mogą czytać feed.",
+    walletGate: "Zaloguj się, aby publikować, komentować i odblokować pokoje członków. Goście mogą czytać feed.",
     guest: "Tryb gościa",
-    guestBody: "Czytaj publiczne posty. Publikowanie, odpowiedzi i pokoje memberów odblokujesz po logowaniu.",
+    guestBody: "Czytaj publiczne posty. Publikowanie i odpowiedzi odblokujesz po zalogowaniu.",
+    signedIn: "Zalogowano · portfel opcjonalny",
     connect: "Zaloguj / zarejestruj",
     balance: "Podgląd portfela",
     composer: "Napisz post. Zostaje lokalny do czasu moderacji.",
@@ -98,15 +100,15 @@ const copy = {
     copied: "Zaszyfrowany sygnał skopiowany.",
     pending: "Lokalny sygnał utworzony. Później wymagana będzie ręczna moderacja.",
     openComposer: "Utwórz sygnał Square",
-    rightTitle: "Live board",
+    rightTitle: "Tablica na żywo",
     rightOne: "Sygnały dropów",
     rightTwo: "Zagadki archiwum",
-    rightThree: "Nagrody po dostępie wallet",
+    rightThree: "Nagrody po dostępie portfela",
     locked: "Zablokowane do połączenia portfela",
     loginRequired: "Logowanie jest wymagane przed publikacją w Square.",
     commentLocked: "Komentarze odblokujesz po logowaniu.",
     modalKicker: "VELMÈRE / WĄTEK SYGNAŁU",
-    rooms: { drop: "Misja dropu", style: "Arena stylu", archive: "Zagadka archiwum", chat: "Czat memberów" },
+    rooms: { drop: "Misja dropu", style: "Arena stylu", archive: "Zagadka archiwum", chat: "Czat członków" },
   },
   de: {
     os: "COMMUNITY OS",
@@ -114,7 +116,8 @@ const copy = {
     intro: "Ein ruhiges öffentliches Signalboard. Lesen ist offen; Posten braucht Account und Moderation.",
     walletGate: "Einloggen, um zu posten, zu kommentieren und Member-Räume freizuschalten. Gäste können den öffentlichen Feed lesen.",
     guest: "Gastmodus",
-    guestBody: "Öffentliche Posts lesen. Posting, Antworten und Räume werden nach Login freigeschaltet.",
+    guestBody: "Öffentliche Posts lesen. Posting und Antworten werden nach Login freigeschaltet.",
+    signedIn: "Eingeloggt · Wallet optional",
     connect: "Login / registrieren",
     balance: "Wallet-Vorschau",
     composer: "Post schreiben. Bleibt lokal bis Moderation aktiv ist.",
@@ -132,7 +135,7 @@ const copy = {
     copied: "Verschlüsseltes Signal kopiert.",
     pending: "Lokales Signal erstellt. Manuelle Moderation wird später benötigt.",
     openComposer: "Square-Signal erstellen",
-    rightTitle: "Live board",
+    rightTitle: "Tablica na żywo",
     rightOne: "Drop-Signale",
     rightTwo: "Archiv-Rätsel",
     rightThree: "Rewards nach Wallet Access",
@@ -341,7 +344,7 @@ export default function VelmereSquareClient() {
           <section className="rounded-[1.25rem] border border-[#d4af37]/20 bg-[#1A1A1C] p-5 shadow-[0_24px_80px_rgba(0,0,0,0.34)]">
             <p className="font-sans text-[10px] font-black uppercase tracking-[0.28em] text-[#d4af37]">{text.os}</p>
             <h2 className="mt-4 font-serif text-3xl leading-tight text-white">Velmère Square</h2>
-            <p className="mt-4 text-sm leading-7 text-white/62">{text.intro}</p>
+            <p className="mt-4 text-sm leading-7 text-velmere-grey-soft">{text.intro}</p>
           </section>
           <section className="rounded-[1.25rem] border border-white/10 bg-[#1A1A1C] p-5">
             <div className="flex gap-3">
@@ -355,7 +358,7 @@ export default function VelmereSquareClient() {
             ) : null}
           </section>
           <section className="rounded-[1.25rem] border border-white/10 bg-[#1A1A1C] p-5">
-            <p className="font-sans text-[10px] font-black uppercase tracking-[0.24em] text-white/38">{text.map}</p>
+            <p className="font-sans text-[10px] font-black uppercase tracking-[0.24em] text-velmere-muted">{text.map}</p>
             <div className="mt-5 space-y-4">
               {roomItems.map(({ key, icon: Icon, progress }) => (
                 <div key={key} className="grid grid-cols-[2.75rem_1fr_auto] items-center gap-3">
@@ -404,12 +407,12 @@ export default function VelmereSquareClient() {
                           <LiveTimestamp seed={`${post.id}-${post.createdAt}`} className="font-mono text-[9px] uppercase tracking-[0.14em] text-white/30" />
                         </div>
                         <h3 className="mt-4 font-serif text-2xl leading-tight text-white md:text-[2rem]">{post.title}</h3>
-                        <p className="mt-3 max-w-3xl text-sm leading-7 text-white/62">{post.body}</p>
-                        <div className="mt-4 flex flex-wrap gap-2">{post.tags.map((tag) => <span key={tag} className="rounded-full border border-white/10 px-3 py-1.5 text-[10px] uppercase tracking-[0.14em] text-white/42">{tag}</span>)}</div>
+                        <p className="mt-3 max-w-3xl text-sm leading-7 text-velmere-grey-soft">{post.body}</p>
+                        <div className="mt-4 flex flex-wrap gap-2">{post.tags.map((tag) => <span key={tag} className="rounded-full border border-white/10 px-3 py-1.5 text-[10px] uppercase tracking-[0.14em] text-velmere-muted">{tag}</span>)}</div>
                       </div>
                     </div>
                   </button>
-                  {post.imageUrl ? <button type="button" onClick={() => openPost(post)} className="relative mx-5 mb-5 block aspect-[16/6] w-[calc(100%-2.5rem)] overflow-hidden rounded-[1rem] border border-white/10 md:mx-6 md:w-[calc(100%-3rem)]"><Image src={post.imageUrl} alt={post.title} fill sizes="(min-width: 1024px) 760px, 100vw" className="object-cover grayscale contrast-125 transition-transform duration-700 group-hover:scale-105" /></button> : null}
+                  {post.imageUrl ? <button type="button" onClick={() => openPost(post)} className="relative mx-5 mb-5 block aspect-[16/6] w-[calc(100%-2.5rem)] overflow-hidden rounded-[1rem] border border-white/10 md:mx-6 md:w-[calc(100%-3rem)]"><Image src={post.imageUrl} alt={post.title} fill sizes="(min-width: 1024px) 760px, 100vw" className="object-cover contrast-105 transition-transform duration-700 group-hover:scale-105" /></button> : null}
                   <div className="flex flex-wrap items-center gap-2 border-t border-white/10 px-5 py-3 text-xs text-white/45 md:px-6">
                     <span className="inline-flex items-center gap-1.5"><Eye className="h-3.5 w-3.5" />{views}</span>
                     <button type="button" onClick={() => { navigator.vibrate?.(40); setLiked((current) => ({ ...current, [post.id]: !current[post.id] })); }} className="inline-flex min-h-11 items-center gap-1.5 rounded-full px-3 py-1 transition hover:bg-white/[0.04] active:scale-95"><Heart className={`h-3.5 w-3.5 ${liked[post.id] ? "fill-[#d4af37] text-[#d4af37]" : ""}`} />{post.likes + (liked[post.id] ? 1 : 0)}</button>
@@ -425,11 +428,11 @@ export default function VelmereSquareClient() {
         <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start">
           <section className="rounded-[1.25rem] border border-white/10 bg-[#1A1A1C] p-5">
             <p className="font-sans text-[10px] font-black uppercase tracking-[0.24em] text-[#d4af37]">{text.guest}</p>
-            <p className="mt-3 text-sm leading-7 text-white/56">{authenticated ? (walletUi.connected ? `${shortAddress(walletUi.fullAddress)} · ${walletUi.tokenBalanceLabel || "EVM"}` : "Signed in · wallet optional") : text.guestBody}</p>
+            <p className="mt-3 text-sm leading-7 text-white/56">{authenticated ? (walletUi.connected ? `${shortAddress(walletUi.fullAddress)} · ${walletUi.tokenBalanceLabel || "EVM"}` : text.signedIn) : text.guestBody}</p>
           </section>
           <section className="rounded-[1.25rem] border border-white/10 bg-[#1A1A1C] p-5">
-            <p className="font-sans text-[10px] font-black uppercase tracking-[0.24em] text-white/38">{text.rightTitle}</p>
-            <div className="mt-4 space-y-3 text-sm leading-6 text-white/58">
+            <p className="font-sans text-[10px] font-black uppercase tracking-[0.24em] text-velmere-muted">{text.rightTitle}</p>
+            <div className="mt-4 space-y-3 text-sm leading-6 text-velmere-grey-soft">
               <p className="flex gap-3"><Bell className="mt-1 h-4 w-4 text-[#d4af37]" />{text.rightOne}</p>
               <p className="flex gap-3"><Users className="mt-1 h-4 w-4 text-[#d4af37]" />{text.rightTwo}</p>
               <p className="flex gap-3"><Award className="mt-1 h-4 w-4 text-[#d4af37]" />{text.rightThree}</p>
@@ -457,8 +460,8 @@ export default function VelmereSquareClient() {
                 </div>
                 <h2 className="mt-8 font-serif text-4xl leading-tight text-white md:text-6xl">{selectedPost.title}</h2>
                 <p className="mt-5 max-w-3xl text-base leading-8 text-white/66">{selectedPost.body}</p>
-                {selectedPost.imageUrl ? <div className="relative mt-7 aspect-[16/9] overflow-hidden rounded-[1.25rem] border border-white/10"><Image src={selectedPost.imageUrl} alt={selectedPost.title} fill sizes="(min-width: 1024px) 820px, 100vw" className="object-cover grayscale contrast-125" /></div> : null}
-                <div className="mt-6 flex flex-wrap gap-2">{selectedPost.tags.map((tag) => <span key={tag} className="rounded-full border border-white/10 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-white/42">{tag}</span>)}</div>
+                {selectedPost.imageUrl ? <div className="relative mt-7 aspect-[16/9] overflow-hidden rounded-[1.25rem] border border-white/10"><Image src={selectedPost.imageUrl} alt={selectedPost.title} fill sizes="(min-width: 1024px) 820px, 100vw" className="object-cover contrast-105" /></div> : null}
+                <div className="mt-6 flex flex-wrap gap-2">{selectedPost.tags.map((tag) => <span key={tag} className="rounded-full border border-white/10 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-velmere-muted">{tag}</span>)}</div>
               </div>
               <div className="flex min-h-0 flex-col">
                 <div className="flex items-center justify-between gap-4 border-b border-white/10 p-5">
@@ -493,7 +496,7 @@ export default function VelmereSquareClient() {
             <textarea value={composer} onChange={(event) => setComposer(event.target.value)} placeholder={text.placeholder} className="mt-5 min-h-44 resize-none rounded-[1.25rem] border border-white/10 bg-white/[0.035] p-4 text-sm leading-7 text-white outline-none placeholder:text-white/26 focus:border-[#d4af37]/30" />
             {imagePreview ? <div className="relative mt-4 aspect-video overflow-hidden rounded-2xl border border-white/10"><Image src={imagePreview} alt="" fill className="object-cover" /></div> : null}
             <div className="mt-auto flex flex-col gap-3 pt-5 sm:flex-row">
-              <label className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-full border border-white/10 px-5 text-[10px] font-black uppercase tracking-[0.16em] text-white/58 hover:text-white">
+              <label className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-full border border-white/10 px-5 text-[10px] font-black uppercase tracking-[0.16em] text-velmere-grey-soft hover:text-white">
                 <ImagePlus className="h-4 w-4" /> {text.addImage}
                 <input type="file" accept="image/*" className="hidden" onChange={(event) => handleImage(event.target.files?.[0])} />
               </label>

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowUpRight, CreditCard, Headphones, PackageCheck, SlidersHorizontal, Truck } from "lucide-react";
+import { ArrowUpRight, CreditCard, Headphones, PackageCheck, Truck } from "lucide-react";
 import { motion } from "framer-motion";
 import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
@@ -11,54 +11,33 @@ import LuxurySection from "@/components/layout/LuxurySection";
 import { fadeUp } from "@/lib/motion";
 import { getVisibleProducts } from "@/lib/products/catalog";
 
-const matrixSlots = [
-  "Heavy hoodie",
-  "Washed tee",
-  "Cargo trouser",
-  "Long sleeve",
-  "Outer shell",
-  "Uniform knit",
-  "Graphite denim",
-  "Atelier bag",
-  "Thermal layer",
-  "Archive cut",
-  "Zip overshirt",
-  "Signal cap",
-  "Wool coat",
-  "Dust bag",
-  "Utility belt",
-  "Heavy tank",
-  "Rib sock",
-  "Cargo short",
-  "Private sample",
-  "Drop reserve",
-];
+const matrixSlots = ["Archive cut", "Drop reserve"];
 
 function matrixCopy(locale: string, category: string | null) {
   const isWomen = category === "women";
   if (locale === "pl") {
     return {
-      label: isWomen ? "SEKTOR W / SIATKA 04×05" : "SEKTOR M / SIATKA 04×05",
-      title: isWomen ? "Womenswear jako zamknięta matryca krojów." : "Menswear jako zamknięta matryca krojów.",
-      body: "Docelowy układ kolekcji: cztery kolumny, pięć warstw produktu, spokojne filtrowanie i brak chaosu. Aktywne produkty zostają klikalne, pozostałe pola budują napięcie dropu.",
-      filter: "Filtry w przygotowaniu",
+      label: isWomen ? "Kolekcja damska" : "Kolekcja męska",
+      title: isWomen ? "Spokojna selekcja damska." : "Spokojna selekcja męska.",
+      body: "Aktywne sylwetki zostają na pierwszym planie. Archiwalne miejsca pokazujemy oszczędnie, żeby sklep nie wyglądał jak pusty placeholder.",
+      filter: "Kuratowana selekcja",
       locked: "Slot archiwalny",
     };
   }
   if (locale === "de") {
     return {
-      label: isWomen ? "SEKTOR W / GRID 04×05" : "SEKTOR M / GRID 04×05",
+      label: isWomen ? "Womenswear" : "Menswear",
       title: isWomen ? "Womenswear als kontrollierte Schnitt-Matrix." : "Menswear als kontrollierte Schnitt-Matrix.",
-      body: "Zielstruktur der Kollektion: vier Spalten, fünf Produktlagen, ruhige Filterung und kein visuelles Rauschen. Aktive Produkte bleiben klickbar; stille Slots erzeugen Drop-Spannung.",
-      filter: "Filter vorbereitet",
+      body: "Aktive Silhouetten bleiben zuerst sichtbar. Archivplätze bleiben reduziert, damit die Kollektion kuratiert wirkt.",
+      filter: "Kuratierte Auswahl",
       locked: "Archiv-Slot",
     };
   }
   return {
-    label: isWomen ? "SECTOR W / GRID 04×05" : "SECTOR M / GRID 04×05",
+    label: isWomen ? "Womenswear" : "Menswear",
     title: isWomen ? "Womenswear as a controlled silhouette matrix." : "Menswear as a controlled silhouette matrix.",
-    body: "Target collection architecture: four columns, five product layers, calm filtering and no visual noise. Active products remain clickable; silent slots build drop tension.",
-    filter: "Filters prepared",
+    body: "Active silhouettes stay visible first. Archive slots are held back so the collection feels curated, not unfinished.",
+    filter: "Curated selection",
     locked: "Archive slot",
   };
 }
@@ -80,6 +59,7 @@ export default function ShopPage() {
           ? nav("newDrop")
           : t("title");
   const products = getVisibleProducts().filter((product) => !product.isVlmLocked).sort((a, b) => b.price.amount - a.price.amount);
+  const visibleSlots = [...products, ...matrixSlots].slice(0, products.length + 2);
   const matrix = matrixCopy(locale, category);
 
   const trustItems = [
@@ -99,15 +79,13 @@ export default function ShopPage() {
             <p className="mt-6 text-sm leading-7 text-white/58 md:text-base">{matrix.body}</p>
           </div>
           <div className="lg:col-span-4 lg:text-right">
-            <button type="button" className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full border border-white/12 bg-white/[0.035] px-5 font-mono text-[10px] font-black uppercase tracking-[0.18em] text-white/60 transition hover:border-white/24 hover:text-white active:scale-95">
-              <SlidersHorizontal className="h-4 w-4" /> {matrix.filter}
-            </button>
+            <span className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/12 bg-white/[0.035] px-5 text-xs font-semibold uppercase tracking-[0.14em] text-velmere-muted">{matrix.filter}</span>
           </div>
         </div>
 
         <motion.div initial="hidden" animate="show" variants={{ hidden: {}, show: { transition: { staggerChildren: 0.055 } } }} className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:gap-5">
-          {matrixSlots.map((slot, index) => {
-            const product = products[index];
+          {visibleSlots.map((slot, index) => {
+            const product = typeof slot === "string" ? undefined : slot;
             if (product) {
               return (
                 <motion.div key={product.id} variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0 } }} transition={{ type: "spring", stiffness: 300, damping: 30 }}>
@@ -116,7 +94,7 @@ export default function ShopPage() {
               );
             }
             return (
-              <motion.article key={slot} variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0 } }} transition={{ type: "spring", stiffness: 300, damping: 30 }} className="group relative min-h-[25rem] overflow-hidden rounded-[2rem] border border-white/8 bg-[linear-gradient(145deg,rgba(255,255,255,0.045),rgba(255,255,255,0.012)_48%,rgba(212,175,55,0.035))] p-5 shadow-[0_28px_90px_rgba(0,0,0,0.26)]">
+              <motion.article key={String(slot)} variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0 } }} transition={{ type: "spring", stiffness: 300, damping: 30 }} className="group relative min-h-[25rem] overflow-hidden rounded-[2rem] border border-white/8 bg-[linear-gradient(145deg,rgba(255,255,255,0.045),rgba(255,255,255,0.012)_48%,rgba(212,175,55,0.035))] p-5 shadow-[0_28px_90px_rgba(0,0,0,0.26)]">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_26%,rgba(255,255,255,0.07),transparent_25%),radial-gradient(circle_at_50%_58%,rgba(212,175,55,0.08),transparent_26%)] opacity-60" />
                 <div className="relative flex h-full flex-col justify-between">
                   <div className="aspect-[4/5] rounded-[1.35rem] border border-white/8 bg-black/25 p-5">
@@ -125,7 +103,7 @@ export default function ShopPage() {
                   <div className="pt-5">
                     <p className="font-mono text-[9px] font-black uppercase tracking-[0.22em] text-[#d4af37]/70">{matrix.locked}</p>
                     <h3 className="mt-3 font-serif text-2xl text-white/82">{slot}</h3>
-                    <p className="mt-2 text-xs leading-6 text-white/38">AMU baseline pending // archive visibility after drop confirmation.</p>
+                    <p className="mt-2 text-sm leading-6 text-velmere-muted">{locale === "pl" ? "Miejsce przyszłego dropu." : locale === "de" ? "Platz für einen kommenden Drop." : "Reserved for a future drop."}</p>
                   </div>
                 </div>
               </motion.article>

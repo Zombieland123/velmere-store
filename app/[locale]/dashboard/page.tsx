@@ -9,7 +9,7 @@ export function generateMetadata({ params: { locale } }: { params: { locale: str
 
 export default function DashboardPage() {
   return (
-    <AuthGate title="DASHBOARD ACCESS LOCKED" body="Account console, wallet assets, security settings and order history open after login or registration. Wallet binding is optional after entry.">
+    <AuthGate>
       <DashboardClient />
     </AuthGate>
   );

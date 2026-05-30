@@ -6,55 +6,44 @@ import { Link } from "@/navigation";
 export default function Footer() {
   const t = useTranslations("Footer");
 
-  const exploreLinks = [
+  const navigationLinks = [
+    { href: "/shop", label: t("shopAll") },
     { href: "/shop?category=men", label: t("menswear") },
     { href: "/shop?category=women", label: t("womenswear") },
-    { href: "/shop?sort=new", label: t("newDrop") },
     { href: "/lookbook", label: t("lookbook") },
-    { href: "/archive", label: t("archive") },
-    { href: "/vlm-token", label: t("vlmToken") },
     { href: "/square", label: t("square") },
   ];
 
-  const serviceLinks = [
+  const legalLinks = [
     { href: "/legal/shipping", label: t("shipping") },
     { href: "/returns", label: t("returns") },
-    { href: "/contact", label: t("contact") },
-  ];
-
-  const legalLinks = [
-    { href: "/impressum", label: t("impressum") },
     { href: "/legal/terms", label: t("terms") },
     { href: "/legal/privacy", label: t("privacy") },
-    { href: "/token-agreement", label: t("tokenAgreement") },
+    { href: "/impressum", label: t("impressum") },
   ];
 
   return (
-    <footer className="relative border-t border-white/10 bg-[#101012] text-white">
-      <div className="mx-auto max-w-none px-6 py-12 md:px-12 md:py-16">
-        <div className="grid gap-8 lg:grid-cols-[1.2fr_0.7fr_0.7fr_0.7fr_1fr]">
+    <footer className="relative border-t border-white/8 bg-velmere-surface text-velmere-ivory">
+      <div className="mx-auto max-w-[1440px] px-4 py-12 sm:px-6 md:py-16 lg:px-8">
+        <div className="grid gap-10 lg:grid-cols-[1.2fr_0.7fr_0.7fr_1fr]">
           <div>
-            <Link href="/" className="inline-flex font-sans text-3xl font-semibold uppercase tracking-[0.18em]">
+            <Link href="/" className="inline-flex font-sans text-2xl font-semibold uppercase tracking-[0.18em] text-velmere-ivory md:text-3xl">
               VELMÈRE
             </Link>
-            <p className="mt-5 text-sm leading-7 text-white/58">{t("tagline")}</p>
-            <p className="mt-5 max-w-sm text-sm leading-7 text-white/44">{t("micro")}</p>
+            <p className="mt-5 max-w-md text-sm leading-7 text-velmere-grey-soft">{t("tagline")}</p>
+            <p className="mt-4 max-w-md text-sm leading-7 text-velmere-muted">{t("micro")}</p>
           </div>
 
           {[
-            { title: t("explore"), links: exploreLinks },
-            { title: t("service"), links: serviceLinks },
+            { title: t("explore"), links: navigationLinks },
             { title: t("legal"), links: legalLinks },
           ].map((group) => (
             <div key={group.title}>
-              <p className="luxury-kicker text-velmere-gold/70">{group.title}</p>
+              <p className="luxury-kicker">{group.title}</p>
               <ul className="mt-5 space-y-3">
                 {group.links.map((link) => (
                   <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      className="text-[12px] uppercase tracking-[0.18em] text-white/52 transition-colors hover:text-white"
-                    >
+                    <Link href={link.href} className="text-sm text-velmere-muted transition-colors hover:text-velmere-ivory focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-velmere-gold/50">
                       {link.label}
                     </Link>
                   </li>
@@ -64,34 +53,25 @@ export default function Footer() {
           ))}
 
           <div>
-            <p className="luxury-kicker text-velmere-gold/70">{t("newsletter")}</p>
-            <p className="mt-5 text-sm leading-7 text-white/58">{t("newsletterText")}</p>
-            <div className="mt-5 space-y-3">
-              <input
-                type="email"
-                disabled
-                placeholder={t("emailPlaceholder")}
-                className="h-12 w-full rounded-full border border-white/10 bg-white/[0.035] px-5 text-sm text-white/40 outline-none placeholder:text-white/28"
-              />
-              <button
-                type="button"
-                disabled
-                className="h-12 w-full cursor-not-allowed rounded-full border border-white/10 px-5 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/34"
-              >
-                {t("subscribeSoon")}
-              </button>
+            <p className="luxury-kicker">{t("newsletter")}</p>
+            <p className="mt-5 text-sm leading-7 text-velmere-grey-soft">{t("newsletterText")}</p>
+            <div className="mt-5 rounded-2xl border border-white/8 bg-black/20 p-4">
+              <p className="velmere-meta text-velmere-gold">Signal list // staging</p>
+              <p className="mt-3 text-sm leading-6 text-velmere-muted">{t("newsletterOffline")}</p>
+              <Link href="/contact" className="mt-4 inline-flex min-h-11 items-center justify-center rounded-full border border-white/12 px-5 text-xs font-semibold uppercase tracking-[0.14em] text-velmere-ivory transition hover:border-velmere-gold/50 hover:text-velmere-gold">
+                {t("contact")}
+              </Link>
             </div>
           </div>
         </div>
 
-        <div className="mt-10 border-t border-white/10 pt-6">
-          <p className="text-[11px] uppercase tracking-[0.22em] text-white/36">
-            &copy; {new Date().getFullYear()} {t("rights")}
-          </p>
-          <p className="mt-3 max-w-4xl text-[10px] uppercase tracking-[0.18em] text-white/24">{t("riskMicro")}</p>
+        <div className="mt-10 flex flex-col gap-3 border-t border-white/8 pt-6 sm:flex-row sm:items-end sm:justify-between">
+          <p className="text-xs text-velmere-muted">&copy; {new Date().getFullYear()} {t("rights")}</p>
+          <Link href="/vlm-token" className="font-mono text-[10px] uppercase tracking-[0.14em] text-velmere-muted transition hover:text-velmere-gold">
+            {t("riskMicro")}
+          </Link>
         </div>
       </div>
-      <p className="absolute bottom-3 right-4 font-mono text-[9px] uppercase tracking-[0.18em] text-white/25">v1.0.0-rc.3 // AMU KERNEL</p>
     </footer>
   );
 }

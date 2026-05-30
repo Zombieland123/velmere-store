@@ -22,7 +22,6 @@ const SPECS = [
   ["MATERIAL", "100% HEAVYWEIGHT COTTON"],
   ["WEIGHT", "450 GSM"],
   ["FIT", "BOXY / OVERSIZED"],
-  ["LOGISTICS", "TAPSTITCH / PRINTFUL PROTOCOL"],
   ["CARE", "COLD WASH / INSIDE OUT / AIR DRY"],
 ] as const;
 
@@ -80,7 +79,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   const title = getLocalizedString(selectedProduct.title, locale);
   const externalOnly = selectedProduct.fulfilmentMode === "external_link" && selectedProduct.externalUrl;
   const category = selectedProduct.collection ?? selectedProduct.tags[0] ?? "GARMENT";
-  const terminalBreadcrumb = `ROOT / SHOP / ${category.toUpperCase()} / ${selectedProduct.id.toUpperCase()}`;
+  const humanBreadcrumb = locale === "pl" ? `Velmère / Sklep / ${title}` : locale === "de" ? `Velmère / Shop / ${title}` : `Velmère / Shop / ${title}`;
 
   function handleAddToCart() {
     if (!selectedVariant || !purchasable || ctaState !== "idle") return;
@@ -114,13 +113,13 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
           <ArrowLeft className="h-4 w-4" aria-hidden="true" />
           {t("backToShop")}
         </Link>
-        <p className="mb-5 break-all font-mono text-[10px] uppercase tracking-[0.18em] text-white/40">{terminalBreadcrumb}</p>
+        <p className="mb-5 break-all font-mono text-[10px] uppercase tracking-[0.18em] text-white/40">{humanBreadcrumb}</p>
 
         <div className="grid gap-10 lg:grid-cols-12">
           <div className="space-y-6 lg:col-span-7">
             {selectedProduct.images.map((image, index) => (
               <motion.div key={image.url} {...fadeUp} transition={{ ...fadeUp.transition, delay: index * 0.05 }} viewport={{ once: true, margin: "-80px" }} className="relative aspect-[4/5] overflow-hidden rounded-2xl border border-white/10 bg-[#1A1A1C] shadow-2xl shadow-black/30">
-                <Image src={image.url} alt={t("imageAlt", { name: title, number: index + 1 })} fill priority={index === 0} sizes="(min-width: 1024px) 58vw, 100vw" className="object-cover object-center grayscale contrast-125" />
+                <Image src={image.url} alt={t("imageAlt", { name: title, number: index + 1 })} fill priority={index === 0} sizes="(min-width: 1024px) 58vw, 100vw" className="object-cover object-center contrast-105" />
               </motion.div>
             ))}
           </div>
@@ -133,11 +132,11 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
               <p className="mt-6 text-sm leading-8 text-white/60">{getLocalizedString(selectedProduct.description, locale)}</p>
 
               <div className="mt-8 overflow-hidden rounded-xl border border-white/10 bg-[#111113]">
-                <p className="border-b border-white/10 px-4 py-3 font-mono text-[10px] uppercase tracking-[0.22em] text-velmere-gold">Hardware / Material Specs</p>
+                <p className="border-b border-white/10 px-4 py-3 font-mono text-[10px] uppercase tracking-[0.22em] text-velmere-gold">{locale === "pl" ? "Materiał / Konstrukcja" : locale === "de" ? "Material / Konstruktion" : "Material / Construction"}</p>
                 {SPECS.map(([key, value]) => (
                   <div key={key} className="grid grid-cols-[7.5rem_minmax(0,1fr)] border-b border-white/5 px-4 py-3 font-mono text-[10px] uppercase tracking-[0.14em] last:border-b-0">
-                    <span className="text-white/35">[ {key} ]</span>
-                    <span className="break-words text-white/72">: {value}</span>
+                    <span className="text-velmere-muted">{key}</span>
+                    <span className="break-words text-velmere-grey-soft">{value}</span>
                   </div>
                 ))}
               </div>

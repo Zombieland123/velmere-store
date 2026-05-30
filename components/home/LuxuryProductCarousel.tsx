@@ -99,7 +99,7 @@ export default function LuxuryProductCarousel() {
                   {t("viewProduct")}
                 </Link>
                 {!purchasable ? (
-                  <span className="inline-flex min-h-11 items-center rounded-full border border-white/10 px-6 text-[11px] uppercase tracking-[0.18em] text-white/42">
+                  <span className="inline-flex min-h-11 items-center rounded-full border border-white/10 px-6 text-[11px] uppercase tracking-[0.18em] text-velmere-muted">
                     {t("comingSoon")}
                   </span>
                 ) : null}

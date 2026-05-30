@@ -11,7 +11,7 @@ const copy = {
   en: {
     tabs: ["Overview", "Web3 Assets", "Order History", "Security", "Profile & Avatar"],
     kicker: "Private member console",
-    title: "Account command room.",
+    title: "Member console.",
     body: "Profile, orders, security and wallet bindings stay separated. Commerce first; Web3 as an optional access layer.",
     logout: "Log out",
     connect: "Connect wallet",
@@ -25,7 +25,7 @@ const copy = {
   pl: {
     tabs: ["Przegląd", "Aktywa Web3", "Historia zamówień", "Bezpieczeństwo", "Profil i avatar"],
     kicker: "Prywatna konsola członka",
-    title: "Pokój dowodzenia konta.",
+    title: "Panel konta.",
     body: "Profil, zamówienia, bezpieczeństwo i portfele są oddzielone. Najpierw sklep; Web3 tylko jako warstwa dostępu.",
     logout: "Wyloguj się",
     connect: "Połącz portfel",
@@ -39,7 +39,7 @@ const copy = {
   de: {
     tabs: ["Übersicht", "Web3 Assets", "Bestellungen", "Sicherheit", "Profil & Avatar"],
     kicker: "Private Member-Konsole",
-    title: "Account command room.",
+    title: "Member console.",
     body: "Profil, Bestellungen, Sicherheit und Wallet-Bindings bleiben getrennt. Commerce zuerst; Web3 als optionale Zugriffsschicht.",
     logout: "Ausloggen",
     connect: "Wallet verbinden",

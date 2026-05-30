@@ -95,8 +95,8 @@ export default function CartDrawer() {
           <header className="flex items-center justify-between border-b border-white/10 px-4 py-4 md:px-5 md:py-5">
             <div>
               <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-velmere-gold/80">{t("kicker")}</p>
-              <Drawer.Title className="mt-2 font-serif text-2xl tracking-[0.08em] text-white md:text-3xl">ORDER BOOK</Drawer.Title>
-              <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.2em] text-white/35">{itemCount} UNIT(S) // STRIPE READY</p>
+              <Drawer.Title className="mt-2 font-serif text-2xl tracking-[0.08em] text-white md:text-3xl">{t("orderBook")}</Drawer.Title>
+              <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.2em] text-white/35">{itemCount} {t("units")} // STRIPE</p>
             </div>
             <Drawer.Close asChild>
               <button type="button" aria-label={common("close")} className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-black/20 text-white/62 transition-colors hover:border-white/25 hover:text-white active:scale-95">
@@ -111,7 +111,7 @@ export default function CartDrawer() {
                 <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 bg-[#242428]">
                   <ShoppingBag className="h-7 w-7 text-white/38" aria-hidden="true" />
                 </div>
-                <p className="mt-5 max-w-[15rem] font-mono text-[10px] uppercase leading-6 tracking-[0.18em] text-white/42 md:max-w-xs md:text-[11px] md:leading-7 md:tracking-[0.22em]">YOUR SELECTION IS EMPTY. INITIATE EXPLORATION.</p>
+                <p className="mt-5 max-w-[15rem] font-mono text-[10px] uppercase leading-6 tracking-[0.18em] text-white/42 md:max-w-xs md:text-[11px] md:leading-7 md:tracking-[0.22em]">{t("emptyLong")}</p>
                 <Drawer.Close asChild>
                   <Link href="/shop" className="mt-8 inline-flex min-h-12 items-center rounded-full border border-white/12 bg-[#242428] px-6 font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-white/70 transition-colors hover:border-white/25 hover:text-white active:scale-95">
                     {t("continueShopping")}
@@ -124,7 +124,7 @@ export default function CartDrawer() {
                   <li key={`${item.id}-${item.size}`} className="grid gap-4 border-b border-white/5 px-5 py-5">
                     <div className="grid grid-cols-[5rem_minmax(0,1fr)] gap-4">
                       <div className="relative h-24 overflow-hidden rounded-xl border border-white/10 bg-black/40">
-                        {item.image ? <Image src={item.image} alt={item.name} fill sizes="80px" className="object-cover grayscale" /> : <div className="h-full w-full bg-white/5" />}
+                        {item.image ? <Image src={item.image} alt={item.name} fill sizes="80px" className="object-cover contrast-105" /> : <div className="h-full w-full bg-white/5" />}
                       </div>
                       <div className="min-w-0">
                         <div className="mb-2 flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.18em] text-emerald-300/70">
@@ -159,7 +159,7 @@ export default function CartDrawer() {
           <footer className="max-h-[50dvh] shrink-0 overflow-y-auto border-t border-white/10 bg-[#151517] px-4 py-4 safe-pb luxury-scrollbar md:max-h-none md:overflow-visible md:px-5 md:py-5">
             {items.length === 0 ? (
               <div className="flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-[#202024] px-4 py-3 font-mono text-[9px] uppercase tracking-[0.16em] text-white/40">
-                <span>No allocation active</span>
+                <span>{t("noAllocation")}</span>
                 <span className="text-[#c8a96a]/70">0.00 EUR</span>
               </div>
             ) : (
@@ -168,13 +168,13 @@ export default function CartDrawer() {
                   <span>{trust("securePayment")}</span><span>{trust("trackedShipping")}</span><span>{trust("madeAfterOrder")}</span><span>{trust("support")}</span>
                 </div>
                 <div className="mt-4 space-y-2 border-y border-white/10 py-3 font-mono text-[10px] uppercase tracking-[0.16em] text-white/42 md:mt-5 md:py-4">
-                  <div className="flex items-center justify-between gap-3"><span>Net Price</span><span className="tabular-nums text-white/72">{formatMoney({ amount: netAmount, currency }, locale)}</span></div>
-                  <div className="flex items-center justify-between gap-3"><span>VAT / MwSt 19%</span><span className="tabular-nums text-white/72">{formatMoney({ amount: vatAmount, currency }, locale)}</span></div>
-                  <div className="flex items-center justify-between gap-3 pt-2 text-white/70"><span>Gross Price</span><span className="tabular-nums text-white">{formatMoney({ amount: subtotal, currency }, locale)}</span></div>
+                  <div className="flex items-center justify-between gap-3"><span>{t("netPrice")}</span><span className="tabular-nums text-white/72">{formatMoney({ amount: netAmount, currency }, locale)}</span></div>
+                  <div className="flex items-center justify-between gap-3"><span>{t("vat")}</span><span className="tabular-nums text-white/72">{formatMoney({ amount: vatAmount, currency }, locale)}</span></div>
+                  <div className="flex items-center justify-between gap-3 pt-2 text-white/70"><span>{t("grossPrice")}</span><span className="tabular-nums text-white">{formatMoney({ amount: subtotal, currency }, locale)}</span></div>
                 </div>
                 <div className="mt-3 grid gap-2 rounded-xl border border-white/10 bg-[#202024] p-3 font-mono text-[9px] leading-5 text-white/54 md:mt-4 md:gap-3 md:text-[10px]">
-                  <label className="flex gap-3"><input type="checkbox" checked={agreedPolicies} onChange={(event) => setAgreedPolicies(event.target.checked)} className="mt-1 h-4 w-4 shrink-0 accent-velmere-gold" /><span>I accept the <Link href="/legal/terms" className="text-velmere-gold underline-offset-4 hover:underline">Terms</Link> and <Link href="/returns" className="text-velmere-gold underline-offset-4 hover:underline">Refund Policy / Widerrufsbelehrung</Link>.</span></label>
-                  <label className="flex gap-3"><input type="checkbox" checked={agreedToken} onChange={(event) => setAgreedToken(event.target.checked)} className="mt-1 h-4 w-4 shrink-0 accent-velmere-gold" /><span>I acknowledge the <Link href="/token-agreement" className="text-velmere-gold underline-offset-4 hover:underline">Token Agreement</Link> terms regarding VLM Access.</span></label>
+                  <label className="flex gap-3"><input type="checkbox" checked={agreedPolicies} onChange={(event) => setAgreedPolicies(event.target.checked)} className="mt-1 h-4 w-4 shrink-0 accent-velmere-gold" /><span>{t("acceptTermsPrefix")} <Link href="/legal/terms" className="text-velmere-gold underline-offset-4 hover:underline">{t("terms")}</Link> {t("and")} <Link href="/returns" className="text-velmere-gold underline-offset-4 hover:underline">{t("refundPolicy")}</Link>.</span></label>
+                  <label className="flex gap-3"><input type="checkbox" checked={agreedToken} onChange={(event) => setAgreedToken(event.target.checked)} className="mt-1 h-4 w-4 shrink-0 accent-velmere-gold" /><span>{t("acceptTokenPrefix")} <Link href="/token-agreement" className="text-velmere-gold underline-offset-4 hover:underline">{t("tokenAgreement")}</Link>.</span></label>
                 </div>
                 <button type="button" disabled={!checkoutAllowed} onClick={startCheckout} className="mt-4 flex min-h-13 w-full items-center justify-center gap-2 rounded-full border border-white/10 px-6 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-white/34 transition-transform enabled:cursor-pointer enabled:bg-white enabled:text-black enabled:hover:bg-velmere-gold disabled:cursor-not-allowed disabled:opacity-40 active:scale-95 md:mt-5 md:min-h-14 md:text-[11px] md:tracking-[0.2em]">
                   {checkoutState === "loading" && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}

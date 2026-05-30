@@ -20,7 +20,7 @@
     "pants": "Spodnie",
     "lookbook": "Lookbook",
     "archive": "Archiwum",
-    "vlmAccess": "VLM Access",
+    "vlmAccess": "Dostęp VLM",
     "account": "Konto",
     "login": "Logowanie",
     "cart": "Koszyk",
@@ -44,11 +44,21 @@
     "womenswear": "Kolekcja damska",
     "vlm": "VLM",
     "square": "Velmère Square",
-    "loginCta": "Log in",
+    "loginCta": "Zaloguj",
     "profile": "Profil",
     "myOrders": "Moje zamówienia",
     "vlmBalance": "Saldo VLM",
-    "guestMode": "GOŚĆ"
+    "guestMode": "GOŚĆ",
+    "connectWallet": "Połącz portfel",
+    "walletConnected": "Portfel połączony",
+    "walletAccess": "Dostęp portfela",
+    "walletHelper": "Wybierz portfel. Telefon otworzy aplikację portfela i wróci tutaj.",
+    "network": "Sieć",
+    "balance": "Saldo",
+    "access": "Dostęp",
+    "disconnectWallet": "Odłącz portfel",
+    "drawerShop": "Sklep / Społeczność",
+    "walletReady": "MetaMask / Phantom gotowe na telefonie"
   },
   "Footer": {
     "tagline": "Ciemny streetwear premium. Limitowane dropy. Dostęp bliżej marki.",
@@ -67,16 +77,17 @@
     "returns": "Zwroty",
     "contact": "Kontakt",
     "tokenAgreement": "Umowa VLM",
-    "newsletter": "Newsletter",
-    "newsletterText": "Zostaw sygnał dla prywatnych dropów, archiwum i aktualizacji Square.",
+    "newsletter": "Lista prywatna",
+    "newsletterText": "Zostaw e-mail, a dostaniesz pierwszy sygnał o dropie i archiwum.",
     "emailPlaceholder": "Adres email",
-    "subscribeSoon": "Popros o dostep",
+    "subscribeSoon": "Zostaw e-mail",
     "rights": "Velmère. Wszelkie prawa zastrzeżone.",
     "menswear": "Kolekcja męska",
     "womenswear": "Kolekcja damska",
     "newDrop": "Nowy drop",
     "square": "Velmère Square",
-    "riskMicro": "Dostęp VLM jest oddzielony od checkoutu odzieży. Publiczna sprzedaż, wdrożenie kontraktu, audyt, płynność, listing, wartość odsprzedaży ani wynik inwestycyjny nie są obiecane."
+    "riskMicro": "VLM to warstwa dostępu, nie inwestycja. Szczegóły znajdziesz w sekcji VLM.",
+    "newsletterOffline": "Lista prywatna ruszy po podłączeniu produkcyjnych ustawień mailowych."
   },
   "Home": {
     "heroImageAlt": "Zaawansowany trójwymiarowy wizual neuronowy Velmère z punktami ivory i szampańskim przepływem sygnału",
@@ -94,7 +105,7 @@
     "editorialImageAlt": "Edytorialna sylwetka Velmère w monochromatycznym świetle",
     "vlmTeaserKicker": "Prywatny dostęp",
     "vlmTeaserTitle": "VLM Access",
-    "vlmTeaserBody": "Kompaktowa warstwa dostepu do prywatnych dropow i archiwum. Pozostaje dodatkiem do doswiadczenia odziezowego.",
+    "vlmTeaserBody": "Kompaktowa warstwa dostępu do prywatnych dropów i archiwum. Pozostaje dodatkiem do doświadczenia odziezowego.",
     "vlmTeaserCta": "Sprawdź VLM",
     "sideRubrics": {
       "atelier": {
@@ -210,7 +221,7 @@
     "podNote": ""
   },
   "Cart": {
-    "kicker": "Checkout maison",
+    "kicker": "Koszyk Velmère",
     "title": "Koszyk",
     "empty": "Twój koszyk jest pusty.",
     "continueShopping": "Kontynuuj zakupy",
@@ -223,7 +234,20 @@
     "checkoutUnavailable": "Płatność zostanie aktywowana po finalnej konfiguracji sklepu.",
     "paymentDisabled": "Płatność zostanie aktywowana po finalnej konfiguracji sklepu.",
     "checkoutFailed": "Nie udało się uruchomić checkoutu.",
-    "openCart": "Otwórz koszyk"
+    "openCart": "Otwórz koszyk",
+    "orderBook": "Koszyk",
+    "units": "szt.",
+    "emptyLong": "Twój wybór jest pusty. Zacznij od kolekcji.",
+    "noAllocation": "Brak aktywnej rezerwacji",
+    "netPrice": "Cena netto",
+    "vat": "VAT / MwSt 19%",
+    "grossPrice": "Cena brutto",
+    "acceptTermsPrefix": "Akceptuję",
+    "terms": "Regulamin",
+    "and": "oraz",
+    "refundPolicy": "Politykę zwrotów / Widerrufsbelehrung",
+    "acceptTokenPrefix": "Potwierdzam",
+    "tokenAgreement": "Umowę VLM"
   },
   "Checkout": {
     "successKicker": "Zamówienie przyjęte",
@@ -257,7 +281,20 @@
     "orEmail": "albo dostęp email",
     "passwordPlaceholder": "Symbol + cyfra + wielka litera",
     "validated": "[ DOSTĘP ZWERYFIKOWANY ]",
-    "localSessionNotice": "Sesja testowa. Produkcyjny OAuth wymaga kluczy API."
+    "localSessionNotice": "Sesja testowa. Produkcyjny OAuth wymaga kluczy API.",
+    "gateTitle": "Dostęp do konta zablokowany",
+    "gateBody": "Zaloguj się albo utwórz konto, żeby zarządzać profilem, avatarem, hasłem, zamówieniami i opcjonalnym powiązaniem Web3.",
+    "gateKicker": "Brama konta",
+    "loginRegister": "Zaloguj / zarejestruj",
+    "previewConsole": "Podgląd konsoli",
+    "walletPreview": "Podgląd portfela",
+    "walletPreviewBody": "Portfele są opcjonalnym powiązaniem po zalogowaniu. Łącz jeden portfel naraz.",
+    "evmPreview": "Podgląd dostępu EVM",
+    "solanaPreview": "Podgląd dostępu Solana",
+    "disconnectWallet": "Odłącz portfel",
+    "googlePrepared": "Google OAuth :: przygotowane",
+    "emailActive": "Email auth :: lokalna sesja aktywna",
+    "walletOptional": "Powiązanie portfela :: opcjonalne"
   },
   "Vlm": {
     "kicker": "VLM / ACCESS LAYER",
@@ -954,7 +991,7 @@
     "title": "Pytania o VLM",
     "what": {
       "q": "Czym jest VLM?",
-      "a": "Planowany token EVM-first do prywatnych dropow, archiwum i wybranych przywilejow Velmère."
+      "a": "Planowany token EVM-first do prywatnych dropów, archiwum i wybranych przywilejów Velmère."
     },
     "investment": {
       "q": "Czy VLM jest inwestycją?",
@@ -970,7 +1007,7 @@
     },
     "audit": {
       "q": "Czy VLM ma audyt?",
-      "a": "Audyt nie jest deklarowany. Niezalezny przeglad jest wymagany przed pelnym startem."
+      "a": "Audyt nie jest deklarowany. Niezalezny przegląd jest wymagany przed pelnym startem."
     },
     "dynamic": {
       "q": "Czy podaż jest dynamiczna?",
@@ -990,7 +1027,7 @@
     },
     "live": {
       "q": "Czy VLM jest aktywny?",
-      "a": "Strona opisuje publiczny interfejs i model dostepu. Zakup oraz funkcje gated wymagaja wdrozonego kontraktu, rejestru i audytu."
+      "a": "Strona opisuje publiczny interfejs i model dostępu. Zakup oraz funkcje gated wymagaja wdrożonego kontraktu, rejestru i audytu."
     },
     "amu": {
       "q": "Czym jest AMU?",
@@ -998,11 +1035,11 @@
     },
     "bajak": {
       "q": "What is Bajak Protocol?",
-      "a": "Bajak Protocol jest koncepcyjna warstwa wizualna dla projektu dostepu Velmère. Nie zastepuje kryptografii portfela, audytu smart kontraktu ani bezpieczenstwa sieci."
+      "a": "Bajak Protocol jest koncepcyjna warstwa wizualna dla projektu dostępu Velmère. Nie zastepuje kryptografii portfela, audytu smart kontraktu ani bezpieczenstwa sieci."
     },
     "security": {
       "q": "Czy Bajak zabezpiecza środki?",
-      "a": "Nie. To warstwa wizualna i koncepcyjna. Bezpieczenstwo zalezy od portfela, kontraktu, testow, multisig i audytu."
+      "a": "Nie. To warstwa wizualna i koncepcyjna. Bezpieczenstwo zależy od portfela, kontraktu, testow, multisig i audytu."
     },
     "fixedSupply": {
       "q": "Dlaczego stała podaż?",
@@ -1208,16 +1245,16 @@
     "privacyLink": "Polityka prywatności"
   },
   "VlmWalletPreview": {
-    "kicker": "Podglad portfela",
-    "title": "Read-only wallet preview",
-    "body": "Polacz portfel, aby zobaczyc przyszle stany dostepu. Zakup VLM pozostaje zablokowany do czasu wdrozenia kontraktu, przegladu prawnego i audytu.",
+    "kicker": "Podgląd portfela",
+    "title": "Podgląd portfela tylko do odczytu",
+    "body": "Połącz portfel, aby zobaczyć przyszłe stany dostępu. Zakup VLM pozostaje zablokowany do czasu wdrożenia kontraktu, przeglądu prawnego i audytu.",
     "currentState": "Stan portfela",
     "future": "później",
     "preLaunchBadge": "Aktywacja w toku",
-    "readOnly": "Read-only preview. Dostep wymaga wdrozonego kontraktu i rejestru.",
+    "readOnly": "Podgląd tylko do odczytu. Dostęp wymaga wdrożonego kontraktu i rejestru.",
     "noProvider": "MetaMask nie został wykryty w tej przeglądarce.",
     "connectedHelper": "Połączono: {address} w sieci {network}. Saldo nie jest odczytywane, dopóki kontrakt nie istnieje.",
-    "purchaseDisabled": "Kontrakt niewdrozony - zakup niedostepny",
+    "purchaseDisabled": "Kontrakt niewdrożony - zakup niedostępny",
     "implementationStatusCta": "Zobacz status wdrożenia",
     "states": {
       "disconnected": "Połącz portfel",
@@ -1241,7 +1278,7 @@
       "invalid": "Nieprawidłowy format adresu EVM.",
       "valid": "Format adresu wygląda poprawnie. Dostęp pozostaje zablokowany do czasu wdrożenia kontraktu."
     },
-    "activationBadge": "Read-only preview",
+    "activationBadge": "Podgląd tylko do odczytu",
     "readOnlyBadge": "Podgląd"
   },
   "VlmHowToBuy": {
@@ -1313,7 +1350,7 @@
     "body": "Sprawdza publiczny adres, saldo, sieć i reguły dostępu.",
     "gate": "Brama VLM",
     "result": "Aktywacja zablokowana",
-    "disclaimer": "Koncepcyjny model dostepu dla projektu interfejsu.",
+    "disclaimer": "Koncepcyjny model dostępu dla projektu interfejsu.",
     "labels": {
       "address": "ADRES",
       "balance": "SALDO",
@@ -2239,7 +2276,7 @@
     "aria": "Tryb interfejsu VLM",
     "basic": "Podstawowy",
     "pro": "Pro",
-    "basicHint": "Prosty przeglad dostepu",
+    "basicHint": "Prosty przegląd dostępu",
     "proHint": "Zaawansowany widok techniczny",
     "choiceKicker": "INTERFEJS DOSTĘPU VLM",
     "choiceTitle": "Wybierz warstwę dostępu.",
@@ -2480,10 +2517,10 @@
       "securityTitle": "Gotowość bezpieczeństwa",
       "securityKicker": "Bez kluczy prywatnych"
     },
-    "heroTitle": "Dostep Velmère, uporzadkowany.",
-    "heroBody": "VLM to warstwa dostepu do prywatnych dropow, archiwum i wybranych przywilejow marki. Aktywacja zalezy od publikacji rejestru, gotowosci kontraktu i zamkniecia prawnego.",
+    "heroTitle": "Dostęp Velmère, uporządkowany.",
+    "heroBody": "VLM to warstwa dostępu do prywatnych dropów, archiwum i wybranych przywilejów marki. Aktywacja zależy od publikacji rejestru, gotowości kontraktu i zamknięcia prawnego.",
     "dock": {
-      "overview": "Przeglad",
+      "overview": "Przegląd",
       "registry": "Rejestr",
       "engine": "Silnik",
       "unlocks": "Odblokowania",
@@ -2493,7 +2530,7 @@
     },
     "priceModel": {
       "kicker": "Model cenowy",
-      "title": "Referencyjna trasa dostepu",
+      "title": "Referencyjna trasa dostępu",
       "reference": "Cena referencyjna",
       "quote": "Kurs orientacyjny",
       "buy": "Buy fee",
@@ -2501,8 +2538,8 @@
       "transfer": "Transfer fee"
     },
     "basic": {
-      "accessTierKicker": "Warstwy dostepu",
-      "accessTierTitle": "Sprawdz kwalifikacje dostepu",
+      "accessTierKicker": "Warstwy dostępu",
+      "accessTierTitle": "Sprawdz kwalifikacje dostępu",
       "calculatorKicker": "Kalkulator utility",
       "referenceEur": "Kwota referencyjna EUR",
       "trackerKicker": "Timeline publikacji",
@@ -2513,7 +2550,7 @@
         },
         "wallet": {
           "label": "Portfel",
-          "value": "Polaczony dostep"
+          "value": "Połączony dostęp"
         },
         "route": {
           "label": "Trasa",
@@ -2569,8 +2606,8 @@
     },
     "wallet": {
       "kicker": "Portfel",
-      "title": "Podglad portfela.",
-      "body": "Polacz portfel, aby zobaczyc przyszle stany dostepu. Zakup VLM pozostaje zablokowany do czasu wdrozenia kontraktu, przegladu prawnego i audytu.",
+      "title": "Podgląd portfela.",
+      "body": "Połącz portfel, aby zobaczyć przyszłe stany dostępu. Zakup VLM pozostaje zablokowany do czasu wdrożenia kontraktu, przeglądu prawnego i audytu.",
       "points": [
         "Velmère nie przechowuje kluczy prywatnych.",
         "Strona moze odczytac publiczny adres.",
@@ -2580,7 +2617,7 @@
     "utility": {
       "drops": {
         "title": "Prywatne dropy",
-        "body": "Warstwa dostepu dla wybranych okien produktowych."
+        "body": "Warstwa dostępu dla wybranych okien produktowych."
       },
       "archive": {
         "title": "Archiwum",
@@ -2588,7 +2625,7 @@
       },
       "privileges": {
         "title": "Przywileje marki",
-        "body": "Dostep do wybranych funkcji spolecznosciowych i list marki."
+        "body": "Dostęp do wybranych funkcji społecznościowych i list marki."
       }
     },
     "howToBuy": {
@@ -2602,7 +2639,7 @@
         "verify": "Sprawdz adres kontraktu na stronie i w explorerze.",
         "dex": "Uzyj zatwierdzonej puli DEX dopiero po starcie.",
         "confirm": "Potwierdz oplaty i slippage w portfelu.",
-        "seed": "Nigdy nie udostepniaj seed phrase."
+        "seed": "Nigdy nie udostępniaj seed phrase."
       }
     },
     "contract": {
@@ -2636,7 +2673,7 @@
     },
     "mode": {
       "proKicker": "Velmère Pro",
-      "proTitle": "Rozszerzona warstwa dostepu.",
+      "proTitle": "Rozszerzona warstwa dostępu.",
       "proBody": "Bogatszy widok scenariusza VLM z bocznie ujawnianymi notami modelu, sygnalami self-custody i kompaktowa tozsamoscia protokolu.",
       "proCards": {
         "model": {
@@ -2656,7 +2693,7 @@
     "faqLink": {
       "kicker": "Data room VLM",
       "title": "Pytania przeniesione poza glowny flow.",
-      "body": "Strona publiczna zostaje skupiona. Szczegolowe odpowiedzi VLM sa w osobnym data roomie na koncu doswiadczenia.",
+      "body": "Strona publiczna zostaje skupiona. Szczegolowe odpowiedzi VLM sa w osobnym data roomie na koncu doświadczenia.",
       "cta": "Otworz pytania VLM",
       "back": "Wroc do VLM"
     },
@@ -2974,7 +3011,7 @@
       "body": "Pro to techniczne backstage: stan portfela, pewność registry, sygnał AMU i logika dostępu VLM w jednej precyzyjnej powierzchni terminalowej.",
       "items": {
         "orbit": "Animowana orbita EVM-first z planowanymi szynami sieci.",
-        "wallet": "Read-only podgląd portfela, bez custody i bez seed phrase.",
+        "wallet": "Podgląd tylko do odczytu portfela, bez custody i bez seed phrase.",
         "security": "Audyt, multisig i testnet jako warunki rejestru.",
         "lp": "Route dostępu i sygnał protokołu bez fake swapu.",
         "registry": "Warstwa rejestru: oficjalna tożsamość kontraktu i rekordy dostępu.",

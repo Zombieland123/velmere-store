@@ -15,7 +15,7 @@ export function generateMetadata({ params: { locale } }: { params: { locale: str
 
 export default function AccountPage() {
   return (
-    <AuthGate title="ACCOUNT ACCESS LOCKED" body="Log in or create an account to manage profile, avatar, password, orders and optional Web3 bindings.">
+    <AuthGate>
       <DashboardClient />
     </AuthGate>
   );

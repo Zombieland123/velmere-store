@@ -20,7 +20,7 @@
     "pants": "Hosen",
     "lookbook": "Lookbook",
     "archive": "Archiv",
-    "vlmAccess": "VLM Access",
+    "vlmAccess": "VLM Zugang",
     "account": "Konto",
     "login": "Einloggen",
     "cart": "Warenkorb",
@@ -44,11 +44,21 @@
     "womenswear": "Damenkollektion",
     "vlm": "VLM",
     "square": "Velmère Square",
-    "loginCta": "Log in",
+    "loginCta": "Einloggen",
     "profile": "Profil",
     "myOrders": "Meine Bestellungen",
     "vlmBalance": "VLM Balance",
-    "guestMode": "GAST"
+    "guestMode": "GAST",
+    "connectWallet": "Wallet verbinden",
+    "walletConnected": "Wallet verbunden",
+    "walletAccess": "Wallet-Zugang",
+    "walletHelper": "Wähle eine Wallet. Mobile öffnet die Wallet-App und kehrt hierher zurück.",
+    "network": "Netzwerk",
+    "balance": "Balance",
+    "access": "Zugang",
+    "disconnectWallet": "Wallet trennen",
+    "drawerShop": "Shop / Community",
+    "walletReady": "MetaMask / Phantom mobil bereit"
   },
   "Footer": {
     "tagline": "Dunkler Premium-Streetwear. Limitierte Drops. Zugang näher an der Marke.",
@@ -67,16 +77,17 @@
     "returns": "Rückgaben",
     "contact": "Kontakt",
     "tokenAgreement": "VLM-Vereinbarung",
-    "newsletter": "Newsletter",
-    "newsletterText": "Hinterlasse ein Signal für private Drops, Archivzugang und Square-Updates.",
+    "newsletter": "Private Liste",
+    "newsletterText": "Hinterlasse deine E-Mail für Drop-Signale und Archivnotizen.",
     "emailPlaceholder": "E-Mail-Adresse",
-    "subscribeSoon": "Zugang anfragen",
+    "subscribeSoon": "E-Mail hinterlassen",
     "rights": "Velmère. Alle Rechte vorbehalten.",
     "menswear": "Herrenkollektion",
     "womenswear": "Damenkollektion",
     "newDrop": "Neuer Drop",
     "square": "Velmère Square",
-    "riskMicro": "VLM Access ist vom Clothing Checkout getrennt. ?ffentlicher Verkauf, Contract Deployment, Audit, Liquidit?t, Listing, Wiederverkaufswert oder Investment-Ergebnis werden nicht versprochen."
+    "riskMicro": "VLM ist eine Zugangsebene, kein Investment. Details stehen im VLM Bereich.",
+    "newsletterOffline": "Die private Liste öffnet nach der Verbindung der produktiven Mail-Einstellungen."
   },
   "Home": {
     "heroImageAlt": "Fortgeschrittenes dreidimensionales Velmère Neural-Access-Visual mit Ivory-Knoten und Champagner-Signalfluss",
@@ -210,7 +221,7 @@
     "podNote": ""
   },
   "Cart": {
-    "kicker": "Maison Checkout",
+    "kicker": "Velmère Warenkorb",
     "title": "Warenkorb",
     "empty": "Dein Warenkorb ist leer.",
     "continueShopping": "Weiter einkaufen",
@@ -223,7 +234,20 @@
     "checkoutUnavailable": "Die Zahlung wird nach finaler Shop-Konfiguration aktiviert.",
     "paymentDisabled": "Die Zahlung wird nach finaler Shop-Konfiguration aktiviert.",
     "checkoutFailed": "Checkout konnte nicht gestartet werden.",
-    "openCart": "Warenkorb öffnen"
+    "openCart": "Warenkorb öffnen",
+    "orderBook": "Warenkorb",
+    "units": "Einheit(en)",
+    "emptyLong": "Deine Auswahl ist leer. Beginne mit der Kollektion.",
+    "noAllocation": "Keine aktive Reservierung",
+    "netPrice": "Nettopreis",
+    "vat": "VAT / MwSt 19%",
+    "grossPrice": "Bruttopreis",
+    "acceptTermsPrefix": "Ich akzeptiere die",
+    "terms": "AGB",
+    "and": "und",
+    "refundPolicy": "Rückgaberichtlinie / Widerrufsbelehrung",
+    "acceptTokenPrefix": "Ich bestätige die",
+    "tokenAgreement": "VLM Vereinbarung"
   },
   "Checkout": {
     "successKicker": "Bestellung erhalten",
@@ -246,7 +270,7 @@
     "comingSoon": "Login wird mit Velmère Kundenkonten verfügbar.",
     "pendingActivation": "Kontosystem vorbereitet — Aktivierung ausstehend.",
     "consoleKicker": "Sichere Account-Konsole",
-    "accountTitle": "Velmère Account",
+    "accountTitle": "Velmère Konto",
     "accountBody": "Verwalte Profil, Bestellungen, Sicherheit und optionale Wallet-Verknüpfungen. Google OAuth wartet auf Produktionsschlüssel.",
     "continueGoogle": "Mit Google fortfahren",
     "prepared": "bereit",
@@ -257,7 +281,20 @@
     "orEmail": "oder E-Mail-Zugang",
     "passwordPlaceholder": "Symbol + Zahl + Großbuchstabe",
     "validated": "[ ZUGRIFF VALIDIERТ ]",
-    "localSessionNotice": "Staging-Session. Production OAuth benötigt API-Schlüssel."
+    "localSessionNotice": "Staging-Session. Production OAuth benötigt API-Schlüssel.",
+    "gateTitle": "Kontozugang gesperrt",
+    "gateBody": "Melde dich an oder erstelle ein Konto, um Profil, Avatar, Passwort, Bestellungen und optionale Web3-Bindungen zu verwalten.",
+    "gateKicker": "Account Gate",
+    "loginRegister": "Einloggen / registrieren",
+    "previewConsole": "Konsole ansehen",
+    "walletPreview": "Wallet-Vorschau",
+    "walletPreviewBody": "Wallets sind optionale Bindungen nach dem Login. Verbinde immer nur eine Wallet.",
+    "evmPreview": "EVM Zugangsvorschau",
+    "solanaPreview": "Solana Zugangsvorschau",
+    "disconnectWallet": "Wallet trennen",
+    "googlePrepared": "Google OAuth :: vorbereitet",
+    "emailActive": "E-Mail Auth :: lokale Session aktiv",
+    "walletOptional": "Wallet-Bindung :: optional"
   },
   "Vlm": {
     "kicker": "VLM / ACCESS LAYER",
@@ -1209,12 +1246,12 @@
   },
   "VlmWalletPreview": {
     "kicker": "Wallet-Vorschau",
-    "title": "Read-only Wallet-Vorschau",
+    "title": "Wallet-Vorschau nur lesend",
     "body": "Verbinde eine Wallet, um zukuenftige Zugangsstatus zu sehen. Der VLM-Kauf bleibt bis Contract-Deployment, Legal Review und Audit gesperrt.",
     "currentState": "Wallet-Status",
     "future": "später",
     "preLaunchBadge": "Aktivierung ausstehend",
-    "readOnly": "Read-only preview. Zugriff erfordert deployten Contract und Registry.",
+    "readOnly": "Podgląd tylko do odczytu. Zugriff erfordert deployten Contract und Registry.",
     "noProvider": "MetaMask wurde in diesem Browser nicht erkannt.",
     "connectedHelper": "Verbunden: {address} im Netzwerk {network}. Balance wird nicht gelesen, solange kein Contract existiert.",
     "purchaseDisabled": "Contract nicht deployed - Kauf nicht verfuegbar",
@@ -1241,7 +1278,7 @@
       "invalid": "Ungültiges EVM-Adressformat.",
       "valid": "Adressformat wirkt gültig. Zugang bleibt bis Contract-Deployment gesperrt."
     },
-    "activationBadge": "Read-only preview",
+    "activationBadge": "Podgląd tylko do odczytu",
     "readOnlyBadge": "Vorschau"
   },
   "VlmHowToBuy": {
@@ -2042,7 +2079,7 @@
   },
   "Account": {
     "kicker": "Kundenkonto",
-    "title": "Account Dashboard",
+    "title": "Panel konta",
     "status": "Kontosystem vorbereitet — Aktivierung ausstehend.",
     "loginCta": "Zum Login",
     "modules": {
@@ -2079,7 +2116,7 @@
       "save": "Lokale Vorschau speichern",
       "wallet": {
         "label": "Wallet",
-        "value": "Read-only Vorschau nach Verbindung"
+        "value": "Nur-Lesen-Vorschau nach Verbindung"
       },
       "rank": {
         "label": "Access Rank",
@@ -2137,7 +2174,7 @@
         "kicker": "Plattform",
         "title": "Kundenplattform",
         "items": [
-          "Login/Account mit Bestellungen und Saved Items",
+          "Login/Konto mit Bestellungen und Saved Items",
           "Warenkorb und Checkout Readiness Gates",
           "Admin für Produkte, Orders und VLM Status",
           "AI Angel und Newsletter"
@@ -2974,7 +3011,7 @@
       "body": "Pro ist das technische Backstage: Wallet-State, Registry Confidence, AMU Signal und VLM Access Logic in einer präzisen Terminal-Fläche.",
       "items": {
         "orbit": "Animierter EVM-first Access-Orbit mit geplanten Network Rails.",
-        "wallet": "Read-only Wallet-Vorschau, keine Custody, keine Seed Phrase.",
+        "wallet": "Wallet-Vorschau nur lesend, keine Custody, keine Seed Phrase.",
         "security": "Audit, Multisig und Testnet als Registry-Bedingungen.",
         "lp": "Access-Route und Protokollsignal ohne Fake-Swap UI.",
         "registry": "Registry-first Zugriffsdaten und offizielle Contract-Identität.",
@@ -2983,7 +3020,7 @@
         "moderation": "Angel Moderation bereitet Square-Entscheidungen vor: allow, review, block.",
         "concierge": "Angel Concierge: Produktführung, Square-Moderation und Drop-Signal-Triage.",
         "signals": "Signalboard für Allocation Windows, Registry Updates und Routenbereitschaft.",
-        "vault": "Private Vault-Architektur für Archivräume, Account-Status und künftige VLM-Privilegien.",
+        "vault": "Private Vault-Architektur für Archivräume, Kontostatus und künftige VLM-Privilegien.",
         "forensics": "Security-Forensics für Wallet-Status, falsches Netzwerk und öffentliche Contract-Prüfung."
       },
       "chartShow": "Signalchart öffnen",

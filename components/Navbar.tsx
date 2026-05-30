@@ -80,14 +80,14 @@ export default function Navbar() {
   ];
 
   const drawerLinks = [
-    { href: `/shop`, label: "All products" },
+    { href: `/shop`, label: t("shopAll") },
     ...topLinks,
     { href: `/shop?sort=new`, label: t("newDrop") },
     { href: `/lookbook`, label: t("lookbook") },
     { href: `/archive`, label: t("archive") },
     { href: `/square`, label: t("square") },
     { href: `/vlm-token`, label: t("vlm") },
-    { href: `/account`, label: "Account / Dashboard" },
+    { href: `/account`, label: t("account") },
   ];
 
   const legalLinks = [
@@ -101,7 +101,7 @@ export default function Navbar() {
 
   const walletSummary = walletUi.connected
     ? `${trunc(walletUi.fullAddress)} · ${walletUi.network || "Wallet"}`
-    : "Connect wallet";
+    : t("connectWallet");
 
   const connectWalletFromMenu = (kind: "metamask" | "phantom") => {
     if (walletUi.connected) return;
@@ -144,7 +144,7 @@ export default function Navbar() {
               </div>
 
               <nav className="py-7" aria-label={t("shopMenu")}>
-                <p className="luxury-kicker text-white/38">Commerce / Universe</p>
+                <p className="luxury-kicker text-white/38">{t("drawerShop")}</p>
                 <div className="mt-4 space-y-1">
                   {drawerLinks.map((link) => (
                     <Link key={link.href} href={link.href} onClick={closeDrawerAfterNavigation} className="flex min-h-11 items-center border-b border-white/10 py-3 font-sans text-sm font-semibold uppercase tracking-[0.18em] text-white/84 transition-colors hover:text-velmere-gold">
@@ -156,15 +156,15 @@ export default function Navbar() {
 
               <div className="mt-auto space-y-7 border-t border-white/10 pt-6">
                 <div>
-                  <p className="luxury-kicker text-white/38">Wallet access</p>
+                  <p className="luxury-kicker text-white/38">{t("walletAccess")}</p>
                   <div className="mt-4 rounded-2xl border border-white/10 bg-black/24 p-3">
                     <p className="break-all font-mono text-[10px] uppercase tracking-[0.16em] text-white/48">
-                      {walletUi.connected ? walletUi.fullAddress : "MetaMask / Phantom mobile ready"}
+                      {walletUi.connected ? walletUi.fullAddress : t("walletReady")}
                     </p>
                     {walletUi.connected ? (
                       <div className="mt-3 grid gap-2 font-mono text-[10px] uppercase tracking-[0.14em] text-white/46">
-                        <div className="flex justify-between gap-3"><span>Network</span><span className="text-white/72">{walletUi.network || "Wallet"}</span></div>
-                        <div className="flex justify-between gap-3"><span>Balance</span><span className="text-white/72">{walletUi.tokenBalanceLabel || "Connected"}</span></div>
+                        <div className="flex justify-between gap-3"><span>{t("network")}</span><span className="text-white/72">{walletUi.network || "Wallet"}</span></div>
+                        <div className="flex justify-between gap-3"><span>{t("balance")}</span><span className="text-white/72">{walletUi.tokenBalanceLabel || "Connected"}</span></div>
                       </div>
                     ) : null}
                     {!walletUi.connected ? (
@@ -174,7 +174,7 @@ export default function Navbar() {
                       </div>
                     ) : null}
                     {walletUi.connected ? (
-                      <button type="button" onClick={() => wallet.disconnect()} className="mt-2 min-h-11 w-full rounded-full border border-white/10 bg-white/[0.035] px-3 font-mono text-[9px] font-semibold uppercase tracking-[0.16em] text-white/55 transition hover:border-red-400/30 hover:text-red-200 active:scale-95">Disconnect</button>
+                      <button type="button" onClick={() => wallet.disconnect()} className="mt-2 min-h-11 w-full rounded-full border border-white/10 bg-white/[0.035] px-3 font-mono text-[9px] font-semibold uppercase tracking-[0.16em] text-white/55 transition hover:border-red-400/30 hover:text-red-200 active:scale-95">{t("disconnectWallet")}</button>
                     ) : null}
                   </div>
                 </div>
@@ -208,9 +208,9 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-[50] border-b border-white/10 bg-[#080809]/94 text-white shadow-[0_18px_70px_rgba(0,0,0,0.58)] backdrop-blur-2xl supports-[backdrop-filter]:bg-[#080809]/88">
+      <header className="fixed inset-x-0 top-0 z-[50] border-b border-white/8 bg-[#080809]/92 text-velmere-ivory shadow-[0_18px_70px_rgba(0,0,0,0.48)] backdrop-blur-2xl supports-[backdrop-filter]:bg-[#080809]/86">
         <div className="relative flex min-h-[72px] w-full max-w-none items-center gap-3 px-4 pt-[env(safe-area-inset-top)] md:h-20 md:px-6 md:pt-0 xl:px-8">
-          <button ref={menuButtonRef} type="button" aria-expanded={isOpen} aria-controls="velmere-shop-drawer" onMouseEnter={playHover} onClick={() => { playClick(); closeCart(); setIsOpen(true); }} className="relative z-20 inline-flex h-11 shrink-0 items-center gap-2 rounded-full border border-white/10 bg-[#151517] px-4 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/72 transition hover:border-white/20 hover:bg-[#1F1F22] hover:text-white active:scale-95">
+          <button ref={menuButtonRef} type="button" aria-expanded={isOpen} aria-controls="velmere-shop-drawer" onMouseEnter={playHover} onClick={() => { playClick(); closeCart(); setIsOpen(true); }} className="relative z-20 inline-flex h-11 shrink-0 items-center gap-2 rounded-full border border-white/8 bg-velmere-surface px-4 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/72 transition hover:border-white/18 hover:bg-velmere-elevated hover:text-velmere-ivory active:scale-95">
             <Menu className="h-4 w-4" aria-hidden="true" />
             <span className="hidden sm:inline">{t("menu")}</span>
           </button>
@@ -220,9 +220,9 @@ export default function Navbar() {
             <Link href="/" aria-label="Velmère" onMouseEnter={playHover} className="pointer-events-auto font-sans text-[1.45rem] font-semibold uppercase tracking-[0.22em] text-white drop-shadow-[0_2px_18px_rgba(0,0,0,0.8)] max-[370px]:text-[1.22rem] max-[370px]:tracking-[0.16em] md:text-[1.9rem]">
               VELMÈRE
             </Link>
-            <nav aria-label="Primary" className="pointer-events-auto hidden items-center gap-2 lg:flex">
+            <nav aria-label="Primary" className="pointer-events-auto hidden items-center gap-3 lg:flex">
               {topLinks.map((link) => (
-                <Link key={link.href} href={link.href} onMouseEnter={playHover} className="rounded-full px-2.5 py-2 font-mono text-[9px] xl:text-[10px] font-semibold uppercase tracking-[0.18em] text-white/62 transition hover:bg-white/[0.05] hover:text-white xl:px-4">
+                <Link key={link.href} href={link.href} onMouseEnter={playHover} className="rounded-full px-2.5 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-velmere-muted transition hover:bg-white/[0.04] hover:text-velmere-ivory xl:px-4">
                   {link.label}
                 </Link>
               ))}
@@ -232,7 +232,7 @@ export default function Navbar() {
           <div className="min-w-0 flex-1" />
           <div className="relative z-20 ml-auto flex min-w-0 items-center justify-end gap-2">
             <AudioToggleButton />
-            <div className="hidden rounded-full border border-white/10 bg-[#151517] p-1 sm:flex">
+            <div className="hidden rounded-full border border-white/8 bg-velmere-surface p-1 2xl:flex">
               {LOCALES.map((item) => (
                 <Link key={item} href={localizedPath()} locale={item} aria-label={`${common("language")} ${item.toUpperCase()}`} aria-current={locale === item ? "page" : undefined} className={`inline-flex h-9 min-w-10 items-center justify-center rounded-full px-3 text-[10px] font-semibold uppercase tracking-[0.16em] transition-colors ${locale === item ? "bg-white text-black" : "text-white/50 hover:text-white"}`}>
                   {item.toUpperCase()}
@@ -248,13 +248,13 @@ export default function Navbar() {
               <AnimatePresence>
                 {walletOpen ? (
                   <motion.div initial={{ opacity: 0, y: 8, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 8, scale: 0.98 }} transition={{ duration: 0.18 }} className="absolute right-0 mt-3 w-80 overflow-hidden rounded-2xl border border-white/10 bg-[#1A1A1C] p-4 shadow-2xl shadow-black/60">
-                    <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-[#c8a96a]">{walletUi.connected ? "Wallet connected" : "Wallet access"}</p>
-                    <p className="mt-3 break-all font-mono text-xs text-white/70">{walletUi.connected ? walletUi.fullAddress : "Choose a wallet. Mobile opens the wallet browser, then Velmère auto-requests connection."}</p>
+                    <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-[#c8a96a]">{walletUi.connected ? t("walletConnected") : t("walletAccess")}</p>
+                    <p className="mt-3 break-all font-mono text-xs text-white/70">{walletUi.connected ? walletUi.fullAddress : t("walletHelper")}</p>
                     {walletUi.connected ? (
                       <div className="mt-4 grid gap-2 rounded-xl border border-white/10 bg-black/24 p-3 font-mono text-[10px] uppercase tracking-[0.14em] text-white/45">
-                        <div className="flex justify-between gap-3"><span>Network</span><span className="text-white/70">{walletUi.network || "Wallet"}</span></div>
-                        <div className="flex justify-between gap-3"><span>Balance</span><span className="text-white/70">{walletUi.tokenBalanceLabel || "Connected"}</span></div>
-                        <div className="flex justify-between gap-3"><span>Access</span><span className="text-[#c8a96a]">{walletUi.accessStatusLabel || "preview"}</span></div>
+                        <div className="flex justify-between gap-3"><span>{t("network")}</span><span className="text-white/70">{walletUi.network || "Wallet"}</span></div>
+                        <div className="flex justify-between gap-3"><span>{t("balance")}</span><span className="text-white/70">{walletUi.tokenBalanceLabel || "Connected"}</span></div>
+                        <div className="flex justify-between gap-3"><span>{t("access")}</span><span className="text-[#c8a96a]">{walletUi.accessStatusLabel || "preview"}</span></div>
                       </div>
                     ) : (
                       <div className="mt-4 grid grid-cols-2 gap-2">
@@ -265,18 +265,18 @@ export default function Navbar() {
                     {walletUi.connected ? (
                       <button type="button" onClick={() => { wallet.disconnect(); setWalletOpen(false); }} className="mt-4 flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.035] font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-white/65 transition hover:border-red-400/30 hover:text-red-200 active:scale-95">
                         <LogOut className="h-3.5 w-3.5" aria-hidden="true" />
-                        Disconnect wallet
+                        {t("disconnectWallet")}
                       </button>
                     ) : null}
                   </motion.div>
                 ) : null}
               </AnimatePresence>
             </div>
-            <Link href="/account" aria-label="Account" onMouseEnter={playHover} className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-[#151517] font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-white/72 transition hover:border-[#d4af37] hover:bg-[#1F1F22] hover:text-white active:scale-95 sm:w-auto sm:px-4">
+            <Link href="/account" aria-label={t("account")} onMouseEnter={playHover} className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/8 bg-velmere-surface text-xs font-semibold uppercase tracking-[0.14em] text-velmere-muted transition hover:border-velmere-gold/45 hover:bg-velmere-elevated hover:text-velmere-ivory active:scale-95 sm:w-auto sm:px-4">
               <User className="h-4 w-4" aria-hidden="true" />
-              <span className="hidden sm:ml-2 sm:inline">Account</span>
+              <span className="hidden sm:ml-2 sm:inline">{t("account")}</span>
             </Link>
-            <button type="button" aria-label={t("cart")} onMouseEnter={playHover} onClick={() => { playClick(); setIsOpen(false); openCart(); }} className="relative inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-[#151517] text-white/72 transition hover:border-white/20 hover:bg-[#1F1F22] hover:text-white active:scale-95">
+            <button type="button" aria-label={t("cart")} onMouseEnter={playHover} onClick={() => { playClick(); setIsOpen(false); openCart(); }} className="relative inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/8 bg-velmere-surface text-white/72 transition hover:border-white/18 hover:bg-velmere-elevated hover:text-velmere-ivory active:scale-95">
               <ShoppingBag className="h-4 w-4" aria-hidden="true" />
               {itemCount > 0 ? <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full border border-black bg-velmere-gold px-1 text-[10px] font-semibold text-black">{itemCount}</span> : null}
             </button>
