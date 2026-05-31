@@ -44,24 +44,24 @@ export default function BlockchainSearch() {
   }
 
   return (
-    <section className="overflow-hidden rounded-[2rem] border border-white/10 bg-[#090909] p-6 md:p-8">
+    <section className="overflow-hidden rounded-[2rem] border border-white/[0.10] bg-[#090909] p-6 md:p-8">
       <div className="grid gap-8 lg:grid-cols-[0.78fr_1.22fr]">
         <div>
           <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#d4af37]">{t("kicker")}</p>
           <h2 className="mt-4 font-serif text-4xl leading-tight md:text-5xl">{t("title")}</h2>
-          <p className="mt-5 text-sm leading-7 text-white/60">{t("body")}</p>
-          <div className="mt-6 flex gap-3 rounded-2xl border border-[#d4af37]/20 bg-[#d4af37]/[0.06] p-4">
+          <p className="mt-5 text-sm leading-7 text-white/[0.60]">{t("body")}</p>
+          <div className="mt-6 flex gap-3 rounded-2xl border border-[#d4af37]/[0.20] bg-[#d4af37]/[0.06] p-4">
             <ShieldAlert className="mt-1 h-5 w-5 shrink-0 text-[#d4af37]" aria-hidden="true" />
-            <p className="text-xs leading-6 text-white/58">{t("notice")}</p>
+            <p className="text-xs leading-6 text-white/[0.58]">{t("notice")}</p>
           </div>
         </div>
 
-        <div className="rounded-[1.5rem] border border-white/10 bg-black/50 p-4 md:p-5">
+        <div className="rounded-[1.5rem] border border-white/[0.10] bg-black/[0.50] p-4 md:p-5">
           <div className="grid gap-3 md:grid-cols-[0.72fr_1fr_auto]">
             <select
               value={chain}
               onChange={(event) => setChain(event.target.value as ExplorerChain)}
-              className="min-h-12 rounded-full border border-white/10 bg-white/[0.035] px-4 font-mono text-xs uppercase tracking-[0.14em] text-white outline-none"
+              className="min-h-12 rounded-full border border-white/[0.10] bg-white/[0.035] px-4 font-mono text-xs uppercase tracking-[0.14em] text-white outline-none"
               aria-label={t("chainLabel")}
             >
               {chains.map((item) => (
@@ -75,28 +75,28 @@ export default function BlockchainSearch() {
               onChange={(event) => setQuery(event.target.value)}
               placeholder={t("placeholder")}
               spellCheck={false}
-              className="min-h-12 rounded-full border border-white/10 bg-white/[0.035] px-5 font-mono text-sm text-white outline-none placeholder:text-white/30"
+              className="min-h-12 rounded-full border border-white/[0.10] bg-white/[0.035] px-5 font-mono text-sm text-white outline-none placeholder:text-white/[0.30]"
             />
             <button
               type="button"
               onClick={submitSearch}
-              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-[#d4af37]/35 px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#d4af37] transition-colors hover:border-[#d4af37]/70 hover:bg-[#d4af37]/10"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-[#d4af37]/[0.35] px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#d4af37] transition-colors hover:border-[#d4af37]/[0.70] hover:bg-[#d4af37]/[0.10]"
             >
               <Search className="h-4 w-4" aria-hidden="true" />
               {t("submit")}
             </button>
           </div>
-          <p className={`mt-3 text-xs leading-6 ${error ? "text-red-200/80" : "text-white/42"}`}>
+          <p className={`mt-3 text-xs leading-6 ${error ? "text-red-200/[0.80]" : "text-white/[0.42]"}`}>
             {error || (target ? t(`valid.${target}`) : t("helper"))}
           </p>
 
           <div className="mt-6 grid gap-4 md:grid-cols-2">
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/42">{t("streamTitle")}</p>
-              <div className="pointer-events-none mt-4 max-h-[250px] overflow-y-scroll scroll-touch pr-1 font-mono text-xs text-white/58 md:h-28 md:overflow-hidden md:pr-0">
+            <div className="rounded-2xl border border-white/[0.10] bg-white/[0.03] p-4">
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/[0.42]">{t("streamTitle")}</p>
+              <div className="pointer-events-none mt-4 max-h-[250px] overflow-y-scroll scroll-touch pr-1 font-mono text-xs text-white/[0.58] md:h-28 md:overflow-hidden md:pr-0">
                 <div className="space-y-2 motion-safe:animate-[ledger-scroll_10s_linear_infinite]">
                   {[...hexStream, ...hexStream].map((item, index) => (
-                    <div key={`${item}-${index}`} className="flex items-center justify-between gap-4 border-b border-white/5 py-1">
+                    <div key={`${item}-${index}`} className="flex items-center justify-between gap-4 border-b border-white/[0.05] py-1">
                       <span className="break-all text-[11px] md:text-xs">{item}</span>
                       <span className="tabular-nums text-[#d4af37]">{(index + 3) * 7}</span>
                     </div>
@@ -104,9 +104,9 @@ export default function BlockchainSearch() {
                 </div>
               </div>
             </div>
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/42">{t("engineTitle")}</p>
-              <div className="mt-4 space-y-3 font-mono text-xs text-white/58">
+            <div className="rounded-2xl border border-white/[0.10] bg-white/[0.03] p-4">
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/[0.42]">{t("engineTitle")}</p>
+              <div className="mt-4 space-y-3 font-mono text-xs text-white/[0.58]">
                 <p className="break-all tabular-nums">AMU = 3162.27766</p>
                 <p className="break-all tabular-nums">ρ = 1.324717957244746</p>
                 <p>{t("score", { value: query.trim() ? Math.min(97, 42 + query.trim().length).toString() : "42" })}</p>
@@ -115,7 +115,7 @@ export default function BlockchainSearch() {
                 href="https://basescan.org"
                 target="_blank"
                 rel="noreferrer"
-                className="mt-5 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.16em] text-white/44 hover:text-white"
+                className="mt-5 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.16em] text-white/[0.44] hover:text-white"
               >
                 {t("baseExplorer")}
                 <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />

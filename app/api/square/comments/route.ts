@@ -1,23 +1,35 @@
 import { NextResponse } from "next/server";
+import { z } from "zod";
 import { createSquareComment } from "@/lib/db/square-service";
+import { rateLimit, requireVelmereSession } from "@/lib/api/request-guards";
 
 export const dynamic = "force-dynamic";
 
+const commentSchema = z.object({
+  postId: z.string().trim().min(1).max(96),
+  body: z.string().trim().min(1).max(600),
+});
+
 export async function POST(request: Request) {
   try {
-    const payload = await request.json();
-    const postId = String(payload.postId ?? "").trim();
-    const body = String(payload.body ?? "").trim();
-    if (!postId || !body) return NextResponse.json({ error: "postId and body are required" }, { status: 400 });
+    const sessionGate = requireVelmereSession(request);
+    if (sessionGate.response) return sessionGate.response;
 
+    const limited = rateLimit(request, "square-comments", 20, 60_000);
+    if (limited) return limited;
+
+    const payload = commentSchema.parse(await request.json());
     const result = await createSquareComment({
-      postId,
-      body,
-      authorName: String(payload.authorName ?? "Velmère Member"),
+      postId: payload.postId,
+      body: payload.body,
+      authorName: sessionGate.session.displayName,
     });
 
     return NextResponse.json(result, { status: 201 });
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json({ error: "VALIDATION_FAILED", issues: error.flatten() }, { status: 400 });
+    }
     return NextResponse.json({ error: error instanceof Error ? error.message : "Unable to create comment" }, { status: 500 });
   }
 }

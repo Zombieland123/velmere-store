@@ -41,7 +41,7 @@ export default function PrimeFieldSimulation({ active = true }: { active?: boole
   return (
     <div
       ref={ref as React.RefObject<HTMLDivElement>}
-      className="relative aspect-square overflow-hidden rounded-[2rem] border border-white/5 bg-black/28 text-white md:aspect-[16/10] md:min-h-[360px]"
+      className="relative aspect-square overflow-hidden rounded-[2rem] border border-white/[0.05] bg-black/[0.28] text-white md:aspect-[16/10] md:min-h-[360px]"
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_64%_34%,rgba(200,169,106,0.14),transparent_32%),repeating-linear-gradient(90deg,rgba(245,240,232,0.025)_0,rgba(245,240,232,0.025)_1px,transparent_1px,transparent_44px),repeating-linear-gradient(0deg,rgba(245,240,232,0.018)_0,rgba(245,240,232,0.018)_1px,transparent_1px,transparent_44px)]" />
       <svg viewBox="0 0 820 520" preserveAspectRatio="xMidYMid meet" className="absolute inset-0 h-full w-full" role="img" aria-label={t("aria")}>
@@ -55,13 +55,12 @@ export default function PrimeFieldSimulation({ active = true }: { active?: boole
           </filter>
         </defs>
 
-        <motion.path
+        <path
           d="M90 354 C210 180 318 408 438 238 C544 86 642 280 746 164"
           fill="none"
           stroke="rgba(245,240,232,0.08)"
           strokeWidth="34"
-          animate={shouldAnimate ? { opacity: [0.32, 0.58, 0.32] } : undefined}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+          className={shouldAnimate ? "velmere-pulse-dot" : undefined}
         />
         <path d="M90 354 C210 180 318 408 438 238 C544 86 642 280 746 164" fill="none" stroke="rgba(245,240,232,0.2)" strokeWidth="1" strokeDasharray="5 18" />
         <line x1="410" x2="410" y1="50" y2="470" stroke="rgba(200,169,106,0.2)" strokeDasharray="2 12" />
@@ -73,7 +72,7 @@ export default function PrimeFieldSimulation({ active = true }: { active?: boole
           })}
         </g>
 
-        <motion.line
+        <line
           x1="86"
           y1="148"
           x2={selectedNode.x}
@@ -81,8 +80,7 @@ export default function PrimeFieldSimulation({ active = true }: { active?: boole
           stroke="rgba(200,169,106,0.52)"
           strokeWidth="2"
           strokeDasharray="6 12"
-          animate={shouldAnimate ? { pathLength: [0.2, 1, 0.2], opacity: [0.38, 0.9, 0.38] } : undefined}
-          transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut" }}
+          className={shouldAnimate ? "velmere-dash-flow" : undefined}
         />
 
         {primeNodes.map((node, index) => {
@@ -97,7 +95,7 @@ export default function PrimeFieldSimulation({ active = true }: { active?: boole
               onFocus={() => setSelectedPrime(node.p)}
               onClick={() => setSelectedPrime(node.p)}
               animate={shouldAnimate ? { opacity: selected ? [0.78, 1, 0.78] : [0.45, 0.9, 0.45] } : undefined}
-              transition={{ duration: selected ? 2.2 : 4.5, delay: index * 0.08, repeat: Infinity, ease: "easeInOut" }}
+              transition={{ duration: selected ? 2.2 : 4.5, delay: index * 0.08, repeat: 999999, ease: "easeInOut" }}
               style={{ cursor: "pointer" }}
             >
               <circle cx={node.x} cy={node.y} r={selected ? "16" : "11"} fill={selected ? "rgba(200,169,106,0.14)" : "rgba(245,240,232,0.035)"} stroke="rgba(245,240,232,0.12)" />
@@ -120,22 +118,19 @@ export default function PrimeFieldSimulation({ active = true }: { active?: boole
             fontSize="13"
             fontFamily="monospace"
             animate={shouldAnimate ? { opacity: [0, 0.75, 0] } : undefined}
-            transition={{ duration: 5.5, delay: 1 + index * 1.1, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: 5.5, delay: 1 + index * 1.1, repeat: 999999, ease: "easeInOut" }}
           >
             {fragment.value}
           </motion.text>
         ))}
 
-        <motion.circle
+        <circle
+          cx={selectedNode.x}
+          cy={selectedNode.y}
           r="7"
           fill="rgba(200,169,106,0.96)"
           filter="url(#primeGlow)"
-          animate={
-            shouldAnimate
-              ? { cx: [86, selectedNode.x], cy: [148, selectedNode.y] }
-              : { cx: selectedNode.x, cy: selectedNode.y }
-          }
-          transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
+          className={shouldAnimate ? "velmere-pulse-dot" : undefined}
         />
 
         <g transform="translate(616 346)">
@@ -151,18 +146,18 @@ export default function PrimeFieldSimulation({ active = true }: { active?: boole
 
       <div className="absolute left-4 top-4 flex flex-wrap gap-2">
         {["primeField", "entropyFlow", "accessCheck", "notAudit"].map((key) => (
-          <span key={key} className="rounded-full border border-white/10 bg-black/42 px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/50">
+          <span key={key} className="rounded-full border border-white/[0.10] bg-black/[0.42] px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/[0.50]">
             {t(key)}
           </span>
         ))}
       </div>
 
-      <div className="absolute bottom-4 left-4 right-4 rounded-2xl border border-white/10 bg-black/58 p-4 backdrop-blur-xl">
+      <div className="absolute bottom-4 left-4 right-4 rounded-2xl border border-white/[0.10] bg-black/[0.58] p-4 backdrop-blur-xl">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="font-mono text-xs text-[#F5F0E8]">
             {t("selectedPrime")}: <span className="text-velmere-gold">{selectedPrime}</span>
           </p>
-          <p className="font-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-white/48">
+          <p className="font-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-white/[0.48]">
             {t("nodeStable")} / {t("auditRequired")}
           </p>
         </div>
@@ -173,7 +168,7 @@ export default function PrimeFieldSimulation({ active = true }: { active?: boole
               type="button"
               onClick={() => setSelectedPrime(node.p)}
               className={`min-h-8 min-w-8 rounded-full border font-mono text-[11px] ${
-                selectedPrime === node.p ? "border-velmere-gold bg-velmere-gold text-black" : "border-white/10 text-white/52"
+                selectedPrime === node.p ? "border-velmere-gold bg-velmere-gold text-black" : "border-white/[0.10] text-white/[0.52]"
               }`}
             >
               {node.p}

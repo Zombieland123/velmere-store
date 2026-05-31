@@ -1,28 +1,101 @@
-import { getTranslations } from "next-intl/server";
-import { KeyRound, ShieldCheck, UserRound } from "lucide-react";
-import LuxurySection from "@/components/layout/LuxurySection";
+import type { Metadata } from "next";
+import { ArrowLeft } from "lucide-react";
 import AuthFormClient from "@/components/auth/AuthFormClient";
+import LoginSecurityVisual from "@/components/auth/LoginSecurityVisual";
+import { Link } from "@/navigation";
+import { buildVelmereMetadata } from "@/lib/seo/metadata";
 
-export default async function LoginPage({ params: { locale } }: { params: { locale: string } }) {
-  const t = await getTranslations({ locale, namespace: "Auth" });
-  const steps = [
-    { icon: UserRound, label: t("email") },
-    { icon: KeyRound, label: t("password") },
-    { icon: ShieldCheck, label: t("pendingActivation") },
-  ];
+const loginCopy = {
+  en: {
+    returnHome: "Return home",
+    email: "Email",
+    password: "Password",
+    signIn: "Sign in",
+    privateAccount: "Private account",
+    title: "Sign in.",
+    body: "Account first. Wallet optional. No seed phrases.",
+    googlePreview: "Google preview",
+    notLive: "Not live",
+    emailAccess: "email access",
+    createAccount: "Create account",
+    alreadyHave: "Already have an account?",
+    forgotPassword: "Forgot password?",
+    previewNotice: "Preview mode only. Production auth requires Google OAuth keys, server sessions and final legal copy.",
+    minimumPassword: "Minimum 8 characters",
+    emailError: "Enter a valid email address.",
+    passwordError: "Password must contain at least 8 characters.",
+    walletRequired: "Connect a wallet before creating a member account for VLM and Square features.",
+  },
+  pl: {
+    returnHome: "Wróć na stronę główną",
+    email: "E-mail",
+    password: "Hasło",
+    signIn: "Zaloguj się",
+    privateAccount: "Prywatne konto",
+    title: "Zaloguj się.",
+    body: "Najpierw konto. Portfel opcjonalnie. Nigdy seed phrase.",
+    googlePreview: "Podgląd Google",
+    notLive: "Nieaktywne",
+    emailAccess: "dostęp e-mail",
+    createAccount: "Utwórz konto",
+    alreadyHave: "Masz już konto?",
+    forgotPassword: "Nie pamiętasz hasła?",
+    previewNotice: "Tryb podglądu. Produkcyjne logowanie wymaga kluczy Google OAuth, sesji serwera i finalnych tekstów prawnych.",
+    minimumPassword: "Minimum 8 znaków",
+    emailError: "Wpisz poprawny adres e-mail.",
+    passwordError: "Hasło musi mieć minimum 8 znaków.",
+    walletRequired: "Podłącz portfel przed utworzeniem konta membera dla funkcji VLM i Square.",
+  },
+  de: {
+    returnHome: "Zur Startseite",
+    email: "E-Mail",
+    password: "Passwort",
+    signIn: "Einloggen",
+    privateAccount: "Privates Konto",
+    title: "Einloggen.",
+    body: "Zuerst Account. Wallet optional. Keine Seed Phrase.",
+    googlePreview: "Google-Vorschau",
+    notLive: "Nicht live",
+    emailAccess: "E-Mail-Zugang",
+    createAccount: "Konto erstellen",
+    alreadyHave: "Schon ein Konto?",
+    forgotPassword: "Passwort vergessen?",
+    previewNotice: "Nur Vorschau. Produktion erfordert Google-OAuth-Schlüssel, Server-Sessions und finale Rechtstexte.",
+    minimumPassword: "Mindestens 8 Zeichen",
+    emailError: "Gib eine gültige E-Mail-Adresse ein.",
+    passwordError: "Das Passwort muss mindestens 8 Zeichen haben.",
+    walletRequired: "Verbinde ein Wallet, bevor du ein Member-Konto für VLM- und Square-Funktionen erstellst.",
+  },
+} as const;
+
+export function generateMetadata({ params: { locale } }: { params: { locale: string } }): Metadata {
+  return buildVelmereMetadata({
+    locale,
+    path: "/login",
+    title: "Login — Velmère",
+    description: "Enter the private Velmère layer with account access and optional wallet binding.",
+  });
+}
+
+export default function LoginPage({ params: { locale } }: { params: { locale: string } }) {
+  const copy = loginCopy[locale as keyof typeof loginCopy] ?? loginCopy.en;
 
   return (
-    <main className="relative min-h-[100dvh] overflow-x-hidden bg-[#080809] text-white">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_22%,rgba(212,175,55,0.10),transparent_28%),radial-gradient(circle_at_84%_14%,rgba(255,255,255,0.05),transparent_26%)]" />
-      <LuxurySection className="relative z-[1] py-28 md:py-36">
-        <section className="mx-auto grid max-w-6xl gap-7 lg:grid-cols-[0.78fr_1.22fr] lg:items-stretch">
-          <div className="rounded-[2rem] border border-white/10 bg-[#1A1A1C] p-7 shadow-[0_34px_110px_rgba(0,0,0,0.42)] backdrop-blur-2xl md:p-9">
-            <p className="luxury-kicker text-velmere-gold/80">{t("kicker")}</p><h1 className="mt-6 font-serif text-5xl leading-[0.92] text-white md:text-6xl">{t("login")}</h1><p className="mt-6 text-sm leading-7 text-white/60">{t("pendingActivation")}</p>
-            <div className="mt-8 grid gap-3">{steps.map(({ icon: Icon, label }) => <div key={label} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/25 px-4 py-3"><Icon className="h-4 w-4 text-velmere-gold" aria-hidden="true" /><span className="text-xs leading-6 text-white/58">{label}</span></div>)}</div>
-          </div>
-          <AuthFormClient labels={{ email: t("email"), password: t("password"), signIn: t("signIn") }} />
-        </section>
-      </LuxurySection>
+    <main className="relative min-h-[100dvh] overflow-x-hidden bg-velmere-black text-velmere-ivory">
+      <section className="luxury-section pt-28 md:pt-32">
+        <div className="grid gap-6 pb-20 lg:grid-cols-[0.82fr_0.92fr] lg:items-stretch">
+          <section className="rounded-[2rem] border border-white/[0.10] bg-[#0B0B0D] p-6 shadow-velmere-card md:p-8">
+            <Link href="/" className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-white/[0.45] transition hover:text-velmere-gold">
+              <ArrowLeft className="h-4 w-4" /> {copy.returnHome}
+            </Link>
+            <div className="mt-6">
+              <LoginSecurityVisual />
+            </div>
+          </section>
+
+          <AuthFormClient labels={copy} />
+        </div>
+      </section>
     </main>
   );
 }

@@ -38,14 +38,14 @@ export async function getProfile(): Promise<{ profile: ProfileRecord; source: "s
   };
 }
 
-export async function updateProfile(profile: ProfileRecord): Promise<{ profile: ProfileRecord; source: "supabase" | "mock" }> {
+export async function updateProfile(profileId: string, profile: ProfileRecord): Promise<{ profile: ProfileRecord; source: "supabase" | "mock" }> {
   const supabase = getSupabaseServerClient();
   if (!supabase) return { profile, source: "mock" };
 
   const { data, error } = await supabase
     .from(PROFILE_TABLE)
     .upsert({
-      id: "default-profile",
+      id: profileId,
       display_name: profile.displayName,
       handle: profile.handle,
       bio: profile.bio,

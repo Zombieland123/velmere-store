@@ -30,8 +30,9 @@ create table if not exists public.velmere_square_comments (
   created_at_label text
 );
 
+-- Profile rows must be keyed by the authenticated session/user id; do not mutate a shared default profile in production.
 create table if not exists public.velmere_profiles (
-  id text primary key default 'default-profile',
+  id text primary key,
   display_name text not null default 'Velmère Member',
   handle text not null default 'velmere.member',
   bio text not null default '',

@@ -25,6 +25,13 @@ export type PersistStripeOrderInput = {
   } | null;
 };
 
+function redactEmail(email?: string | null) {
+  if (!email) return null;
+  const [name, domain] = email.split("@");
+  if (!domain) return "[redacted]";
+  return `${name.slice(0, 2)}***@${domain}`;
+}
+
 function buildProductionLog(input: PersistStripeOrderInput, reason: string) {
   return {
     level: "warn",
@@ -36,15 +43,13 @@ function buildProductionLog(input: PersistStripeOrderInput, reason: string) {
     paymentStatus: input.session.payment_status,
     amountTotal: input.session.amount_total,
     currency: input.session.currency,
-    walletAddress: input.walletAddress ?? null,
+    walletAddress: input.walletAddress ? `${input.walletAddress.slice(0, 6)}…${input.walletAddress.slice(-4)}` : null,
     customer: {
-      email: input.session.customer_details?.email ?? null,
-      name: input.session.customer_details?.name ?? null,
-      phone: input.session.customer_details?.phone ?? null,
-      address: input.session.customer_details?.address ?? null,
+      email: redactEmail(input.session.customer_details?.email),
+      present: Boolean(input.session.customer_details),
     },
-    metadata: input.session.metadata ?? {},
-    orderItems: input.orderItems,
+    itemCount: input.orderItems.length,
+    productIds: input.orderItems.map((item) => item.productId),
     createdAt: new Date().toISOString(),
   };
 }

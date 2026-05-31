@@ -264,7 +264,7 @@ export default function NeuralAtelier3D() {
       ref={hostRef}
       role="img"
       aria-label={t("heroImageAlt")}
-      className="pointer-events-none relative aspect-square w-full max-h-[560px] touch-pan-y overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] md:aspect-[4/3]"
+      className="pointer-events-none relative aspect-square w-full max-h-[560px] touch-pan-y overflow-hidden rounded-3xl border border-white/[0.10] bg-white/[0.04] md:aspect-[4/3]"
     >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_54%_42%,rgba(200,169,106,0.18),transparent_34%),linear-gradient(145deg,rgba(245,240,232,0.10),transparent_42%,rgba(0,0,0,0.28))]" />
       <div className="pointer-events-none absolute inset-0 border border-white/[0.04]" />

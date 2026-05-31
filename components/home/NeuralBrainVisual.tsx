@@ -190,14 +190,14 @@ export default function NeuralBrainVisual() {
       const z1 = node.x * sinY + node.z * cosY;
       const y1 = node.y * cosX - z1 * sinX;
       const z2 = node.y * sinX + z1 * cosX;
-      const scale = Math.min(width, height) * 0.19;
+      const scale = Math.min(width, height) * 0.124;
       const perspective = 1 / (1 + (z2 + 2.4) * 0.16);
       return {
         key: node.key,
         x: width / 2 + x1 * scale * perspective,
         y: height / 2 + y1 * scale * perspective,
         z: z2,
-        size: (node.kind === "core" ? 54 : 36) * perspective,
+        size: (node.kind === "core" ? 48 : 31) * perspective,
       };
     }
 
@@ -218,8 +218,8 @@ export default function NeuralBrainVisual() {
       ctx.clearRect(0, 0, width, height);
 
       const bg = ctx.createRadialGradient(width * 0.55, height * 0.48, 20, width * 0.55, height * 0.48, Math.max(width, height) * 0.72);
-      bg.addColorStop(0, "rgba(212,175,55,0.16)");
-      bg.addColorStop(0.32, "rgba(255,255,255,0.035)");
+      bg.addColorStop(0, "rgba(212,175,55,0.22)");
+      bg.addColorStop(0.32, "rgba(255,255,255,0.05)");
       bg.addColorStop(1, "rgba(0,0,0,0)");
       ctx.fillStyle = bg;
       ctx.fillRect(0, 0, width, height);
@@ -334,10 +334,10 @@ export default function NeuralBrainVisual() {
   const active = translatedNodes.find((node) => node.key === activeNode) ?? translatedNodes[0];
 
   return (
-    <div className="mx-auto w-full max-w-[430px] space-y-3 overflow-x-clip md:max-w-none">
+    <div className="mx-auto w-full max-w-[520px] space-y-3 overflow-visible md:max-w-[720px] lg:max-w-[820px]">
       <div
         ref={wrapperRef}
-        className="mobile-scroll-safe-canvas relative mx-auto aspect-square max-h-[360px] overflow-hidden rounded-[2rem] border border-white/10 bg-[#050505] md:aspect-[4/3] md:max-h-none md:h-[460px] lg:h-[540px] xl:h-[600px]"
+        className="mobile-scroll-safe-canvas relative mx-auto aspect-square max-h-[380px] overflow-hidden rounded-[2rem] border border-white/[0.10] bg-[#050505] md:aspect-[4/3] md:max-h-none md:h-[500px] lg:h-[580px] xl:h-[640px]"
       >
         <canvas
           ref={canvasRef}
@@ -345,16 +345,16 @@ export default function NeuralBrainVisual() {
           className="absolute inset-0 h-full w-full touch-pan-y pointer-events-none md:pointer-events-auto md:touch-none md:cursor-grab md:active:cursor-grabbing"
         />
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.045),transparent_32%,rgba(212,175,55,0.06))]" />
-        <div className="pointer-events-none absolute inset-x-8 bottom-8 h-px bg-gradient-to-r from-transparent via-[#d4af37]/60 to-transparent" />
+        <div className="pointer-events-none absolute inset-x-8 bottom-8 h-px bg-gradient-to-r from-transparent via-[#d4af37]/[0.60] to-transparent" />
       </div>
       <motion.div
         key={active.key}
         initial={reducedMotion ? false : { opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mx-auto w-full max-w-xl rounded-2xl border border-white/10 bg-[#1A1A1C]/88 p-4 text-center shadow-2xl shadow-black/30 md:p-4 lg:text-left"
+        className="mx-auto w-full max-w-[36rem] rounded-2xl border border-white/[0.10] bg-[#1A1A1C]/[0.88] p-4 text-center shadow-2xl shadow-black/[0.30] md:p-4 lg:text-left"
       >
         <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#d4af37]">{active.title}</p>
-        <p className="mt-2 text-[11px] leading-5 text-white/50">{active.body}</p>
+        <p className="mt-2 text-[11px] leading-5 text-white/[0.50]">{active.body}</p>
       </motion.div>
     </div>
   );

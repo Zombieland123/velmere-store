@@ -51,8 +51,8 @@ export default function VlmAccessHeroVisual({
       ref={ref as React.RefObject<HTMLDivElement>}
       className={`relative w-full overflow-hidden text-white ${
         compact
-          ? `min-h-[240px] rounded-[2rem] border border-white/5 bg-white/[0.02] ${captionBelow ? "aspect-[4/3] max-h-[380px]" : ""}`
-          : "min-h-[320px] rounded-[2rem] border border-white/5 bg-white/[0.02]"
+          ? `min-h-[240px] rounded-[2rem] border border-white/[0.05] bg-white/[0.02] ${captionBelow ? "aspect-[4/3] max-h-[380px]" : ""}`
+          : "min-h-[320px] rounded-[2rem] border border-white/[0.05] bg-white/[0.02]"
       }`}
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_54%_44%,rgba(200,169,106,0.22),transparent_42%)]" />
@@ -61,13 +61,13 @@ export default function VlmAccessHeroVisual({
         {["registryPending", "securityReadiness", "launchInterface"].map((key) => (
           <span
             key={key}
-            className="rounded-full border border-white/10 bg-black/50 px-2.5 py-1.5 font-sans text-[9px] font-semibold uppercase tracking-[0.16em] text-white/54 backdrop-blur-sm"
+            className="rounded-full border border-white/[0.10] bg-black/[0.50] px-2.5 py-1.5 font-sans text-[9px] font-semibold uppercase tracking-[0.16em] text-white/[0.54] backdrop-blur-sm"
           >
             {t(`chips.${key}`)}
           </span>
         ))}
       </div>
-      <div className="absolute right-3 top-14 z-10 hidden w-40 rounded-2xl border border-white/10 bg-black/55 p-3 backdrop-blur-md md:block">
+      <div className="absolute right-3 top-14 z-10 hidden w-40 rounded-2xl border border-white/[0.10] bg-black/[0.55] p-3 backdrop-blur-md md:block">
         <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-[#d4af37]">Node legend</p>
         <div className="mt-2 grid gap-1.5">
           {nodeKeys.map((key) => (
@@ -77,7 +77,7 @@ export default function VlmAccessHeroVisual({
               onMouseEnter={() => setActiveNode(key)}
               onFocus={() => setActiveNode(key)}
               onClick={() => setActiveNode(key)}
-              className={`flex items-center justify-between rounded-full border px-2.5 py-1.5 font-mono text-[9px] uppercase tracking-[0.12em] transition ${activeNode === key ? "border-[#d4af37]/45 bg-[#d4af37]/10 text-[#d4af37]" : "border-white/10 text-white/44 hover:text-white"}`}
+              className={`flex items-center justify-between rounded-full border px-2.5 py-1.5 font-mono text-[9px] uppercase tracking-[0.12em] transition ${activeNode === key ? "border-[#d4af37]/[0.45] bg-[#d4af37]/[0.10] text-[#d4af37]" : "border-white/[0.10] text-white/[0.44] hover:text-white"}`}
             >
               {t(`nodes.${key}.label`)}
               <span className="h-1.5 w-1.5 rounded-full bg-current" />
@@ -106,7 +106,7 @@ export default function VlmAccessHeroVisual({
             stroke={index === 1 ? "rgba(200,169,106,0.2)" : "rgba(245,240,232,0.1)"}
             strokeWidth="1"
             animate={shouldAnimate ? { rotate: index % 2 ? -360 : 360 } : undefined}
-            transition={{ duration: 40 + index * 12, repeat: Infinity, ease: "linear" }}
+            transition={{ duration: 40 + index * 12, repeat: 999999, ease: "linear" }}
             style={{ transformOrigin: "460px 340px" }}
           />
         ))}
@@ -118,11 +118,12 @@ export default function VlmAccessHeroVisual({
         </g>
 
         <path d={signalPath} fill="none" stroke="rgba(200,169,106,0.55)" strokeWidth="1.5" strokeDasharray="6 12" />
-        <motion.circle
+        <circle
+          cx={activeCoords.x}
+          cy={activeCoords.y}
           r="5"
           fill="rgba(200,169,106,0.9)"
-          animate={shouldAnimate ? { cx: [392, 470, activeCoords.x], cy: [218, 140, activeCoords.y] } : { cx: activeCoords.x, cy: activeCoords.y }}
-          transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
+          className={shouldAnimate ? "velmere-pulse-dot" : undefined}
         />
 
         {nodeKeys.map((key) => {
@@ -158,15 +159,15 @@ export default function VlmAccessHeroVisual({
         })}
 
       </svg>
-      <div className="absolute bottom-4 right-4 z-10 rounded-full border border-[#d4af37]/25 bg-[#d4af37]/10 px-3 py-2 font-mono text-[9px] uppercase tracking-[0.16em] text-[#d4af37]">
+      <div className="absolute bottom-4 right-4 z-10 rounded-full border border-[#d4af37]/[0.25] bg-[#d4af37]/[0.10] px-3 py-2 font-mono text-[9px] uppercase tracking-[0.16em] text-[#d4af37]">
         {t("accessGate")}
       </div>
     </div>
     {captionBelow ? (
       <div className="px-1">
         <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-[#d4af37]">{t("title")}</p>
-        <p className="mt-1.5 font-sans text-[11px] leading-5 text-white/52">{t("body")}</p>
-        <p className="mt-1.5 font-sans text-[10px] text-white/40">
+        <p className="mt-1.5 font-sans text-[11px] leading-5 text-white/[0.52]">{t("body")}</p>
+        <p className="mt-1.5 font-sans text-[10px] text-white/[0.40]">
           {t(`nodes.${activeNode}.label`)} — {t(`nodes.${activeNode}.body`)}
         </p>
       </div>

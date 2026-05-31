@@ -23,13 +23,13 @@ export default function VlmProtocolLabTabs() {
 
   return (
     <section className={`${SECTION_NARROW} scroll-mt-28 py-12 md:py-16`}>
-      <div className="rounded-[2rem] border border-white/10 bg-white/[0.035] p-5 md:p-8">
+      <div className="rounded-[2rem] border border-white/[0.10] bg-white/[0.035] p-5 md:p-8">
         <div className="grid gap-6 lg:grid-cols-[0.72fr_1.28fr] lg:items-start">
           <div>
-            <p className="luxury-kicker text-velmere-gold/80">{t("kicker")}</p>
+            <p className="luxury-kicker text-velmere-gold/[0.80]">{t("kicker")}</p>
             <h2 className="mt-5 font-serif text-4xl leading-tight text-white md:text-5xl">{t("title")}</h2>
-            <p className="mt-5 font-sans text-sm leading-7 text-white/58">{t("body")}</p>
-            <p className="mt-4 rounded-2xl border border-white/10 bg-black/24 p-4 font-sans text-xs leading-6 text-white/44">
+            <p className="mt-5 font-sans text-sm leading-7 text-white/[0.58]">{t("body")}</p>
+            <p className="mt-4 rounded-2xl border border-white/[0.10] bg-black/[0.24] p-4 font-sans text-xs leading-6 text-white/[0.44]">
               {t("internalNote")}
             </p>
           </div>
@@ -45,7 +45,7 @@ export default function VlmProtocolLabTabs() {
                   className={`min-h-11 rounded-full border px-4 font-sans text-[10px] font-semibold uppercase tracking-[0.16em] transition-colors ${
                     activeTab === tab
                       ? "border-velmere-gold bg-velmere-gold text-black"
-                      : "border-white/10 bg-black/18 text-white/48 hover:border-white/24 hover:text-white"
+                      : "border-white/[0.10] bg-black/[0.18] text-white/[0.48] hover:border-white/[0.24] hover:text-white"
                   }`}
                 >
                   {t(`tabs.${tab}`)}
@@ -56,8 +56,8 @@ export default function VlmProtocolLabTabs() {
             <div className="mt-5">
               {activeTab === "amu" && (
                 <div className="grid gap-5 lg:grid-cols-[0.78fr_1.22fr] lg:items-start">
-                  <div className="rounded-[2rem] border border-white/10 bg-black/24 p-5">
-                    <p className="font-sans text-[10px] font-semibold uppercase tracking-[0.24em] text-white/42">
+                  <div className="rounded-[2rem] border border-white/[0.10] bg-black/[0.24] p-5">
+                    <p className="font-sans text-[10px] font-semibold uppercase tracking-[0.24em] text-white/[0.42]">
                       {amuT("harmonicControl")}
                     </p>
                     <p className="mt-3 font-mono text-sm leading-6 text-[#F5F0E8]">Hₙ = AMU × ρⁿ</p>
@@ -74,7 +74,7 @@ export default function VlmProtocolLabTabs() {
                           className={`min-h-10 min-w-10 rounded-full border font-mono text-xs transition-colors ${
                             selectedN === n
                               ? "border-velmere-gold bg-velmere-gold text-black"
-                              : "border-white/10 text-white/52 hover:border-white/24 hover:text-white"
+                              : "border-white/[0.10] text-white/[0.52] hover:border-white/[0.24] hover:text-white"
                           }`}
                         >
                           {n}

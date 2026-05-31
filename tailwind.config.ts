@@ -1,5 +1,9 @@
 import type { Config } from "tailwindcss";
 
+const opacityScale = Object.fromEntries(
+  Array.from({ length: 101 }, (_, value) => [String(value), value === 100 ? "1" : String(value / 100)])
+) as Record<string, string>;
+
 const config: Config = {
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
@@ -7,6 +11,7 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      opacity: opacityScale,
       colors: {
         "velmere-black": "#080809",
         "velmere-graphite": "#0B0B0D",

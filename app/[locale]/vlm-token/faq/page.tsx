@@ -10,7 +10,7 @@ export default async function VlmTokenFaqPage({ params: { locale } }: { params: 
       <section className="mx-auto max-w-5xl px-6 py-24 md:px-12 md:py-32">
         <Link
           href="/vlm-token"
-          className="inline-flex min-h-11 items-center rounded-full border border-white/14 px-5 font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-white/58 transition-colors hover:border-white/28 hover:text-white"
+          className="inline-flex min-h-11 items-center rounded-full border border-white/[0.14] px-5 font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-white/[0.58] transition-colors hover:border-white/[0.28] hover:text-white"
         >
           {t("back")}
         </Link>

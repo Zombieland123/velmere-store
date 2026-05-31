@@ -37,7 +37,7 @@ function StatusDot({ state }: { state: WalletConnectionState }) {
       case "rejected":
         return "bg-red-500";
       default:
-        return "bg-white/30";
+        return "bg-white/[0.30]";
     }
   };
 
@@ -63,7 +63,7 @@ function WalletIcon({ kind, connectedWallet }: { kind: WalletKind; connectedWall
   // If connected, show the wallet's icon
   if (connectedWallet?.kind === kind) {
     return (
-      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10">
+      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/[0.10]">
         <span className="text-sm">{connectedWallet.icon}</span>
       </div>
     );
@@ -83,7 +83,7 @@ function WalletIcon({ kind, connectedWallet }: { kind: WalletKind; connectedWall
           sizes="32px"
         />
         {!iconLoaded && (
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/[0.10]">
             <span className="text-sm">{config.emoji}</span>
           </div>
         )}
@@ -93,7 +93,7 @@ function WalletIcon({ kind, connectedWallet }: { kind: WalletKind; connectedWall
 
   // Fallback to emoji in a styled circle
   return (
-    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10">
+    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/[0.10]">
       <span className="text-sm">{config.emoji}</span>
     </div>
   );
@@ -150,19 +150,19 @@ export default function WalletConnectButton({
       disabled={getButtonDisabled()}
       className={`
         flex min-h-[44px] w-full items-center justify-between rounded-full
-        border border-white/10 bg-white/[0.035] px-5
+        border border-white/[0.10] bg-white/[0.035] px-5
         font-sans text-[10px] font-semibold uppercase tracking-[0.16em]
         transition-all duration-200 active:scale-95
-        hover:bg-white/[0.07] hover:border-[#d4af37]/30
+        hover:bg-white/[0.07] hover:border-[#d4af37]/[0.30]
         active:border-[#d4af37] active:bg-white/[0.08]
         disabled:opacity-40 disabled:cursor-not-allowed
-        focus:outline-none focus:ring-2 focus:ring-[#d4af37]/20
-        ${isThisWalletConnected ? 'border-[#d4af37]/30 bg-white/[0.06]' : ''}
+        focus:outline-none focus:ring-2 focus:ring-[#d4af37]/[0.20]
+        ${isThisWalletConnected ? 'border-[#d4af37]/[0.30] bg-white/[0.06]' : ''}
       `}
     >
       <div className="flex items-center gap-3">
         <WalletIcon kind={kind} connectedWallet={connectedWallet} />
-        <span className="text-[#FFFFF0]/80">
+        <span className="text-[#FFFFF0]/[0.80]">
           {getButtonText()}
         </span>
       </div>

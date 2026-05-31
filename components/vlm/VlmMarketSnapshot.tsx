@@ -19,15 +19,15 @@ function RowTable({
   const t = useTranslations("VlmMarketSnapshot");
 
   return (
-    <div className="rounded-[2rem] border border-white/10 bg-[#121212]/90 p-6 md:p-8">
+    <div className="rounded-[2rem] border border-white/[0.10] bg-[#121212]/[0.90] p-6 md:p-8">
       <h3 className="font-serif text-xl text-[#FFFFF0] md:text-2xl">{title}</h3>
-      <dl className="mt-5 divide-y divide-white/5">
+      <dl className="mt-5 divide-y divide-white/[0.05]">
         {rows.map((row) => (
           <div key={row} className="grid gap-1 py-3.5 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] sm:gap-4">
-            <dt className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/40">
+            <dt className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/[0.40]">
               {t(`${namespace}.${row}.label`)}
             </dt>
-            <dd className="font-mono text-sm tabular-nums leading-6 text-[#FFFFF0]/85 break-words">
+            <dd className="font-mono text-sm tabular-nums leading-6 text-[#FFFFF0]/[0.85] break-words">
               {t(`${namespace}.${row}.value`)}
             </dd>
           </div>

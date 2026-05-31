@@ -1,103 +1,368 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import {
+  BadgeCheck,
+  Database,
+  LogOut,
+  PackageCheck,
+  ShieldCheck,
+  UserRound,
+  WalletCards,
+} from "lucide-react";
 import { useLocale } from "next-intl";
-import { Activity, BadgeCheck, KeyRound, LockKeyhole, LogOut, PackageCheck, ShieldCheck, Upload, UserRound, WalletCards } from "lucide-react";
 import { useWalletUiStore } from "@/store/useWalletUiStore";
-import { useWalletConnect } from "@/lib/wallet/useWalletConnect";
 import { setVelmereLocalSession } from "@/components/auth/AuthGate";
+import WalletConnectOptions from "@/components/wallet/WalletConnectOptions";
 
 const copy = {
   en: {
-    tabs: ["Overview", "Web3 Assets", "Order History", "Security", "Profile & Avatar"],
-    kicker: "Private member console",
-    title: "Member console.",
-    body: "Profile, orders, security and wallet bindings stay separated. Commerce first; Web3 as an optional access layer.",
+    sidebar: "Velmère Account",
+    tabs: {
+      overview: "Overview",
+      orders: "Orders",
+      addresses: "Addresses",
+      security: "Security",
+      wallet: "Wallet",
+      profile: "Profile",
+    },
     logout: "Log out",
-    connect: "Connect wallet",
-    disconnect: "Disconnect wallet",
-    rank: "Private build",
-    wallet: "Optional binding",
-    order: "Stripe session pipeline armed",
-    security: "2FA setup pending",
-    profile: "Avatar and bio editor ready",
+    kicker: "Private member console",
+    title: "Account layer.",
+    body: "Manage profile, orders, security and optional wallet binding. Commerce first. Web3 access remains secondary.",
+    cards: [
+      [
+        "Member state",
+        "Private preview",
+        "Replace with real account role once auth is connected.",
+      ],
+      [
+        "Orders",
+        "No orders yet",
+        "Order history appears after checkout is active.",
+      ],
+      ["VLM", "Access concept", "VLM remains separate from clothing checkout."],
+    ],
+    walletOptional: "Optional",
+    walletConnected: "Connected",
+    walletBody: "Connect only for access checks.",
+    ordersTitle: "No orders yet.",
+    ordersBody:
+      "Orders will appear here after checkout, payment confirmation and fulfilment tracking are connected.",
+    addressesTitle: "Address book.",
+    addressesBody:
+      "Shipping and billing fields should be collected only when required for purchase or account support.",
+    dataVaultTitle: "Data vault",
+    dataVaultBody:
+      "Production profile data should live in Supabase Postgres with Row Level Security, server-side validation and encrypted transport. Do not store seed phrases or private keys.",
+    walletTitle: "Optional wallet binding.",
+    walletBodyLong:
+      "Wallets are used only for access checks when enabled. Velmère never asks for seed phrases or private keys.",
+    status: "Wallet status",
+    noWallet: "No wallet connected.",
+    readOnly: "Read-only unless a wallet transaction is explicitly confirmed.",
   },
   pl: {
-    tabs: ["Przegląd", "Aktywa Web3", "Historia zamówień", "Bezpieczeństwo", "Profil i avatar"],
-    kicker: "Prywatna konsola członka",
-    title: "Panel konta.",
-    body: "Profil, zamówienia, bezpieczeństwo i portfele są oddzielone. Najpierw sklep; Web3 tylko jako warstwa dostępu.",
-    logout: "Wyloguj się",
-    connect: "Połącz portfel",
-    disconnect: "Odłącz portfel",
-    rank: "Prywatna wersja",
-    wallet: "Opcjonalne powiązanie",
-    order: "Pipeline Stripe gotowy",
-    security: "Konfiguracja 2FA oczekuje",
-    profile: "Avatar i bio gotowe do edycji",
+    sidebar: "Konto Velmère",
+    tabs: {
+      overview: "Podgląd",
+      orders: "Zamówienia",
+      addresses: "Adresy",
+      security: "Bezpieczeństwo",
+      wallet: "Portfel",
+      profile: "Profil",
+    },
+    logout: "Wyloguj",
+    kicker: "Prywatna konsola membera",
+    title: "Warstwa konta.",
+    body: "Zarządzaj profilem, zamówieniami, bezpieczeństwem i opcjonalnym portfelem. Najpierw commerce; Web3 zostaje warstwą dodatkową.",
+    cards: [
+      [
+        "Status membera",
+        "Prywatny podgląd",
+        "Rola konta zostanie podpięta po wdrożeniu prawdziwego auth.",
+      ],
+      [
+        "Zamówienia",
+        "Brak zamówień",
+        "Historia pojawi się po aktywacji checkoutu i potwierdzeniu płatności.",
+      ],
+      [
+        "VLM",
+        "Warstwa dostępu",
+        "VLM pozostaje oddzielony od checkoutu odzieży.",
+      ],
+    ],
+    walletOptional: "Opcjonalny",
+    walletConnected: "Połączony",
+    walletBody: "Łącz tylko do sprawdzania dostępu.",
+    ordersTitle: "Brak zamówień.",
+    ordersBody:
+      "Zamówienia pojawią się tutaj po checkoutcie, potwierdzeniu płatności i podpięciu fulfilmentu.",
+    addressesTitle: "Książka adresowa.",
+    addressesBody:
+      "Adres dostawy i faktury zbieramy tylko wtedy, gdy jest potrzebny do zakupu albo obsługi konta.",
+    dataVaultTitle: "Sejf danych",
+    dataVaultBody:
+      "Produkcyjne dane profilu powinny trafić do Supabase Postgres z Row Level Security, walidacją po stronie serwera i szyfrowanym połączeniem. Nie zapisujemy seed phrase ani kluczy prywatnych.",
+    walletTitle: "Opcjonalne powiązanie portfela.",
+    walletBodyLong:
+      "Portfele służą tylko do sprawdzania dostępu, gdy funkcja zostanie włączona. Velmère nigdy nie prosi o seed phrase ani klucze prywatne.",
+    status: "Status portfela",
+    noWallet: "Portfel nie jest połączony.",
+    readOnly:
+      "Tryb read-only, dopóki transakcja nie zostanie wyraźnie potwierdzona w portfelu.",
   },
   de: {
-    tabs: ["Übersicht", "Web3 Assets", "Bestellungen", "Sicherheit", "Profil & Avatar"],
-    kicker: "Private Member-Konsole",
-    title: "Member console.",
-    body: "Profil, Bestellungen, Sicherheit und Wallet-Bindings bleiben getrennt. Commerce zuerst; Web3 als optionale Zugriffsschicht.",
+    sidebar: "Velmère Konto",
+    tabs: {
+      overview: "Übersicht",
+      orders: "Bestellungen",
+      addresses: "Adressen",
+      security: "Sicherheit",
+      wallet: "Wallet",
+      profile: "Profile",
+    },
     logout: "Ausloggen",
-    connect: "Wallet verbinden",
-    disconnect: "Wallet trennen",
-    rank: "Private Build",
-    wallet: "Optionale Bindung",
-    order: "Stripe Pipeline bereit",
-    security: "2FA Setup ausstehend",
-    profile: "Avatar und Bio Editor bereit",
+    kicker: "Private Member-Konsole",
+    title: "Account-Ebene.",
+    body: "Verwalte Profil, Bestellungen, Sicherheit und optionale Wallet-Bindung. Commerce zuerst; Web3 bleibt sekundär.",
+    cards: [
+      [
+        "Member-Status",
+        "Private Vorschau",
+        "Die Account-Rolle wird nach echtem Auth verbunden.",
+      ],
+      [
+        "Bestellungen",
+        "Noch keine Bestellungen",
+        "Historie erscheint nach Checkout und Zahlungsbestätigung.",
+      ],
+      ["VLM", "Access-Konzept", "VLM bleibt vom Kleidung-Checkout getrennt."],
+    ],
+    walletOptional: "Optional",
+    walletConnected: "Verbunden",
+    walletBody: "Nur für Access-Checks verbinden.",
+    ordersTitle: "Noch keine Bestellungen.",
+    ordersBody:
+      "Bestellungen erscheinen nach Checkout, Zahlungsbestätigung und Fulfilment-Tracking.",
+    addressesTitle: "Adressbuch.",
+    addressesBody:
+      "Versand- und Rechnungsdaten nur erfassen, wenn sie für Kauf oder Support nötig sind.",
+    dataVaultTitle: "Daten-Tresor",
+    dataVaultBody:
+      "Produktive Profildaten sollten in Supabase Postgres mit Row Level Security, Servervalidierung und verschlüsselter Verbindung liegen. Keine Seed Phrases oder Private Keys speichern.",
+    walletTitle: "Optionale Wallet-Bindung.",
+    walletBodyLong:
+      "Wallets werden nur für Access-Checks genutzt, wenn aktiviert. Velmère fragt nie nach Seed Phrase oder Private Keys.",
+    status: "Wallet-Status",
+    noWallet: "Kein Wallet verbunden.",
+    readOnly:
+      "Read-only, solange keine Wallet-Transaktion ausdrücklich bestätigt wird.",
   },
 } as const;
 
-const tabIds = ["overview", "assets", "orders", "security", "profile"] as const;
-type TabId = (typeof tabIds)[number];
+type TabKey = "overview" | "orders" | "addresses" | "security" | "wallet" | "profile";
+const tabKeys: TabKey[] = [
+  "overview",
+  "orders",
+  "addresses",
+  "security",
+  "wallet",
+  "profile",
+];
 
-function Field({ label, value, glow = false }: { label: string; value: string; glow?: boolean }) {
-  return <div className={`rounded-2xl border p-4 ${glow ? "border-[#c8a96a]/24 bg-[#c8a96a]/[0.055]" : "border-white/10 bg-[#1A1A1C]"}`}><p className="font-mono text-[9px] uppercase tracking-[0.22em] text-white/35">{label}</p><p className="mt-2 break-all font-mono text-xs tabular-nums text-white/75">{value}</p></div>;
+function InfoCard({
+  title,
+  value,
+  body,
+  accent = false,
+}: {
+  title: string;
+  value: string;
+  body: string;
+  accent?: boolean;
+}) {
+  return (
+    <div
+      className={`rounded-2xl border p-4 ${accent ? "border-velmere-gold/[0.25] bg-velmere-gold/[0.055]" : "border-white/[0.10] bg-black/[0.20]"}`}
+    >
+      <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-white/[0.42]">
+        {title}
+      </p>
+      <p className="mt-3 text-lg text-velmere-ivory">{value}</p>
+      <p className="mt-2 text-xs leading-6 text-velmere-muted">{body}</p>
+    </div>
+  );
+}
+
+function AccountFormBlock({ title, body, fields, action }: { title: string; body: string; fields: string[]; action: string }) {
+  return (
+    <div className="rounded-2xl border border-white/[0.10] bg-black/[0.20] p-5">
+      <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-velmere-gold">{title}</p>
+      <p className="mt-3 text-sm leading-7 text-velmere-muted">{body}</p>
+      <div className="mt-5 grid gap-3 md:grid-cols-2">
+        {fields.map((field) => (
+          <label key={field} className="block">
+            <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/[0.36]">{field}</span>
+            <input
+              disabled
+              placeholder="Preview only"
+              className="mt-2 h-12 w-full rounded-xl border border-white/[0.10] bg-white/[0.025] px-4 text-sm text-white/[0.55] outline-none placeholder:text-white/[0.20]"
+            />
+          </label>
+        ))}
+      </div>
+      <button type="button" disabled className="mt-5 inline-flex min-h-11 items-center justify-center rounded-full border border-white/[0.10] px-5 font-mono text-[10px] uppercase tracking-[0.16em] text-white/[0.34]">
+        {action}
+      </button>
+    </div>
+  );
 }
 
 export default function DashboardClient() {
-  const locale = useLocale() as "en" | "pl" | "de";
-  const c = copy[locale] ?? copy.en;
-  const [active, setActive] = useState<TabId>("overview");
-  const [simulated, setSimulated] = useState(false);
+  const locale = useLocale() as keyof typeof copy;
+  const t = copy[locale] ?? copy.en;
+  const [active, setActive] = useState<TabKey>("overview");
   const walletUi = useWalletUiStore();
-  const wallet = useWalletConnect();
-  const assetRows = useMemo(() => [
-    { asset: walletUi.chainType === "solana" ? "SOL" : "ETH", balance: walletUi.connected ? walletUi.tokenBalanceLabel : c.connect, value: "Live wallet read" },
-    { asset: "VLM", balance: "Registry pending", value: "Access utility only" },
-    { asset: "AMU", balance: "3162.27", value: "Brand baseline constant" },
-  ], [c.connect, walletUi.chainType, walletUi.connected, walletUi.tokenBalanceLabel]);
+
+  const cards = useMemo(
+    () => [
+      ...t.cards.map(([title, value, body], index) => ({
+        title,
+        value,
+        body,
+        accent: index === 0,
+      })),
+      {
+        title: t.tabs.wallet,
+        value: walletUi.connected ? t.walletConnected : t.walletOptional,
+        body: walletUi.connected ? walletUi.shortAddress : t.walletBody,
+      },
+    ],
+    [t, walletUi.connected, walletUi.shortAddress],
+  );
 
   return (
-    <main className="min-h-[100dvh] bg-[#080809] pt-28 text-white md:pt-32">
-      <div className="mx-auto grid w-full max-w-none gap-4 px-4 pb-28 md:px-8 lg:grid-cols-[18rem_minmax(0,1fr)]">
-        <aside className="rounded-2xl border border-white/10 bg-[#161618] p-3 shadow-2xl shadow-black/40 lg:sticky lg:top-28 lg:self-start">
-          <p className="px-3 py-3 font-mono text-[10px] uppercase tracking-[0.24em] text-[#c8a96a]">Velmère Console</p>
+    <main className="min-h-[100dvh] bg-velmere-black pt-28 text-velmere-ivory md:pt-32">
+      <div className="luxury-section grid gap-5 pb-24 lg:grid-cols-[18rem_minmax(0,1fr)]">
+        <aside className="rounded-[2rem] border border-white/[0.10] bg-[#111113] p-3 shadow-velmere-card lg:sticky lg:top-28 lg:self-start">
+          <p className="px-3 py-3 velmere-label text-velmere-gold">
+            {t.sidebar}
+          </p>
           <nav className="grid gap-1">
-            {tabIds.map((id, index) => <button key={id} type="button" onClick={() => setActive(id)} className={`rounded-xl px-4 py-3 text-left font-mono text-[10px] uppercase tracking-[0.16em] transition active:scale-[0.985] ${active === id ? "bg-white text-black" : "text-white/50 hover:bg-white/[0.05] hover:text-white"}`}>{c.tabs[index]}</button>)}
+            {tabKeys.map((tab) => (
+              <button
+                key={tab}
+                type="button"
+                onClick={() => setActive(tab)}
+                className={`rounded-xl px-4 py-3 text-left font-mono text-[10px] uppercase tracking-[0.16em] transition active:scale-[0.985] ${active === tab ? "bg-velmere-ivory text-black" : "text-white/[0.50] hover:bg-white/[0.05] hover:text-white"}`}
+              >
+                {t.tabs[tab]}
+              </button>
+            ))}
           </nav>
-          <button type="button" onClick={() => setVelmereLocalSession(false)} className="mt-4 flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-black/20 font-mono text-[10px] uppercase tracking-[0.16em] text-white/45 transition hover:text-red-200 active:scale-[0.985]"><LogOut className="h-4 w-4" /> {c.logout}</button>
+          <button
+            type="button"
+            onClick={() => setVelmereLocalSession(false)}
+            className="mt-4 flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-white/[0.10] bg-black/[0.20] font-mono text-[10px] uppercase tracking-[0.16em] text-white/[0.45] transition hover:text-red-200 active:scale-[0.985]"
+          >
+            <LogOut className="h-4 w-4" /> {t.logout}
+          </button>
         </aside>
 
-        <section className="min-w-0 rounded-2xl border border-white/10 bg-[#111113] p-4 shadow-2xl shadow-black/40 md:p-6">
-          <div className="flex flex-col gap-4 border-b border-white/10 pb-6 md:flex-row md:items-end md:justify-between">
-            <div><p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#c8a96a]">{c.kicker}</p><h1 className="mt-3 font-serif text-4xl leading-tight md:text-6xl">{c.title}</h1><p className="mt-4 max-w-2xl text-sm leading-7 text-white/52">{c.body}</p></div>
-            <button type="button" onClick={() => walletUi.connected ? wallet.disconnect() : void wallet.connectMetaMask()} className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#c8a96a]/30 bg-[#c8a96a]/10 px-5 font-mono text-[10px] font-black uppercase tracking-[0.18em] text-[#c8a96a] hover:bg-[#c8a96a]/15 active:scale-95">{walletUi.connected ? c.disconnect : c.connect}</button>
+        <section className="min-w-0 rounded-[2rem] border border-white/[0.10] bg-[#111113] p-5 shadow-velmere-card md:p-8">
+          <div className="border-b border-white/[0.10] pb-7">
+            <p className="velmere-label text-velmere-gold">{t.kicker}</p>
+            <h1 className="mt-4 font-serif text-[clamp(3rem,7vw,6rem)] leading-[0.86] tracking-[-0.06em]">
+              {t.title}
+            </h1>
+            <p className="mt-5 max-w-2xl text-sm leading-7 text-velmere-grey-soft">
+              {t.body}
+            </p>
           </div>
 
-          {active === "overview" && <div className="mt-6 space-y-4"><div className="grid gap-4 md:grid-cols-3"><Field label="Member rank" value={c.rank} glow /><Field label="Wallet" value={walletUi.connected ? walletUi.fullAddress : c.wallet} /><Field label="Order engine" value={c.order} /><Field label="VLM balance" value={walletUi.tokenBalanceLabel || "0.00 VLM"} /><Field label="Security" value={c.security} /><Field label="Profile" value={c.profile} /></div><div className="grid gap-4 lg:grid-cols-[1.15fr_0.85fr]"><section className="rounded-2xl border border-white/10 bg-[#161618] p-5"><p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#c8a96a]">Member timeline</p><div className="mt-5 space-y-3 font-mono text-[10px] uppercase tracking-[0.14em] text-white/48"><p>[ ACCESS ] :: SESSION_ACTIVE</p><p>[ ORDERS ] :: AWAITING_FIRST_CHECKOUT</p><p>[ SQUARE ] :: READ_PUBLIC / POST_AFTER_LOGIN</p><p>[ AMU ] :: BASELINE_3162.27</p></div></section><section className="rounded-2xl border border-[#c8a96a]/20 bg-[#c8a96a]/[0.06] p-5"><BadgeCheck className="h-5 w-5 text-[#c8a96a]" /><p className="mt-4 font-mono text-[10px] uppercase tracking-[0.22em] text-[#c8a96a]">Client relation</p><p className="mt-4 text-sm leading-7 text-white/58">Concierge, sizing, shipping and order signals stay here. The wallet is never required for normal checkout.</p></section></div></div>}
+          {active === "overview" ? (
+            <div className="mt-7 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+              {cards.map((card) => (
+                <InfoCard key={card.title} {...card} />
+              ))}
+            </div>
+          ) : null}
 
-          {active === "assets" && <div className="mt-6 space-y-5"><div className="grid gap-[1px] overflow-hidden rounded-2xl bg-white/10 md:grid-cols-3">{assetRows.map((row) => <div key={row.asset} className="bg-[#161618] p-5"><WalletCards className="h-5 w-5 text-[#c8a96a]" /><p className="mt-4 font-mono text-[10px] uppercase tracking-[0.2em] text-white/40">{row.asset}</p><p className="mt-3 font-mono text-2xl tabular-nums">{row.balance}</p><p className="mt-3 text-xs text-white/45">{row.value}</p></div>)}</div><div className="rounded-2xl border border-white/10 bg-[#161618] p-5"><div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between"><div><p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#c8a96a]">Wallet test lane</p><p className="mt-3 max-w-2xl text-sm leading-7 text-white/50">Simulation only. No funds move, no transaction is sent. Use this to test UI states before a real VLM contract exists.</p></div><button type="button" onClick={() => { navigator.vibrate?.(30); setSimulated(true); }} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.035] px-5 font-mono text-[10px] uppercase tracking-[0.16em] text-white/65 active:scale-95"><Activity className="h-4 w-4" /> Simulate $0 test</button></div>{simulated ? <p className="mt-4 rounded-xl border border-[#c8a96a]/20 bg-[#c8a96a]/10 p-3 font-mono text-[10px] uppercase tracking-[0.14em] text-[#c8a96a]">[ SIMULATION_OK ] :: SIGNATURE_PREVIEW_READY :: NO_VALUE_TRANSFER</p> : null}</div></div>}
+          {active === "orders" ? (
+            <div className="mt-7 grid gap-4 md:grid-cols-[1fr_0.8fr]">
+              <div className="rounded-2xl border border-white/[0.10] bg-black/[0.20] p-6">
+                <PackageCheck className="h-5 w-5 text-velmere-gold" />
+                <h2 className="mt-5 text-2xl">{t.ordersTitle}</h2>
+                <p className="mt-3 text-sm leading-7 text-velmere-muted">{t.ordersBody}</p>
+              </div>
+              <div className="rounded-2xl border border-white/[0.10] bg-black/[0.20] p-6">
+                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-velmere-gold">Receipt rules</p>
+                <div className="mt-5 space-y-3 text-sm leading-7 text-white/[0.58]">
+                  <p>VAT / MwSt summary will appear after Stripe session completion.</p>
+                  <p>Returns, withdrawal and shipping status must be visible before commercial launch.</p>
+                  <p>Fulfilment tracking should expose carrier, parcel ID and support contact.</p>
+                </div>
+              </div>
+            </div>
+          ) : null}
 
-          {active === "orders" && <div className="mt-6 grid gap-4 md:grid-cols-3"><Field label="Order history" value="No completed orders yet" /><Field label="Checkout" value="Guest checkout allowed" /><Field label="Delivery" value="DHL/DPD carrier layer prepared" /></div>}
+          {active === "addresses" ? (
+            <div className="mt-7 grid gap-4 md:grid-cols-2">
+              <AccountFormBlock title={t.addressesTitle} body={t.addressesBody} fields={["Full name", "Street and number", "Apartment / optional", "Postal code", "City", "Country", "Phone / optional"]} action="Save address after auth" />
+              <AccountFormBlock title="Billing / Invoice" body="Invoice data should stay separated from shipping data and only be collected when required." fields={["Legal name", "Company / optional", "VAT ID / optional", "Billing country"]} action="Save billing after auth" />
+              <div className="rounded-2xl border border-velmere-gold/[0.20] bg-velmere-gold/[0.055] p-5 md:col-span-2">
+                <Database className="h-5 w-5 text-velmere-gold" />
+                <h2 className="mt-4 text-2xl">{t.dataVaultTitle}</h2>
+                <p className="mt-3 text-sm leading-7 text-velmere-muted">{t.dataVaultBody}</p>
+              </div>
+            </div>
+          ) : null}
 
-          {active === "security" && <div className="mt-6 grid gap-4 md:grid-cols-3"><div className="rounded-2xl border border-white/10 bg-[#161618] p-5"><KeyRound className="h-5 w-5 text-[#c8a96a]" /><p className="mt-4 font-mono text-[10px] uppercase tracking-[0.2em] text-white/40">Change password</p><input type="password" placeholder="New secure password" className="mt-4 h-12 w-full rounded-xl border border-white/10 bg-black/30 px-4 text-[16px] outline-none placeholder:text-white/25 focus:border-[#c8a96a]/40" /><p className="mt-2 font-mono text-[10px] text-white/34">[ RULE ] :: 8+ chars / number / symbol</p></div><div className="rounded-2xl border border-white/10 bg-[#161618] p-5"><ShieldCheck className="h-5 w-5 text-[#c8a96a]" /><p className="mt-4 font-mono text-[10px] uppercase tracking-[0.2em] text-white/40">2FA setup</p><p className="mt-4 text-xs leading-6 text-white/50">TOTP enrollment UI prepared for the auth provider connection.</p></div><div className="rounded-2xl border border-white/10 bg-[#161618] p-5"><LockKeyhole className="h-5 w-5 text-[#c8a96a]" /><p className="mt-4 font-mono text-[10px] uppercase tracking-[0.2em] text-white/40">Wallet binding</p><p className="mt-4 break-all font-mono text-xs text-white/60">{walletUi.fullAddress || "No wallet bound"}</p></div></div>}
+          {active === "security" ? (
+            <div className="mt-7 grid gap-4 md:grid-cols-2">
+              <AccountFormBlock title="Password change" body="Password changes require current password, complexity validation and session refresh." fields={["Current password", "New password", "Repeat new password"]} action="Change password after auth" />
+              <AccountFormBlock title="Email change" body="Email change requires confirmation on the old and new email address." fields={["Current email", "New email"]} action="Request email change" />
+              <InfoCard title="2FA / Authenticator" value="Recommended" body="Authenticator app, passkey or six-digit TOTP code should be enabled before private rooms go live." accent />
+              <InfoCard title="Data rights" value="GDPR" body="Export account data, request deletion and see retention periods in the privacy center." />
+            </div>
+          ) : null}
 
-          {active === "profile" && <div className="mt-6 grid gap-4 md:grid-cols-[16rem_minmax(0,1fr)]"><div className="rounded-2xl border border-white/10 bg-[#161618] p-5 text-center"><div className="mx-auto flex h-28 w-28 items-center justify-center rounded-full border border-[#c8a96a]/30 bg-[#c8a96a]/10 font-serif text-5xl text-[#c8a96a]">V</div><button type="button" className="mt-5 inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/10 px-4 font-mono text-[10px] uppercase tracking-[0.18em] text-white/55 active:scale-95"><Upload className="h-4 w-4" /> Upload photo</button></div><div className="rounded-2xl border border-white/10 bg-[#161618] p-5"><UserRound className="h-5 w-5 text-[#c8a96a]" /><label className="mt-4 block"><span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40">Username</span><input defaultValue="velmere.member" className="mt-2 h-12 w-full rounded-xl border border-white/10 bg-black/30 px-4 text-[16px] outline-none focus:border-[#c8a96a]/40" /></label><label className="mt-4 block"><span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40">Bio</span><textarea defaultValue="Private access profile." className="mt-2 min-h-28 w-full resize-none rounded-xl border border-white/10 bg-black/30 p-4 text-[16px] outline-none focus:border-[#c8a96a]/40" /></label></div></div>}
+
+          {active === "profile" ? (
+            <div className="mt-7 grid gap-4 md:grid-cols-2">
+              <AccountFormBlock title="Public profile" body="Username changes can be limited to once per 30 days to prevent impersonation and abuse in Square." fields={["Display name", "Username", "Bio"]} action="Save profile after auth" />
+              <AccountFormBlock title="Avatar / preferences" body="Avatar, language and marketing preferences belong in account settings, not in checkout." fields={["Avatar URL", "Preferred language", "Newsletter consent"]} action="Save preferences" />
+            </div>
+          ) : null}
+
+          {active === "wallet" ? (
+            <div className="mt-7 grid gap-4 lg:grid-cols-[1fr_0.8fr]">
+              <div className="rounded-2xl border border-white/[0.10] bg-black/[0.20] p-6">
+                <WalletCards className="h-5 w-5 text-velmere-gold" />
+                <h2 className="mt-5 text-2xl">{t.walletTitle}</h2>
+                <p className="mt-3 text-sm leading-7 text-velmere-muted">
+                  {t.walletBodyLong}
+                </p>
+                <div className="mt-5">
+                  <WalletConnectOptions showStatus={false} />
+                </div>
+              </div>
+              <div className="rounded-2xl border border-white/[0.10] bg-black/[0.20] p-6">
+                <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-white/[0.42]">
+                  {t.status}
+                </p>
+                <p className="mt-4 break-all text-sm leading-7 text-white/[0.68]">
+                  {walletUi.connected ? walletUi.fullAddress : t.noWallet}
+                </p>
+                <div className="mt-5 flex items-center gap-2 text-xs text-white/[0.45]">
+                  <BadgeCheck className="h-4 w-4 text-velmere-gold" />
+                  {t.readOnly}
+                </div>
+              </div>
+            </div>
+          ) : null}
         </section>
       </div>
     </main>

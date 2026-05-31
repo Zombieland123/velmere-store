@@ -26,19 +26,19 @@ export default function AmuCoreSection() {
     <section className={`${SECTION_WIDE} scroll-mt-28 py-16 md:py-24`}>
       <div className="grid gap-8 lg:grid-cols-12 lg:gap-12">
         <div className="min-w-0 lg:col-span-5">
-          <p className="luxury-kicker text-velmere-gold/80">{t("kicker")}</p>
+          <p className="luxury-kicker text-velmere-gold/[0.80]">{t("kicker")}</p>
           <h2 className="mt-5 font-serif text-4xl leading-tight text-white md:text-5xl">{t("title")}</h2>
-          <p className="mt-5 font-sans text-lg leading-8 text-white/72">{t("subtitle")}</p>
-          <p className="mt-5 font-sans text-sm leading-7 text-white/56">{t("body")}</p>
+          <p className="mt-5 font-sans text-lg leading-8 text-white/[0.72]">{t("subtitle")}</p>
+          <p className="mt-5 font-sans text-sm leading-7 text-white/[0.56]">{t("body")}</p>
 
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
             {cardKeys.map((key) => (
-              <article key={key} className="rounded-2xl border border-white/10 bg-white/[0.035] p-5">
-                <p className="font-sans text-[10px] font-semibold uppercase tracking-[0.24em] text-white/42">
+              <article key={key} className="rounded-2xl border border-white/[0.10] bg-white/[0.035] p-5">
+                <p className="font-sans text-[10px] font-semibold uppercase tracking-[0.24em] text-white/[0.42]">
                   {t(`cards.${key}.label`)}
                 </p>
                 <p className="mt-4 break-words font-mono text-lg text-[#F5F0E8]">{values[key]}</p>
-                <p className="mt-3 font-sans text-xs leading-6 text-white/46">
+                <p className="mt-3 font-sans text-xs leading-6 text-white/[0.46]">
                   {key === "amu" ? `${sqrt10e7} / ${t(`cards.${key}.body`)}` : t(`cards.${key}.body`)}
                 </p>
               </article>
@@ -49,10 +49,10 @@ export default function AmuCoreSection() {
             <PrimeFormulaStrip />
           </div>
 
-          <div className="mt-6 rounded-2xl border border-white/10 bg-black/24 p-4">
+          <div className="mt-6 rounded-2xl border border-white/[0.10] bg-black/[0.24] p-4">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
-                <p className="font-sans text-[10px] font-semibold uppercase tracking-[0.22em] text-white/42">
+                <p className="font-sans text-[10px] font-semibold uppercase tracking-[0.22em] text-white/[0.42]">
                   {t("harmonicControl")}
                 </p>
                 <p className="mt-2 font-mono text-sm leading-6 text-[#F5F0E8]">
@@ -73,14 +73,14 @@ export default function AmuCoreSection() {
                   className={`min-h-10 min-w-10 rounded-full border font-mono text-xs transition-colors ${
                     selectedN === n
                       ? "border-velmere-gold bg-velmere-gold text-black"
-                      : "border-white/10 bg-white/[0.035] text-white/58 hover:border-white/24 hover:text-white"
+                      : "border-white/[0.10] bg-white/[0.035] text-white/[0.58] hover:border-white/[0.24] hover:text-white"
                   }`}
                 >
                   {n}
                 </button>
               ))}
             </div>
-            <p className="mt-3 font-sans text-xs leading-6 text-white/42">{t("formulaDisclaimer")}</p>
+            <p className="mt-3 font-sans text-xs leading-6 text-white/[0.42]">{t("formulaDisclaimer")}</p>
           </div>
         </div>
 

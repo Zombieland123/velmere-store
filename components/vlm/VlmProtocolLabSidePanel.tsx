@@ -23,7 +23,7 @@ export default function VlmProtocolLabSidePanel() {
 
   return (
     <div className="space-y-6">
-      <p className="font-sans text-sm leading-7 text-white/58">{t("body")}</p>
+      <p className="font-sans text-sm leading-7 text-white/[0.58]">{t("body")}</p>
 
       <div className="-mx-1 flex gap-2 overflow-x-auto pb-1 sm:mx-0 sm:grid sm:grid-cols-5 sm:overflow-visible">
         {tabs.map((tab) => (
@@ -35,7 +35,7 @@ export default function VlmProtocolLabSidePanel() {
             className={`min-h-11 shrink-0 rounded-full border px-3 font-sans text-[10px] font-semibold uppercase tracking-[0.16em] transition-colors ${
               activeTab === tab
                 ? "border-[#d4af37] bg-[#d4af37] text-black"
-                : "border-white/10 bg-black/18 text-white/48 hover:border-white/24 hover:text-white"
+                : "border-white/[0.10] bg-black/[0.18] text-white/[0.48] hover:border-white/[0.24] hover:text-white"
             }`}
           >
             {t(`tabs.${tab}`)}
@@ -46,8 +46,8 @@ export default function VlmProtocolLabSidePanel() {
       <div className="min-h-[320px]">
         {activeTab === "amu" && (
           <div className="grid gap-5">
-            <div className="rounded-[2rem] border border-white/5 bg-black/24 p-5">
-              <p className="font-sans text-[10px] font-semibold uppercase tracking-[0.24em] text-white/42">
+            <div className="rounded-[2rem] border border-white/[0.05] bg-black/[0.24] p-5">
+              <p className="font-sans text-[10px] font-semibold uppercase tracking-[0.24em] text-white/[0.42]">
                 {amuT("harmonicControl")}
               </p>
               <p className="mt-3 font-mono text-sm leading-6 text-[#FFFFF0]">Hₙ = AMU × ρⁿ</p>
@@ -64,7 +64,7 @@ export default function VlmProtocolLabSidePanel() {
                     className={`min-h-10 min-w-10 rounded-full border font-mono text-xs transition-colors ${
                       selectedN === n
                         ? "border-[#d4af37] bg-[#d4af37] text-black"
-                        : "border-white/10 text-white/52 hover:border-white/24 hover:text-white"
+                        : "border-white/[0.10] text-white/[0.52] hover:border-white/[0.24] hover:text-white"
                     }`}
                   >
                     {n}

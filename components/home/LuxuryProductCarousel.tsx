@@ -1,124 +1,98 @@
 "use client";
 
-import { useCallback, useState } from "react";
 import Image from "next/image";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/navigation";
-import { formatMoney, getLocalizedString, getProducts } from "@/lib/products/catalog";
-import { isProductCustomerPurchasable } from "@/lib/products/catalog";
-import { luxuryEase } from "@/lib/motion";
+import {
+  formatMoney,
+  getLocalizedString,
+  getProducts,
+  isProductCustomerPurchasable,
+} from "@/lib/products/catalog";
 
 export default function LuxuryProductCarousel() {
   const t = useTranslations("LuxuryProductCarousel");
   const locale = useLocale();
-  const reducedMotion = useReducedMotion();
   const products = getProducts().slice(0, 4);
-  const [index, setIndex] = useState(0);
-
-  const go = useCallback(
-    (direction: 1 | -1) => {
-      setIndex((current) => (current + direction + products.length) % products.length);
-    },
-    [products.length],
-  );
 
   if (products.length === 0) return null;
 
-  const product = products[index];
-  const purchasable = isProductCustomerPurchasable(product);
-
   return (
-    <section className="py-14 md:py-20">
-      <div className="mb-8 flex items-end justify-between gap-4">
+    <section className="py-10 md:py-16">
+      <div className="mb-7 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#d4af37]">{t("kicker")}</p>
-          <h2 className="mt-4 font-serif text-3xl text-[#FFFFF0] md:text-5xl">{t("title")}</h2>
+          <p className="velmere-label text-velmere-gold">{t("kicker")}</p>
+          <h2 className="mt-4 font-serif text-4xl leading-[0.96] tracking-[-0.04em] text-velmere-ivory md:text-6xl">
+            {t("title")}
+          </h2>
         </div>
-        <div className="hidden gap-2 md:flex">
-          <button
-            type="button"
-            onClick={() => go(-1)}
-            aria-label={t("prev")}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 text-white/60 hover:text-white"
-          >
-            <ChevronLeft className="h-4 w-4" aria-hidden="true" />
-          </button>
-          <button
-            type="button"
-            onClick={() => go(1)}
-            aria-label={t("next")}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 text-white/60 hover:text-white"
-          >
-            <ChevronRight className="h-4 w-4" aria-hidden="true" />
-          </button>
-        </div>
+        <Link href="/shop" className="velmere-button-secondary w-fit">
+          {locale === "pl"
+            ? "Zobacz sklep"
+            : locale === "de"
+              ? "Shop ansehen"
+              : "View shop"}{" "}
+          <ArrowUpRight className="h-4 w-4" />
+        </Link>
       </div>
 
-      <div className="overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/[0.03]">
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
-            key={product.id}
-            initial={reducedMotion ? false : { opacity: 0, x: 24 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={reducedMotion ? undefined : { opacity: 0, x: -24 }}
-            transition={{ duration: 0.45, ease: luxuryEase }}
-            className="grid md:grid-cols-2"
-            drag={reducedMotion ? false : "x"}
-            dragConstraints={{ left: 0, right: 0 }}
-            dragElastic={0.12}
-            onDragEnd={(_, info) => {
-              if (info.offset.x > 60) go(-1);
-              if (info.offset.x < -60) go(1);
-            }}
-          >
-            <div className="relative aspect-[4/5] overflow-hidden">
-              <Image
-                src={product.images[0].url}
-                alt={getLocalizedString(product.images[0].alt, locale)}
-                fill
-                sizes="(min-width: 768px) 50vw, 100vw"
-                className="object-cover transition-transform duration-700 hover:scale-[1.02]"
-              />
-            </div>
-            <div className="flex flex-col justify-center p-8 md:p-12">
-              <p className="text-[10px] uppercase tracking-[0.2em] text-white/40">{product.collection ?? t("collection")}</p>
-              <h3 className="mt-4 font-serif text-3xl leading-tight text-white md:text-4xl">
-                {getLocalizedString(product.title, locale)}
-              </h3>
-              <p className="mt-4 max-w-md text-sm leading-7 text-white/54">
-                {getLocalizedString(product.shortDescription, locale)}
-              </p>
-              <p className="mt-6 font-mono text-lg tabular-nums text-white/70">{formatMoney(product.price, locale)}</p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Link
-                  href={`/shop/${product.slug}`}
-                  className="inline-flex min-h-11 items-center justify-center rounded-full border border-white/14 px-6 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/72 hover:text-white"
-                >
-                  {t("viewProduct")}
-                </Link>
-                {!purchasable ? (
-                  <span className="inline-flex min-h-11 items-center rounded-full border border-white/10 px-6 text-[11px] uppercase tracking-[0.18em] text-velmere-muted">
-                    {t("comingSoon")}
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {products.map((product, index) => {
+          const purchasable = isProductCustomerPurchasable(product);
+          const title = getLocalizedString(product.title, locale);
+          return (
+            <Link
+              key={product.id}
+              href={`/shop/${product.slug}`}
+              className="group overflow-hidden rounded-[1.75rem] border border-white/[0.10] bg-[#111113] shadow-velmere-card transition duration-500 hover:-translate-y-1 hover:border-velmere-gold/[0.26] hover:bg-[#151518] active:scale-[0.99]"
+            >
+              <div className="relative aspect-[4/5] overflow-hidden bg-black">
+                <Image
+                  src={product.images[0].url}
+                  alt={getLocalizedString(product.images[0].alt, locale)}
+                  fill
+                  sizes="(min-width:1280px) 25vw, (min-width:768px) 50vw, 100vw"
+                  className="object-cover object-center contrast-105 transition duration-700 group-hover:scale-[1.035] group-hover:brightness-110"
+                  priority={index === 0}
+                />
+                <div className="pointer-events-none absolute inset-x-4 top-4 flex items-center justify-between gap-3">
+                  <span className="rounded-full border border-white/[0.12] bg-black/[0.34] px-3 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-white/[0.64] backdrop-blur-xl">
+                    {purchasable
+                      ? locale === "pl"
+                        ? "Dostępne"
+                        : locale === "de"
+                          ? "Verfügbar"
+                          : "Available"
+                      : t("comingSoon")}
                   </span>
-                ) : null}
+                  <span className="rounded-full border border-velmere-gold/[0.25] bg-velmere-gold/[0.10] px-3 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-velmere-gold">
+                    0{index + 1}
+                  </span>
+                </div>
               </div>
-            </div>
-          </motion.div>
-        </AnimatePresence>
-      </div>
-
-      <div className="mt-4 flex justify-center gap-2 md:hidden">
-        {products.map((item, dotIndex) => (
-          <button
-            key={item.id}
-            type="button"
-            onClick={() => setIndex(dotIndex)}
-            aria-label={t("goTo", { index: dotIndex + 1 })}
-            className={`h-2 w-2 rounded-full ${dotIndex === index ? "bg-[#d4af37]" : "bg-white/20"}`}
-          />
-        ))}
+              <div className="p-5 md:p-6">
+                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-velmere-gold/[0.75]">
+                  {product.collection ?? t("collection")}
+                </p>
+                <h3 className="mt-4 font-serif text-2xl leading-tight text-velmere-ivory md:text-3xl">
+                  {title}
+                </h3>
+                <p className="mt-3 line-clamp-3 text-sm leading-7 text-velmere-muted">
+                  {getLocalizedString(product.shortDescription, locale)}
+                </p>
+                <div className="mt-5 flex items-center justify-between gap-4">
+                  <p className="font-mono text-sm tabular-nums text-velmere-gold">
+                    {formatMoney(product.price, locale)}
+                  </p>
+                  <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/[0.46] group-hover:text-white/[0.70]">
+                    {t("viewProduct")}
+                  </span>
+                </div>
+              </div>
+            </Link>
+          );
+        })}
       </div>
     </section>
   );

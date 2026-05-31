@@ -61,23 +61,23 @@ export default function VlmWalletModule({ state = CURRENT_VLM_WALLET_STATE }: { 
     view.tone === "primary"
       ? "border-velmere-gold bg-velmere-gold text-black hover:bg-white"
       : view.tone === "success"
-        ? "border-emerald-300/30 bg-emerald-300/10 text-emerald-100"
+        ? "border-emerald-300/[0.30] bg-emerald-300/[0.10] text-emerald-100"
         : view.tone === "warning"
-          ? "border-velmere-gold/40 bg-velmere-gold/[0.08] text-velmere-gold"
-          : "border-white/10 bg-black/24 text-white/46";
+          ? "border-velmere-gold/[0.40] bg-velmere-gold/[0.08] text-velmere-gold"
+          : "border-white/[0.10] bg-black/[0.24] text-white/[0.46]";
 
   return (
-    <div className="rounded-3xl border border-white/10 bg-white/[0.035] p-6 md:p-7">
+    <div className="rounded-3xl border border-white/[0.10] bg-white/[0.035] p-6 md:p-7">
       <div className="flex items-start gap-5">
-        <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/10 bg-black/24 text-velmere-gold">
+        <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/[0.10] bg-black/[0.24] text-velmere-gold">
           <WalletCards className="h-5 w-5" aria-hidden="true" />
         </span>
         <div className="min-w-0">
-          <p className="font-sans text-[10px] font-semibold uppercase tracking-[0.24em] text-white/45">
+          <p className="font-sans text-[10px] font-semibold uppercase tracking-[0.24em] text-white/[0.45]">
             {t("kicker")}
           </p>
           <h2 className="mt-3 font-serif text-3xl leading-tight text-[#F5F0E8]">{t("title")}</h2>
-          <p className="mt-4 font-sans text-sm leading-7 text-white/60">{t("body")}</p>
+          <p className="mt-4 font-sans text-sm leading-7 text-white/[0.60]">{t("body")}</p>
         </div>
       </div>
 
@@ -88,7 +88,7 @@ export default function VlmWalletModule({ state = CURRENT_VLM_WALLET_STATE }: { 
             type="button"
             aria-label={`${wallet} ${t("providerUnavailable")}`}
             disabled={contractNotDeployed}
-            className="flex min-h-12 cursor-not-allowed items-center justify-between rounded-full border border-white/12 px-5 font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-white/40"
+            className="flex min-h-12 cursor-not-allowed items-center justify-between rounded-full border border-white/[0.12] px-5 font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-white/[0.40]"
           >
             {wallet}
             <LockKeyhole className="h-4 w-4" aria-hidden="true" />
@@ -96,15 +96,15 @@ export default function VlmWalletModule({ state = CURRENT_VLM_WALLET_STATE }: { 
         ))}
       </div>
 
-      <div className="mt-6 rounded-2xl border border-white/10 bg-black/24 p-5">
+      <div className="mt-6 rounded-2xl border border-white/[0.10] bg-black/[0.24] p-5">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <p className="font-sans text-[10px] font-semibold uppercase tracking-[0.22em] text-white/40">
+            <p className="font-sans text-[10px] font-semibold uppercase tracking-[0.22em] text-white/[0.40]">
               {t("currentState")}
             </p>
-            <p className="mt-2 font-sans text-sm leading-6 text-white/70">{view.label}</p>
+            <p className="mt-2 font-sans text-sm leading-6 text-white/[0.70]">{view.label}</p>
           </div>
-          <span className="inline-flex min-h-9 items-center rounded-full border border-velmere-gold/30 px-4 font-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-velmere-gold">
+          <span className="inline-flex min-h-9 items-center rounded-full border border-velmere-gold/[0.30] px-4 font-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-velmere-gold">
             {t("preLaunchBadge")}
           </span>
         </div>
@@ -118,11 +118,11 @@ export default function VlmWalletModule({ state = CURRENT_VLM_WALLET_STATE }: { 
         <WalletStateIcon tone={view.tone} />
         {view.label}
       </button>
-      <p className="mt-4 font-sans text-xs leading-6 text-white/48">{t("purchaseLocked")}</p>
+      <p className="mt-4 font-sans text-xs leading-6 text-white/[0.48]">{t("purchaseLocked")}</p>
 
       <Link
         href="/vlm-token#contract-plan"
-        className="mt-5 inline-flex min-h-11 items-center gap-2 font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-white/52 transition-colors hover:text-white"
+        className="mt-5 inline-flex min-h-11 items-center gap-2 font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-white/[0.52] transition-colors hover:text-white"
       >
         {t("implementationStatusCta")}
         <ArrowRight className="h-4 w-4" aria-hidden="true" />

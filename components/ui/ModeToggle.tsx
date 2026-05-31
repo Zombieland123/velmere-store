@@ -19,7 +19,7 @@ export default function ModeToggle({ className = "", labels }: ModeToggleProps) 
     <div
       role="tablist"
       aria-label="Interface mode"
-      className={`relative inline-flex items-center rounded-full border border-white/10 bg-black/70 p-1 shadow-[0_22px_70px_rgba(0,0,0,0.42)] backdrop-blur-2xl ${className}`}
+      className={`relative inline-flex items-center rounded-full border border-white/[0.10] bg-black/[0.70] p-1 shadow-[0_22px_70px_rgba(0,0,0,0.42)] backdrop-blur-2xl ${className}`}
     >
       {(["basic", "pro"] as const).map((nextMode) => {
         const active = mode === nextMode;
@@ -36,7 +36,7 @@ export default function ModeToggle({ className = "", labels }: ModeToggleProps) 
               setMode(nextMode);
             }}
             className={`relative z-10 min-h-10 min-w-24 rounded-full px-5 font-mono text-[10px] font-semibold uppercase tracking-[0.2em] ${
-              active ? (nextMode === "pro" ? "text-[#FFFFF0]" : "text-black") : "text-white/48"
+              active ? (nextMode === "pro" ? "text-[#FFFFF0]" : "text-black") : "text-white/[0.48]"
             }`}
           >
             {active ? (
@@ -65,7 +65,7 @@ export default function ModeToggle({ className = "", labels }: ModeToggleProps) 
             initial={{ opacity: 0, scale: 0.6 }}
             animate={{ opacity: [0.35, 1, 0.35], scale: [0.9, 1.08, 0.9] }}
             exit={{ opacity: 0, scale: 0.6 }}
-            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: 1.8, repeat: 999999, ease: "easeInOut" }}
             className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-[#d4af37]"
           />
         ) : null}

@@ -1,129 +1,216 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
-import { useTranslations } from "next-intl";
-import { useRouter } from "@/navigation";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Chrome, Loader2, ShieldCheck, Sparkles } from "lucide-react";
+import { Chrome, Loader2, LockKeyhole, ShieldCheck, WalletCards } from "lucide-react";
+import Image from "next/image";
+import { Link, useRouter } from "@/navigation";
 import { setVelmereLocalSession } from "@/components/auth/AuthGate";
 import { useWalletConnect } from "@/lib/wallet/useWalletConnect";
 import { useWalletUiStore } from "@/store/useWalletUiStore";
 
-const authSchema = z.object({
-  email: z.string().email("EMAIL_FORMAT_INVALID"),
-  password: z.string()
-    .min(8, "PASSWORD_MIN_LENGTH")
-    .regex(/[A-Z]/, "PASSWORD_UPPERCASE_REQUIRED")
-    .regex(/[0-9]/, "PASSWORD_NUMBER_REQUIRED")
-    .regex(/[^A-Za-z0-9]/, "PASSWORD_SYMBOL_REQUIRED"),
-});
+type AuthFormClientProps = {
+  labels?: {
+    email?: string;
+    password?: string;
+    signIn?: string;
+    privateAccount?: string;
+    title?: string;
+    body?: string;
+    googlePreview?: string;
+    notLive?: string;
+    emailAccess?: string;
+    createAccount?: string;
+    alreadyHave?: string;
+    forgotPassword?: string;
+    returnHome?: string;
+    previewNotice?: string;
+    minimumPassword?: string;
+    emailError?: string;
+    passwordError?: string;
+    walletRequired?: string;
+  };
+};
 
-type AuthValues = z.infer<typeof authSchema>;
+function FieldError({ children }: { children?: string }) {
+  if (!children) return null;
+  return <p className="mt-2 rounded-xl border border-velmere-danger/[0.25] bg-velmere-danger/[0.10] px-3 py-2 text-xs leading-5 text-red-100">{children}</p>;
+}
 
-type AuthLabels = { email: string; password: string; signIn: string };
+function displayNameFromEmail(email: string) {
+  const localPart = email.split("@")[0]?.trim();
+  if (!localPart) return "Velmère Member";
+  return localPart
+    .replace(/[._-]+/g, " ")
+    .split(" ")
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ")
+    .slice(0, 32) || "Velmère Member";
+}
 
-function WalletOption({
-  icon,
-  title,
-  body,
-  disabled,
-  onClick,
-}: {
-  icon: string;
-  title: string;
-  body: string;
-  disabled?: boolean;
-  onClick: () => void;
-}) {
+function WalletButton({ icon, title, body, onClick, disabled }: { icon: string; title: string; body: string; onClick: () => void; disabled?: boolean }) {
   return (
     <button
       type="button"
       disabled={disabled}
-      onClick={() => {
-        navigator.vibrate?.(30);
-        onClick();
-      }}
-      className="group flex min-h-16 w-full items-center gap-4 rounded-2xl border border-white/10 bg-[#111113] px-4 text-left transition hover:border-[#c8a96a]/35 hover:bg-[#1f1f22] disabled:cursor-not-allowed disabled:opacity-45 active:scale-[0.985]"
+      onClick={onClick}
+      className="flex min-h-16 items-center gap-4 rounded-2xl border border-white/[0.10] bg-black/[0.24] px-4 text-left transition duration-300 hover:border-velmere-gold/[0.35] hover:bg-white/[0.045] disabled:cursor-not-allowed disabled:opacity-45 active:scale-[0.985]"
     >
-      <span className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-white/[0.04]">
-        <Image src={icon} alt="" width={24} height={24} className="h-6 w-6 object-contain" />
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/[0.10] bg-white/[0.04]">
+        <Image src={icon} alt="" width={24} height={24} />
       </span>
-      <span className="min-w-0">
-        <span className="block font-mono text-[10px] font-black uppercase tracking-[0.18em] text-white/82 group-hover:text-white">{title}</span>
-        <span className="mt-1 block text-xs leading-5 text-white/42">{body}</span>
+      <span>
+        <span className="block font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-white/[0.72]">{title}</span>
+        <span className="mt-1 block text-xs leading-5 text-white/[0.42]">{body}</span>
       </span>
-      <span className="ml-auto h-2 w-2 rounded-full bg-[#c8a96a]/60 shadow-[0_0_18px_rgba(200,169,106,0.46)]" />
     </button>
   );
 }
 
-export default function AuthFormClient({ labels }: { labels: AuthLabels }) {
-  const t = useTranslations("Auth");
-  const [status, setStatus] = useState<"idle" | "loading" | "ready" | "wallet">("idle");
+export default function AuthFormClient({ labels }: AuthFormClientProps) {
   const router = useRouter();
   const wallet = useWalletConnect();
   const walletUi = useWalletUiStore();
-  const form = useForm<AuthValues>({ resolver: zodResolver(authSchema), defaultValues: { email: "", password: "" } });
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [mode, setMode] = useState<"signin" | "create">("signin");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const emailLabel = labels?.email ?? "Email";
+  const passwordLabel = labels?.password ?? "Password";
 
-  const activateLocalAccount = async (nextStatus: "loading" | "wallet" = "loading") => {
-    setStatus(nextStatus);
-    await new Promise((resolve) => window.setTimeout(resolve, nextStatus === "wallet" ? 520 : 700));
-    setVelmereLocalSession(true);
-    setStatus("ready");
-    window.setTimeout(() => router.push("/account"), 180);
+  const validate = () => {
+    if (!email.includes("@") || email.length < 6) return labels?.emailError ?? "Enter a valid email address.";
+    if (password.length < 8) return labels?.passwordError ?? "Password must contain at least 8 characters.";
+    if (mode === "create" && !walletUi.connected) return labels?.walletRequired ?? "Connect a wallet before creating a member account for VLM and Square features.";
+    return null;
   };
 
-  const onSubmit = async () => activateLocalAccount("loading");
-
-  const connectWalletAccount = async (kind: "metamask" | "phantom") => {
-    if (!walletUi.connected) {
-      kind === "metamask" ? await wallet.connectMetaMask() : await wallet.connectPhantom();
+  const submit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const validationError = validate();
+    if (validationError) {
+      setError(validationError);
+      return;
     }
-    await activateLocalAccount("wallet");
+
+    setLoading(true);
+    window.setTimeout(() => {
+      setVelmereLocalSession(true, {
+        displayName: displayNameFromEmail(email),
+        email,
+      });
+      setLoading(false);
+      router.push("/account");
+    }, 420);
+  };
+
+  const continueAsPreview = () => {
+    setLoading(true);
+    window.setTimeout(() => {
+      setVelmereLocalSession(true, { displayName: "Velmère Preview" });
+      setLoading(false);
+      router.push("/account");
+    }, 320);
   };
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[#1A1A1C] p-5 shadow-[0_34px_110px_rgba(0,0,0,0.48)] backdrop-blur-2xl md:p-7 lg:p-8">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_10%,rgba(200,169,106,0.13),transparent_26%),linear-gradient(135deg,rgba(255,255,255,0.035),transparent_32%)]" />
-      <div className="relative z-[1]">
-        <div className="flex items-start justify-between gap-4 border-b border-white/10 pb-6">
-          <div>
-            <p className="font-mono text-[10px] font-black uppercase tracking-[0.26em] text-[#c8a96a]/85">{t("consoleKicker")}</p>
-            <h2 className="mt-2 font-serif text-3xl leading-tight md:text-4xl">{t("accountTitle")}</h2>
-            <p className="mt-3 max-w-xl text-sm leading-7 text-white/50">{t("accountBody")}</p>
-          </div>
-          <span className="rounded-full border border-[#c8a96a]/30 bg-[#c8a96a]/10 px-3 py-1 font-mono text-[9px] uppercase tracking-[0.18em] text-[#c8a96a]">AUTH</span>
+    <section className="rounded-[2rem] border border-white/[0.10] bg-[#111113] p-5 shadow-velmere-card md:p-7">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="velmere-label text-velmere-gold">{labels?.privateAccount ?? "Private account"}</p>
+          <h2 className="mt-4 font-serif text-3xl leading-[0.98] tracking-[-0.035em]">
+            {labels?.title ?? "Sign in."}
+          </h2>
+          <p className="mt-4 text-sm leading-7 text-velmere-muted">
+            {labels?.body ?? "Account first. Wallet optional. No seed phrases."}
+          </p>
         </div>
+        <LockKeyhole className="h-5 w-5 shrink-0 text-velmere-gold" />
+      </div>
 
-        <div className="mt-6 grid gap-3">
-          <button
-            type="button"
-            onClick={() => activateLocalAccount("wallet")}
-            className="inline-flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-white/10 bg-black/28 px-4 font-mono text-[10px] font-black uppercase tracking-[0.18em] text-white/64 transition hover:border-white/20 hover:text-white active:scale-[0.985]"
-          >
-            <Chrome className="h-4 w-4" /> {t("continueGoogle")}
-            <span className="rounded-full border border-white/10 px-2 py-1 text-[8px] text-white/35">{t("prepared")}</span>
-          </button>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <WalletOption icon="/wallets/metamask.svg" title={t("metamaskWallet")} body={t("metamaskBody")} disabled={walletUi.connected && walletUi.chainType === "solana"} onClick={() => void connectWalletAccount("metamask")} />
-            <WalletOption icon="/wallets/phantom.svg" title={t("phantomWallet")} body={t("phantomBody")} disabled={walletUi.connected && walletUi.chainType === "evm"} onClick={() => void connectWalletAccount("phantom")} />
-          </div>
-        </div>
-
-        <div className="my-7 flex items-center gap-3 font-mono text-[9px] uppercase tracking-[0.18em] text-white/28">
-          <span className="h-px flex-1 bg-white/10" /> {t("orEmail")} <span className="h-px flex-1 bg-white/10" />
-        </div>
-
-        <div className="space-y-5">
-          <label className="block"><span className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/52">{labels.email}</span><input type="email" {...form.register("email")} placeholder="member@velmere.com" className="mt-3 h-14 w-full rounded-2xl border border-white/10 bg-black/35 px-5 text-[16px] text-white outline-none placeholder:text-white/22 focus:border-[#c8a96a]/50" />{form.formState.errors.email ? <p className="mt-2 font-mono text-[10px] text-red-500/80">[SYS_ERR] :: {form.formState.errors.email.message}</p> : null}</label>
-          <label className="block"><span className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/52">{labels.password}</span><input type="password" {...form.register("password")} placeholder={t("passwordPlaceholder")} className="mt-3 h-14 w-full rounded-2xl border border-white/10 bg-black/35 px-5 text-[16px] text-white outline-none placeholder:text-white/22 focus:border-[#c8a96a]/50" />{form.formState.errors.password ? <p className="mt-2 font-mono text-[10px] text-red-500/80">[SYS_ERR] :: {form.formState.errors.password.message}</p> : null}</label>
-          <button type="submit" disabled={status === "loading" || status === "wallet"} className="flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl border border-[#c8a96a]/25 bg-[#c8a96a]/10 px-6 font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-[#c8a96a] transition hover:bg-[#c8a96a]/15 disabled:cursor-not-allowed disabled:opacity-40 active:scale-[0.985]">{status === "loading" || status === "wallet" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}{status === "ready" ? t("validated") : labels.signIn}</button>
-          <p className="text-center font-mono text-[9px] uppercase tracking-[0.14em] text-white/32"><ShieldCheck className="mr-2 inline h-3.5 w-3.5 text-[#c8a96a]/70" />{t("localSessionNotice")}</p>
+      <div className="mt-7 grid gap-3">
+        <button
+          type="button"
+          onClick={continueAsPreview}
+          disabled={loading}
+          className="inline-flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-white/[0.10] bg-black/[0.28] px-4 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-white/[0.64] transition hover:border-white/[0.20] hover:text-white disabled:opacity-50 active:scale-[0.985]"
+        >
+          <Chrome className="h-4 w-4" /> {labels?.googlePreview ?? "Google preview"}
+          <span className="rounded-full border border-white/[0.10] px-2 py-1 text-[8px] text-white/[0.35]">{labels?.notLive ?? "Not live"}</span>
+        </button>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <WalletButton
+            icon="/wallets/metamask.svg"
+            title="🦊 MetaMask"
+            body={walletUi.connected && walletUi.chainType === "evm" ? walletUi.shortAddress : "Optional EVM binding"}
+            disabled={walletUi.connected && walletUi.chainType === "solana"}
+            onClick={() => void wallet.connectMetaMask()}
+          />
+          <WalletButton
+            icon="/wallets/phantom.svg"
+            title="👻 Phantom"
+            body={walletUi.connected && walletUi.chainType === "solana" ? walletUi.shortAddress : "Optional Solana binding"}
+            disabled={walletUi.connected && walletUi.chainType === "evm"}
+            onClick={() => void wallet.connectPhantom()}
+          />
         </div>
       </div>
-    </form>
+
+      <div className="my-7 flex items-center gap-3 font-mono text-[9px] uppercase tracking-[0.18em] text-white/[0.28]">
+        <span className="h-px flex-1 bg-white/[0.10]" /> {labels?.emailAccess ?? "email access"} <span className="h-px flex-1 bg-white/[0.10]" />
+      </div>
+
+      <form onSubmit={submit} noValidate className="space-y-5">
+        <label className="block">
+          <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/[0.42]">{emailLabel}</span>
+          <input
+            value={email}
+            onChange={(event) => { setEmail(event.target.value); setError(null); }}
+            type="email"
+            autoComplete="email"
+            placeholder="member@velmere.com"
+            className="mt-3 h-14 w-full rounded-2xl border border-white/[0.10] bg-black/[0.28] px-4 text-base text-white outline-none transition placeholder:text-white/[0.24] focus:border-velmere-gold/[0.45]"
+          />
+        </label>
+
+        <label className="block">
+          <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/[0.42]">{passwordLabel}</span>
+          <input
+            value={password}
+            onChange={(event) => { setPassword(event.target.value); setError(null); }}
+            type="password"
+            autoComplete={mode === "create" ? "new-password" : "current-password"}
+            placeholder={labels?.minimumPassword ?? "Minimum 8 characters"}
+            className="mt-3 h-14 w-full rounded-2xl border border-white/[0.10] bg-black/[0.28] px-4 text-base text-white outline-none transition placeholder:text-white/[0.24] focus:border-velmere-gold/[0.45]"
+          />
+        </label>
+
+        <FieldError>{error ?? undefined}</FieldError>
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="velmere-button-primary w-full"
+        >
+          {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShieldCheck className="h-4 w-4" />}
+          {mode === "create" ? labels?.createAccount ?? "Create account" : labels?.signIn ?? "Sign in"}
+        </button>
+      </form>
+
+      <div className="mt-5 flex flex-wrap items-center justify-between gap-3 text-xs text-white/[0.45]">
+        <button type="button" onClick={() => setMode(mode === "signin" ? "create" : "signin")} className="transition hover:text-velmere-gold">
+          {mode === "signin" ? labels?.createAccount ?? "Create account" : labels?.alreadyHave ?? "Already have an account?"}
+        </button>
+        <button type="button" onClick={() => setError("Password reset email is not connected yet. Contact support for account help.")} className="transition hover:text-velmere-gold">
+          {labels?.forgotPassword ?? "Forgot password?"}
+        </button>
+        <Link href="/" className="transition hover:text-velmere-gold">{labels?.returnHome ?? "Return home"}</Link>
+      </div>
+
+      <p className="mt-6 rounded-2xl border border-white/[0.10] bg-black/[0.24] p-4 text-xs leading-6 text-white/[0.42]">
+        {labels?.previewNotice ?? "Preview mode only. Production auth requires Google OAuth keys, server sessions and final legal copy."}
+      </p>
+    </section>
   );
 }

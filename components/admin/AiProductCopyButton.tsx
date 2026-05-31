@@ -61,14 +61,14 @@ export default function AiProductCopyButton({ token, drafts }: AiProductCopyButt
   };
 
   return (
-    <div className="rounded-lg border border-white/10 bg-black/25 p-4 text-sm leading-7 text-white/58">
+    <div className="rounded-lg border border-white/[0.10] bg-black/[0.25] p-4 text-sm leading-7 text-white/[0.58]">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <p>{t("adminBody")}</p>
         <button
           type="button"
           onClick={run}
           disabled={!token || drafts.length === 0 || status === "loading"}
-          className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-full border border-velmere-gold/35 px-5 text-[10px] font-semibold uppercase tracking-[0.18em] text-velmere-gold transition-colors hover:bg-velmere-gold hover:text-black disabled:cursor-not-allowed disabled:opacity-40"
+          className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-full border border-velmere-gold/[0.35] px-5 text-[10px] font-semibold uppercase tracking-[0.18em] text-velmere-gold transition-colors hover:bg-velmere-gold hover:text-black disabled:cursor-not-allowed disabled:opacity-40"
         >
           {status === "loading" ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <Sparkles className="h-4 w-4" aria-hidden="true" />}
           {t("generate")}
@@ -80,7 +80,7 @@ export default function AiProductCopyButton({ token, drafts }: AiProductCopyButt
           readOnly
           value={result}
           rows={8}
-          className="mt-4 w-full rounded-lg border border-white/10 bg-black/35 p-4 text-sm leading-7 text-white outline-none"
+          className="mt-4 w-full rounded-lg border border-white/[0.10] bg-black/[0.35] p-4 text-sm leading-7 text-white outline-none"
         />
       )}
     </div>

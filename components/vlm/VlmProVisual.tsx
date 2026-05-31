@@ -60,7 +60,7 @@ export default function VlmProVisual() {
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
       style={{ transformStyle: "preserve-3d", rotateX: rotation.x, rotateY: rotation.y }}
-      className="mobile-scroll-safe-canvas relative mx-auto aspect-square max-h-[420px] w-full max-w-full overflow-hidden rounded-[2rem] border border-white/10 bg-[#050505] touch-pan-y pointer-events-none md:aspect-[16/9] md:min-h-[30rem] xl:min-h-[34rem] md:max-h-none md:pointer-events-auto md:touch-none md:cursor-grab md:active:cursor-grabbing"
+      className="mobile-scroll-safe-canvas relative mx-auto aspect-square max-h-[420px] w-full max-w-full overflow-hidden rounded-[2rem] border border-white/[0.10] bg-[#050505] touch-pan-y pointer-events-none md:aspect-[16/9] md:min-h-[30rem] xl:min-h-[34rem] md:max-h-none md:pointer-events-auto md:touch-none md:cursor-grab md:active:cursor-grabbing"
       title={t("proVisual.dragHint")}
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,rgba(212,175,55,0.18),rgba(255,255,255,0.035)_30%,rgba(0,0,0,0)_72%),repeating-linear-gradient(90deg,rgba(255,255,255,0.022)_0,rgba(255,255,255,0.022)_1px,transparent_1px,transparent_58px),repeating-linear-gradient(0deg,rgba(255,255,255,0.016)_0,rgba(255,255,255,0.016)_1px,transparent_1px,transparent_58px)]" />
@@ -77,18 +77,17 @@ export default function VlmProVisual() {
             strokeDasharray={index === 0 ? "8 12" : "2 10"}
             animate={reducedMotion ? undefined : { rotate: index % 2 ? -360 : 360 }}
             style={{ transformOrigin: "250px 250px" }}
-            transition={{ duration: 28 + index * 9, repeat: Infinity, ease: "linear" }}
+            transition={{ duration: 28 + index * 9, repeat: 999999, ease: "linear" }}
           />
         ))}
 
-        <motion.path
+        <path
           d="M112 164 C164 110 332 92 382 168 C420 250 380 330 356 336 C282 400 188 390 142 338 C78 270 78 210 112 164Z"
           fill="none"
           stroke="rgba(212,175,55,0.48)"
           strokeWidth="1.4"
           strokeDasharray="9 14"
-          animate={reducedMotion ? undefined : { pathLength: [0.2, 1, 0.2], opacity: [0.32, 0.9, 0.32] }}
-          transition={{ duration: 6.4, repeat: Infinity, ease: "easeInOut" }}
+          className={reducedMotion ? undefined : "velmere-dash-flow"}
         />
 
         <motion.path
@@ -98,7 +97,7 @@ export default function VlmProVisual() {
           strokeWidth="1"
           strokeDasharray="4 10"
           animate={reducedMotion ? undefined : { strokeDashoffset: [0, -120] }}
-          transition={{ duration: 9, repeat: Infinity, ease: "linear" }}
+          transition={{ duration: 9, repeat: 999999, ease: "linear" }}
         />
 
         {nodes.map((node) => (
@@ -111,7 +110,7 @@ export default function VlmProVisual() {
               stroke={node.active ? "rgba(212,175,55,0.62)" : "rgba(255,255,255,0.18)"}
               animate={reducedMotion ? undefined : { scale: node.active ? [1, 1.12, 1] : [1, 1.06, 1] }}
               style={{ transformOrigin: `${node.x}px ${node.y}px` }}
-              transition={{ duration: node.active ? 2.8 : 4.2, repeat: Infinity, ease: "easeInOut" }}
+              transition={{ duration: node.active ? 2.8 : 4.2, repeat: 999999, ease: "easeInOut" }}
             />
           </g>
         ))}
@@ -128,8 +127,8 @@ export default function VlmProVisual() {
             key={node.key}
             className={`block rounded-full border px-3 py-2 text-right font-mono text-[8px] uppercase tracking-[0.16em] backdrop-blur-xl ${
               node.active
-                ? "border-[#d4af37]/45 bg-[#d4af37]/12 text-[#d4af37]"
-                : "border-white/10 bg-black/55 text-white/44"
+                ? "border-[#d4af37]/[0.45] bg-[#d4af37]/[0.12] text-[#d4af37]"
+                : "border-white/[0.10] bg-black/[0.55] text-white/[0.44]"
             }`}
           >
             {t(`proVisual.nodes.${node.key}`)}
@@ -137,9 +136,9 @@ export default function VlmProVisual() {
         ))}
       </div>
 
-      <div className="absolute inset-x-4 bottom-4 z-[2] rounded-2xl border border-white/10 bg-black/92 p-4 backdrop-blur-xl md:inset-x-5 md:bottom-5 md:right-52">
+      <div className="absolute inset-x-4 bottom-4 z-[2] rounded-2xl border border-white/[0.10] bg-black/[0.92] p-4 backdrop-blur-xl md:inset-x-5 md:bottom-5 md:right-52">
         <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#d4af37]">{t("proVisual.kicker")}</p>
-        <p className="mt-2 text-xs leading-6 text-white/62">{t("proVisual.body")}</p>
+        <p className="mt-2 text-xs leading-6 text-white/[0.62]">{t("proVisual.body")}</p>
       </div>
     </motion.div>
   );

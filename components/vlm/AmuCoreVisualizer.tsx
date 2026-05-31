@@ -39,7 +39,7 @@ export default function AmuCoreVisualizer({
   return (
     <div
       ref={ref as React.RefObject<HTMLDivElement>}
-      className="relative aspect-square max-h-[360px] overflow-hidden rounded-[2rem] border border-white/5 bg-white/[0.035] text-white md:max-h-[560px]"
+      className="relative aspect-square max-h-[360px] overflow-hidden rounded-[2rem] border border-white/[0.05] bg-white/[0.035] text-white md:max-h-[560px]"
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(200,169,106,0.18),rgba(255,255,255,0.025)_42%,rgba(0,0,0,0)_70%),repeating-linear-gradient(90deg,rgba(245,240,232,0.025)_0,rgba(245,240,232,0.025)_1px,transparent_1px,transparent_42px),repeating-linear-gradient(0deg,rgba(245,240,232,0.018)_0,rgba(245,240,232,0.018)_1px,transparent_1px,transparent_42px)]" />
       <svg viewBox="0 0 720 720" className="absolute inset-0 h-full w-full" role="img" aria-label={t("aria")}>
@@ -73,7 +73,7 @@ export default function AmuCoreVisualizer({
             <motion.g
               key={ring.label}
               animate={shouldAnimate ? { rotate: index % 2 ? -360 : 360 } : undefined}
-              transition={{ duration: 42 + index * 8, repeat: Infinity, ease: "linear" }}
+              transition={{ duration: 42 + index * 8, repeat: 999999, ease: "linear" }}
               style={{ transformOrigin: "360px 300px" }}
             >
               <circle
@@ -102,7 +102,7 @@ export default function AmuCoreVisualizer({
           <motion.g
             key={prime.value}
             animate={shouldAnimate ? { opacity: [0.48, 0.95, 0.48], scale: [1, 1.08, 1] } : undefined}
-            transition={{ duration: 4.8, delay: index * 0.18, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: 4.8, delay: index * 0.18, repeat: 999999, ease: "easeInOut" }}
             style={{ transformOrigin: `${prime.x}px ${prime.y}px` }}
           >
             <circle cx={prime.x} cy={prime.y} r="7" fill="rgba(200,169,106,0.82)" filter="url(#amuGlow)" />
@@ -133,7 +133,7 @@ export default function AmuCoreVisualizer({
                 }
               : { cx: 360 + selectedRing.r * 0.75, cy: 300 - selectedRing.r * 0.05 }
           }
-          transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut" }}
+          transition={{ duration: 4.2, repeat: 999999, ease: "easeInOut" }}
         />
 
         <g transform="translate(540 392)">
@@ -148,10 +148,10 @@ export default function AmuCoreVisualizer({
       </svg>
 
       <div className="absolute bottom-4 left-4 right-4 flex flex-wrap items-center justify-between gap-2">
-        <span className="rounded-full border border-white/10 bg-black/38 px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/52">
+        <span className="rounded-full border border-white/[0.10] bg-black/[0.38] px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/[0.52]">
           {t("disclaimer")}
         </span>
-        <span className="rounded-full border border-velmere-gold/25 bg-velmere-gold/[0.08] px-3 py-2 font-mono text-[10px] text-velmere-gold">
+        <span className="rounded-full border border-velmere-gold/[0.25] bg-velmere-gold/[0.08] px-3 py-2 font-mono text-[10px] text-velmere-gold">
           H{selectedN} / {selectedRing.label}
         </span>
       </div>

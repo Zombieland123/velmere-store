@@ -5,7 +5,7 @@ import CartDrawer from "@/components/CartDrawer";
 import CookieConsent from "@/components/CookieConsent";
 import Footer from "@/components/Footer";
 import CommandPalette from "@/components/ui/CommandPalette";
-import GlobalTerminalTicker from "@/components/ui/GlobalTerminalTicker";
+import FloatingMailWidget from "@/components/contact/FloatingMailWidget";
 import Navbar from "@/components/Navbar";
 import PageTransition from "@/components/PageTransition";
 import Web3Provider from "@/components/wallet/Web3Provider";
@@ -22,20 +22,11 @@ export function generateMetadata({
 }: {
   params: { locale: string };
 }): Metadata {
-  const title =
-    locale === "pl"
-      ? "Velmère — luksusowy streetwear"
-      : locale === "de"
-        ? "Velmère — Luxury Streetwear"
-        : "Velmère — Luxury Streetwear";
-  const description =
-    locale === "pl"
-      ? "Limitowane dropy, lookbook i dostęp VLM w spokojnej estetyce ciemnego luksusu."
-      : locale === "de"
-        ? "Limitierte Drops, Lookbook und VLM Access in ruhiger Dark-Luxury-Ästhetik."
-        : "Limited drops, lookbook, and VLM access in a restrained dark luxury aesthetic.";
-
-  return buildVelmereMetadata({ locale, title, description });
+  return buildVelmereMetadata({
+    locale,
+    title: "Velmère — Luxury Streetwear",
+    description: "Limited drops, a restrained lookbook, and VLM access in a dark luxury aesthetic.",
+  });
 }
 
 export function generateStaticParams() {
@@ -60,8 +51,8 @@ export default async function RootLayout({
           <CookieConsent />
           <CartDrawer />
           <AngelTeaser />
+          <FloatingMailWidget />
           <CommandPalette />
-          <GlobalTerminalTicker />
         </CartProvider>
       </Web3Provider>
     </NextIntlClientProvider>

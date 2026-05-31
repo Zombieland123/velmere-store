@@ -8,6 +8,14 @@ type SquarePostsResponse = {
   source: "supabase" | "mock";
 };
 
+function previewHeaders() {
+  if (typeof window === "undefined") return { "Content-Type": "application/json" };
+  const active = window.localStorage.getItem("velmere:account-session") === "active";
+  return active
+    ? { "Content-Type": "application/json", "x-velmere-preview-session": "active" }
+    : { "Content-Type": "application/json" };
+}
+
 const fetcher = async (url: string) => {
   const response = await fetch(url, { cache: "no-store" });
   if (!response.ok) throw new Error("Unable to fetch Square posts");
@@ -33,7 +41,7 @@ export async function createSquarePostRequest(input: {
 }) {
   const response = await fetch("/api/square/posts", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: previewHeaders(),
     body: JSON.stringify(input),
   });
 

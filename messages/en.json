@@ -29,7 +29,7 @@
     "privacy": "Privacy",
     "shipping": "Shipping",
     "returns": "Returns",
-    "impressum": "Seller details",
+    "impressum": "Impressum / Legal Notice",
     "contact": "Contact",
     "vlmTeaserTitle": "VLM Access",
     "vlmTeaserBody": "Access layer for private drops.",
@@ -40,11 +40,11 @@
       "de": "DE"
     },
     "menu": "Menu",
-    "menswear": "Men's Collection",
-    "womenswear": "Women's Collection",
+    "menswear": "Men",
+    "womenswear": "Women",
     "vlm": "VLM",
     "square": "Velmère Square",
-    "loginCta": "Zaloguj",
+    "loginCta": "Login",
     "profile": "Profile",
     "myOrders": "My orders",
     "vlmBalance": "VLM balance",
@@ -52,17 +52,17 @@
     "connectWallet": "Connect wallet",
     "walletConnected": "Wallet connected",
     "walletAccess": "Wallet access",
-    "walletHelper": "Choose a wallet. Mobile opens the wallet browser and returns here.",
+    "walletHelper": "Choose a wallet. Never enter a seed phrase.",
     "network": "Network",
     "balance": "Balance",
     "access": "Access",
     "disconnectWallet": "Disconnect wallet",
-    "drawerShop": "Shop / Community",
-    "walletReady": "MetaMask / Phantom mobile ready"
+    "drawerShop": "Explore",
+    "walletReady": "MetaMask / Phantom ready"
   },
   "Footer": {
-    "tagline": "Dark premium streetwear. Limited drops. Access closer to the brand.",
-    "micro": "Velmère connects clothing, archive, and a private access layer in one calm system.",
+    "tagline": "Luxury streetwear with a private digital layer.",
+    "micro": "Clothing commerce, VLM access and Square community features stay clearly separated.",
     "explore": "Explore",
     "service": "Service",
     "shopAll": "Full collection",
@@ -78,7 +78,7 @@
     "contact": "Contact",
     "tokenAgreement": "VLM Agreement",
     "newsletter": "Private list",
-    "newsletterText": "Leave an email signal for drop notes and archive access.",
+    "newsletterText": "Join the private list for drop notes and archive access.",
     "emailPlaceholder": "Email address",
     "subscribeSoon": "Leave email",
     "rights": "Velmère. All rights reserved.",
@@ -86,16 +86,16 @@
     "womenswear": "Women's Collection",
     "newDrop": "New drop",
     "square": "Velmère Square",
-    "riskMicro": "VLM is an access layer, not an investment. Details live in the VLM section.",
-    "newsletterOffline": "The private list opens after production mail settings are connected."
+    "riskMicro": "VLM is an access layer, not an investment.",
+    "newsletterOffline": "Join the waitlist through Contact until the production mail provider is connected."
   },
   "Home": {
     "heroImageAlt": "Advanced three-dimensional Velmère neural access visual with ivory nodes and champagne signal flow",
-    "kicker": "VELMÈRE / PRIVATE DARK UNIFORM",
-    "title": "Enter quietly.\nOwn the room.\nLeave a signal.",
-    "quote": "Heavyweight silhouettes cut for restraint, attention and quiet authority.",
-    "cta": "Explore collection",
-    "secondaryCta": "Unlock VLM",
+    "kicker": "VELMÈRE / PRIVATE FASHION HOUSE",
+    "title": "VELMÈRE",
+    "quote": "Luxury streetwear with a private digital layer.",
+    "cta": "Explore Collection",
+    "secondaryCta": "Enter VLM",
     "new": "New",
     "newSectionTitle": "New drop",
     "newSectionSubtitle": "Three quiet silhouettes. No noise. Only form, material, and weight.",
@@ -105,7 +105,7 @@
     "editorialImageAlt": "Velmère editorial silhouette in monochrome light",
     "vlmTeaserKicker": "Private access",
     "vlmTeaserTitle": "VLM Access",
-    "vlmTeaserBody": "A compact access layer for private drops and archive access. Kept secondary to the clothing experience.",
+    "vlmTeaserBody": "VLM unlocks access, not promises.",
     "vlmTeaserCta": "View VLM",
     "sideRubrics": {
       "atelier": {
@@ -163,7 +163,7 @@
     },
     "squareTeaserKicker": "Community",
     "squareTeaserTitle": "Velmère Square",
-    "squareTeaserBody": "A moderated space for drop notes, archive requests and access updates.",
+    "squareTeaserBody": "A private square for signals, drops and members.",
     "squareTeaserCta": "Enter Square"
   },
   "Product": {
@@ -259,7 +259,7 @@
     "backToShop": "Back to shop"
   },
   "Auth": {
-    "kicker": "Customer accounts",
+    "kicker": "Private account",
     "login": "Login",
     "email": "Email",
     "password": "Password",
@@ -267,26 +267,26 @@
     "signOut": "Sign out",
     "createAccount": "Create account",
     "forgotPassword": "Forgot password?",
-    "comingSoon": "Login will be available with Velmère customer accounts.",
-    "pendingActivation": "Account system prepared — activation pending configuration.",
+    "comingSoon": "Account access opens through verified production authentication.",
+    "pendingActivation": "Enter the private Velmère layer.",
     "consoleKicker": "Secure account console",
-    "accountTitle": "Konto Velmère",
-    "accountBody": "Access your profile, orders, security settings and optional wallet bindings. Google OAuth is staged until production keys are connected.",
+    "accountTitle": "Velmère Account",
+    "accountBody": "Access your profile, orders, security settings and optional wallet bindings.",
     "continueGoogle": "Continue with Google",
-    "prepared": "prepared",
+    "prepared": "Preview",
     "metamaskWallet": "MetaMask Wallet",
-    "metamaskBody": "EVM wallet binding",
+    "metamaskBody": "Optional EVM binding",
     "phantomWallet": "Phantom Wallet",
-    "phantomBody": "Solana wallet binding",
+    "phantomBody": "Optional Solana binding",
     "orEmail": "or email access",
     "passwordPlaceholder": "Symbol + number + uppercase",
     "validated": "[ ACCESS REQUEST VALIDATED ]",
-    "localSessionNotice": "Staging session. Production OAuth requires API keys.",
-    "gateTitle": "Account access locked",
-    "gateBody": "Log in or create an account to manage profile, avatar, password, orders and optional Web3 bindings.",
+    "localSessionNotice": "Preview session. Connect production auth before launch.",
+    "gateTitle": "Account access required.",
+    "gateBody": "Sign in to manage profile, addresses, orders, Square publishing and optional wallet bindings.",
     "gateKicker": "Account gate",
     "loginRegister": "Log in / register",
-    "previewConsole": "Preview console",
+    "previewConsole": "Preview account",
     "walletPreview": "Wallet preview",
     "walletPreviewBody": "Wallets are optional bindings after account login. Connect one wallet at a time.",
     "evmPreview": "EVM access preview",
@@ -340,7 +340,7 @@
         "value": "official registry"
       },
       "tax": {
-        "label": "Buy / Exit rule",
+        "label": "Access fee rule",
         "value": "1.5% / 1.5%"
       },
       "status": {
@@ -457,271 +457,257 @@
     "terms": {
       "kicker": "Legal / commerce",
       "title": "Terms",
-      "updated": "Draft updated: May 26, 2026",
-      "draftNotice": "Full seller address and VAT details will be published before commercial activation. Return address and POD custom-product rules require final legal review.",
-      "intro": "These terms govern clothing purchases at Velmère in EUR. VLM is a separate access-token model and is not sold through the clothing checkout unless explicitly stated after legal review.",
+      "updated": "Updated: May 31, 2026",
+      "draftNotice": "Template copy. Replace all Seller details before accepting orders.",
+      "intro": "These Terms apply to clothing purchases from Velmère. VLM access, wallet features and Square community features are separate from clothing checkout unless clearly stated before purchase.",
       "sections": [
         {
           "title": "Seller and contact",
-          "body": "Seller display name: Marcin Bajak. Contact: velmere141@gmail.com. Business country: Germany. Full seller address will be published before commercial launch."
+          "body": "Seller: Marcin Bajak / Velmère\nAddress: Germany — full legal address to be confirmed in merchant records before public order activation\nEmail: velmere141@gmail.com\nBusiness registration/VAT: not published until applicable registration/VAT data is confirmed"
         },
         {
-          "title": "Prices and currency",
-          "body": "Store prices are shown in EUR. Shipping is not included in product prices and will be charged separately after final shipping rates are configured."
+          "title": "Contract formation",
+          "body": "A binding order is formed only after the customer submits the order, payment is confirmed and Velmère sends an order confirmation. Automated receipt emails do not replace the final acceptance wording unless the checkout flow states otherwise."
         },
         {
-          "title": "Products in preparation",
-          "body": "Products may be limited, made after order, or imported from fulfilment partners for review. Products remain coming soon until variants, images, pricing, provider mapping and fulfilment rules are validated."
+          "title": "Products, drops and availability",
+          "body": "Products may be limited. Product pages should show material, fit, size information, price, taxes, availability, delivery estimate and return information before checkout. If an item is not available yet, use clear wording such as “Not available for purchase yet” or “Drop date to be announced.”"
         },
         {
-          "title": "Made-after-order production",
-          "body": "Selected pieces may be produced after purchase to reduce overproduction. Production time is separate from carrier delivery time and must be shown before checkout opens."
+          "title": "Prices, taxes and payment",
+          "body": "Prices are shown in EUR unless another currency is clearly displayed. Taxes, delivery costs and payment methods must be shown before the customer places a binding order. Card details should be handled by the payment provider, not stored by Velmère."
         },
         {
-          "title": "Checkout disabled until ready",
-          "body": "Checkout stays disabled until Stripe, webhook handling, order storage, shipping rates, returns, contact details, tax handling and fulfilment workflows are production-ready."
+          "title": "Shipping and delivery",
+          "body": "Delivery regions, carriers, fulfilment partners, shipping costs, tracking and estimated delivery windows are described in the Shipping Policy and shown before checkout."
         },
         {
-          "title": "Order formation",
-          "body": "A binding order process should only be described after the payment provider, confirmation emails, order state handling and fulfilment rules are configured."
+          "title": "Returns and withdrawal",
+          "body": "Consumer withdrawal rights and return instructions are described in the Returns / Right of Withdrawal Policy. Consumer rights remain unaffected."
         },
         {
-          "title": "VLM separation",
-          "body": "Clothing purchases and VLM access are separate. VLM is an access utility and is not required for public clothing browsing."
+          "title": "Accounts",
+          "body": "Accounts may be used for order history, addresses, Square publishing, support and optional wallet binding. Users must keep login credentials secure and may not impersonate others, abuse the service or submit illegal content."
         },
         {
-          "title": "Token and crypto limitations",
-          "body": "VLM is not presented as investment advice and does not promise profit, liquidity, listing, yield, resale value or scarcity."
+          "title": "Wallet and VLM separation",
+          "body": "Clothing checkout does not require VLM. VLM is described as a utility/access concept only. It is not financial advice, a security, a public offer, a price claim or a promise of future access, value, liquidity or listing."
         },
         {
-          "title": "Support and disputes",
-          "body": "Support and dispute handling will use velmere141@gmail.com until final commercial service details are published."
+          "title": "Square community",
+          "body": "Square posts, comments and reports may be moderated. Velmère may remove content or restrict accounts that publish harassment, impersonation, illegal content, scams, seed phrase requests or misleading financial claims."
         },
         {
-          "title": "Final review required",
-          "body": "These terms require legal review before commercial sales."
-        },
-        {
-          "title": "Square moderation and digital access",
-          "body": "Velmère Square posts, comments, likes, reports and view counters are community features subject to moderation before publication. VLM access remains separate from clothing checkout and does not create a right to buy, trade, profit, liquidity or listing."
+          "title": "Warranty and consumer rights",
+          "body": "Statutory conformity and warranty rights for consumers remain unaffected. Any limitation of liability must be valid under applicable law and shown clearly."
         }
       ]
     },
     "privacy": {
       "kicker": "Privacy / GDPR",
       "title": "Privacy Policy",
-      "updated": "Updated: May 26, 2026",
-      "draftNotice": "Final processor list and retention periods require legal review before commercial launch.",
-      "intro": "Controller: Marcin Bajak, Germany. Contact: velmere141@gmail.com. We process account, order, shipping and payment-status data for the store, and public wallet addresses only when you use VLM access features.",
+      "updated": "Updated: May 31, 2026",
+      "draftNotice": "Template copy. Replace controller, processor and retention fields before launch.",
+      "intro": "This policy explains how Velmère may process personal data for the store, accounts, checkout, support, Square and optional wallet access features.",
       "sections": [
         {
-          "title": "Controller and contact",
-          "body": "Controller/contact: Marcin Bajak, Germany, velmere141@gmail.com. Full seller address and required data-protection details will be published before commercial launch."
+          "title": "Controller",
+          "body": "Controller: Marcin Bajak / Velmère\nAddress: Germany — full legal address to be confirmed in merchant records before public order activation\nEmail: velmere141@gmail.com"
         },
         {
-          "title": "Data that may be collected",
-          "body": "Contact data, order data, shipping data, payment status but not card details, newsletter email, customer support messages, wallet public address if VLM is used, cookies and local storage, and analytics data only if analytics is enabled after consent."
+          "title": "Data categories",
+          "body": "Account data, contact data, order data, shipping and billing data, payment status, support messages, newsletter consent, cookie preferences, device/session data, Square posts/comments/reports and public wallet address data if wallet features are used."
         },
         {
-          "title": "Why data may be processed",
-          "body": "Order handling, customer support, newsletter consent, fraud and security, legal obligations, storefront preferences, cart operation, and wallet access verification if VLM features are later activated."
+          "title": "Purposes and legal bases",
+          "body": "Data may be used to provide the store, process orders, deliver products, answer support requests, prevent abuse, comply with legal obligations, remember preferences, send marketing only with consent and verify optional wallet-based access."
         },
         {
-          "title": "Processors and providers",
-          "body": "Potential processors include Vercel for hosting, Stripe if payments are enabled, Printful if fulfilment is enabled, Tapstitch/manual fulfilment if used, an email/newsletter provider if enabled, analytics provider if enabled after consent, and shipping partners once configured."
+          "title": "Processors and recipients",
+          "body": "Possible processors include hosting provider, payment provider, email provider, fulfilment partner, shipping carrier, analytics provider if enabled with consent, OAuth provider and wallet infrastructure provider. Add final provider names and links before launch."
         },
         {
-          "title": "Payment data",
-          "body": "If Stripe is enabled later, card data should be handled by Stripe. Velmère should store order/payment status only, not full card details."
+          "title": "Payments",
+          "body": "If Stripe or another payment provider is enabled, full card data should be processed by that provider. Velmère should store only order status, payment status and information required for accounting and support."
         },
         {
           "title": "Wallet data",
-          "body": "If VLM access is enabled later, the site may read a public wallet address and token balance. It must not store private keys, seed phrases or user funds."
+          "body": "Wallet connection may reveal a public wallet address and network information. Velmère must never request, store or process seed phrases or private keys."
+        },
+        {
+          "title": "Square moderation data",
+          "body": "Square posts, comments, reports, moderation decisions and account restrictions may be stored to operate the community and protect members from abuse."
         },
         {
           "title": "Cookies and consent",
-          "body": "Necessary cookies/local storage support language, cart and consent preferences. Analytics cookies and marketing pixels must stay disabled until consent. Currently no analytics or marketing tracking is active."
+          "body": "Essential cookies may be used for cart, account and security. Analytics, marketing pixels, embedded media or non-essential cookies should run only after valid consent where required."
         },
         {
           "title": "Retention",
-          "body": "Retention periods are placeholders until legal review. Order, tax, support, newsletter and security records may require different periods depending on final operations."
+          "body": "Retention periods: order and tax records follow applicable statutory duties; marketing and account records are kept only while needed or until deletion/withdrawal where legally available. Store personal data only as long as necessary for the purpose, legal obligations, dispute handling or security."
         },
         {
-          "title": "Your rights",
-          "body": "Where GDPR applies, rights may include access, correction, deletion, restriction, portability, objection, withdrawal of consent and complaint to a supervisory authority."
-        },
-        {
-          "title": "Contact",
-          "body": "Privacy requests may be sent to velmere141@gmail.com until final business details are published."
-        },
-        {
-          "title": "Community, wallet and AI data",
-          "body": "Privacy coverage includes public wallet addresses used for read-only access previews, Square posts and comments, likes, view counters, moderation reports, Angel assistant requests, product import/admin processing, Printful, Tapstitch, Stripe if enabled, Vercel hosting, newsletter preferences and cookies/local storage. Analytics and marketing are opt-in only."
+          "title": "User rights",
+          "body": "Users may have rights to access, rectification, erasure, restriction, portability, objection and withdrawal of consent. Users may also complain to a competent data protection supervisory authority."
         }
       ]
     },
     "shipping": {
       "kicker": "Legal / shipping",
       "title": "Shipping",
-      "updated": "Updated: May 26, 2026",
-      "draftNotice": "Rates and production times will be confirmed per provider before commercial launch.",
-      "intro": "Shipping is charged separately from product price. Regions include Europe, USA and international destinations where Printful or Tapstitch support fulfilment.",
+      "updated": "Updated: May 31, 2026",
+      "draftNotice": "Template copy. Replace regions, rates, carriers and delivery windows before checkout.",
+      "intro": "Shipping costs and delivery estimates must be shown before the customer places a binding order.",
       "sections": [
         {
-          "title": "Regions",
-          "body": "Planned regions: Europe, USA, and international destinations where fulfilment providers support delivery."
+          "title": "Countries served",
+          "body": "Germany, EU and selected international regions where the chosen fulfilment carrier can provide delivery. Orders should not be accepted for unsupported destinations."
         },
         {
-          "title": "Separate shipping charge",
-          "body": "Shipping is not included in product price. Final shipping rates, carriers and delivery windows must be configured before accepting payment."
-        },
-        {
-          "title": "Tracked shipping",
-          "body": "Tracked shipping is planned where operationally supported by the fulfilment provider and carrier."
+          "title": "Shipping costs",
+          "body": "Shipping costs must be shown by destination, carrier and order value before checkout completion."
         },
         {
           "title": "Production and delivery time",
-          "body": "Made-after-order production time is separate from carrier delivery time. Both must be shown clearly before checkout opens."
+          "body": "If a product is made after order, production time is separate from carrier delivery time. Show both timelines before checkout."
         },
         {
-          "title": "Customs and taxes",
-          "body": "Customs, taxes, import duties and brokerage fees may apply outside the EU and must be clarified before checkout launch."
+          "title": "Carriers and tracking",
+          "body": "Carrier and fulfilment partner details must be shown where available; tracking should be provided after dispatch."
         },
         {
-          "title": "Checkout gate",
-          "body": "No payment should be accepted until shipping regions, costs and fulfilment rules are configured."
+          "title": "Failed delivery",
+          "body": "If delivery fails because the address is incorrect or the parcel is not collected, support will review the case and explain reshipment or refund options."
+        },
+        {
+          "title": "Damaged parcel",
+          "body": "Customers should contact support with order number, photos of the parcel and photos of the product as soon as possible after delivery."
+        },
+        {
+          "title": "Customs and import charges",
+          "body": "For deliveries outside the EU, customs duties, import taxes or brokerage fees may apply. These costs must be disclosed where legally required before checkout."
         }
       ]
     },
     "returns": {
       "kicker": "Legal / returns",
-      "title": "Returns",
-      "updated": "Updated: May 26, 2026",
-      "draftNotice": "Return address and POD custom-product rules require final legal review.",
-      "intro": "EU consumers may have a 14-day withdrawal right where applicable. Refunds are processed through the original payment provider when eligible.",
+      "title": "Returns / Right of Withdrawal",
+      "updated": "Updated: May 31, 2026",
+      "draftNotice": "Template copy. Replace return address and final process before accepting orders.",
+      "intro": "EU consumers generally have a 14-day withdrawal right for online purchases, subject to legal exceptions. Consumer rights remain unaffected.",
       "sections": [
         {
-          "title": "EU withdrawal right",
-          "body": "EU consumer withdrawal rules, including a 14-day withdrawal framework where applicable, require legal review before launch."
+          "title": "Withdrawal period",
+          "body": "For goods, the 14-day period generally starts when the customer or a third party chosen by the customer receives the goods."
         },
         {
-          "title": "Made-after-order limitations",
-          "body": "Any limitation for customized, made-to-order or hygiene-sensitive products must be reviewed legally before use."
+          "title": "How to withdraw",
+          "body": "Contact velmere141@gmail.com with order number and a clear withdrawal statement. A dedicated withdrawal button/form should be added if required for the launch jurisdiction."
         },
         {
           "title": "Return address",
-          "body": "The return address will be added before commercial launch."
+          "body": "Return destination is provided after return approval so the customer is not sent to an incorrect private/warehouse address."
         },
         {
-          "title": "Condition requirements",
-          "body": "Product condition, tags, packaging, inspection and exclusions must be defined before accepting orders."
+          "title": "Refund timing",
+          "body": "Eligible refunds should be issued through the original payment method within the legally required period after withdrawal, subject to the rules on returned goods and proof of return shipment."
         },
         {
           "title": "Return shipping",
-          "body": "Customer-paid return shipping can only apply if the policy is legally valid and clearly disclosed before purchase."
+          "body": "State clearly before purchase whether the customer or Velmère pays return shipping. Customer-paid return shipping applies only if legally valid and properly disclosed."
         },
         {
-          "title": "Refund method",
-          "body": "Refunds should be processed through the original payment method once payments are enabled."
+          "title": "Product condition",
+          "body": "Returned products should be clean, complete and handled only as necessary to inspect fit, nature and characteristics. Excessive wear may affect refund rights where legally allowed."
+        },
+        {
+          "title": "Exceptions",
+          "body": "Exceptions for customized, sealed, hygiene-sensitive or made-to-order products may apply only where legally valid and clearly disclosed before purchase."
+        },
+        {
+          "title": "Model withdrawal form",
+          "body": "To: Marcin Bajak / Velmère, Germany, velmere141@gmail.com\nI/we hereby withdraw from the contract for the following goods:\nOrdered on / received on: [date]\nName of consumer: [name]\nAddress of consumer: [address]\nDate: [date]"
         }
       ]
     },
     "impressum": {
       "kicker": "Legal / seller details",
-      "title": "Seller details",
-      "updated": "Updated: May 26, 2026",
-      "draftNotice": "Full street address and VAT/tax ID must be added before commercial launch.",
-      "intro": "Marcin Bajak · Germany · velmere141@gmail.com",
+      "title": "Impressum / Legal Notice",
+      "updated": "Updated: May 31, 2026",
+      "draftNotice": "Seller details must be completed before commercial launch.",
+      "intro": "This page identifies the service provider responsible for Velmère.",
       "sections": [
         {
-          "title": "Seller display name",
-          "body": "Marcin Bajak"
+          "title": "Service provider",
+          "body": "Marcin Bajak / Velmère\nGermany — full legal address to be confirmed in merchant records before public order activation\nGermany"
         },
         {
-          "title": "Country and contact",
-          "body": "Germany\nvelmere141@gmail.com"
+          "title": "Contact",
+          "body": "Email: velmere141@gmail.com\nPhone: available if legally required"
         },
         {
-          "title": "Address and registration data",
-          "body": "Full seller address, registration details, VAT/tax details and any required regulatory information will be added before commercial launch."
+          "title": "Registration and VAT",
+          "body": "Commercial register: not published until applicable registration/VAT data is confirmed\nRegistration number: not published until applicable registration/VAT data is confirmed\nVAT ID / tax ID: not published until applicable registration/VAT data is confirmed"
+        },
+        {
+          "title": "Responsible person",
+          "body": "Responsible person for content: published if legally required for the final setup."
+        },
+        {
+          "title": "Dispute resolution",
+          "body": "Consumer dispute-resolution information must match the seller’s exact legal setup and jurisdiction."
         }
       ]
     },
     "contact": {
       "kicker": "Support",
       "title": "Contact",
-      "updated": "Updated: May 26, 2026",
-      "draftNotice": "This page requires legal review before full commercial launch.",
-      "intro": "Contact and support details.",
+      "updated": "Updated: May 31, 2026",
+      "draftNotice": "Support details before launch.",
+      "intro": "For orders, product questions, privacy requests and Square moderation.",
       "sections": [
         {
-          "title": "Contact",
-          "body": "Marcin Bajak\nvelmere141@gmail.com\nGermany\nFull seller address will be added before commercial launch."
+          "title": "Support",
+          "body": "Email: velmere141@gmail.com\nResponse time: normally within 2 business days"
         },
         {
-          "title": "Order support",
-          "body": "Order support will be fully defined once checkout, fulfilment and shipping workflows are configured."
+          "title": "Orders",
+          "body": "Include order number, email used for checkout and a short description of the issue."
         },
         {
-          "title": "Legal and privacy contact",
-          "body": "Legal and privacy requests may use the contact email until final business details are published."
+          "title": "Returns",
+          "body": "Use the Returns / Right of Withdrawal page for withdrawal instructions and the model form."
+        },
+        {
+          "title": "Wallet safety",
+          "body": "Never send a seed phrase or private key to support. Velmère will never ask for it."
+        },
+        {
+          "title": "Square reports",
+          "body": "Report harassment, impersonation, illegal content, scams, seed phrase requests or misleading VLM claims."
         }
       ]
     },
     "token": {
-      "kicker": "VLM / legal document",
-      "title": "VLM Agreement",
-      "updated": "Updated: May 27, 2026",
-      "draftNotice": "This document is not a public offer. Official data is defined by the contract registry.",
-      "intro": "This document describes VLM as Velmère's official access layer for private drops, archive unlocking and selected brand privileges. It is not an investment offer and this page does not provide a trading interface.",
+      "kicker": "VLM / TOKEN AGREEMENT",
+      "title": "VLM access terms",
+      "updated": "Draft updated: 31 May 2026",
+      "draftNotice": "Read-only policy draft. It must be reviewed before any public VLM activation.",
+      "intro": "VLM is described as a planned access and utility layer for Velmère. It is not live in this build and is not presented as an investment product.",
       "sections": [
         {
-          "title": "Quick summary",
-          "body": "The official interface is active as an access surface. Protected functions require registry publication. No audit, deployed contract or public trading route is claimed."
+          "title": "No investment language",
+          "body": "VLM must not be marketed as a profit promise, resale claim, yield stream, dividend, security or guaranteed future benefit."
         },
         {
-          "title": "Access model",
-          "body": "VLM is intended for private drops, archive features and selected brand privileges. Eligibility rules are defined by the official registry."
+          "title": "Wallet safety",
+          "body": "Velmère never asks for seed phrases or private keys. Any future wallet action must explain whether it is a connection, message signature, token approval or transaction."
         },
         {
-          "title": "Official registry",
-          "body": "The registry defines contract address, network, audit record, ABI, access windows and gate rules. Missing registry data means protected access remains locked."
-        },
-        {
-          "title": "No trading interface",
-          "body": "This page does not present price, exchange listing, fee model, liquidity promise or purchase action. Any future mechanics must match the official registry and legal review."
-        },
-        {
-          "title": "No market promises",
-          "body": "Velmère does not promise profit, listing, liquidity, resale value, scarcity, yield or market support."
-        },
-        {
-          "title": "Non-custodial custody",
-          "body": "Users hold assets in their own wallets. Velmère does not store private keys, seed phrases or funds."
-        },
-        {
-          "title": "VLM Protocol Lab and AMU",
-          "body": "AMU, rho harmonics, prime field and Riemann-shadow visuals are a conceptual identity layer. Internal research name: Bajak Protocol. They do not replace audits, wallet custody or network security."
-        },
-        {
-          "title": "Eligibility and jurisdiction",
-          "body": "VLM may be subject to crypto-asset regulation depending on final structure, jurisdiction, distribution model and functionality. Legal review and MiCA review are required before registry publication."
-        },
-        {
-          "title": "Contact",
-          "body": "Marcin Bajak\nvelmere141@gmail.com\nGermany\nFull seller address will be added before commercial checkout activation where legally required."
-        },
-        {
-          "title": "Final legal review required",
-          "body": "This is not a final legal document and must be reviewed before any VLM offer, claim, sale, airdrop or token-gated purchase."
+          "title": "Contract status",
+          "body": "No public token action is enabled until contract address, chain, ABI, explorer link, audit status and legal review are published."
         }
       ]
-    },
-    "shared": {
-      "sellerName": "Marcin Bajak",
-      "sellerEmail": "velmere141@gmail.com",
-      "sellerCountry": "Germany",
-      "currency": "EUR"
     }
   },
   "Archive": {
@@ -887,7 +873,7 @@
     },
     "earlyAccess": {
       "title": "Early access",
-      "body": "Potential early access to selected drops, without guaranteed allocation or resale value."
+      "body": "Potential early access to selected drops, without promised allocation or resale value."
     },
     "communityLayer": {
       "title": "Experimental community layer",
@@ -898,7 +884,7 @@
     "kicker": "Draft tokenomics",
     "title": "Emission allocation model",
     "body": "Percentages describe a draft allocation of genesis emission or future mints, not a fixed total supply.",
-    "draftNotice": "Draft tokenomics - not final. No guaranteed scarcity, profit, liquidity, listing, or market support is promised.",
+    "draftNotice": "Draft tokenomics - not final. No promised scarcity, profit, liquidity, listing, or market support is promised.",
     "public": {
       "label": "Public access emission",
       "note": "Community and public access emission."
@@ -913,7 +899,7 @@
     },
     "liquidity": {
       "label": "Liquidity / market operations",
-      "note": "Liquidity is not guaranteed and requires final legal and market review."
+      "note": "Liquidity is not promised and requires final legal and market review."
     }
   },
   "VlmRoadmap": {
@@ -995,7 +981,7 @@
     },
     "investment": {
       "q": "Is VLM an investment?",
-      "a": "No. VLM is presented as an access layer, not a profit promise."
+      "a": "No. VLM is presented as an access layer, not a price claim."
     },
     "buy": {
       "q": "Can I buy now?",
@@ -1047,7 +1033,7 @@
     },
     "taxes": {
       "q": "What are the taxes?",
-      "a": "The target draft is 1% buy tax, 2.5% sell tax and 0% transfer tax. The deployed contract must match the official registry."
+      "a": "The target draft is 1% entry fee, 2.5% exit fee and 0% transfer tax. The deployed contract must match the official registry."
     },
     "rho": {
       "q": "What does ρ mean?",
@@ -1555,11 +1541,11 @@
         "value": "Disabled after deployment"
       },
       "buyTax": {
-        "label": "Buy tax",
+        "label": "Entry fee",
         "value": "1%"
       },
       "sellTax": {
-        "label": "Sell tax",
+        "label": "Exit fee",
         "value": "2.5%"
       },
       "transferTax": {
@@ -1567,11 +1553,11 @@
         "value": "0%"
       },
       "maxBuyTax": {
-        "label": "Max buy tax",
+        "label": "Max entry fee",
         "value": "1% hard cap"
       },
       "maxSellTax": {
-        "label": "Max sell tax",
+        "label": "Max exit fee",
         "value": "2.5% hard cap"
       },
       "liquidity": {
@@ -1664,8 +1650,8 @@
       "openzeppelin": "OpenZeppelin ERC-20 planned",
       "fixedSupply": "Fixed supply planned",
       "mintDisabled": "Mint disabled post-deploy",
-      "buyTaxCap": "Buy tax hard cap planned",
-      "sellTaxCap": "Sell tax hard cap planned",
+      "buyTaxCap": "Entry fee hard cap planned",
+      "sellTaxCap": "Exit fee hard cap planned",
       "noBlacklist": "No blacklist planned",
       "noHoneypot": "No honeypot planned",
       "multisig": "Multisig required",
@@ -1768,7 +1754,7 @@
         "value": "official registry"
       },
       "fee": {
-        "label": "Buy / Exit rule",
+        "label": "Access fee rule",
         "value": "1.5% / 1.5%"
       },
       "status": {
@@ -1808,7 +1794,7 @@
         "value": "1 EUR ≈ 2,500 VLM"
       },
       "fee": {
-        "label": "Buy / Exit rule",
+        "label": "Access fee rule",
         "value": "1.5% / 1.5%"
       },
       "status": {
@@ -1921,7 +1907,7 @@
     "examples": {
       "buyExample": {
         "label": "Buy example",
-        "value": "100 EUR buy implies a 1 EUR fee before route and slippage effects."
+        "value": "100 EUR entry implies a 1 EUR fee before route and slippage effects."
       },
       "sellExample": {
         "label": "Sell example",
@@ -2080,7 +2066,7 @@
   "Account": {
     "kicker": "Customer account",
     "title": "Panel konta",
-    "status": "Account system prepared — activation pending configuration.",
+    "status": "Enter the private Velmère layer.",
     "loginCta": "Go to login",
     "modules": {
       "profile": {
@@ -2222,7 +2208,7 @@
     "currency": "EUR",
     "receiveLabel": "Access output",
     "formulaNote": "Receive ≈ (amount × 0.99) / 0.0004 VLM after registry-defined access rule.",
-    "buyFeeExample": "100 EUR buy → {fee} EUR Access rule (1%)",
+    "buyFeeExample": "100 EUR entry → {fee} EUR Access rule (1%)",
     "sellFeeExample": "100 EUR sell → {fee} EUR Exit rule (registry-defined)",
     "lpNote": "Planned initial LP: 400 EUR + 1,000,000 VLM. Route pending.",
     "impactWarning": "Thin initial liquidity can create severe price impact.",
@@ -2285,7 +2271,13 @@
     "choiceBasicBody": "For browsing drops, archive notes and simple access logic without terminal density.",
     "choiceProTitle": "Pro — terminal room",
     "choiceProBody": "For registry state, security signals, AMU baseline, wallet previews and launch infrastructure.",
-    "choiceFootnote": "No transaction is requested. This only changes the interface layer."
+    "choiceFootnote": "No transaction is requested. This only changes the interface layer.",
+    "chartButton": "Chart preview",
+    "chartKicker": "VLM / MARKET VIEW",
+    "chartTitle": "Token chart preview.",
+    "chartBody": "This will become the official analytics window for VLM after deployment. Users will not need to hunt through exchanges to check basic market data, holder counts or verified contract status.",
+    "chartEmpty": "Placeholder only: contract, price feed, liquidity, holders and market cap will stay pending until VLM is deployed, verified and reviewed.",
+    "chartClose": "Close chart preview"
   },
   "LuxuryActionModal": {
     "close": "Close"
@@ -2352,7 +2344,7 @@
     "payLabel": "Amount (EUR)",
     "beforeFeeLabel": "VLM before Access rule",
     "afterFeeLabel": "VLM after registry-defined access rule",
-    "buyFeeExample": "100 EUR buy → 1.50 EUR Access rule (1.5%)",
+    "buyFeeExample": "100 EUR entry → 1.50 EUR Access rule (1.5%)",
     "sellFeeExample": "100 EUR sell → 1.50 EUR Exit rule (1.5%)",
     "lpNote": "Planned initial LP: 400 EUR + 1,000,000 VLM. Route required.",
     "impactNote": "Thin initial liquidity can create high price impact.",
@@ -2587,7 +2579,7 @@
         "value": "0.0004 EUR"
       },
       "tax": {
-        "label": "Buy / sell tax",
+        "label": "Protocol fee model",
         "value": "1% / 2.5%"
       },
       "status": {
@@ -2650,8 +2642,8 @@
         "openzeppelin": "OpenZeppelin ERC-20 base",
         "fixedSupply": "Fixed supply minted once in constructor",
         "noMint": "No post-deploy mint",
-        "buyTax": "Buy tax 1%",
-        "sellTax": "Sell tax 2.5%",
+        "buyTax": "Entry fee 1%",
+        "sellTax": "Exit fee 2.5%",
         "transferTax": "Transfer tax 0%",
         "taxCap": "Hardcoded max tax",
         "noBlacklist": "No blacklist",
@@ -2849,7 +2841,7 @@
   "VlmClean": {
     "hero": {
       "kicker": "VLM / ACCESS LAYER",
-      "title": "Access layer, not a profit promise.",
+      "title": "Access layer, not a price claim.",
       "body": "VLM is planned as a private utility layer for drops, archive visibility and selected Velmère privileges. It reads only public wallet state after permission and never asks for custody.",
       "notice": "",
       "rails": {
@@ -2876,7 +2868,7 @@
         "value": "Private registry"
       },
       "tax": {
-        "label": "Buy / sell tax",
+        "label": "Protocol fee model",
         "value": "1% / 2.5%"
       },
       "status": {
@@ -2958,8 +2950,8 @@
         "openzeppelin": "OpenZeppelin ERC-20 base",
         "fixedSupply": "Fixed supply minted once in constructor",
         "noMint": "No post-deploy mint",
-        "buyTax": "Buy tax 1%",
-        "sellTax": "Sell tax 2.5%",
+        "buyTax": "Entry fee 1%",
+        "sellTax": "Exit fee 2.5%",
         "transferTax": "Transfer tax 0%",
         "taxCap": "Hardcoded max tax",
         "noBlacklist": "No blacklist",
@@ -2994,40 +2986,40 @@
   },
   "VlmBasicPro": {
     "kicker": "ACCESS MODE",
-    "title": "Basic calms the brand. Pro reveals the machine.",
-    "body": "Basic keeps the page minimal and cinematic. Pro opens a controlled exchange-grade layer: wallet state, access signals, security checks and registry logic.",
+    "title": "Basic keeps the store calm. Pro opens the technical room.",
+    "body": "Choose the surface you want: Basic explains access in a clean fashion language. Pro reveals wallet state, cyber rules, AMU signal logic and registry readiness.",
     "basic": {
       "kicker": "VELMÈRE BASIC",
       "title": "Quiet access.",
       "items": {
-        "one": "Drop access in one line.",
-        "two": "Wallet status without noise.",
-        "three": "Archive signal, calm layout."
+        "one": "Drops, archive notes and Square stay readable without terminal density.",
+        "two": "Wallet access is optional and explained only when it matters.",
+        "three": "The product remains first: fit, material, delivery and restraint."
       }
     },
     "pro": {
       "kicker": "VELMÈRE PRO",
       "title": "Signal engine.",
-      "body": "Pro mode is the technical backstage: wallet state, registry confidence, AMU signal and VLM access logic in one precise terminal surface.",
+      "body": "Pro mode is the technical backstage: wallet state, cybersecurity checks, AMU baseline, Möbius-style access loops, registry logic and future contract verification in one controlled terminal surface.",
       "items": {
         "orbit": "Animated EVM-first access orbit with planned network rails.",
         "wallet": "Podgląd portfela tylko do odczytu, no custody, no seed phrase.",
         "security": "Audit, multisig and testnet shown as registry conditions.",
         "lp": "Access route and protocol signal without fake swap UI.",
         "registry": "Registry-first access records and official contract identity.",
-        "cyber": "Cybersecurity layer: audit lock, multisig status and phishing-resistant contract notes.",
+        "cyber": "Cybersecurity layer: audit lock, multisig status, phishing-resistant contract notes and no “100% security” promise.",
         "amu": "AMU baseline keeps the system anchored to the Velmère signal constant.",
         "moderation": "Angel moderation lane prepares Square review, block and allow decisions.",
         "concierge": "Angel concierge routing: product guidance, Square moderation and drop signal triage.",
         "signals": "Signal board for allocation windows, public registry updates and route readiness.",
-        "vault": "Private vault architecture for archive rooms, account states and future VLM privileges.",
-        "forensics": "Security forensics layer for wallet state, wrong-network detection and public contract verification."
+        "vault": "Future direction: Velmère Vault as a custody-free cold-wallet concept — hardware route, encryption and recovery without Velmère storing seed phrases.",
+        "forensics": "Forensics layer for wallet state, wrong network, public contract identity and access anomalies."
       },
       "chartShow": "Open signal chart",
       "chartHide": "Hide chart",
       "chartLabel": "AMU access signal / two-line preview"
     },
-    "basicHint": "A calm access overview for browsing, archive visibility and drop context without terminal density.",
+    "basicHint": "Basic is the calm public layer: a compact explanation of what VLM unlocks, why it stays separate from checkout and how members enter without noise.",
     "proHint": "Pro: technical access surface."
   }
 }

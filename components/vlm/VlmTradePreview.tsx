@@ -48,16 +48,16 @@ export default function VlmTradePreview() {
   const highImpact = vlmAmount > 50000;
 
   return (
-    <div className="rounded-none border border-white/15 bg-white/[0.02] p-4 backdrop-blur-md md:p-6">
+    <div className="rounded-none border border-white/[0.15] bg-white/[0.02] p-4 backdrop-blur-md md:p-6">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-velmere-gold/70">VLM SWAP ENGINE / READ ONLY</p>
+          <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-velmere-gold/[0.70]">VLM SWAP ENGINE / READ ONLY</p>
           <h2 className="mt-2 font-serif text-xl tracking-[0.12em] text-[#FFFFF0] md:text-2xl">{t("title")}</h2>
         </div>
         <button
           type="button"
           onClick={() => setSettingsOpen((value) => !value)}
-          className="flex h-11 w-11 items-center justify-center rounded-none border border-white/10 text-white/58 transition-colors hover:border-white/25 hover:text-white active:scale-95"
+          className="flex h-11 w-11 items-center justify-center rounded-none border border-white/[0.10] text-white/[0.58] transition-colors hover:border-white/[0.25] hover:text-white active:scale-95"
           aria-label="Open slippage settings"
         >
           <Settings2 className="h-4 w-4" aria-hidden="true" />
@@ -65,8 +65,8 @@ export default function VlmTradePreview() {
       </div>
 
       {settingsOpen && (
-        <div className="mt-4 border border-white/10 bg-black/45 p-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/38">Slippage tolerance</p>
+        <div className="mt-4 border border-white/[0.10] bg-black/[0.45] p-3">
+          <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/[0.38]">Slippage tolerance</p>
           <div className="mt-3 flex flex-wrap gap-2">
             {SLIPPAGE_PRESETS.map((preset) => (
               <button
@@ -74,7 +74,7 @@ export default function VlmTradePreview() {
                 type="button"
                 onClick={() => setSlippage(preset)}
                 className={`min-h-10 rounded-none border px-3 font-mono text-[10px] tabular-nums transition-colors active:scale-95 ${
-                  slippage === preset ? "border-velmere-gold bg-velmere-gold text-black" : "border-white/10 text-white/58 hover:border-white/25"
+                  slippage === preset ? "border-velmere-gold bg-velmere-gold text-black" : "border-white/[0.10] text-white/[0.58] hover:border-white/[0.25]"
                 }`}
               >
                 {preset}%
@@ -84,50 +84,50 @@ export default function VlmTradePreview() {
               value={slippage}
               onChange={(event) => setSlippage(event.target.value.replace(/[^0-9.]/g, "").slice(0, 5))}
               inputMode="decimal"
-              className="min-h-10 w-24 rounded-none border border-white/10 bg-black/55 px-3 font-mono text-[10px] tabular-nums text-white outline-none focus:border-velmere-gold/60"
+              className="min-h-10 w-24 rounded-none border border-white/[0.10] bg-black/[0.55] px-3 font-mono text-[10px] tabular-nums text-white outline-none focus:border-velmere-gold/[0.60]"
               aria-label="Custom slippage tolerance"
             />
           </div>
         </div>
       )}
 
-      <div className="mt-5 grid gap-[1px] bg-white/10 font-mono text-[10px] uppercase tracking-[0.16em] text-white/45 sm:grid-cols-2">
-        <label className="bg-black/70 p-3">
-          <span className="block text-white/35">Input VLM amount</span>
+      <div className="mt-5 grid gap-[1px] bg-white/[0.10] font-mono text-[10px] uppercase tracking-[0.16em] text-white/[0.45] sm:grid-cols-2">
+        <label className="bg-black/[0.70] p-3">
+          <span className="block text-white/[0.35]">Input VLM amount</span>
           <input
             value={vlmAmount}
             onChange={(event) => setVlmAmount(Math.max(0, Number(event.target.value.replace(/[^0-9]/g, "")) || 0))}
             inputMode="numeric"
-            className="mt-2 w-full rounded-none border border-white/10 bg-white/[0.025] px-3 py-3 font-mono text-xs tabular-nums text-white outline-none focus:border-velmere-gold/60"
+            className="mt-2 w-full rounded-none border border-white/[0.10] bg-white/[0.025] px-3 py-3 font-mono text-xs tabular-nums text-white outline-none focus:border-velmere-gold/[0.60]"
           />
         </label>
-        <div className="bg-black/70 p-3">
-          <span className="block text-white/35">Estimated Gas Fee</span>
+        <div className="bg-black/[0.70] p-3">
+          <span className="block text-white/[0.35]">Estimated Gas Fee</span>
           <strong className="mt-2 block break-all font-mono text-xs font-normal tabular-nums text-white">
             {gasTick.eth.toFixed(5)} ETH / {formatUsd(gasTick.usd)}
           </strong>
         </div>
       </div>
 
-      <dl className="mt-5 divide-y divide-white/5 text-sm">
+      <dl className="mt-5 divide-y divide-white/[0.05] text-sm">
         {PRICE_ROWS.map(({ key }) => (
           <div key={key} className="flex justify-between gap-4 py-3">
-            <dt className="text-white/45">{t(`rows.${key}.label`)}</dt>
+            <dt className="text-white/[0.45]">{t(`rows.${key}.label`)}</dt>
             <dd className="break-all font-mono tabular-nums text-[#FFFFF0]">{t(`rows.${key}.value`)}</dd>
           </div>
         ))}
         <div className="flex justify-between gap-4 py-3">
-          <dt className="text-white/45">Slippage</dt>
+          <dt className="text-white/[0.45]">Slippage</dt>
           <dd className="break-all font-mono tabular-nums text-[#FFFFF0]">{slippage || "0"}%</dd>
         </div>
         <div className="flex justify-between gap-4 py-3">
-          <dt className="text-white/45">Price Impact</dt>
+          <dt className="text-white/[0.45]">Price Impact</dt>
           <dd className={`break-all font-mono tabular-nums ${highImpact ? "animate-pulse text-yellow-300" : "text-[#FFFFF0]"}`}>{priceImpact.toFixed(2)}%</dd>
         </div>
       </dl>
 
       {highImpact && (
-        <p className="mt-3 border border-yellow-300/20 bg-yellow-300/[0.06] p-3 font-mono text-[10px] uppercase leading-5 tracking-[0.18em] text-yellow-200">
+        <p className="mt-3 border border-yellow-300/[0.20] bg-yellow-300/[0.06] p-3 font-mono text-[10px] uppercase leading-5 tracking-[0.18em] text-yellow-200">
           [ HIGH PRICE IMPACT: RISK OF SLIPPAGE ]
         </p>
       )}
@@ -135,13 +135,13 @@ export default function VlmTradePreview() {
       <button
         type="button"
         disabled
-        className="mt-5 flex min-h-[44px] w-full cursor-not-allowed items-center justify-center gap-2 rounded-none border border-white/10 bg-[#0a0a0a] text-[10px] uppercase tracking-[0.16em] text-white/42"
+        className="mt-5 flex min-h-[44px] w-full cursor-not-allowed items-center justify-center gap-2 rounded-none border border-white/[0.10] bg-[#0a0a0a] text-[10px] uppercase tracking-[0.16em] text-white/[0.42]"
       >
         <LockKeyhole className="h-3.5 w-3.5 text-[#d4af37]" aria-hidden="true" />
         {t("disabledCta")}
       </button>
 
-      <p className="mt-4 text-[11px] leading-5 text-white/40">{t("activationNote")}</p>
+      <p className="mt-4 text-[11px] leading-5 text-white/[0.40]">{t("activationNote")}</p>
     </div>
   );
 }

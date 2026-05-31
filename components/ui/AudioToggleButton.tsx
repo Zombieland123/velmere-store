@@ -25,7 +25,7 @@ export default function AudioToggleButton() {
         navigator.vibrate?.(20);
         toggleMuted();
       }}
-      className="hidden h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/10 bg-[#151517] text-white/60 transition hover:border-white/25 hover:bg-[#1f1f22] hover:text-white active:scale-95 md:inline-flex"
+      className="hidden h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/[0.10] bg-[#151517] text-white/[0.60] transition hover:border-white/[0.25] hover:bg-[#1f1f22] hover:text-white active:scale-95 md:inline-flex"
     >
       <Icon className="h-4 w-4" aria-hidden="true" />
     </button>

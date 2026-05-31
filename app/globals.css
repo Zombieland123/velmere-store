@@ -35,15 +35,13 @@
     color: var(--velmere-text);
   }
 
+
   body {
     @apply antialiased;
     position: relative;
     min-height: 100dvh;
     font-family: var(--font-inter);
-    background:
-      radial-gradient(circle at 50% -12%, rgba(245,240,232,0.055), transparent 34%),
-      radial-gradient(circle at 86% 14%, rgba(200,169,106,0.045), transparent 28%),
-      var(--velmere-bg);
+    background: var(--velmere-bg);
     color: var(--velmere-text);
     touch-action: pan-y;
     -webkit-tap-highlight-color: rgba(245,240,232,0.08);
@@ -105,11 +103,11 @@
   }
 
   .luxury-panel {
-    @apply rounded-2xl border border-white/8 bg-velmere-surface/90 shadow-velmere-card backdrop-blur-xl;
+    @apply rounded-[2rem] border border-white/[0.10] bg-[#111113]/[0.95] shadow-velmere-card backdrop-blur-xl;
   }
 
   .luxury-card {
-    @apply rounded-2xl border border-white/8 bg-velmere-surface/90 p-6 shadow-velmere-card backdrop-blur-xl md:p-8;
+    @apply rounded-[2rem] border border-white/[0.10] bg-[#111113]/[0.95] p-6 shadow-velmere-card backdrop-blur-xl md:p-8;
   }
 
   .luxury-copy {
@@ -135,27 +133,27 @@
   }
 
   .velmere-button-primary {
-    @apply inline-flex min-h-12 items-center justify-center gap-3 rounded-full border border-velmere-ivory bg-velmere-ivory px-6 text-xs font-semibold uppercase tracking-[0.16em] text-black transition-all duration-300 ease-velmere hover:border-velmere-gold hover:bg-velmere-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-velmere-gold/60 active:scale-[0.98];
+    @apply inline-flex min-h-12 items-center justify-center gap-3 rounded-full border border-velmere-ivory bg-velmere-ivory px-6 text-xs font-semibold uppercase tracking-[0.16em] text-black transition-all duration-300 ease-velmere hover:border-velmere-gold hover:bg-velmere-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-velmere-gold/[0.60] active:scale-[0.98];
   }
 
   .velmere-button-secondary {
-    @apply inline-flex min-h-12 items-center justify-center gap-3 rounded-full border border-white/14 bg-white/[0.035] px-6 text-xs font-semibold uppercase tracking-[0.16em] text-velmere-ivory transition-all duration-300 ease-velmere hover:border-velmere-gold/50 hover:text-velmere-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-velmere-gold/40 active:scale-[0.98];
+    @apply inline-flex min-h-12 items-center justify-center gap-3 rounded-full border border-white/[0.10] bg-white/[0.035] px-6 text-xs font-semibold uppercase tracking-[0.16em] text-velmere-ivory transition-all duration-300 ease-velmere hover:border-velmere-gold/[0.50] hover:bg-white/[0.055] hover:text-velmere-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-velmere-gold/[0.40] active:scale-[0.98];
   }
 
   .velmere-button-ghost {
-    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-transparent px-4 text-xs font-semibold uppercase tracking-[0.14em] text-velmere-muted transition-all duration-300 ease-velmere hover:bg-white/[0.045] hover:text-velmere-ivory focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-velmere-gold/35 active:scale-[0.98];
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-transparent px-4 text-xs font-semibold uppercase tracking-[0.14em] text-velmere-muted transition-all duration-300 ease-velmere hover:bg-white/[0.045] hover:text-velmere-ivory focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-velmere-gold/[0.40] active:scale-[0.98];
   }
 
   .digital-label-grid {
-    @apply overflow-hidden rounded-2xl border border-white/8 bg-black/20;
+    @apply overflow-hidden rounded-2xl border border-white/[0.10] bg-black/[0.20];
   }
 
   .digital-label-row {
-    @apply grid grid-cols-[8rem_minmax(0,1fr)] border-b border-white/5 px-4 py-3 text-xs last:border-b-0;
+    @apply grid grid-cols-[8rem_minmax(0,1fr)] border-b border-white/[0.05] px-4 py-3 text-xs last:border-b-0;
   }
 
   .velmere-floating-panel {
-    @apply rounded-2xl border border-white/10 bg-velmere-elevated text-velmere-ivory shadow-2xl shadow-black/50;
+    @apply rounded-2xl border border-white/[0.10] bg-velmere-elevated text-velmere-ivory shadow-2xl shadow-black/[0.50];
   }
 }
 
@@ -223,4 +221,74 @@
 
 @media (hover: none) {
   .hover\:scale-105:hover { transform: none; }
+}
+
+@layer utilities {
+  .velmere-signal-ring {
+    animation: velmere-orbit-spin 18s linear infinite;
+    will-change: transform, opacity;
+  }
+
+  .velmere-signal-ring:nth-of-type(odd) {
+    animation-direction: reverse;
+  }
+
+  .velmere-signal-node {
+    animation: velmere-signal-node 3.2s ease-in-out infinite;
+    will-change: transform, opacity;
+  }
+
+  .velmere-dash-flow {
+    animation: velmere-dash-flow 8s linear infinite;
+  }
+
+  .velmere-dash-flow-slow {
+    animation: velmere-dash-flow 12s linear infinite reverse;
+  }
+
+  .velmere-pulse-dot {
+    animation: velmere-pulse-dot 2.6s ease-in-out infinite;
+  }
+
+  .velmere-soft-breathe {
+    animation: velmere-soft-breathe 3.16s ease-in-out infinite;
+    will-change: transform, opacity;
+  }
+}
+
+@keyframes velmere-orbit-spin {
+  0% { transform: rotate(0deg); opacity: .42; }
+  50% { opacity: .82; }
+  100% { transform: rotate(360deg); opacity: .42; }
+}
+
+@keyframes velmere-signal-node {
+  0%, 100% { transform: scale(.92); opacity: .66; }
+  50% { transform: scale(1.08); opacity: 1; }
+}
+
+@keyframes velmere-dash-flow {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -180; }
+}
+
+@keyframes velmere-pulse-dot {
+  0%, 100% { transform: scale(.78); opacity: .42; }
+  50% { transform: scale(1.22); opacity: 1; }
+}
+
+@keyframes velmere-soft-breathe {
+  0%, 100% { transform: scale(1); opacity: .94; }
+  50% { transform: scale(1.025); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .velmere-signal-ring,
+  .velmere-signal-node,
+  .velmere-dash-flow,
+  .velmere-dash-flow-slow,
+  .velmere-pulse-dot,
+  .velmere-soft-breathe {
+    animation: none !important;
+  }
 }

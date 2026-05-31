@@ -1,4 +1,4 @@
-export type WalletKind = "metamask" | "phantom";
+export type WalletKind = "metamask" | "phantom" | "walletconnect";
 
 export type ConnectedWallet = {
   kind: WalletKind;

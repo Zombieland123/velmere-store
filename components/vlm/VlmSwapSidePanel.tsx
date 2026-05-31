@@ -23,40 +23,40 @@ export default function VlmSwapSidePanel() {
 
   return (
     <div className="space-y-6">
-      <p className="font-sans text-sm leading-7 text-white/58">{t("body")}</p>
+      <p className="font-sans text-sm leading-7 text-white/[0.58]">{t("body")}</p>
 
-      <label className="block rounded-2xl border border-white/5 bg-black/24 p-4">
-        <span className="text-[10px] uppercase tracking-[0.18em] text-white/40">{t("payLabel")}</span>
+      <label className="block rounded-2xl border border-white/[0.05] bg-black/[0.24] p-4">
+        <span className="text-[10px] uppercase tracking-[0.18em] text-white/[0.40]">{t("payLabel")}</span>
         <div className="mt-2 flex items-center gap-3">
           <input
             value={payAmount}
             onChange={(event) => setPayAmount(event.target.value.replace(/[^\d.,]/g, ""))}
             className="min-h-11 flex-1 bg-transparent font-mono text-lg tabular-nums text-[#FFFFF0] outline-none"
           />
-          <span className="text-[10px] uppercase text-white/42">{t("currency")}</span>
+          <span className="text-[10px] uppercase text-white/[0.42]">{t("currency")}</span>
         </div>
       </label>
 
-      <div className="rounded-2xl border border-white/5 bg-white/[0.03] p-4">
-        <p className="text-[10px] uppercase tracking-[0.18em] text-white/40">{t("receiveLabel")}</p>
+      <div className="rounded-2xl border border-white/[0.05] bg-white/[0.03] p-4">
+        <p className="text-[10px] uppercase tracking-[0.18em] text-white/[0.40]">{t("receiveLabel")}</p>
         <p className="mt-2 font-mono text-lg tabular-nums text-[#FFFFF0]">
           {receive > 0 ? `≈ ${receive.toLocaleString("en-US", { maximumFractionDigits: 0 })}` : "—"}
         </p>
-        <p className="mt-2 text-xs text-white/46">{t("formulaNote")}</p>
+        <p className="mt-2 text-xs text-white/[0.46]">{t("formulaNote")}</p>
       </div>
 
       <div className="grid gap-2 sm:grid-cols-2">
-        <p className="rounded-xl border border-white/5 p-3 text-xs text-white/56">{t("buyFeeExample", { fee: buyFeeEur.toFixed(2) })}</p>
-        <p className="rounded-xl border border-white/5 p-3 text-xs text-white/56">{t("sellFeeExample", { fee: sellFeeEur.toFixed(2) })}</p>
+        <p className="rounded-xl border border-white/[0.05] p-3 text-xs text-white/[0.56]">{t("buyFeeExample", { fee: buyFeeEur.toFixed(2) })}</p>
+        <p className="rounded-xl border border-white/[0.05] p-3 text-xs text-white/[0.56]">{t("sellFeeExample", { fee: sellFeeEur.toFixed(2) })}</p>
       </div>
 
-      <p className="rounded-xl border border-white/5 p-3 text-xs text-white/52">{t("lpNote")}</p>
-      <p className="text-xs leading-6 text-white/46">{t("impactWarning")}</p>
+      <p className="rounded-xl border border-white/[0.05] p-3 text-xs text-white/[0.52]">{t("lpNote")}</p>
+      <p className="text-xs leading-6 text-white/[0.46]">{t("impactWarning")}</p>
 
       <button
         type="button"
         disabled
-        className="flex min-h-11 w-full cursor-not-allowed items-center justify-center gap-2 rounded-full border border-white/10 px-4 text-[10px] uppercase tracking-[0.16em] text-white/42"
+        className="flex min-h-11 w-full cursor-not-allowed items-center justify-center gap-2 rounded-full border border-white/[0.10] px-4 text-[10px] uppercase tracking-[0.16em] text-white/[0.42]"
       >
         <LockKeyhole className="h-3.5 w-3.5" aria-hidden="true" />
         {t("disabledCta")}

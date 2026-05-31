@@ -33,7 +33,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   if (!isProMode) {
     return (
       <Link href={`/shop/${product.slug}`} className="block" data-product-card>
-        <article className="border-y border-white/10 py-5 text-velmere-ivory">
+        <article className="border-y border-white/[0.10] py-5 text-velmere-ivory">
           <div className="grid grid-cols-[1fr_auto] items-start gap-5">
             <div>
               <p className="velmere-label">
@@ -44,7 +44,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             </div>
             <div className="text-right">
               <p className="font-mono text-sm tabular-nums text-velmere-grey-soft">{formatMoney(product.price, locale)}</p>
-              <p className="mt-3 text-[10px] uppercase tracking-[0.16em] text-white/34">
+              <p className="mt-3 text-[10px] uppercase tracking-[0.16em] text-white/[0.34]">
                 {product.variants.map((variant) => variant.size ?? variant.title).join(" / ")}
               </p>
             </div>
@@ -62,7 +62,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-        className="group relative flex h-full flex-col overflow-hidden rounded-[2rem] border border-[#d4af37]/15 bg-[linear-gradient(145deg,rgba(255,255,255,0.065),rgba(255,255,255,0.018)_44%,rgba(212,175,55,0.045))] shadow-[0_28px_90px_rgba(0,0,0,0.36)]"
+        className="group relative flex h-full flex-col overflow-hidden rounded-[2rem] border border-[#d4af37]/[0.15] bg-[linear-gradient(145deg,rgba(255,255,255,0.065),rgba(255,255,255,0.018)_44%,rgba(212,175,55,0.045))] shadow-[0_28px_90px_rgba(0,0,0,0.36)]"
       >
         <motion.div layoutId={`product-image-${product.id}`} className="relative aspect-[4/5] overflow-hidden bg-white/[0.035]">
           {image ? (
@@ -84,13 +84,13 @@ export default function ProductCard({ product }: ProductCardProps) {
             />
           ) : null}
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(212,175,55,0.12),transparent_42%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-          <span className="absolute left-4 top-4 rounded-full border border-black/10 bg-[#FFFFF0] px-3 py-2 font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-black">
+          <span className="absolute left-4 top-4 rounded-full border border-black/[0.10] bg-[#FFFFF0] px-3 py-2 font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-black">
             {purchasable ? productT("available") : productT("productComingSoon")}
           </span>
           <div className="absolute bottom-4 left-4 right-4 translate-y-3 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
-            <div className="flex flex-wrap gap-2 rounded-2xl border border-white/12 bg-black/65 p-3 backdrop-blur-xl">
+            <div className="flex flex-wrap gap-2 rounded-2xl border border-white/[0.12] bg-black/[0.65] p-3 backdrop-blur-xl">
               {product.variants.map((variant) => (
-                <span key={variant.id} className="rounded-full border border-white/15 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-white/70">
+                <span key={variant.id} className="rounded-full border border-white/[0.15] px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-white/[0.70]">
                   {variant.size ?? variant.title}
                 </span>
               ))}
@@ -104,17 +104,17 @@ export default function ProductCard({ product }: ProductCardProps) {
               <motion.h3 layoutId={`product-title-${product.id}`} className="text-sm font-semibold uppercase tracking-[0.18em] text-white">
                 {title}
               </motion.h3>
-              <p className="mt-3 line-clamp-2 text-sm leading-6 text-white/52">{description}</p>
+              <p className="mt-3 line-clamp-2 text-sm leading-6 text-white/[0.52]">{description}</p>
             </div>
-            <ArrowUpRight className="h-4 w-4 shrink-0 text-white/32 transition-colors group-hover:text-[#d4af37]" />
+            <ArrowUpRight className="h-4 w-4 shrink-0 text-white/[0.32] transition-colors group-hover:text-[#d4af37]" />
           </div>
 
           <div className="mt-5 grid grid-cols-3 gap-2">
             {proMetrics.map(({ icon: Icon, label, value }) => (
-              <div key={label} className="rounded-2xl border border-white/10 bg-black/25 p-3">
+              <div key={label} className="rounded-2xl border border-white/[0.10] bg-black/[0.25] p-3">
                 <Icon className="h-3.5 w-3.5 text-[#d4af37]" aria-hidden="true" />
-                <p className="mt-2 font-mono text-[9px] uppercase tracking-[0.16em] text-white/34">{label}</p>
-                <p className="mt-1 font-mono text-[11px] tabular-nums text-white/72">{value}</p>
+                <p className="mt-2 font-mono text-[9px] uppercase tracking-[0.16em] text-white/[0.34]">{label}</p>
+                <p className="mt-1 font-mono text-[11px] tabular-nums text-white/[0.72]">{value}</p>
               </div>
             ))}
           </div>

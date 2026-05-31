@@ -23,21 +23,21 @@ export default function VlmProTerminal() {
       <div className="mb-8 px-2 md:px-4">
         <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#d4af37]">{t("kicker")}</p>
         <h2 className="mt-3 font-serif text-3xl tracking-[0.08em] text-[#FFFFF0] md:text-4xl">{t("title")}</h2>
-        <p className="mt-4 max-w-2xl text-sm leading-7 text-white/56">{t("body")}</p>
+        <p className="mt-4 max-w-2xl text-sm leading-7 text-white/[0.56]">{t("body")}</p>
       </div>
 
-      <div className="grid grid-cols-1 gap-[1px] bg-white/10 px-0 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-[1px] bg-white/[0.10] px-0 md:grid-cols-3">
         {blocks.map((block) => (
-          <article key={block} className="min-w-0 rounded-none border border-white/15 bg-white/[0.02] p-3 backdrop-blur-md md:p-5">
+          <article key={block} className="min-w-0 rounded-none border border-white/[0.15] bg-white/[0.02] p-3 backdrop-blur-md md:p-5">
             <h3 className="font-serif text-xl tracking-[0.12em] text-[#FFFFF0] md:text-2xl md:tracking-[0.08em]">{t(`${block}.title`)}</h3>
-            <p className="mt-3 text-xs leading-6 text-white/55 md:text-sm md:leading-7">{t(`${block}.body`)}</p>
+            <p className="mt-3 text-xs leading-6 text-white/[0.55] md:text-sm md:leading-7">{t(`${block}.body`)}</p>
 
             {block === "tokenMath" && (
-              <dl className="mt-5 divide-y divide-white/5 font-mono text-xs tabular-nums md:text-sm">
+              <dl className="mt-5 divide-y divide-white/[0.05] font-mono text-xs tabular-nums md:text-sm">
                 {(["supply", "price", "quote", "buyFee", "sellFee", "lp"] as const).map((row) => (
-                  <div key={row} className="grid gap-1 border-b border-white/5 py-3 sm:grid-cols-2">
-                    <dt className="text-[10px] uppercase tracking-[0.16em] text-white/40">{t(`tokenMath.rows.${row}.label`)}</dt>
-                    <dd className="break-all text-[#FFFFF0]/85">{t(`tokenMath.rows.${row}.value`)}</dd>
+                  <div key={row} className="grid gap-1 border-b border-white/[0.05] py-3 sm:grid-cols-2">
+                    <dt className="text-[10px] uppercase tracking-[0.16em] text-white/[0.40]">{t(`tokenMath.rows.${row}.label`)}</dt>
+                    <dd className="break-all text-[#FFFFF0]/[0.85]">{t(`tokenMath.rows.${row}.value`)}</dd>
                   </div>
                 ))}
               </dl>

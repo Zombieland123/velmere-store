@@ -10,7 +10,7 @@ export default function CheckoutReadinessBanner() {
   if (readiness.enabled) return null;
 
   return (
-    <p className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-xs leading-6 text-white/52">
+    <p className="rounded-2xl border border-white/[0.10] bg-white/[0.03] px-4 py-3 text-xs leading-6 text-white/[0.52]">
       {t("customerPending")}
     </p>
   );

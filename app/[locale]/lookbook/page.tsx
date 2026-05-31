@@ -35,14 +35,14 @@ export default async function LookbookPage({ params: { locale } }: { params: { l
       <LuxurySection className="py-24 md:py-30">
         <div className="mb-10 grid gap-8 lg:grid-cols-12 lg:items-end">
           <div className="max-w-3xl lg:col-span-8">
-            <p className="luxury-kicker text-velmere-gold/80">{t("kicker")}</p>
+            <p className="luxury-kicker text-velmere-gold/[0.80]">{t("kicker")}</p>
             <h1 className="mt-5 max-w-3xl font-serif text-5xl leading-[0.95] text-white md:text-6xl">{t("title")}</h1>
           </div>
         </div>
 
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
           {LOOKS.map((look, index) => (
-            <article key={look.key} className={`group overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] ${look.className}`}>
+            <article key={look.key} className={`group overflow-hidden rounded-2xl border border-white/[0.10] bg-white/[0.04] ${look.className}`}>
               <div className="relative aspect-[4/5]">
                 <Image
                   src={look.image}
@@ -54,10 +54,10 @@ export default async function LookbookPage({ params: { locale } }: { params: { l
                 />
               </div>
               <div className="bg-[#F5F0E8] p-4 text-black">
-                <p className="text-[10px] font-black uppercase tracking-[0.28em] text-black/42">
+                <p className="text-[10px] font-black uppercase tracking-[0.28em] text-black/[0.42]">
                   {t(`looks.${look.key}.label`)}
                 </p>
-                <p className="mt-2 text-xs leading-6 text-black/62">{t(`looks.${look.key}.body`)}</p>
+                <p className="mt-2 text-xs leading-6 text-black/[0.62]">{t(`looks.${look.key}.body`)}</p>
               </div>
             </article>
           ))}
@@ -73,7 +73,7 @@ export default async function LookbookPage({ params: { locale } }: { params: { l
           </Link>
           <Link
             href="/archive"
-            className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/15 px-6 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#F5F0E8] transition-colors hover:bg-white/[0.06]"
+            className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/[0.15] px-6 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#F5F0E8] transition-colors hover:bg-white/[0.06]"
           >
             {t("archiveCta")}
           </Link>

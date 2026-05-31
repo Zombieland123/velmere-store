@@ -3,16 +3,55 @@
 import { useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { CircleDot, Cpu, Eye, KeyRound, LockKeyhole, Network, Orbit, Radar, ShieldCheck, WalletCards } from "lucide-react";
-import { useSearchParams } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { useModeStore } from "@/store/useModeStore";
+
+const proExplanation = {
+  en: [
+    ["Möbius routing", "One calm access loop: product → drop signal → archive context → Square thread. It is navigation, not a financial promise."],
+    ["AMU baseline", "AMU 3162.27 is the visual metronome: pulse, spacing and node rhythm. It is symbolic until a reviewed technical use exists."],
+    ["Bajak Protocol", "The Bajak layer is treated as numerical-audit lore and research identity, not a theorem, not a guarantee and not financial advice."],
+    ["Named action → signature", "Every wallet prompt must first name the action: connect, sign, approve or send. No hidden approvals."],
+    ["Signal engine", "The dots represent UI checks: wallet route, contract status, audit queue and moderation readiness — not random decoration."],
+  ],
+  pl: [
+    ["Routing Möbiusa", "Jedna spokojna pętla dostępu: produkt → sygnał dropu → kontekst archiwum → wątek Square. To nawigacja, nie obietnica finansowa."],
+    ["AMU baseline", "AMU 3162.27 to wizualny metronom: puls, odstępy i rytm nodów. Symbolika, dopóki nie ma sprawdzonego użycia technicznego."],
+    ["Protokół Bajaka", "Warstwa Bajaka jest tutaj lore/audytem numerycznym i tożsamością research, nie twierdzeniem, nie gwarancją i nie poradą finansową."],
+    ["Nazwa akcji → podpis", "Każdy prompt portfela najpierw nazywa akcję: connect, sign, approve albo send. Zero ukrytych approvali."],
+    ["Silnik sygnału", "Kropki oznaczają realne checki UI: ścieżkę portfela, status kontraktu, kolejkę audytu i gotowość moderacji — nie losową dekorację."],
+  ],
+  de: [
+    ["Möbius Routing", "Eine ruhige Access-Schleife: Produkt → Drop-Signal → Archivkontext → Square-Thread. Navigation, keine Finanzzusage."],
+    ["AMU Baseline", "AMU 3162.27 ist ein visueller Taktgeber für Puls, Abstände und Node-Rhythmus. Symbolisch bis zur geprüften technischen Nutzung."],
+    ["Bajak Protocol", "Die Bajak-Ebene bleibt Numerical-Audit-Lore und Research-Identität, kein Theorem, keine Garantie und keine Finanzberatung."],
+    ["Aktion benennen → Signatur", "Jeder Wallet-Prompt nennt zuerst die Aktion: connect, sign, approve oder send. Keine versteckten Approvals."],
+    ["Signal Engine", "Die Punkte zeigen UI-Checks: Wallet-Route, Contract-Status, Audit-Queue und Moderation — keine zufällige Dekoration."],
+  ],
+} as const;
 
 const basicItems = ["one", "two", "three"] as const;
 const proItems = ["orbit", "wallet", "security", "lp", "registry", "cyber", "amu", "moderation", "concierge", "signals", "vault", "forensics"] as const;
 const amuControls = [
   { label: "AMU", value: "3162.2776", width: 78 },
   { label: "ρ", value: "1.3247", width: 58 },
-  { label: "WALLET", value: "EVM", width: 66 },
+  { label: "WALLET", value: "READ", width: 66 },
   { label: "SIGNAL", value: "ACCESS", width: 72 },
+] as const;
+
+const signalNodes = [
+  { label: "EVM", x: "18%", y: "58%", state: "planned" },
+  { label: "Wallet", x: "36%", y: "35%", state: "read-only" },
+  { label: "AMU", x: "50%", y: "50%", state: "baseline" },
+  { label: "Audit", x: "68%", y: "34%", state: "required" },
+  { label: "Legal", x: "78%", y: "64%", state: "review" },
+] as const;
+
+const signalChecks = [
+  ["wallet read", "public address only", 66],
+  ["contract", "not deployed", 38],
+  ["audit", "required", 28],
+  ["moderation", "manual queue", 74],
 ] as const;
 
 function BasicCard({ reducedMotion }: { reducedMotion: boolean }) {
@@ -20,18 +59,18 @@ function BasicCard({ reducedMotion }: { reducedMotion: boolean }) {
   return (
     <motion.article
       key="basic"
-      initial={reducedMotion ? { opacity: 0 } : { opacity: 0, x: "-105%", scale: 0.98 }}
+      initial={reducedMotion ? { opacity: 0 } : { opacity: 0, x: "-48px", scale: 0.98 }}
       animate={{ opacity: 1, x: 0, scale: 1 }}
-      exit={reducedMotion ? { opacity: 0 } : { opacity: 0, x: "105%", scale: 0.98 }}
-      transition={{ duration: 0.72, ease: [0.16, 1, 0.3, 1] }}
-      className="relative mx-auto w-full max-w-none overflow-hidden rounded-[2rem] border border-black/10 bg-[#F5F0E8] p-5 text-center text-black shadow-[0_24px_90px_rgba(0,0,0,0.22)] md:p-8 lg:text-left xl:p-10"
+      exit={reducedMotion ? { opacity: 0 } : { opacity: 0, x: "48px", scale: 0.98 }}
+      transition={{ duration: 0.54, ease: [0.16, 1, 0.3, 1] }}
+      className="relative mx-auto w-full max-w-none overflow-hidden rounded-[2rem] border border-black/[0.10] bg-[#F5F0E8] p-5 text-center text-black shadow-[0_24px_90px_rgba(0,0,0,0.22)] md:p-8 lg:text-left xl:p-10"
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_84%_16%,rgba(0,0,0,0.06),transparent_30%)]" />
       <div className="relative z-[1] grid gap-6 lg:grid-cols-[0.42fr_1.58fr] lg:items-stretch">
         <div>
-          <p className="font-sans text-[10px] font-black uppercase tracking-[0.32em] text-black/45">{t("basic.kicker")}</p>
-          <h3 className="mx-auto mt-5 max-w-[8ch] font-serif text-4xl leading-[0.92] md:text-6xl lg:mx-0">{t("basic.title")}</h3>
-          <p className="mx-auto mt-6 max-w-sm text-sm leading-7 text-black/62 lg:mx-0">{t("basicHint")}</p>
+          <p className="font-sans text-[10px] font-black uppercase tracking-[0.28em] text-black/[0.45]">{t("basic.kicker")}</p>
+          <h3 className="mx-auto mt-5 max-w-[9ch] font-serif text-[clamp(2.7rem,7vw,5.6rem)] leading-[0.94] tracking-[-0.045em] lg:mx-0">{t("basic.title")}</h3>
+          <p className="mx-auto mt-6 max-w-sm text-sm leading-7 text-black/[0.60] lg:mx-0">{t("basicHint")}</p>
         </div>
         <div className="grid gap-3 md:grid-cols-3">
           {basicItems.map((item, index) => (
@@ -40,12 +79,12 @@ function BasicCard({ reducedMotion }: { reducedMotion: boolean }) {
               initial={reducedMotion ? false : { opacity: 0, y: 22 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 + index * 0.08, duration: 0.48, ease: [0.16, 1, 0.3, 1] }}
-              className="flex min-h-36 flex-col justify-between rounded-[1.5rem] border border-black/10 bg-black/[0.035] p-5"
+              className="flex min-h-36 flex-col justify-between rounded-[1.5rem] border border-black/[0.10] bg-black/[0.035] p-5"
             >
-              <div className="flex h-11 w-11 items-center justify-center rounded-full border border-black/10 bg-[#F5F0E8]">
-                <CircleDot className="h-4 w-4 text-black/34" aria-hidden="true" />
+              <div className="flex h-11 w-11 items-center justify-center rounded-full border border-black/[0.10] bg-[#F5F0E8]">
+                <CircleDot className="h-4 w-4 text-black/[0.30]" aria-hidden="true" />
               </div>
-              <p className="mt-5 font-sans text-sm leading-7 text-black/68">{t(`basic.items.${item}`)}</p>
+              <p className="mt-5 font-sans text-sm leading-7 text-black/[0.70]">{t(`basic.items.${item}`)}</p>
             </motion.div>
           ))}
         </div>
@@ -54,39 +93,61 @@ function BasicCard({ reducedMotion }: { reducedMotion: boolean }) {
   );
 }
 
-function ProOrbit({ reducedMotion }: { reducedMotion: boolean }) {
+function SignalEngineVisual() {
   return (
-    <div className="relative min-h-[30rem] overflow-hidden rounded-[2rem] border border-[#d4af37]/18 bg-black/70 xl:min-h-[36rem]">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(212,175,55,0.22),transparent_35%),linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[length:auto,44px_44px,44px_44px]" />
-      {!reducedMotion ? (
-        <>
-          {[0, 1, 2, 3, 4].map((ring) => (
-            <motion.span
-              key={ring}
-              className="absolute left-1/2 top-1/2 rounded-full border border-[#d4af37]/20"
-              style={{ width: 160 + ring * 74, height: 160 + ring * 74, marginLeft: -(80 + ring * 37), marginTop: -(80 + ring * 37) }}
-              animate={{ rotate: ring % 2 ? -360 : 360, opacity: [0.16, 0.72, 0.16] }}
-              transition={{ duration: 13 + ring * 4, repeat: Infinity, ease: "linear" }}
-            />
-          ))}
-          {Array.from({ length: 44 }).map((_, index) => (
-            <motion.span
-              key={index}
-              className="absolute h-1.5 w-1.5 rounded-full bg-[#d4af37] shadow-[0_0_24px_rgba(212,175,55,0.78)]"
-              style={{ left: `${10 + ((index * 31) % 80)}%`, top: `${12 + ((index * 47) % 74)}%` }}
-              animate={{ y: [0, -18, 0], x: [0, index % 2 ? 10 : -10, 0], opacity: [0.12, 1, 0.12], scale: [0.65, 1.45, 0.65] }}
-              transition={{ duration: 2.4 + (index % 6) * 0.35, repeat: Infinity, ease: "easeInOut" }}
-            />
-          ))}
-        </>
-      ) : null}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="flex h-28 w-28 items-center justify-center rounded-full border border-[#d4af37]/30 bg-black/70 font-serif text-2xl text-white shadow-[0_0_90px_rgba(212,175,55,0.28)]">VLM</div>
+    <div className="relative min-h-[28rem] overflow-hidden rounded-[2rem] border border-[#d4af37]/[0.20] bg-black/[0.70] xl:min-h-[34rem]">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(212,175,55,0.20),transparent_36%),linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.032)_1px,transparent_1px)] bg-[length:auto,44px_44px,44px_44px]" />
+      <div className="absolute left-1/2 top-1/2 h-36 w-36 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#d4af37]/[0.30] bg-black/[0.70] shadow-[0_0_110px_rgba(212,175,55,0.20)]" />
+      {[0, 1, 2, 3].map((ring) => (
+        <span
+          key={ring}
+          className="velmere-signal-ring absolute left-1/2 top-1/2 rounded-full border border-[#d4af37]/[0.20]"
+          style={{ width: 170 + ring * 88, height: 170 + ring * 88, marginLeft: -(85 + ring * 44), marginTop: -(85 + ring * 44), animationDuration: `${18 + ring * 7}s` }}
+        />
+      ))}
+      <svg viewBox="0 0 820 520" className="absolute inset-0 h-full w-full" aria-hidden="true">
+        <path d="M150 302 C240 132 360 286 410 260 C520 206 570 112 662 176" fill="none" stroke="rgba(212,175,55,0.38)" strokeWidth="1.5" strokeDasharray="7 14" className="velmere-dash-flow" />
+        <path d="M410 260 C470 344 562 380 648 334" fill="none" stroke="rgba(245,240,232,0.18)" strokeWidth="1.2" strokeDasharray="4 12" className="velmere-dash-flow-slow" />
+        <path d="M292 182 C352 252 420 280 560 180" fill="none" stroke="rgba(245,240,232,0.10)" strokeWidth="1" />
+      </svg>
+      <div className="absolute inset-0">
+        {signalNodes.map((node, index) => (
+          <div
+            key={node.label}
+            className="absolute -translate-x-1/2 -translate-y-1/2"
+            style={{ left: node.x, top: node.y }}
+          >
+            <span className="velmere-signal-node grid h-12 w-12 place-items-center rounded-full border border-[#d4af37]/[0.30] bg-black/[0.80] font-mono text-[9px] font-black uppercase tracking-[0.12em] text-[#d4af37] shadow-[0_0_36px_rgba(212,175,55,0.22)]" style={{ animationDelay: `${index * 0.28}s` }}>
+              {node.label.slice(0, 3)}
+            </span>
+            <span className="mt-2 block whitespace-nowrap rounded-full border border-white/[0.10] bg-black/[0.60] px-2.5 py-1 text-center font-mono text-[8px] uppercase tracking-[0.14em] text-white/[0.40]">
+              {node.state}
+            </span>
+          </div>
+        ))}
       </div>
-      <div className="absolute left-5 top-5 grid gap-2 font-mono text-[9px] uppercase tracking-[0.18em] text-white/48">
-        <span className="rounded-full border border-white/10 bg-black/55 px-3 py-2">EVM route</span>
-        <span className="rounded-full border border-white/10 bg-black/55 px-3 py-2">Wallet state</span>
-        <span className="rounded-full border border-white/10 bg-black/55 px-3 py-2">AMU signal</span>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="grid h-28 w-28 place-items-center rounded-full border border-[#d4af37]/[0.30] bg-black/[0.80] font-serif text-2xl text-white shadow-[0_0_90px_rgba(212,175,55,0.28)]">
+          VLM
+        </div>
+      </div>
+      <div className="absolute left-5 top-5 grid gap-2 font-mono text-[9px] uppercase tracking-[0.18em] text-white/[0.50]">
+        <span className="rounded-full border border-white/[0.10] bg-black/[0.55] px-3 py-2">EVM route</span>
+        <span className="rounded-full border border-white/[0.10] bg-black/[0.55] px-3 py-2">Wallet state</span>
+        <span className="rounded-full border border-white/[0.10] bg-black/[0.55] px-3 py-2">AMU signal</span>
+      </div>
+      <div className="absolute bottom-4 left-4 right-4 grid gap-2 rounded-3xl border border-white/[0.10] bg-black/[0.70] p-3 backdrop-blur-xl sm:grid-cols-2 xl:grid-cols-4">
+        {signalChecks.map(([label, value, width]) => (
+          <div key={label} className="rounded-2xl border border-white/[0.10] bg-white/[0.035] p-3">
+            <div className="flex items-center justify-between gap-3 font-mono text-[8px] uppercase tracking-[0.14em] text-white/[0.40]">
+              <span>{label}</span>
+              <span className="text-[#d4af37]">{value}</span>
+            </div>
+            <div className="mt-3 h-1 overflow-hidden rounded-full bg-white/[0.10]">
+              <span className="block h-full rounded-full bg-[#d4af37]/[0.80]" style={{ width: `${width}%` }} />
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -94,45 +155,52 @@ function ProOrbit({ reducedMotion }: { reducedMotion: boolean }) {
 
 function ProCard({ reducedMotion }: { reducedMotion: boolean }) {
   const t = useTranslations("VlmBasicPro");
+  const locale = useLocale() as keyof typeof proExplanation;
+  const explanation = proExplanation[locale] ?? proExplanation.en;
   const [chartOpen, setChartOpen] = useState(false);
   return (
     <motion.article
       key="pro"
-      initial={reducedMotion ? { opacity: 0 } : { opacity: 0, x: "105%", scale: 0.965 }}
+      initial={reducedMotion ? { opacity: 0 } : { opacity: 0, x: "48px", scale: 0.975 }}
       animate={{ opacity: 1, x: 0, scale: 1 }}
-      exit={reducedMotion ? { opacity: 0 } : { opacity: 0, x: "-105%", scale: 0.965 }}
-      transition={{ duration: 0.78, ease: [0.16, 1, 0.3, 1] }}
-      className="relative mx-auto w-full max-w-none overflow-hidden rounded-[2.4rem] border border-[#d4af37]/24 bg-[#030303] p-5 text-center text-white shadow-[0_40px_140px_rgba(0,0,0,0.62)] md:p-7 lg:text-left xl:p-10"
+      exit={reducedMotion ? { opacity: 0 } : { opacity: 0, x: "-48px", scale: 0.975 }}
+      transition={{ duration: 0.58, ease: [0.16, 1, 0.3, 1] }}
+      className="relative mx-auto w-full max-w-none overflow-hidden rounded-[2.4rem] border border-[#d4af37]/[0.25] bg-[#030303] p-5 text-center text-white shadow-[0_40px_140px_rgba(0,0,0,0.62)] md:p-7 lg:text-left xl:p-10"
     >
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_74%_36%,rgba(212,175,55,0.18),transparent_34%)]" />
-      <div className="relative z-[1] grid gap-8 xl:grid-cols-[0.34fr_0.66fr] xl:items-start">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_74%_36%,rgba(212,175,55,0.16),transparent_34%)]" />
+      <div className="relative z-[1] grid gap-8 xl:grid-cols-[0.32fr_0.68fr] xl:items-start">
         <div>
-          <p className="font-sans text-[10px] font-black uppercase tracking-[0.34em] text-[#d4af37]">{t("pro.kicker")}</p>
-          <h3 className="mx-auto mt-5 max-w-[9ch] font-serif text-4xl leading-[0.94] text-white md:text-5xl lg:mx-0 xl:text-[4.4rem]">{t("pro.title")}</h3>
-          <p className="mx-auto mt-6 max-w-lg font-sans text-sm leading-7 text-white/64 lg:mx-0">{t("pro.body")}</p>
-          <button type="button" onClick={() => setChartOpen((value) => !value)} className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-full border border-[#d4af37]/30 bg-[#d4af37]/10 px-5 font-mono text-[9px] uppercase tracking-[0.18em] text-[#d4af37] transition hover:bg-[#d4af37]/15 active:scale-95">
+          <p className="font-sans text-[10px] font-black uppercase tracking-[0.28em] text-[#d4af37]">{t("pro.kicker")}</p>
+          <h3 className="mx-auto mt-5 max-w-[10ch] font-serif text-[clamp(2.6rem,5.2vw,4.75rem)] leading-[0.96] tracking-[-0.04em] text-white lg:mx-0">{t("pro.title")}</h3>
+          <p className="mx-auto mt-6 max-w-lg font-sans text-sm leading-7 text-white/[0.60] lg:mx-0">{t("pro.body")}</p>
+          <button type="button" onClick={() => setChartOpen((value) => !value)} className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-full border border-[#d4af37]/[0.30] bg-[#d4af37]/[0.10] px-5 font-mono text-[9px] uppercase tracking-[0.18em] text-[#d4af37] transition hover:bg-[#d4af37]/[0.15] active:scale-95">
             <Eye className="h-4 w-4" /> {chartOpen ? t("pro.chartHide") : t("pro.chartShow")}
           </button>
           <div className="mt-7 grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
             {amuControls.map((control) => (
-              <div key={control.label} className="rounded-2xl border border-white/10 bg-black/48 p-3 backdrop-blur-xl">
-                <div className="flex items-center justify-between gap-4 font-mono text-[10px] uppercase tracking-[0.16em] text-white/44">
+              <div key={control.label} className="rounded-2xl border border-white/[0.10] bg-black/[0.50] p-3 backdrop-blur-xl">
+                <div className="flex items-center justify-between gap-4 font-mono text-[10px] uppercase tracking-[0.16em] text-white/[0.40]">
                   <span>{control.label}</span><span className="text-[#d4af37]">{control.value}</span>
                 </div>
-                <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/[0.08]"><motion.span className="block h-full rounded-full bg-[#d4af37]" initial={{ width: 0 }} animate={{ width: `${control.width}%` }} transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }} /></div>
+                <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/[0.08]"><span className="block h-full rounded-full bg-[#d4af37]" style={{ width: `${control.width}%` }} /></div>
               </div>
             ))}
           </div>
         </div>
         <div className="space-y-3">
-          <ProOrbit reducedMotion={reducedMotion} />
+          <SignalEngineVisual />
           <AnimatePresence>
             {chartOpen ? (
-              <motion.div initial={{ y: -28, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -28, opacity: 0 }} transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }} className="rounded-[1.5rem] border border-[#d4af37]/25 bg-black/80 p-4 backdrop-blur-2xl">
-                <div className="relative h-24 overflow-hidden rounded-2xl border border-white/10 bg-[linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(0deg,rgba(255,255,255,0.025)_1px,transparent_1px)] bg-[length:42px_28px]">
-                  <motion.span className="absolute left-0 top-1/2 h-px w-full bg-[#d4af37]/55" animate={reducedMotion ? undefined : { scaleX: [0.35, 1, 0.35] }} transition={{ duration: 3.6, repeat: Infinity, ease: "easeInOut" }} style={{ transformOrigin: "left" }} />
-                  <motion.span className="absolute left-0 top-[64%] h-px w-full bg-white/28" animate={reducedMotion ? undefined : { scaleX: [1, 0.42, 1] }} transition={{ duration: 4.4, repeat: Infinity, ease: "easeInOut" }} style={{ transformOrigin: "left" }} />
-                  <p className="absolute left-4 top-3 font-mono text-[9px] uppercase tracking-[0.18em] text-white/44">{t("pro.chartLabel")}</p>
+              <motion.div initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -20, opacity: 0 }} transition={{ duration: 0.34, ease: [0.16, 1, 0.3, 1] }} className="rounded-[1.5rem] border border-[#d4af37]/[0.25] bg-black/[0.80] p-4 backdrop-blur-2xl">
+                <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/[0.40]">{t("pro.chartLabel")}</p>
+                <div className="mt-3 grid gap-2 md:grid-cols-4">
+                  {signalChecks.map(([label, value, width]) => (
+                    <div key={label} className="rounded-2xl border border-white/[0.10] bg-white/[0.03] p-3">
+                      <p className="font-mono text-[8px] uppercase tracking-[0.14em] text-[#d4af37]">{label}</p>
+                      <p className="mt-2 text-xs text-white/[0.60]">{value}</p>
+                      <div className="mt-3 h-1 rounded-full bg-white/[0.10]"><span className="block h-full rounded-full bg-[#d4af37]" style={{ width: `${width}%` }} /></div>
+                    </div>
+                  ))}
                 </div>
               </motion.div>
             ) : null}
@@ -142,8 +210,19 @@ function ProCard({ reducedMotion }: { reducedMotion: boolean }) {
       <div className="relative z-[1] mt-8 grid auto-rows-fr gap-3 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-6">
         {proItems.map((item, index) => {
           const Icon = item === "orbit" ? Orbit : item === "wallet" ? WalletCards : item === "security" ? ShieldCheck : item === "registry" ? KeyRound : item === "cyber" ? LockKeyhole : item === "amu" ? Radar : item === "vault" ? Network : item === "forensics" ? Eye : Cpu;
-          return <motion.div key={item} initial={reducedMotion ? false : { opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 + index * 0.06, duration: 0.48, ease: [0.16, 1, 0.3, 1] }} className="flex min-h-36 flex-col justify-between rounded-[1.35rem] border border-white/10 bg-black/70 p-5 backdrop-blur-xl transition hover:border-[#d4af37]/25 hover:bg-[#10100d] active:scale-[0.985]"><Icon className="h-5 w-5 text-[#d4af37]" /><p className="mt-4 font-sans text-xs leading-6 text-white/62">{t(`pro.items.${item}`)}</p></motion.div>;
+          return <motion.div key={item} initial={reducedMotion ? false : { opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 + index * 0.04, duration: 0.42, ease: [0.16, 1, 0.3, 1] }} className="flex min-h-32 flex-col justify-between rounded-[1.35rem] border border-white/[0.10] bg-black/[0.70] p-5 backdrop-blur-xl transition hover:border-[#d4af37]/[0.25] hover:bg-[#10100d] active:scale-[0.985]"><Icon className="h-5 w-5 text-[#d4af37]" /><p className="mt-4 font-sans text-xs leading-6 text-white/[0.60]">{t(`pro.items.${item}`)}</p></motion.div>;
         })}
+      </div>
+      <div className="relative z-[1] mt-6 overflow-hidden rounded-[1.75rem] border border-[#d4af37]/[0.20] bg-[linear-gradient(135deg,rgba(212,175,55,0.08),rgba(255,255,255,0.025))] p-4 md:p-5">
+        <p className="font-mono text-[9px] font-black uppercase tracking-[0.22em] text-[#d4af37]">What the Pro system means</p>
+        <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+          {explanation.map(([label, body]) => (
+            <div key={label} className="rounded-2xl border border-white/[0.10] bg-black/[0.45] p-4">
+              <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/[0.60]">{label}</p>
+              <p className="mt-3 text-xs leading-6 text-white/[0.52]">{body}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </motion.article>
   );
@@ -152,15 +231,14 @@ function ProCard({ reducedMotion }: { reducedMotion: boolean }) {
 export default function VlmBasicProShowcase() {
   const t = useTranslations("VlmBasicPro");
   const reducedMotion = Boolean(useReducedMotion());
-  const searchParams = useSearchParams();
-  const mode = searchParams.get("mode") === "pro" ? "pro" : "basic";
+  const { mode } = useModeStore();
 
   return (
     <section id="vlm-mode" className="mx-auto w-full max-w-none overflow-hidden px-4 py-14 sm:px-6 lg:px-12 2xl:px-20 md:py-20">
       <div className="mx-auto mb-8 w-full max-w-none text-center lg:text-left">
-        <p className="luxury-kicker text-velmere-gold/80">{t("kicker")}</p>
-        <h2 className="mx-auto mt-4 max-w-4xl font-serif text-4xl leading-tight text-white md:text-5xl lg:mx-0">{t("title")}</h2>
-        <p className="mx-auto mt-4 max-w-3xl text-sm leading-7 text-white/54 lg:mx-0">{t("body")}</p>
+        <p className="luxury-kicker text-velmere-gold/[0.80]">{t("kicker")}</p>
+        <h2 className="mx-auto mt-4 max-w-4xl font-serif text-[clamp(2.4rem,5vw,4.7rem)] leading-[0.98] tracking-[-0.035em] text-white lg:mx-0">{t("title")}</h2>
+        <p className="mx-auto mt-4 max-w-3xl text-sm leading-7 text-white/[0.50] lg:mx-0">{t("body")}</p>
       </div>
       <AnimatePresence mode="wait" initial={false}>{mode === "pro" ? <ProCard key="pro-card" reducedMotion={reducedMotion} /> : <BasicCard key="basic-card" reducedMotion={reducedMotion} />}</AnimatePresence>
     </section>

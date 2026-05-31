@@ -39,11 +39,11 @@ export default function WalletGenesisSimulation({ compact = false, active = true
   const current = flow[activeStep];
 
   return (
-    <div ref={ref as React.RefObject<HTMLDivElement>} className="overflow-hidden rounded-[2rem] border border-white/5 bg-white/[0.03] p-5 md:p-8">
+    <div ref={ref as React.RefObject<HTMLDivElement>} className="overflow-hidden rounded-[2rem] border border-white/[0.05] bg-white/[0.03] p-5 md:p-8">
       <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#d4af37]">{t("kicker")}</p>
       <h2 className={`mt-3 font-serif text-[#FFFFF0] ${compact ? "text-2xl" : "text-3xl"}`}>{t("title")}</h2>
-      <p className="mt-4 text-sm leading-7 text-white/58">{t("body")}</p>
-      <p className="mt-4 rounded-xl border border-white/5 bg-black/20 p-3 text-xs leading-6 text-white/48">{t("securityNote")}</p>
+      <p className="mt-4 text-sm leading-7 text-white/[0.58]">{t("body")}</p>
+      <p className="mt-4 rounded-xl border border-white/[0.05] bg-black/[0.20] p-3 text-xs leading-6 text-white/[0.48]">{t("securityNote")}</p>
 
       {isMobile ? (
         <div className="mt-5 flex flex-col gap-3">
@@ -57,24 +57,24 @@ export default function WalletGenesisSimulation({ compact = false, active = true
                 className={`min-h-10 min-w-10 shrink-0 rounded-full border font-mono text-xs ${
                   activeStep === index
                     ? "border-[#d4af37] bg-[#d4af37] text-black"
-                    : "border-white/10 text-white/46"
+                    : "border-white/[0.10] text-white/[0.46]"
                 }`}
               >
                 {index + 1}
               </button>
             ))}
           </div>
-          <article className="rounded-2xl border border-[#d4af37]/25 bg-[#d4af37]/[0.06] p-5">
+          <article className="rounded-2xl border border-[#d4af37]/[0.25] bg-[#d4af37]/[0.06] p-5">
             <current.icon className="h-5 w-5 text-[#d4af37]" aria-hidden="true" />
-            <p className="mt-4 text-[10px] uppercase tracking-[0.18em] text-white/40">{t(`steps.${current.key}.label`)}</p>
-            <p className="mt-2 text-sm leading-6 text-white/68">{t(`steps.${current.key}.value`)}</p>
+            <p className="mt-4 text-[10px] uppercase tracking-[0.18em] text-white/[0.40]">{t(`steps.${current.key}.label`)}</p>
+            <p className="mt-2 text-sm leading-6 text-white/[0.68]">{t(`steps.${current.key}.value`)}</p>
           </article>
           <div className="flex gap-2">
             <button
               type="button"
               disabled={activeStep === 0}
               onClick={() => setActiveStep((s) => Math.max(0, s - 1))}
-              className="min-h-11 flex-1 rounded-full border border-white/10 text-[10px] uppercase tracking-[0.14em] text-white/55 disabled:opacity-30"
+              className="min-h-11 flex-1 rounded-full border border-white/[0.10] text-[10px] uppercase tracking-[0.14em] text-white/[0.55] disabled:opacity-30"
             >
               {t("prev")}
             </button>
@@ -82,7 +82,7 @@ export default function WalletGenesisSimulation({ compact = false, active = true
               type="button"
               disabled={activeStep === flow.length - 1}
               onClick={() => setActiveStep((s) => Math.min(flow.length - 1, s + 1))}
-              className="min-h-11 flex-1 rounded-full border border-white/10 text-[10px] uppercase tracking-[0.14em] text-white/55 disabled:opacity-30"
+              className="min-h-11 flex-1 rounded-full border border-white/[0.10] text-[10px] uppercase tracking-[0.14em] text-white/[0.55] disabled:opacity-30"
             >
               {t("next")}
             </button>
@@ -100,7 +100,7 @@ export default function WalletGenesisSimulation({ compact = false, active = true
             className={`min-h-10 rounded-full border font-mono text-xs transition-colors ${
               activeStep === index
                 ? "border-[#d4af37] bg-[#d4af37] text-black"
-                : "border-white/10 text-white/46"
+                : "border-white/[0.10] text-white/[0.46]"
             }`}
           >
             {index + 1}
@@ -114,12 +114,12 @@ export default function WalletGenesisSimulation({ compact = false, active = true
               <article
                 key={key}
                 className={`min-h-[120px] rounded-2xl border p-4 transition-colors ${
-                  isActive ? "border-[#d4af37]/35 bg-[#d4af37]/[0.06]" : "border-white/5 bg-black/20"
+                  isActive ? "border-[#d4af37]/[0.35] bg-[#d4af37]/[0.06]" : "border-white/[0.05] bg-black/[0.20]"
                 }`}
               >
                 <Icon className="h-4 w-4 text-[#d4af37]" aria-hidden="true" />
-                <p className="mt-3 text-[10px] uppercase tracking-[0.16em] text-white/40">{t(`steps.${key}.label`)}</p>
-                <p className="mt-2 text-xs leading-6 text-white/62">{t(`steps.${key}.value`)}</p>
+                <p className="mt-3 text-[10px] uppercase tracking-[0.16em] text-white/[0.40]">{t(`steps.${key}.label`)}</p>
+                <p className="mt-2 text-xs leading-6 text-white/[0.62]">{t(`steps.${key}.value`)}</p>
               </article>
             );
           })}
@@ -127,7 +127,7 @@ export default function WalletGenesisSimulation({ compact = false, active = true
         </>
       )}
 
-      <p className="mt-5 text-xs leading-6 text-white/44">{t("amuNote")}</p>
+      <p className="mt-5 text-xs leading-6 text-white/[0.44]">{t("amuNote")}</p>
     </div>
   );
 }

@@ -27,17 +27,17 @@ export default function CookieConsent() {
           initial={{ y: 40, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 40, opacity: 0 }}
-          className="fixed bottom-4 left-4 right-4 z-[150] rounded-2xl border border-white/10 bg-black/90 p-5 text-white shadow-[0_24px_80px_rgba(0,0,0,0.5)] backdrop-blur-2xl md:left-auto md:max-w-2xl"
+          className="fixed bottom-4 left-4 right-4 z-[150] rounded-2xl border border-white/[0.10] bg-black/[0.90] p-5 text-white shadow-[0_24px_80px_rgba(0,0,0,0.5)] backdrop-blur-2xl md:left-auto md:max-w-2xl"
         >
           <div className="flex flex-col gap-5">
             <div>
               <p className="font-sans text-[10px] font-semibold uppercase tracking-[0.24em] text-velmere-gold">
                 {t("title")}
               </p>
-              <p className="mt-3 font-sans text-sm leading-7 text-white/64">{t("message")}</p>
+              <p className="mt-3 font-sans text-sm leading-7 text-white/[0.64]">{t("message")}</p>
               {showSettings && (
-                <div className="mt-4 grid gap-2 rounded-xl border border-white/10 bg-white/[0.035] p-4 font-sans text-xs leading-6 text-white/56">
-                  <p className="text-white/70">{t("settingsIntro")}</p>
+                <div className="mt-4 grid gap-2 rounded-xl border border-white/[0.10] bg-white/[0.035] p-4 font-sans text-xs leading-6 text-white/[0.56]">
+                  <p className="text-white/[0.70]">{t("settingsIntro")}</p>
                   <p>{t("necessary")}</p>
                   <p>{t("analytics")}</p>
                   <p>{t("marketing")}</p>
@@ -51,14 +51,14 @@ export default function CookieConsent() {
               <button
                 type="button"
                 onClick={() => choose("declined")}
-                className="h-11 rounded-full border border-white/14 px-5 font-sans text-xs font-bold uppercase tracking-[0.2em] text-white/62 transition-colors hover:border-white hover:text-white"
+                className="h-11 rounded-full border border-white/[0.14] px-5 font-sans text-xs font-bold uppercase tracking-[0.2em] text-white/[0.62] transition-colors hover:border-white hover:text-white"
               >
                 {t("decline")}
               </button>
               <button
                 type="button"
                 onClick={() => setShowSettings((value) => !value)}
-                className="h-11 rounded-full border border-white/14 px-5 font-sans text-xs font-bold uppercase tracking-[0.2em] text-white/62 transition-colors hover:border-white hover:text-white"
+                className="h-11 rounded-full border border-white/[0.14] px-5 font-sans text-xs font-bold uppercase tracking-[0.2em] text-white/[0.62] transition-colors hover:border-white hover:text-white"
               >
                 {t("settings")}
               </button>

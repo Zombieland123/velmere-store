@@ -13,4 +13,3 @@ export default function HtmlLangSync() {
   }, [pathname]);
   return null;
 }
-

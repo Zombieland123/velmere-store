@@ -33,21 +33,21 @@ export default function VlmLaunchDashboard() {
         <div className="mb-6 px-2 md:px-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#d4af37]">{t("kicker")}</p>
-            <LiveClock className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/35" />
+            <LiveClock className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/[0.35]" />
           </div>
         </div>
 
-        <div className="grid grid-cols-1 items-stretch gap-[1px] bg-white/10 xl:grid-cols-[0.78fr_0.70fr_1.05fr]">
-          <motion.div {...fadeUp} className="min-w-0 space-y-5 rounded-none border border-white/15 bg-white/[0.02] p-4 backdrop-blur-md md:p-5">
+        <div className="grid grid-cols-1 items-stretch gap-[1px] bg-white/[0.10] xl:grid-cols-[0.78fr_0.70fr_1.05fr]">
+          <motion.div {...fadeUp} className="min-w-0 space-y-5 rounded-none border border-white/[0.15] bg-white/[0.02] p-4 backdrop-blur-md md:p-5">
             <h1 className="max-w-[14ch] font-serif text-4xl leading-[0.92] tracking-[-0.03em] text-[#FFFFF0] md:text-5xl xl:text-6xl">
               {t("title")}
             </h1>
-            <p className="max-w-md text-sm leading-relaxed text-[#FFFFF0]/65 md:text-base">{t("description")}</p>
+            <p className="max-w-md text-sm leading-relaxed text-[#FFFFF0]/[0.65] md:text-base">{t("description")}</p>
             <div className="flex flex-wrap gap-2">
               {statusChips.map((chip) => (
                 <span
                   key={chip}
-                  className="inline-flex min-h-8 items-center rounded-full border border-white/10 bg-[#161616] px-3 text-[10px] uppercase tracking-[0.16em] text-white/55"
+                  className="inline-flex min-h-8 items-center rounded-full border border-white/[0.10] bg-[#161616] px-3 text-[10px] uppercase tracking-[0.16em] text-white/[0.55]"
                 >
                   {t(`chips.${chip}`)}
                 </span>
@@ -55,14 +55,14 @@ export default function VlmLaunchDashboard() {
             </div>
           </motion.div>
 
-          <motion.div {...fadeUp} transition={{ ...fadeUp.transition, delay: 0.05 }} className="min-w-0 rounded-none border border-white/15 bg-white/[0.02] p-4 backdrop-blur-md md:p-5">
+          <motion.div {...fadeUp} transition={{ ...fadeUp.transition, delay: 0.05 }} className="min-w-0 rounded-none border border-white/[0.15] bg-white/[0.02] p-4 backdrop-blur-md md:p-5">
             <VlmTradePreview />
           </motion.div>
 
           <motion.div
             {...fadeUp}
             transition={{ ...fadeUp.transition, delay: 0.08 }}
-            className="min-w-0 rounded-none border border-white/15 bg-white/[0.02] p-4 backdrop-blur-md xl:sticky xl:top-28"
+            className="min-w-0 rounded-none border border-white/[0.15] bg-white/[0.02] p-4 backdrop-blur-md xl:sticky xl:top-28"
           >
             <VlmAccessHeroVisual compact animationActive captionBelow />
           </motion.div>

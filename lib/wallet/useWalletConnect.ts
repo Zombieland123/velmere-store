@@ -38,6 +38,10 @@ function isMetaMaskConnector(connectorName: string) {
   return /metamask|injected/i.test(connectorName);
 }
 
+function isWalletConnectConnector(connectorName: string) {
+  return /walletconnect|wallet connect/i.test(connectorName);
+}
+
 function getPhantomProvider() {
   if (typeof window === "undefined") return undefined;
   const provider = window.phantom?.solana ?? window.solana;
@@ -64,6 +68,10 @@ export function useWalletConnect() {
     () => connectors.find((item) => isMetaMaskConnector(item.name)) ?? connectors[0],
     [connectors],
   );
+  const walletConnectConnector = useMemo(
+    () => connectors.find((item) => isWalletConnectConnector(item.name)),
+    [connectors],
+  );
 
   const connectedWallet = useMemo<ConnectedWallet | null>(() => {
     if (phantomAddress) {
@@ -80,7 +88,7 @@ export function useWalletConnect() {
 
     if (!isConnected || !address) return null;
     return {
-      kind: "metamask",
+      kind: connector?.name && isWalletConnectConnector(connector.name) ? "walletconnect" : "metamask",
       label: connector?.name ?? "Wallet",
       address,
       shortAddress: shortenAddress(address),
@@ -147,6 +155,22 @@ export function useWalletConnect() {
     }
   }, [connectedWallet]);
 
+  const connectWalletConnect = useCallback(async () => {
+    setLastError(null);
+    if (connectedWallet) return;
+
+    if (!walletConnectConnector) {
+      setLastError("unsupported");
+      return;
+    }
+
+    try {
+      await connectAsync({ connector: walletConnectConnector });
+    } catch {
+      setLastError("rejected");
+    }
+  }, [connectAsync, connectedWallet, walletConnectConnector]);
+
   useEffect(() => {
     const detect = () => setPhantomDetected(Boolean(getPhantomProvider()));
     detect();
@@ -188,9 +212,10 @@ export function useWalletConnect() {
     (kind: WalletKind) => {
       if (connectedWallet) return Promise.resolve();
       if (kind === "metamask") return connectMetaMask();
+      if (kind === "walletconnect") return connectWalletConnect();
       return connectPhantom();
     },
-    [connectMetaMask, connectPhantom, connectedWallet],
+    [connectMetaMask, connectPhantom, connectWalletConnect, connectedWallet],
   );
 
   const disconnectWallet = useCallback(() => {
@@ -207,10 +232,12 @@ export function useWalletConnect() {
     detectedWallets: {
       metamask: Boolean(metamaskConnector),
       phantom: phantomDetected,
+      walletconnect: Boolean(walletConnectConnector),
     },
     connect,
     disconnect: disconnectWallet,
     connectMetaMask,
     connectPhantom,
+    connectWalletConnect,
   };
 }

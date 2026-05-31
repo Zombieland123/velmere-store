@@ -1,289 +1,574 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, LogOut, Menu, ShoppingBag, User, Wallet, X } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
-import { useSearchParams } from "next/navigation";
-import { useCart } from "@/components/CartProvider";
+import { ChevronDown, Globe2, LogOut, Mail, Menu, ShieldCheck, ShoppingBag, Unplug, User, Wallet, X } from "lucide-react";
+import { useLocale } from "next-intl";
 import { Link, usePathname } from "@/navigation";
-import { useWalletUiStore } from "@/store/useWalletUiStore";
-import VlmModeSwitch from "@/components/vlm/VlmModeSwitch";
-import { useUiSounds } from "@/lib/audio/useUiSounds";
-import { useWalletConnect } from "@/lib/wallet/useWalletConnect";
-import AudioToggleButton from "@/components/ui/AudioToggleButton";
+import { useCart } from "@/components/CartProvider";
+import { clearWalletUiSnapshot, useWalletUiStore } from "@/store/useWalletUiStore";
+import WalletConnectOptions from "@/components/wallet/WalletConnectOptions";
+import { setVelmereLocalSession, useVelmereAuth } from "@/components/auth/AuthGate";
+import { useProfile } from "@/lib/hooks/useProfile";
+import type { ProfileRecord } from "@/lib/db/profile-service";
 
-const LOCALES = ["pl", "en", "de"] as const;
-const drawerTransition = { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const };
+const LOCALES = ["en", "pl", "de"] as const;
 
-function trunc(value: string) {
-  if (!value) return "CONNECT";
-  return value.length > 12 ? `${value.slice(0, 6)}...${value.slice(-4)}` : value;
+const navLabels = {
+  en: {
+    collection: "Collection",
+    men: "Men's collection",
+    women: "Women's collection",
+    vlm: "VLM",
+    square: "Square",
+    lookbook: "Lookbook",
+    motionLab: "Motion Lab",
+    login: "Login",
+    contact: "Contact",
+  },
+  pl: {
+    collection: "Kolekcja",
+    men: "Kolekcja męska",
+    women: "Kolekcja damska",
+    vlm: "VLM",
+    square: "Square",
+    lookbook: "Lookbook",
+    motionLab: "Laboratorium ruchu",
+    login: "Logowanie",
+    contact: "Kontakt",
+  },
+  de: {
+    collection: "Kollektion",
+    men: "Herrenkollektion",
+    women: "Damenkollektion",
+    vlm: "VLM",
+    square: "Square",
+    lookbook: "Lookbook",
+    motionLab: "Motion Lab",
+    login: "Login",
+    contact: "Kontakt",
+  },
+} as const;
+
+const navCopy = {
+  en: {
+    account: "Account",
+    login: "Login",
+    privateConsole: "Private member console",
+    consoleShort: "Console",
+    memberLabel: "Member",
+    walletPending: "wallet pending",
+    connect: "Connect",
+    menu: "Menu",
+    wallet: "Wallet",
+    optionalWallet:
+      "Optional read-only wallet binding. Never enter a seed phrase.",
+    disconnect: "Disconnect wallet",
+    logout: "Log out",
+    memberConsole: "Private member console",
+    noWalletConnected: "No wallet connected",
+    mail: "Mail",
+  },
+  pl: {
+    account: "Konto",
+    login: "Logowanie",
+    privateConsole: "Prywatna konsola membera",
+    consoleShort: "Konsola",
+    memberLabel: "Member",
+    walletPending: "portfel niepodłączony",
+    connect: "Połącz",
+    menu: "Menu",
+    wallet: "Portfel",
+    optionalWallet:
+      "Opcjonalne połączenie read-only. Nigdy nie wpisuj seed phrase.",
+    disconnect: "Odłącz portfel",
+    logout: "Wyloguj",
+    memberConsole: "Prywatna konsola membera",
+    noWalletConnected: "Portfel niepodłączony",
+    mail: "Mail",
+  },
+  de: {
+    account: "Konto",
+    login: "Login",
+    privateConsole: "Private Member-Konsole",
+    consoleShort: "Konsole",
+    memberLabel: "Member",
+    walletPending: "Wallet nicht verbunden",
+    connect: "Verbinden",
+    menu: "Menü",
+    wallet: "Wallet",
+    optionalWallet:
+      "Optionale Read-only-Wallet-Verbindung. Gib niemals eine Seed Phrase ein.",
+    disconnect: "Wallet trennen",
+    logout: "Ausloggen",
+    memberConsole: "Private Member-Konsole",
+    noWalletConnected: "Wallet nicht verbunden",
+    mail: "Mail",
+  },
+} as const;
+
+const legalLinks = [
+  { href: "/impressum", label: "Impressum / Legal Notice" },
+  { href: "/privacy", label: "Privacy Policy" },
+  { href: "/terms", label: "Terms" },
+  { href: "/returns", label: "Returns / Right of Withdrawal" },
+  { href: "/shipping", label: "Shipping" },
+  { href: "/contact", label: "Contact" },
+];
+
+function truncateAddress(value: string) {
+  if (!value) return "Connect";
+  return value.length > 12 ? `${value.slice(0, 6)}…${value.slice(-4)}` : value;
 }
 
 export default function Navbar() {
-  const t = useTranslations("Nav");
-  const common = useTranslations("Common");
   const locale = useLocale();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const { itemCount, openCart, closeCart } = useCart();
   const walletUi = useWalletUiStore();
-  const wallet = useWalletConnect();
-  const { playHover, playClick } = useUiSounds();
-  const isVlmRoute = pathname.includes("/vlm-token");
-
-  const [isOpen, setIsOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [walletOpen, setWalletOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
-  const menuButtonRef = useRef<HTMLButtonElement | null>(null);
-  const drawerRef = useRef<HTMLElement | null>(null);
+  const [languageOpen, setLanguageOpen] = useState(false);
+  const [memberOpen, setMemberOpen] = useState(false);
   const walletRef = useRef<HTMLDivElement | null>(null);
+  const memberRef = useRef<HTMLDivElement | null>(null);
+  const { ready: authReady, authenticated, localProfile } = useVelmereAuth();
+  const fallbackProfile = useMemo<ProfileRecord>(() => ({
+    displayName: "Velmère Member",
+    handle: "velmere.member",
+    bio: "",
+    lastNameChange: "2026-05-01T00:00:00.000Z",
+  }), []);
+  const { data: profileData } = useProfile(fallbackProfile);
 
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    setMenuOpen(false);
+    setWalletOpen(false);
+    setLanguageOpen(false);
+    setMemberOpen(false);
+  }, [pathname]);
 
-  const localizedPath = useCallback(() => {
-    const withoutLocale = pathname.replace(/^\/(pl|en|de)/, "") || "";
-    const basePath = withoutLocale || "/";
-    const query = searchParams.toString();
-    return query ? `${basePath}?${query}` : basePath;
-  }, [pathname, searchParams]);
-
-  const closeDrawerAfterNavigation = useCallback(() => setIsOpen(false), []);
-  const closeDrawer = useCallback((restoreFocus = true) => {
-    setIsOpen(false);
-    if (restoreFocus) window.setTimeout(() => menuButtonRef.current?.focus(), 0);
-  }, []);
-
-  useEffect(() => setIsOpen(false), [pathname]);
   useEffect(() => {
     const onPointerDown = (event: PointerEvent) => {
-      if (!walletRef.current?.contains(event.target as Node)) setWalletOpen(false);
+      if (!walletRef.current?.contains(event.target as Node))
+        setWalletOpen(false);
+      if (!memberRef.current?.contains(event.target as Node))
+        setMemberOpen(false);
     };
     document.addEventListener("pointerdown", onPointerDown);
     return () => document.removeEventListener("pointerdown", onPointerDown);
   }, []);
 
   useEffect(() => {
-    if (!isOpen) return;
-    const previousBody = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    const previous = document.body.style.overflow;
+    if (menuOpen) document.body.style.overflow = "hidden";
     return () => {
-      document.body.style.overflow = previousBody;
+      document.body.style.overflow = previous;
     };
-  }, [isOpen]);
+  }, [menuOpen]);
 
-  const topLinks = [
-    { href: `/shop?category=men`, label: t("menswear") },
-    { href: `/shop?category=women`, label: t("womenswear") },
-  ];
+  const t = navCopy[locale as keyof typeof navCopy] ?? navCopy.en;
+  const labels = navLabels[locale as keyof typeof navLabels] ?? navLabels.en;
+  const walletLabel = walletUi.connected
+    ? truncateAddress(walletUi.fullAddress)
+    : t.connect;
+  const isMemberActive = authReady && authenticated;
+  const profile = profileData?.profile ?? fallbackProfile;
+  const memberDisplayName = localProfile?.displayName ?? profile.displayName;
+  const accountLabel = isMemberActive ? t.account : t.login;
+  const memberAddressLabel = walletUi.connected
+    ? truncateAddress(walletUi.fullAddress)
+    : t.walletPending;
+  const memberInitial = (memberDisplayName || "V").slice(0, 1).toUpperCase();
 
-  const drawerLinks = [
-    { href: `/shop`, label: t("shopAll") },
-    ...topLinks,
-    { href: `/shop?sort=new`, label: t("newDrop") },
-    { href: `/lookbook`, label: t("lookbook") },
-    { href: `/archive`, label: t("archive") },
-    { href: `/square`, label: t("square") },
-    { href: `/vlm-token`, label: t("vlm") },
-    { href: `/account`, label: t("account") },
-  ];
-
-  const legalLinks = [
-    { href: `/legal/terms`, label: t("terms") },
-    { href: `/legal/privacy`, label: t("privacy") },
-    { href: `/legal/shipping`, label: t("shipping") },
-    { href: `/returns`, label: t("returns") },
-    { href: `/impressum`, label: t("impressum") },
-    { href: `/contact`, label: t("contact") },
-  ];
-
-  const walletSummary = walletUi.connected
-    ? `${trunc(walletUi.fullAddress)} · ${walletUi.network || "Wallet"}`
-    : t("connectWallet");
-
-  const connectWalletFromMenu = (kind: "metamask" | "phantom") => {
-    if (walletUi.connected) return;
-    navigator.vibrate?.(25);
-    void wallet.connect(kind);
+  const disconnectWallet = () => {
+    clearWalletUiSnapshot();
+    setMemberOpen(false);
   };
 
-  const drawer = (
-    <AnimatePresence>
-      {isOpen && (
-        <>
-          <motion.button
+  const logoutMember = () => {
+    clearWalletUiSnapshot();
+    setVelmereLocalSession(false);
+    setMemberOpen(false);
+  };
+  const localizedPrimaryLinks = [
+    { href: "/shop", label: labels.collection },
+    { href: "/shop?category=men", label: labels.men },
+    { href: "/shop?category=women", label: labels.women },
+    { href: "/vlm-token", label: labels.vlm },
+    { href: "/square", label: labels.square },
+    { href: "/lookbook", label: labels.lookbook },
+  ];
+  const desktopPrimaryLinks = [
+    { href: "/shop", label: labels.collection },
+    { href: "/vlm-token", label: labels.vlm },
+    { href: "/square", label: labels.square },
+  ];
+
+  return (
+    <>
+      <header className="fixed inset-x-0 top-0 z-[70] border-b border-white/[0.08] bg-velmere-black/[0.78] text-velmere-ivory shadow-[0_18px_70px_rgba(0,0,0,0.42)] backdrop-blur-2xl supports-[backdrop-filter]:bg-velmere-black/[0.68]">
+        <div className="relative mx-auto flex min-h-[68px] w-full max-w-none items-center gap-2 px-3 pt-[env(safe-area-inset-top)] md:h-20 md:gap-3 md:px-8 md:pt-0 xl:px-[4.75rem]">
+          <button
             type="button"
-            aria-label={common("close")}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            onClick={() => closeDrawer()}
-            className="fixed inset-0 z-[100] bg-black/48 backdrop-blur-xl"
-          />
-          <motion.aside
-            ref={drawerRef}
-            role="dialog"
-            aria-modal="true"
-            initial={{ x: "-112%", opacity: 0.85 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: "-112%", opacity: 0 }}
-            transition={drawerTransition}
-            className="fixed bottom-4 left-4 top-4 z-[110] flex h-[calc(100dvh-2rem)] w-[min(25rem,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#1A1A1C] text-white shadow-2xl shadow-black/60 outline-none"
+            aria-expanded={menuOpen}
+            aria-label="Open menu"
+            onClick={() => {
+              closeCart();
+              setMenuOpen(true);
+            }}
+            className="relative z-[12] inline-flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full border border-white/[0.10] bg-white/[0.035] px-0 font-mono text-[10px] uppercase tracking-[0.18em] text-white/[0.62] transition hover:border-white/[0.22] hover:text-white active:scale-95 sm:h-11 sm:min-w-[5.6rem] sm:px-4"
           >
-            <div className="flex min-h-full flex-col overflow-y-auto px-6 py-6 luxury-scrollbar">
-              <div className="flex items-center justify-between gap-4 border-b border-white/10 pb-5">
-                <Link href="/" onClick={closeDrawerAfterNavigation} className="font-sans text-2xl font-semibold uppercase tracking-[0.22em] text-white">
+            <Menu className="h-4 w-4" />
+            <span className="hidden sm:inline">{t.menu}</span>
+          </button>
+
+          <Link
+            href="/"
+            aria-label="Velmère home"
+            className="pointer-events-auto absolute left-1/2 z-[10] -translate-x-1/2 rounded-full px-3 py-2 font-sans text-[1.02rem] font-semibold uppercase tracking-[0.20em] text-white transition hover:text-velmere-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-velmere-gold/[0.45] max-[360px]:text-[0.88rem] max-[360px]:tracking-[0.14em] sm:text-[1.28rem] md:text-[1.62rem] xl:text-[1.7rem]"
+          >
+            VELMÈRE
+          </Link>
+
+          <nav
+            aria-label="Primary navigation"
+            className="relative z-[9] ml-3 mr-auto hidden max-w-[32rem] shrink items-center gap-1 overflow-hidden 2xl:flex"
+          >
+            {desktopPrimaryLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="pointer-events-auto rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-white/[0.48] transition hover:bg-white/[0.045] hover:text-white"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="relative z-[12] ml-auto flex shrink-0 items-center justify-end gap-1.5 md:gap-2">
+            <div className="relative hidden md:block">
+              <button
+                type="button"
+                onClick={() => setLanguageOpen((value) => !value)}
+                aria-label="Change language"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/[0.10] bg-white/[0.035] text-white/[0.62] transition hover:border-white/[0.22] hover:text-white active:scale-95"
+              >
+                <Globe2 className="h-4 w-4 animate-[spin_8s_linear_infinite]" />
+              </button>
+              <AnimatePresence>
+                {languageOpen ? (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 8, scale: 0.98 }}
+                    transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                    className="absolute right-0 mt-3 grid w-36 gap-1 rounded-2xl border border-white/[0.10] bg-[#111113] p-2 shadow-2xl shadow-black/[0.60]"
+                  >
+                    {LOCALES.map((item) => (
+                      <Link
+                        key={item}
+                        href={pathname}
+                        locale={item}
+                        className={`rounded-xl px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] transition ${locale === item ? "bg-white text-black" : "text-white/[0.54] hover:bg-white/[0.055] hover:text-white"}`}
+                      >
+                        {item}
+                      </Link>
+                    ))}
+                  </motion.div>
+                ) : null}
+              </AnimatePresence>
+            </div>
+
+            <div ref={walletRef} className="relative hidden md:block">
+              <button
+                type="button"
+                onClick={() => setWalletOpen((value) => !value)}
+                className="inline-flex h-11 items-center gap-2 rounded-full border border-velmere-gold/[0.25] bg-velmere-gold/[0.10] px-3 font-mono text-[9px] uppercase tracking-[0.14em] text-velmere-gold transition hover:border-velmere-gold/[0.45] hover:bg-velmere-gold/[0.15] active:scale-95"
+              >
+                <Wallet className="h-3.5 w-3.5" />
+                {walletLabel}
+              </button>
+              <AnimatePresence>
+                {walletOpen ? (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 8, scale: 0.98 }}
+                    transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                    className="absolute right-0 mt-3 w-80 rounded-2xl border border-white/[0.10] bg-[#111113] p-4 shadow-2xl shadow-black/[0.60]"
+                  >
+                    <p className="velmere-label text-velmere-gold">
+                      {t.wallet}
+                    </p>
+                    <p className="mt-3 break-all text-xs leading-6 text-white/[0.60]">
+                      {walletUi.connected
+                        ? walletUi.fullAddress
+                        : t.optionalWallet}
+                    </p>
+                    <div className="mt-4">
+                      <WalletConnectOptions compact />
+                    </div>
+                  </motion.div>
+                ) : null}
+              </AnimatePresence>
+            </div>
+
+            <Link
+              href={isMemberActive ? "/account" : "/login"}
+              aria-label={accountLabel}
+              title={accountLabel}
+              className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/[0.10] bg-white/[0.035] text-white/[0.62] transition hover:border-white/[0.22] hover:text-white active:scale-95 sm:h-11 sm:w-11"
+            >
+              <User className="h-4 w-4" />
+            </Link>
+            <button
+              type="button"
+              aria-label="Open private mail"
+              onClick={() => window.dispatchEvent(new Event("velmere:open-mail"))}
+              className="hidden h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/[0.10] bg-white/[0.035] text-white/[0.62] transition hover:border-white/[0.22] hover:text-white active:scale-95 lg:inline-flex"
+            >
+              <Mail className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              aria-label="Open cart"
+              onClick={() => {
+                setMenuOpen(false);
+                openCart();
+              }}
+              className="relative inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/[0.10] bg-white/[0.035] text-white/[0.62] transition hover:border-white/[0.22] hover:text-white active:scale-95 sm:h-11 sm:w-11"
+            >
+              <ShoppingBag className="h-4 w-4" />
+              {itemCount > 0 ? (
+                <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full border border-black bg-velmere-gold px-1 text-[10px] font-semibold text-black">
+                  {itemCount}
+                </span>
+              ) : null}
+            </button>
+            {isMemberActive ? (
+              <div ref={memberRef} className="relative hidden shrink-0 2xl:block">
+                <button
+                  type="button"
+                  aria-expanded={memberOpen}
+                  aria-label={`${memberDisplayName} (${memberAddressLabel})`}
+                  onClick={() => setMemberOpen((value) => !value)}
+                  className="group inline-flex max-w-[13rem] items-center gap-2 rounded-full border border-velmere-gold/[0.20] bg-velmere-gold/[0.07] py-1.5 pl-2 pr-2.5 text-left shadow-[0_0_30px_rgba(196,168,91,0.08)] transition hover:border-velmere-gold/[0.38] hover:bg-velmere-gold/[0.11] active:scale-[0.985]"
+                >
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-velmere-gold/[0.28] bg-black/[0.36] font-serif text-sm text-velmere-gold">
+                    {memberInitial}
+                  </span>
+                  <span className="min-w-0 leading-none">
+                    <span className="block truncate text-[10.5px] font-semibold text-white/[0.82]">
+                      {memberDisplayName}
+                    </span>
+                    <span className="mt-1 block truncate font-mono text-[8.5px] uppercase tracking-[0.10em] text-white/[0.38]">
+                      ({memberAddressLabel})
+                    </span>
+                  </span>
+                  <ChevronDown className={`h-3.5 w-3.5 shrink-0 text-white/[0.36] transition ${memberOpen ? "rotate-180 text-velmere-gold" : ""}`} />
+                </button>
+                <AnimatePresence>
+                  {memberOpen ? (
+                    <motion.div
+                      initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 8, scale: 0.98 }}
+                      transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                      className="absolute right-0 mt-3 w-72 overflow-hidden rounded-2xl border border-white/[0.10] bg-[#111113] p-2 shadow-2xl shadow-black/[0.65]"
+                    >
+                      <div className="rounded-xl border border-white/[0.08] bg-black/[0.20] p-3">
+                        <p className="truncate text-sm font-semibold text-white/[0.86]">{memberDisplayName}</p>
+                        <p className="mt-1 truncate font-mono text-[9px] uppercase tracking-[0.12em] text-white/[0.38]">
+                          {walletUi.connected ? walletUi.fullAddress : t.noWalletConnected}
+                        </p>
+                      </div>
+                      <Link
+                        href="/account"
+                        className="mt-2 flex items-center gap-3 rounded-xl px-3 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-white/[0.70] transition hover:bg-white/[0.055] hover:text-velmere-gold"
+                      >
+                        <ShieldCheck className="h-4 w-4" />
+                        {t.memberConsole}
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={disconnectWallet}
+                        disabled={!walletUi.connected}
+                        className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-xs font-semibold uppercase tracking-[0.14em] text-white/[0.60] transition hover:bg-white/[0.055] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+                      >
+                        <Unplug className="h-4 w-4" />
+                        {walletUi.connected ? t.disconnect : t.noWalletConnected}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={logoutMember}
+                        className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-xs font-semibold uppercase tracking-[0.14em] text-white/[0.60] transition hover:bg-white/[0.055] hover:text-white"
+                      >
+                        <LogOut className="h-4 w-4" />
+                        {t.logout}
+                      </button>
+                    </motion.div>
+                  ) : null}
+                </AnimatePresence>
+              </div>
+            ) : null}
+          </div>
+        </div>
+      </header>
+
+      <AnimatePresence>
+        {menuOpen ? (
+          <>
+            <motion.button
+              type="button"
+              aria-label="Close menu"
+              className="fixed inset-0 z-[90] bg-black/[0.62] backdrop-blur-xl"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMenuOpen(false)}
+            />
+            <motion.aside
+              role="dialog"
+              aria-modal="true"
+              className="fixed bottom-4 left-4 top-4 z-[100] flex w-[min(28rem,calc(100vw-2rem))] flex-col overflow-hidden rounded-[2rem] border border-white/[0.10] bg-[#111113] text-velmere-ivory shadow-2xl shadow-black/[0.70]"
+              initial={{ x: "-108%", opacity: 0.8 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: "-108%", opacity: 0 }}
+              transition={{ duration: 0.48, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <div className="flex items-center justify-between border-b border-white/[0.10] px-6 py-5">
+                <Link
+                  href="/"
+                  className="font-sans text-2xl font-semibold uppercase tracking-[0.22em]"
+                >
                   VELMÈRE
                 </Link>
-                <button type="button" aria-label={common("close")} onClick={() => closeDrawer()} className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 text-white/64 transition-colors hover:border-white/25 hover:bg-white/5 hover:text-white">
-                  <X className="h-4 w-4" aria-hidden="true" />
+                <button
+                  type="button"
+                  aria-label="Close menu"
+                  onClick={() => setMenuOpen(false)}
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.10] text-white/[0.60] transition hover:text-white"
+                >
+                  <X className="h-4 w-4" />
                 </button>
               </div>
 
-              <nav className="py-7" aria-label={t("shopMenu")}>
-                <p className="luxury-kicker text-white/38">{t("drawerShop")}</p>
-                <div className="mt-4 space-y-1">
-                  {drawerLinks.map((link) => (
-                    <Link key={link.href} href={link.href} onClick={closeDrawerAfterNavigation} className="flex min-h-11 items-center border-b border-white/10 py-3 font-sans text-sm font-semibold uppercase tracking-[0.18em] text-white/84 transition-colors hover:text-velmere-gold">
-                      {link.label}
-                    </Link>
+              <div className="overflow-y-auto px-6 py-6 luxury-scrollbar">
+                <p className="velmere-label text-velmere-gold">Explore</p>
+                <nav className="mt-4 grid gap-6" aria-label="Menu navigation">
+                  {[
+                    {
+                      title:
+                        locale === "pl"
+                          ? "SKLEP"
+                          : locale === "de"
+                            ? "SHOP"
+                            : "SHOP",
+                      links: [
+                        localizedPrimaryLinks[0],
+                        localizedPrimaryLinks[1],
+                        localizedPrimaryLinks[2],
+                        { href: "/lookbook", label: labels.lookbook },
+                      ],
+                    },
+                    {
+                      title:
+                        locale === "pl"
+                          ? "SPOŁECZNOŚĆ"
+                          : locale === "de"
+                            ? "COMMUNITY"
+                            : "COMMUNITY",
+                      links: [
+                        { href: "/square", label: labels.square },
+                      ],
+                    },
+                    {
+                      title: "VLM / WEB3",
+                      links: [
+                        { href: "/vlm-token", label: labels.vlm },
+                        { href: "/token-agreement", label: "Token agreement" },
+                      ],
+                    },
+                    {
+                      title:
+                        locale === "pl"
+                          ? "KONTO"
+                          : locale === "de"
+                            ? "KONTO"
+                            : "ACCOUNT",
+                      links: [
+                        { href: isMemberActive ? "/account" : "/login", label: isMemberActive ? t.privateConsole : labels.login },
+                        { href: "/account", label: t.account },
+                        { href: "/contact", label: labels.contact },
+                      ],
+                    },
+                  ].map((group) => (
+                    <div key={group.title}>
+                      <p className="font-mono text-[10px] font-black uppercase tracking-[0.22em] text-white/[0.35]">
+                        {group.title}
+                      </p>
+                      <div className="mt-2 grid">
+                        {group.links.map((link) => (
+                          <Link
+                            key={link.href}
+                            href={link.href}
+                            className="border-b border-white/[0.10] py-3 text-sm font-semibold uppercase tracking-[0.16em] text-white/[0.78] transition hover:text-velmere-gold"
+                          >
+                            {link.label}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
                   ))}
-                </div>
-              </nav>
+                </nav>
 
-              <div className="mt-auto space-y-7 border-t border-white/10 pt-6">
-                <div>
-                  <p className="luxury-kicker text-white/38">{t("walletAccess")}</p>
-                  <div className="mt-4 rounded-2xl border border-white/10 bg-black/24 p-3">
-                    <p className="break-all font-mono text-[10px] uppercase tracking-[0.16em] text-white/48">
-                      {walletUi.connected ? walletUi.fullAddress : t("walletReady")}
-                    </p>
-                    {walletUi.connected ? (
-                      <div className="mt-3 grid gap-2 font-mono text-[10px] uppercase tracking-[0.14em] text-white/46">
-                        <div className="flex justify-between gap-3"><span>{t("network")}</span><span className="text-white/72">{walletUi.network || "Wallet"}</span></div>
-                        <div className="flex justify-between gap-3"><span>{t("balance")}</span><span className="text-white/72">{walletUi.tokenBalanceLabel || "Connected"}</span></div>
-                      </div>
-                    ) : null}
-                    {!walletUi.connected ? (
-                      <div className="mt-4 grid grid-cols-2 gap-2">
-                        <button type="button" onClick={() => connectWalletFromMenu("metamask")} className="min-h-11 rounded-full border border-[#c8a96a]/25 bg-[#c8a96a]/10 px-3 font-mono text-[9px] font-semibold uppercase tracking-[0.14em] text-[#c8a96a] transition hover:bg-[#c8a96a]/15 active:scale-95">MetaMask</button>
-                        <button type="button" onClick={() => connectWalletFromMenu("phantom")} className="min-h-11 rounded-full border border-white/10 bg-white/[0.045] px-3 font-mono text-[9px] font-semibold uppercase tracking-[0.14em] text-white/70 transition hover:bg-white/[0.08] active:scale-95">Phantom</button>
-                      </div>
-                    ) : null}
-                    {walletUi.connected ? (
-                      <button type="button" onClick={() => wallet.disconnect()} className="mt-2 min-h-11 w-full rounded-full border border-white/10 bg-white/[0.035] px-3 font-mono text-[9px] font-semibold uppercase tracking-[0.16em] text-white/55 transition hover:border-red-400/30 hover:text-red-200 active:scale-95">{t("disconnectWallet")}</button>
-                    ) : null}
-                  </div>
+                <div className="mt-8 rounded-2xl border border-white/[0.10] bg-black/[0.24] p-4">
+                  <p className="velmere-label text-velmere-gold">
+                    Wallet safety
+                  </p>
+                  <p className="mt-3 text-xs leading-6 text-white/[0.46]">
+                    VLM is an access layer, not an investment. Never enter your
+                    seed phrase.
+                  </p>
                 </div>
-                <div>
-                  <p className="luxury-kicker text-white/38">{common("language")}</p>
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {LOCALES.map((item) => (
-                      <Link key={item} href={localizedPath()} locale={item} onClick={closeDrawerAfterNavigation} aria-current={locale === item ? "page" : undefined} className={`inline-flex h-10 items-center rounded-full border px-4 text-[11px] uppercase tracking-[0.18em] transition-colors ${locale === item ? "border-velmere-gold text-velmere-gold" : "border-white/10 text-white/48 hover:border-white/25 hover:text-white"}`}>
-                        {t(`locales.${item}`)}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <p className="luxury-kicker text-white/38">{t("legal")}</p>
-                  <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3">
+
+                <div className="mt-8">
+                  <p className="velmere-label text-velmere-gold">Legal</p>
+                  <div className="mt-4 grid gap-3">
                     {legalLinks.map((link) => (
-                      <Link key={link.href} href={link.href} onClick={closeDrawerAfterNavigation} className="text-[11px] uppercase tracking-[0.18em] text-white/46 transition-colors hover:text-white">
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        className="text-xs uppercase tracking-[0.16em] text-white/[0.44] transition hover:text-white"
+                      >
                         {link.label}
                       </Link>
                     ))}
                   </div>
                 </div>
+
+                <div className="mt-8">
+                  <p className="velmere-label text-velmere-gold">Language</p>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {LOCALES.map((item) => (
+                      <Link
+                        key={item}
+                        href={pathname || "/"}
+                        locale={item}
+                        aria-current={locale === item ? "page" : undefined}
+                        className={`inline-flex h-10 items-center rounded-full border px-4 text-[11px] uppercase tracking-[0.18em] transition ${locale === item ? "border-velmere-gold text-velmere-gold" : "border-white/[0.10] text-white/[0.48] hover:text-white"}`}
+                      >
+                        {item.toUpperCase()}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
               </div>
-            </div>
-          </motion.aside>
-        </>
-      )}
-    </AnimatePresence>
-  );
-
-  return (
-    <>
-      <header className="fixed inset-x-0 top-0 z-[50] border-b border-white/8 bg-[#080809]/92 text-velmere-ivory shadow-[0_18px_70px_rgba(0,0,0,0.48)] backdrop-blur-2xl supports-[backdrop-filter]:bg-[#080809]/86">
-        <div className="relative flex min-h-[72px] w-full max-w-none items-center gap-3 px-4 pt-[env(safe-area-inset-top)] md:h-20 md:px-6 md:pt-0 xl:px-8">
-          <button ref={menuButtonRef} type="button" aria-expanded={isOpen} aria-controls="velmere-shop-drawer" onMouseEnter={playHover} onClick={() => { playClick(); closeCart(); setIsOpen(true); }} className="relative z-20 inline-flex h-11 shrink-0 items-center gap-2 rounded-full border border-white/8 bg-velmere-surface px-4 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/72 transition hover:border-white/18 hover:bg-velmere-elevated hover:text-velmere-ivory active:scale-95">
-            <Menu className="h-4 w-4" aria-hidden="true" />
-            <span className="hidden sm:inline">{t("menu")}</span>
-          </button>
-          {isVlmRoute ? <div className="absolute left-[17.5rem] top-1/2 z-20 hidden -translate-y-1/2 xl:flex 2xl:left-[19rem]"><VlmModeSwitch inline /></div> : null}
-
-          <div className="pointer-events-none absolute left-1/2 top-1/2 z-10 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-5 whitespace-nowrap xl:gap-7">
-            <Link href="/" aria-label="Velmère" onMouseEnter={playHover} className="pointer-events-auto font-sans text-[1.45rem] font-semibold uppercase tracking-[0.22em] text-white drop-shadow-[0_2px_18px_rgba(0,0,0,0.8)] max-[370px]:text-[1.22rem] max-[370px]:tracking-[0.16em] md:text-[1.9rem]">
-              VELMÈRE
-            </Link>
-            <nav aria-label="Primary" className="pointer-events-auto hidden items-center gap-3 lg:flex">
-              {topLinks.map((link) => (
-                <Link key={link.href} href={link.href} onMouseEnter={playHover} className="rounded-full px-2.5 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-velmere-muted transition hover:bg-white/[0.04] hover:text-velmere-ivory xl:px-4">
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
-          </div>
-
-          <div className="min-w-0 flex-1" />
-          <div className="relative z-20 ml-auto flex min-w-0 items-center justify-end gap-2">
-            <AudioToggleButton />
-            <div className="hidden rounded-full border border-white/8 bg-velmere-surface p-1 2xl:flex">
-              {LOCALES.map((item) => (
-                <Link key={item} href={localizedPath()} locale={item} aria-label={`${common("language")} ${item.toUpperCase()}`} aria-current={locale === item ? "page" : undefined} className={`inline-flex h-9 min-w-10 items-center justify-center rounded-full px-3 text-[10px] font-semibold uppercase tracking-[0.16em] transition-colors ${locale === item ? "bg-white text-black" : "text-white/50 hover:text-white"}`}>
-                  {item.toUpperCase()}
-                </Link>
-              ))}
-            </div>
-            <div ref={walletRef} className="relative hidden md:block">
-              <button type="button" onClick={() => setWalletOpen((value) => !value)} className="inline-flex h-11 max-w-[12rem] items-center gap-2 truncate rounded-full border border-[#c8a96a]/25 bg-[#c8a96a]/10 px-3 font-mono text-[9px] font-semibold uppercase tracking-[0.14em] text-[#c8a96a] transition hover:border-[#c8a96a]/45 hover:bg-[#c8a96a]/15 active:scale-95 xl:max-w-[15rem]">
-                <Wallet className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-                <span className="truncate">{walletSummary}</span>
-                {walletUi.connected ? <ChevronDown className="h-3 w-3 shrink-0" aria-hidden="true" /> : null}
-              </button>
-              <AnimatePresence>
-                {walletOpen ? (
-                  <motion.div initial={{ opacity: 0, y: 8, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 8, scale: 0.98 }} transition={{ duration: 0.18 }} className="absolute right-0 mt-3 w-80 overflow-hidden rounded-2xl border border-white/10 bg-[#1A1A1C] p-4 shadow-2xl shadow-black/60">
-                    <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-[#c8a96a]">{walletUi.connected ? t("walletConnected") : t("walletAccess")}</p>
-                    <p className="mt-3 break-all font-mono text-xs text-white/70">{walletUi.connected ? walletUi.fullAddress : t("walletHelper")}</p>
-                    {walletUi.connected ? (
-                      <div className="mt-4 grid gap-2 rounded-xl border border-white/10 bg-black/24 p-3 font-mono text-[10px] uppercase tracking-[0.14em] text-white/45">
-                        <div className="flex justify-between gap-3"><span>{t("network")}</span><span className="text-white/70">{walletUi.network || "Wallet"}</span></div>
-                        <div className="flex justify-between gap-3"><span>{t("balance")}</span><span className="text-white/70">{walletUi.tokenBalanceLabel || "Connected"}</span></div>
-                        <div className="flex justify-between gap-3"><span>{t("access")}</span><span className="text-[#c8a96a]">{walletUi.accessStatusLabel || "preview"}</span></div>
-                      </div>
-                    ) : (
-                      <div className="mt-4 grid grid-cols-2 gap-2">
-                        <button type="button" onClick={() => connectWalletFromMenu("metamask")} className="min-h-11 rounded-full border border-[#c8a96a]/25 bg-[#c8a96a]/10 px-3 font-mono text-[9px] font-semibold uppercase tracking-[0.14em] text-[#c8a96a] transition hover:bg-[#c8a96a]/15 active:scale-95">MetaMask</button>
-                        <button type="button" onClick={() => connectWalletFromMenu("phantom")} className="min-h-11 rounded-full border border-white/10 bg-white/[0.045] px-3 font-mono text-[9px] font-semibold uppercase tracking-[0.14em] text-white/70 transition hover:bg-white/[0.08] active:scale-95">Phantom</button>
-                      </div>
-                    )}
-                    {walletUi.connected ? (
-                      <button type="button" onClick={() => { wallet.disconnect(); setWalletOpen(false); }} className="mt-4 flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.035] font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-white/65 transition hover:border-red-400/30 hover:text-red-200 active:scale-95">
-                        <LogOut className="h-3.5 w-3.5" aria-hidden="true" />
-                        {t("disconnectWallet")}
-                      </button>
-                    ) : null}
-                  </motion.div>
-                ) : null}
-              </AnimatePresence>
-            </div>
-            <Link href="/account" aria-label={t("account")} onMouseEnter={playHover} className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/8 bg-velmere-surface text-xs font-semibold uppercase tracking-[0.14em] text-velmere-muted transition hover:border-velmere-gold/45 hover:bg-velmere-elevated hover:text-velmere-ivory active:scale-95 sm:w-auto sm:px-4">
-              <User className="h-4 w-4" aria-hidden="true" />
-              <span className="hidden sm:ml-2 sm:inline">{t("account")}</span>
-            </Link>
-            <button type="button" aria-label={t("cart")} onMouseEnter={playHover} onClick={() => { playClick(); setIsOpen(false); openCart(); }} className="relative inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/8 bg-velmere-surface text-white/72 transition hover:border-white/18 hover:bg-velmere-elevated hover:text-velmere-ivory active:scale-95">
-              <ShoppingBag className="h-4 w-4" aria-hidden="true" />
-              {itemCount > 0 ? <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full border border-black bg-velmere-gold px-1 text-[10px] font-semibold text-black">{itemCount}</span> : null}
-            </button>
-          </div>
-        </div>
-      </header>
-      {mounted ? createPortal(drawer, document.body) : null}
+            </motion.aside>
+          </>
+        ) : null}
+      </AnimatePresence>
     </>
   );
 }

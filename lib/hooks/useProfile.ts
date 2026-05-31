@@ -8,6 +8,14 @@ type ProfileResponse = {
   source: "supabase" | "mock";
 };
 
+function previewHeaders() {
+  if (typeof window === "undefined") return { "Content-Type": "application/json" };
+  const active = window.localStorage.getItem("velmere:account-session") === "active";
+  return active
+    ? { "Content-Type": "application/json", "x-velmere-preview-session": "active" }
+    : { "Content-Type": "application/json" };
+}
+
 const fetcher = async (url: string) => {
   const response = await fetch(url, { cache: "no-store" });
   if (!response.ok) throw new Error("Unable to fetch profile");
@@ -24,7 +32,7 @@ export function useProfile(fallback: ProfileRecord) {
 export async function updateProfileRequest(profile: ProfileRecord) {
   const response = await fetch("/api/profile", {
     method: "PATCH",
-    headers: { "Content-Type": "application/json" },
+    headers: previewHeaders(),
     body: JSON.stringify(profile),
   });
   if (!response.ok) throw new Error("Unable to update profile");
