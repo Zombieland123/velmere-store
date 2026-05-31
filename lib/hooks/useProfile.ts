@@ -8,12 +8,15 @@ type ProfileResponse = {
   source: "supabase" | "mock";
 };
 
-function previewHeaders() {
-  if (typeof window === "undefined") return { "Content-Type": "application/json" };
+function previewHeaders(): HeadersInit {
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+
+  if (typeof window === "undefined") return headers;
+
   const active = window.localStorage.getItem("velmere:account-session") === "active";
-  return active
-    ? { "Content-Type": "application/json", "x-velmere-preview-session": "active" }
-    : { "Content-Type": "application/json" };
+  if (active) headers["x-velmere-preview-session"] = "active";
+
+  return headers;
 }
 
 const fetcher = async (url: string) => {

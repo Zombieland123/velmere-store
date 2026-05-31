@@ -42,8 +42,11 @@ for (const file of textFiles) {
     const allowed = /\/(15|20|25|30|40|50|60|70|75|80|90|95|100)$/.test(bad ?? "");
     if (!allowed) errors.push(`${file}: suspicious Tailwind opacity class ${bad}. Use arbitrary syntax like border-white/[0.12].`);
   }
-  if (/return\s*\(\)\s*=>\s*(?:window|document)\.dispatchEvent\(/.test(source)) {
-    errors.push(`${file}: useEffect cleanup must use a block, not return window.dispatchEvent(...) because dispatchEvent returns boolean.`);
+  if (/function\s+previewHeaders\s*\(\s*\)\s*\{/.test(source)) {
+    errors.push(`${file}: previewHeaders must be typed as previewHeaders(): HeadersInit and must build a Record<string, string> without undefined header values.`);
+  }
+  if (/x-velmere-preview-session[\s\S]{0,240}\?\s*undefined/.test(source)) {
+    errors.push(`${file}: do not create HeadersInit objects with optional undefined header values; build a Record<string, string> and conditionally assign the header.`);
   }
 }
 
