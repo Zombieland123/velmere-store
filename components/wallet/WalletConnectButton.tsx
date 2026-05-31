@@ -13,7 +13,7 @@ type WalletConnectButtonProps = {
   connectedWallet?: ConnectedWallet | null;
 };
 
-const WALLET_CONFIG = {
+const WALLET_CONFIG: Record<WalletKind, { label: string; emoji: string; iconPath: string }> = {
   metamask: {
     label: "MetaMask",
     emoji: "MM",
@@ -24,7 +24,12 @@ const WALLET_CONFIG = {
     emoji: "PH",
     iconPath: "/wallets/phantom.svg",
   },
-} as const;
+  walletconnect: {
+    label: "WalletConnect",
+    emoji: "WC",
+    iconPath: "",
+  },
+};
 
 function StatusDot({ state }: { state: WalletConnectionState }) {
   const getStatusColor = () => {

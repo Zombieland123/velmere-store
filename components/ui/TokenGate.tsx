@@ -34,7 +34,7 @@ export default function TokenGate({ children, required = 10000, className = "" }
               <LockKeyhole className="h-5 w-5" aria-hidden="true" />
             </div>
             <p className="mt-4 break-words font-mono text-[10px] uppercase leading-6 tracking-[0.22em] text-[#c8a96a]">
-              [ ENCRYPTED_ASSET ] // VLM ACCESS DENIED // BALANCE REQUIRED: {required.toLocaleString("en-US")} VLM
+              {"[ ENCRYPTED_ASSET ] // VLM ACCESS DENIED // BALANCE REQUIRED: "}{required.toLocaleString("en-US")}{" VLM"}
             </p>
             <p className="mt-3 text-xs leading-6 text-white/[0.50]">
               Wallet must hold the required VLM access balance. Public preview remains intentionally obscured until the access layer is satisfied.
