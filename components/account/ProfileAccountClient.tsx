@@ -39,8 +39,10 @@ export default function ProfileAccountClient() {
     }
   }, [editing, profile.bio, profile.displayName, profile.handle]);
 
-  const lastNameChange = new Date(profile.lastNameChange || DEFAULT_LAST_NAME_CHANGE.toISOString());
-  const nextNameChangeDate = useMemo(() => new Date(lastNameChange.getTime() + 30 * MS_PER_DAY), [lastNameChange]);
+  const nextNameChangeDate = useMemo(() => {
+    const lastNameChange = new Date(profile.lastNameChange || DEFAULT_LAST_NAME_CHANGE.toISOString());
+    return new Date(lastNameChange.getTime() + 30 * MS_PER_DAY);
+  }, [profile.lastNameChange]);
   const canChangeName = Date.now() >= nextNameChangeDate.getTime();
 
   async function saveProfile() {

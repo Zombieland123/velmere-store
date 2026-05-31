@@ -85,6 +85,7 @@ export default function VlmBuyAccessPanel() {
     const previousHtmlOverflow = document.documentElement.style.overflow;
     document.body.style.overflow = "hidden";
     document.documentElement.style.overflow = "hidden";
+    const triggerNode = triggerRef.current;
 
     const focusables = () =>
       Array.from(
@@ -118,7 +119,7 @@ export default function VlmBuyAccessPanel() {
       document.removeEventListener("keydown", onKeyDown);
       document.body.style.overflow = previousBodyOverflow;
       document.documentElement.style.overflow = previousHtmlOverflow;
-      triggerRef.current?.focus();
+      triggerNode?.focus();
     };
   }, [open]);
 

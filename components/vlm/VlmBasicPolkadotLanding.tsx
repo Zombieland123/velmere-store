@@ -80,7 +80,7 @@ function Web3Roller({ text }: { text: string }) {
       >
         {[0, 1].map((item) => (
           <span key={item} className="pr-12">
-            {text} /// VLM ACCESS /// WALLET SAFETY /// PRIVATE DROPS ///
+            {text}{" /// VLM ACCESS /// WALLET SAFETY /// PRIVATE DROPS ///"}
           </span>
         ))}
       </motion.div>
