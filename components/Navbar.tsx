@@ -23,6 +23,8 @@ const navLabels = {
     square: "Square",
     lookbook: "Lookbook",
     motionLab: "Motion Lab",
+    community: "Community",
+    support: "Support",
     login: "Login",
     contact: "Contact",
   },
@@ -34,6 +36,8 @@ const navLabels = {
     square: "Square",
     lookbook: "Lookbook",
     motionLab: "Laboratorium ruchu",
+    community: "Społeczność",
+    support: "Pomoc",
     login: "Logowanie",
     contact: "Kontakt",
   },
@@ -45,6 +49,8 @@ const navLabels = {
     square: "Square",
     lookbook: "Lookbook",
     motionLab: "Motion Lab",
+    community: "Community",
+    support: "Support",
     login: "Login",
     contact: "Kontakt",
   },
@@ -191,8 +197,16 @@ export default function Navbar() {
     setVelmereLocalSession(false);
     setMemberOpen(false);
   };
+
+  const closeMenuPanel = () => {
+    setMenuOpen(false);
+    setWalletOpen(false);
+    setLanguageOpen(false);
+    setMemberOpen(false);
+  };
+
   const localizedPrimaryLinks = [
-    { href: "/shop", label: labels.collection },
+    { href: "/clothing", label: labels.collection },
     { href: "/shop?category=men", label: labels.men },
     { href: "/shop?category=women", label: labels.women },
     { href: "/vlm-token", label: labels.vlm },
@@ -200,9 +214,10 @@ export default function Navbar() {
     { href: "/lookbook", label: labels.lookbook },
   ];
   const desktopPrimaryLinks = [
-    { href: "/shop", label: labels.collection },
+    { href: "/clothing", label: labels.collection },
     { href: "/vlm-token", label: labels.vlm },
     { href: "/square", label: labels.square },
+    { href: "/community", label: labels.community },
   ];
 
   return (
@@ -440,6 +455,7 @@ export default function Navbar() {
               <div className="flex items-center justify-between border-b border-white/[0.10] px-6 py-5">
                 <Link
                   href="/"
+                  onClick={closeMenuPanel}
                   className="font-sans text-2xl font-semibold uppercase tracking-[0.22em]"
                 >
                   VELMÈRE
@@ -470,6 +486,7 @@ export default function Navbar() {
                         localizedPrimaryLinks[1],
                         localizedPrimaryLinks[2],
                         { href: "/lookbook", label: labels.lookbook },
+                        { href: "/faq", label: labels.support },
                       ],
                     },
                     {
@@ -481,6 +498,7 @@ export default function Navbar() {
                             : "COMMUNITY",
                       links: [
                         { href: "/square", label: labels.square },
+                        { href: "/community", label: labels.community },
                       ],
                     },
                     {
@@ -513,6 +531,7 @@ export default function Navbar() {
                           <Link
                             key={link.href}
                             href={link.href}
+                            onClick={closeMenuPanel}
                             className="border-b border-white/[0.10] py-3 text-sm font-semibold uppercase tracking-[0.16em] text-white/[0.78] transition hover:text-velmere-gold"
                           >
                             {link.label}
@@ -540,6 +559,7 @@ export default function Navbar() {
                       <Link
                         key={link.href}
                         href={link.href}
+                        onClick={closeMenuPanel}
                         className="text-xs uppercase tracking-[0.16em] text-white/[0.44] transition hover:text-white"
                       >
                         {link.label}
@@ -556,6 +576,7 @@ export default function Navbar() {
                         key={item}
                         href={pathname || "/"}
                         locale={item}
+                        onClick={closeMenuPanel}
                         aria-current={locale === item ? "page" : undefined}
                         className={`inline-flex h-10 items-center rounded-full border px-4 text-[11px] uppercase tracking-[0.18em] transition ${locale === item ? "border-velmere-gold text-velmere-gold" : "border-white/[0.10] text-white/[0.48] hover:text-white"}`}
                       >

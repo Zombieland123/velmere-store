@@ -27,13 +27,12 @@ export default function CartDrawer() {
   const [checkoutState, setCheckoutState] = useState<"idle" | "loading" | "failed">("idle");
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const [agreedPolicies, setAgreedPolicies] = useState(false);
-  const [agreedToken, setAgreedToken] = useState(false);
   const { playClick } = useUiSounds();
   const hasStripePublishableKey = Boolean(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
   const netAmount = useMemo(() => Math.round(subtotal / (1 + VAT_RATE)), [subtotal]);
   const vatAmount = Math.max(0, subtotal - netAmount);
-  const checkoutAllowed = items.length > 0 && hasStripePublishableKey && agreedPolicies && agreedToken && checkoutState !== "loading";
+  const checkoutAllowed = items.length > 0 && hasStripePublishableKey && agreedPolicies && checkoutState !== "loading";
 
   useEffect(() => closeCart(), [closeCart, pathname]);
   useEffect(() => {
@@ -129,13 +128,13 @@ export default function CartDrawer() {
                       <div className="min-w-0">
                         <div className="mb-2 flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.18em] text-emerald-300/[0.70]">
                           <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-300" aria-hidden="true" />
-                          [ {index % 2 === 0 ? "ALLOCATED" : "READY"} ]
+                          {index % 2 === 0 ? t("itemAdded") : t("readyToShip")}
                         </div>
                         <h3 className="break-words font-mono text-[12px] font-semibold uppercase tracking-[0.16em] text-white">{item.name}</h3>
                         <div className="mt-3 grid grid-cols-2 gap-2 font-mono text-[10px] uppercase tracking-[0.14em] text-white/[0.42]">
-                          <span>SIZE: <b className="font-normal text-white/[0.72]">{item.size}</b></span>
-                          <span>QTY: <b className="font-normal tabular-nums text-white/[0.72]">{item.quantity}</b></span>
-                          <span className="col-span-2 break-all">PX: <b className="font-normal tabular-nums text-white/[0.72]">{formatMoney({ amount: item.price * item.quantity, currency: item.currency }, locale)}</b></span>
+                          <span>{t("size")}: <b className="font-normal text-white/[0.72]">{item.size}</b></span>
+                          <span>{t("qty")}: <b className="font-normal tabular-nums text-white/[0.72]">{item.quantity}</b></span>
+                          <span className="col-span-2 break-all">{t("price")}: <b className="font-normal tabular-nums text-white/[0.72]">{formatMoney({ amount: item.price * item.quantity, currency: item.currency }, locale)}</b></span>
                         </div>
                       </div>
                     </div>
@@ -174,7 +173,11 @@ export default function CartDrawer() {
                 </div>
                 <div className="mt-3 grid gap-2 rounded-xl border border-white/[0.10] bg-[#202024] p-3 font-mono text-[9px] leading-5 text-white/[0.54] md:mt-4 md:gap-3 md:text-[10px]">
                   <label className="flex gap-3"><input type="checkbox" checked={agreedPolicies} onChange={(event) => setAgreedPolicies(event.target.checked)} className="mt-1 h-4 w-4 shrink-0 accent-velmere-gold" /><span>{t("acceptTermsPrefix")} <Link href="/legal/terms" className="text-velmere-gold underline-offset-4 hover:underline">{t("terms")}</Link> {t("and")} <Link href="/returns" className="text-velmere-gold underline-offset-4 hover:underline">{t("refundPolicy")}</Link>.</span></label>
-                  <label className="flex gap-3"><input type="checkbox" checked={agreedToken} onChange={(event) => setAgreedToken(event.target.checked)} className="mt-1 h-4 w-4 shrink-0 accent-velmere-gold" /><span>{t("acceptTokenPrefix")} <Link href="/token-agreement" className="text-velmere-gold underline-offset-4 hover:underline">{t("tokenAgreement")}</Link>.</span></label>
+                </div>
+                <div className="mt-3 grid gap-2 rounded-xl border border-white/[0.08] bg-black/[0.20] p-3 text-[11px] leading-5 text-white/[0.56]">
+                  <p>{t("shippingNote")}</p>
+                  <p>{t("returnsNote")}</p>
+                  <p className="text-velmere-gold/[0.78]">{t("vlmOptional")}</p>
                 </div>
                 <button type="button" disabled={!checkoutAllowed} onClick={startCheckout} className="mt-4 flex min-h-13 w-full items-center justify-center gap-2 rounded-full border border-white/[0.10] px-6 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-white/[0.34] transition-transform enabled:cursor-pointer enabled:bg-white enabled:text-black enabled:hover:bg-velmere-gold disabled:cursor-not-allowed disabled:opacity-40 active:scale-95 md:mt-5 md:min-h-14 md:text-[11px] md:tracking-[0.2em]">
                   {checkoutState === "loading" && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}

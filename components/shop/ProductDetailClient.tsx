@@ -15,6 +15,7 @@ import { Link } from "@/navigation";
 import LuxurySection from "@/components/layout/LuxurySection";
 import { useCart } from "@/components/CartProvider";
 import { fadeUp } from "@/lib/motion";
+import { trackVelmereEvent } from "@/lib/analytics";
 import {
   formatMoney,
   getLocalizedString,
@@ -111,6 +112,12 @@ export default function ProductDetailPage({
     };
   }, [isSizeGuideOpen]);
 
+  useEffect(() => {
+    if (product) {
+      trackVelmereEvent("product_view", { productId: product.id, slug: product.slug });
+    }
+  }, [product]);
+
   if (!product) {
     return (
       <main className="min-h-[100dvh] bg-velmere-black pb-28 text-white">
@@ -158,6 +165,7 @@ export default function ProductDetailPage({
 
   function handleAddToCart() {
     if (!selectedVariant || !purchasable || ctaState !== "idle") return;
+    trackVelmereEvent("add_to_cart", { productId: selectedProduct.id, variantId: selectedVariant.id, size: selectedVariant.size ?? selectedVariant.title });
     navigator.vibrate?.(45);
     setCtaState("processing");
     window.setTimeout(() => {
@@ -172,7 +180,7 @@ export default function ProductDetailPage({
         image: selectedProduct.images[0]?.url ?? "",
       });
       setCtaState("allocated");
-      setToast("[ ITEM ALLOCATED ]");
+      setToast(t("addedToCart"));
       window.setTimeout(() => {
         setCtaState("idle");
         setToast("");
@@ -182,9 +190,9 @@ export default function ProductDetailPage({
 
   const ctaLabel =
     ctaState === "processing"
-      ? "[ PROCESSING... ]"
+      ? t("adding")
       : ctaState === "allocated"
-        ? "[ ITEM ALLOCATED ]"
+        ? t("addedToCart")
         : purchasable
           ? selectedVariant
             ? t("addToCart")
@@ -272,6 +280,15 @@ export default function ProductDetailPage({
                 </div>
               </div>
 
+              <div className="mt-4 grid gap-3 rounded-xl border border-velmere-gold/[0.18] bg-velmere-gold/[0.06] p-4 text-sm leading-7 text-white/[0.64]">
+                <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-velmere-gold/[0.82]">{t("vlmBenefitTitle")}</p>
+                <p>{t("vlmBenefitBody")}</p>
+                <div className="grid gap-2 text-[11px] uppercase tracking-[0.14em] text-white/[0.46] sm:grid-cols-2">
+                  <span>{t("deliveryEstimate")}</span>
+                  <span>{t("returnSummary")}</span>
+                </div>
+              </div>
+
               <div className="mt-8">
                 <div className="mb-4 flex items-center justify-between gap-4">
                   <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/[0.72]">
@@ -290,7 +307,10 @@ export default function ProductDetailPage({
                     <button
                       key={variant.id}
                       type="button"
-                      onClick={() => setSelectedVariantId(variant.id)}
+                      onClick={() => {
+                        setSelectedVariantId(variant.id);
+                        trackVelmereEvent("size_select", { productId: selectedProduct.id, variantId: variant.id, size: variant.size ?? variant.title });
+                      }}
                       className={`flex h-12 min-w-12 items-center justify-center rounded-full border px-3 text-xs font-semibold transition-transform duration-200 active:scale-95 ${selectedVariantId === variant.id ? "border-velmere-gold bg-velmere-gold text-black" : "border-white/[0.12] text-white/[0.62] hover:border-white/[0.28] hover:text-white"}`}
                     >
                       {variant.size ?? variant.title}

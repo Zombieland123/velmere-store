@@ -3,10 +3,12 @@
 import { Link } from "@/navigation";
 
 const exploreLinks = [
-  { href: "/shop", label: "Collection" },
+  { href: "/clothing", label: "Clothing" },
   { href: "/vlm-token", label: "VLM Access" },
   { href: "/square", label: "Velmère Square" },
   { href: "/lookbook", label: "Lookbook" },
+  { href: "/community", label: "Community" },
+  { href: "/faq", label: "FAQ" },
 ];
 
 const legalLinks = [

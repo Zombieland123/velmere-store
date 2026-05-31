@@ -6,6 +6,7 @@ const locales = ["pl", "en", "de"];
 const routes = [
   "",
   "/shop",
+  "/clothing",
   "/vlm-token",
   "/square",
   "/lookbook",
@@ -16,6 +17,8 @@ const routes = [
   "/returns",
   "/impressum",
   "/contact",
+  "/faq",
+  "/community",
   "/token-agreement",
   "/login",
 ];
@@ -28,8 +31,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     allRoutes.map((route) => ({
       url: `${siteUrl}/${locale}${route}`,
       lastModified: new Date("2026-05-29"),
-      changeFrequency: route === "" || route === "/shop" ? "weekly" : "monthly",
-      priority: route === "" ? 1 : route === "/shop" ? 0.9 : route.startsWith("/shop/") ? 0.8 : 0.6,
+      changeFrequency: route === "" || route === "/shop" || route === "/clothing" ? "weekly" : "monthly",
+      priority: route === "" ? 1 : (route === "/shop" || route === "/clothing") ? 0.9 : route.startsWith("/shop/") ? 0.8 : 0.6,
     })),
   );
 }

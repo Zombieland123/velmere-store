@@ -25,8 +25,8 @@ export default async function CheckoutSuccessPage({ params: { locale }, searchPa
       <LuxurySection className="py-28 md:py-36">
         <section className="mx-auto max-w-3xl rounded-none border border-white/[0.10] bg-white/[0.025] p-0 text-center shadow-[0_40px_140px_rgba(0,0,0,0.55)]">
           <div className="border-b border-white/[0.10] px-6 py-4 font-mono text-[10px] uppercase tracking-[0.24em] text-white/[0.38] sm:flex sm:items-center sm:justify-between">
-            <span>VELMÈRE CHECKOUT RECEIPT</span>
-            <span className="tabular-nums">STATUS: CAPTURED</span>
+            <span>VELMÈRE ORDER RECEIPT</span>
+            <span className="tabular-nums">STATUS: CONFIRMED</span>
           </div>
           <div className="p-7 md:p-10">
             <CheckCircle2 className="mx-auto h-12 w-12 text-velmere-gold" aria-hidden="true" />
@@ -41,11 +41,11 @@ export default async function CheckoutSuccessPage({ params: { locale }, searchPa
               </div>
               <div className="grid gap-2 py-3 sm:grid-cols-[0.4fr_1fr]">
                 <dt>Fulfilment</dt>
-                <dd className="text-white/[0.72]">Webhook queued / order draft sync</dd>
+                <dd className="text-white/[0.72]">Order review / fulfilment preparation</dd>
               </div>
               <div className="grid gap-2 py-3 sm:grid-cols-[0.4fr_1fr]">
-                <dt>Ledger</dt>
-                <dd className="text-emerald-300/[0.70]">[ ALLOCATED ]</dd>
+                <dt>Order status</dt>
+                <dd className="text-emerald-300/[0.70]">Confirmed</dd>
               </div>
             </dl>
 

@@ -50,6 +50,37 @@ for (const file of textFiles) {
   }
 }
 
+
+try {
+  const cartSource = read("components/CartDrawer.tsx");
+  const checkoutSuccess = read("app/[locale]/checkout/success/page.tsx");
+  const checkoutCancel = read("app/[locale]/checkout/cancel/page.tsx");
+  const commerceSurface = `${cartSource}\n${checkoutSuccess}\n${checkoutCancel}`;
+  for (const banned of ["Order book", "ALLOCATED", "PX:", "acceptTokenPrefix"]) {
+    if (commerceSurface.includes(banned)) {
+      errors.push(`commerce copy guard: remove trading/token-gating copy '${banned}' from clothing cart/checkout surfaces.`);
+    }
+  }
+  if (/agreedToken|setAgreedToken/.test(cartSource)) {
+    errors.push("components/CartDrawer.tsx: token agreement checkbox must not block clothing checkout; VLM perks stay optional.");
+  }
+} catch (error) {
+  errors.push(`Commerce copy guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+try {
+  const navbar = read("components/Navbar.tsx");
+  if (!/const\s+closeMenuPanel\s*=/.test(navbar)) {
+    errors.push("components/Navbar.tsx: side menu links need a closeMenuPanel() handler so the mobile drawer closes after navigation.");
+  }
+  const closeHits = [...navbar.matchAll(/onClick=\{closeMenuPanel\}/g)].length;
+  if (closeHits < 4) {
+    errors.push("components/Navbar.tsx: expected drawer logo, menu links, legal links, and language links to call closeMenuPanel on click.");
+  }
+} catch (error) {
+  errors.push(`Navbar drawer guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
 try {
   const walletTypes = read("lib/wallet/types.ts");
   const walletButton = read("components/wallet/WalletConnectButton.tsx");
