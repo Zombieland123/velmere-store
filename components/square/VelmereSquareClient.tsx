@@ -286,8 +286,9 @@ export default function VelmereSquareClient() {
       setSelectedPostId(null);
     };
     window.addEventListener("velmere:close-square-panels", closePanels);
-    return () =>
+    return () => {
       window.removeEventListener("velmere:close-square-panels", closePanels);
+    };
   }, []);
 
   useEffect(() => {
@@ -319,12 +320,13 @@ export default function VelmereSquareClient() {
         detail: { hidden: Boolean(selectedPostId || composerOpen) },
       }),
     );
-    return () =>
+    return () => {
       window.dispatchEvent(
         new CustomEvent("velmere:angel-visibility", {
           detail: { hidden: false },
         }),
       );
+    };
   }, [selectedPostId, composerOpen]);
 
   useEffect(() => {

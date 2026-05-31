@@ -102,12 +102,13 @@ export default function ProductDetailPage({
         detail: { hidden: isSizeGuideOpen },
       }),
     );
-    return () =>
+    return () => {
       window.dispatchEvent(
         new CustomEvent("velmere:angel-visibility", {
           detail: { hidden: false },
         }),
       );
+    };
   }, [isSizeGuideOpen]);
 
   if (!product) {
