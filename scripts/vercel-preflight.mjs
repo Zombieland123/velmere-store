@@ -68,6 +68,21 @@ try {
   errors.push(`Commerce copy guard failed: ${error instanceof Error ? error.message : String(error)}`);
 }
 
+
+try {
+  const rootPagePath = path.join(root, "app/page.tsx");
+  if (!fs.existsSync(rootPagePath)) {
+    errors.push("app/page.tsx: root deployment path '/' must exist and redirect to the default locale so Vercel domain preview does not show a 404.");
+  } else {
+    const rootPage = read("app/page.tsx");
+    if (!/redirect\(["']\/pl["']\)/.test(rootPage)) {
+      errors.push("app/page.tsx: root page should redirect('/pl') to avoid Vercel root-domain 404.");
+    }
+  }
+} catch (error) {
+  errors.push(`Root route guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
 try {
   const navbar = read("components/Navbar.tsx");
   if (!/const\s+closeMenuPanel\s*=/.test(navbar)) {
@@ -107,6 +122,21 @@ try {
   }
 } catch (error) {
   errors.push(`VLM mobile switch guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+
+try {
+  const rootPagePath = path.join(root, "app/page.tsx");
+  if (!fs.existsSync(rootPagePath)) {
+    errors.push("app/page.tsx: root deployment path '/' must exist and redirect to the default locale so Vercel domain preview does not show a 404.");
+  } else {
+    const rootPage = read("app/page.tsx");
+    if (!/redirect\(["']\/pl["']\)/.test(rootPage)) {
+      errors.push("app/page.tsx: root page should redirect('/pl') to avoid Vercel root-domain 404.");
+    }
+  }
+} catch (error) {
+  errors.push(`Root route guard failed: ${error instanceof Error ? error.message : String(error)}`);
 }
 
 try {
