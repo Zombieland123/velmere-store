@@ -166,6 +166,16 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
+    const onOpenWallet = () => {
+      closeCart();
+      setMenuOpen(false);
+      setWalletOpen(true);
+    };
+    window.addEventListener("velmere:open-wallet", onOpenWallet);
+    return () => window.removeEventListener("velmere:open-wallet", onOpenWallet);
+  }, [closeCart]);
+
+  useEffect(() => {
     const previous = document.body.style.overflow;
     if (menuOpen) document.body.style.overflow = "hidden";
     return () => {
@@ -352,7 +362,7 @@ export default function Navbar() {
                 setMenuOpen(false);
                 openCart();
               }}
-              className="relative inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/[0.10] bg-white/[0.035] text-white/[0.62] transition hover:border-white/[0.22] hover:text-white active:scale-95 sm:h-11 sm:w-11"
+              className="relative inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/[0.14] bg-white/[0.055] text-white/[0.78] shadow-[0_10px_34px_rgba(0,0,0,0.24)] transition hover:border-white/[0.28] hover:text-white active:scale-95 sm:h-11 sm:w-11"
             >
               <ShoppingBag className="h-4 w-4" />
               {itemCount > 0 ? (

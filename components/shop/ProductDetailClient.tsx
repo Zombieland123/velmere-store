@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ArrowLeft,
   ChevronDown,
@@ -91,6 +91,7 @@ export default function ProductDetailPage({
   );
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
   const [toast, setToast] = useState("");
+  const addInFlightRef = useRef(false);
   const [ctaState, setCtaState] = useState<"idle" | "processing" | "allocated">(
     "idle",
   );
@@ -164,7 +165,8 @@ export default function ProductDetailPage({
         : `Velmère / Shop / ${title}`;
 
   function handleAddToCart() {
-    if (!selectedVariant || !purchasable || ctaState !== "idle") return;
+    if (!selectedVariant || !purchasable || ctaState !== "idle" || addInFlightRef.current) return;
+    addInFlightRef.current = true;
     trackVelmereEvent("add_to_cart", { productId: selectedProduct.id, variantId: selectedVariant.id, size: selectedVariant.size ?? selectedVariant.title });
     navigator.vibrate?.(45);
     setCtaState("processing");
@@ -182,6 +184,7 @@ export default function ProductDetailPage({
       setCtaState("allocated");
       setToast(t("addedToCart"));
       window.setTimeout(() => {
+        addInFlightRef.current = false;
         setCtaState("idle");
         setToast("");
       }, 1400);

@@ -53,6 +53,12 @@ export default function NeuralAtelier3D() {
     if (!host) return undefined;
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const lowPowerMode = Boolean(
+      reducedMotion ||
+      window.matchMedia("(max-width: 767px), (pointer: coarse)").matches ||
+      (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData
+    );
+    if (lowPowerMode) return undefined;
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
       alpha: true,

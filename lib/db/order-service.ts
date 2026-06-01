@@ -25,6 +25,54 @@ export type PersistStripeOrderInput = {
   } | null;
 };
 
+
+const memoryProcessedStripeEvents = new Set<string>();
+
+export async function hasProcessedStripeWebhookEvent(eventId: string) {
+  if (!eventId) return false;
+  if (!hasSupabaseConfig()) return memoryProcessedStripeEvents.has(eventId);
+
+  const supabase = getSupabaseServerClient();
+  if (!supabase) return memoryProcessedStripeEvents.has(eventId);
+
+  const { data, error } = await supabase
+    .from("velmere_stripe_webhook_events")
+    .select("id")
+    .eq("id", eventId)
+    .maybeSingle();
+
+  if (error) {
+    console.warn("Stripe webhook idempotency lookup failed", error.message);
+    return memoryProcessedStripeEvents.has(eventId);
+  }
+
+  return Boolean(data);
+}
+
+export async function markStripeWebhookEventProcessed(eventId: string, eventType: string) {
+  if (!eventId) return;
+  memoryProcessedStripeEvents.add(eventId);
+
+  if (!hasSupabaseConfig()) return;
+  const supabase = getSupabaseServerClient();
+  if (!supabase) return;
+
+  const { error } = await supabase
+    .from("velmere_stripe_webhook_events")
+    .upsert(
+      {
+        id: eventId,
+        type: eventType,
+        processed_at: new Date().toISOString(),
+      },
+      { onConflict: "id" },
+    );
+
+  if (error) {
+    console.warn("Stripe webhook idempotency write failed", error.message);
+  }
+}
+
 function redactEmail(email?: string | null) {
   if (!email) return null;
   const [name, domain] = email.split("@");

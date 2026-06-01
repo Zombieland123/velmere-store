@@ -81,6 +81,43 @@ try {
   errors.push(`Navbar drawer guard failed: ${error instanceof Error ? error.message : String(error)}`);
 }
 
+
+try {
+  const square = read("components/square/VelmereSquareClient.tsx");
+  if (/addEventListener\("touchmove"[\s\S]{0,220}preventDefault/.test(square) || /addEventListener\("wheel"[\s\S]{0,220}preventDefault/.test(square)) {
+    errors.push("components/square/VelmereSquareClient.tsx: do not block touchmove/wheel globally; mobile post modals must remain scrollable.");
+  }
+  if (!/fixed inset-0 z-\[220\][^"`]*overflow-y-auto/.test(square)) {
+    errors.push("components/square/VelmereSquareClient.tsx: post modal overlay should use overflow-y-auto so long posts/comments scroll on mobile.");
+  }
+  if (!/top-\[calc\(env\(safe-area-inset-top\)\+0\.75rem\)\]/.test(square)) {
+    errors.push("components/square/VelmereSquareClient.tsx: mobile post modal needs a visible safe-area close button near the top edge.");
+  }
+} catch (error) {
+  errors.push(`Square mobile guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+try {
+  const vlmSwitch = read("components/vlm/VlmModeSwitch.tsx");
+  if (!/fixed inset-x-4 bottom-\[calc\(env\(safe-area-inset-bottom\)\+9\.25rem\)\]/.test(vlmSwitch)) {
+    errors.push("components/vlm/VlmModeSwitch.tsx: mobile Basic/Pro switch must be centered above Angel with inset-x-4, not clipped on the right edge.");
+  }
+  if (!/max-w-\[15\.5rem\]/.test(vlmSwitch)) {
+    errors.push("components/vlm/VlmModeSwitch.tsx: mobile Basic/Pro control needs a max width so both labels stay visible.");
+  }
+} catch (error) {
+  errors.push(`VLM mobile switch guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+try {
+  const navbar = read("components/Navbar.tsx");
+  if (!/ShoppingBag/.test(navbar) || !/aria-label="Open cart"/.test(navbar)) {
+    errors.push("components/Navbar.tsx: mobile header must always expose the cart button with a ShoppingBag icon and Open cart label.");
+  }
+} catch (error) {
+  errors.push(`Navbar cart guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
 try {
   const walletTypes = read("lib/wallet/types.ts");
   const walletButton = read("components/wallet/WalletConnectButton.tsx");
@@ -96,6 +133,85 @@ try {
   }
 } catch (error) {
   errors.push(`Wallet config guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+try {
+  const productCard = read("components/product/ProductCard.tsx");
+  const shopPage = read("components/shop/ShopPageClient.tsx");
+  if (!/priority\?: boolean/.test(productCard) || !/priority=\{priority\}/.test(productCard)) {
+    errors.push("components/product/ProductCard.tsx: ProductCard must accept a priority prop and pass it to the primary next/image for LCP safety.");
+  }
+  if (!/priority=\{index < 2\}/.test(shopPage)) {
+    errors.push("components/shop/ShopPageClient.tsx: first visible product cards should pass priority={index < 2} to optimize above-the-fold mobile LCP.");
+  }
+} catch (error) {
+  errors.push(`Product image optimization guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+try {
+  const cartStore = read("store/useCartStore.ts");
+  const cartProvider = read("components/CartProvider.tsx");
+  const cartDrawer = read("components/CartDrawer.tsx");
+  if (!/skipHydration:\s*true/.test(cartStore) || !/hasHydrated/.test(cartStore)) {
+    errors.push("store/useCartStore.ts: persisted cart needs skipHydration and an explicit hasHydrated flag to prevent hydration flicker.");
+  }
+  if (!/safeItems/.test(cartProvider)) {
+    errors.push("components/CartProvider.tsx: expose safeItems only after cart hydration to avoid SSR/client cart mismatch.");
+  }
+  if (!/!mounted \|\| !hasHydrated/.test(cartDrawer)) {
+    errors.push("components/CartDrawer.tsx: drawer should return null until mounted and cart storage has hydrated.");
+  }
+} catch (error) {
+  errors.push(`Cart hydration guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+try {
+  const middleware = read("middleware.ts");
+  if (!/api\|_next\|_vercel\|\.\*\\\.\.\*/.test(middleware) && !/api\|_next\|_vercel\|\.\*\\\.\*/.test(middleware)) {
+    errors.push("middleware.ts: matcher must exclude api, _next, _vercel and static files with extensions to avoid Edge work on images/assets.");
+  }
+} catch (error) {
+  errors.push(`Middleware matcher guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+try {
+  const printful = read("lib/printful/client.ts");
+  if (/cache:\s*["']no-store["'][\s\S]{0,80}method\s*===\s*["']GET/.test(printful) || !/revalidate:\s*options\.revalidate \?\? 3600/.test(printful)) {
+    errors.push("lib/printful/client.ts: GET requests should use Next revalidate cache by default to avoid Printful rate limiting.");
+  }
+} catch (error) {
+  errors.push(`Printful cache guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+try {
+  const webhook = read("app/api/stripe/webhook/route.ts");
+  const orderService = read("lib/db/order-service.ts");
+  if (!/stripe\.webhooks\.constructEvent/.test(webhook) || !/stripe-signature/.test(webhook)) {
+    errors.push("app/api/stripe/webhook/route.ts: Stripe webhook must verify stripe-signature with constructEvent.");
+  }
+  if (!/hasProcessedStripeWebhookEvent/.test(webhook) || !/markStripeWebhookEventProcessed/.test(orderService)) {
+    errors.push("Stripe webhook needs idempotency storage to prevent replay/double-fulfilment events.");
+  }
+} catch (error) {
+  errors.push(`Stripe webhook guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+try {
+  const provider = read("components/wallet/Web3Provider.tsx");
+  if (!/reconnectOnMount=\{false\}/.test(provider)) {
+    errors.push("components/wallet/Web3Provider.tsx: set reconnectOnMount={false} to prevent wallet reconnect loops/hydration surprises.");
+  }
+} catch (error) {
+  errors.push(`Web3 provider guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+try {
+  const neural = read("components/home/NeuralBrainVisual.tsx");
+  if (!/lowPowerMode/.test(neural) || !/max-width: 767px/.test(neural)) {
+    errors.push("components/home/NeuralBrainVisual.tsx: mobile canvas must have lowPowerMode to prevent battery drain and scroll lag.");
+  }
+} catch (error) {
+  errors.push(`Mobile animation guard failed: ${error instanceof Error ? error.message : String(error)}`);
 }
 
 if (errors.length) {

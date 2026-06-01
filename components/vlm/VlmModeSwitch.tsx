@@ -36,7 +36,7 @@ export default function VlmModeSwitch({
     <div
       role="tablist"
       aria-label={t("aria")}
-      className={`inline-flex rounded-full border border-white/[0.10] bg-[#121214]/[0.92] p-1 shadow-[0_18px_60px_rgba(0,0,0,0.48)] backdrop-blur-2xl ${inline ? "origin-left scale-100" : ""}`}
+      className={`inline-flex rounded-full border border-white/[0.10] bg-[#121214]/[0.94] p-1 shadow-[0_18px_60px_rgba(0,0,0,0.48)] backdrop-blur-2xl ${inline ? "origin-left scale-100" : "w-full max-w-[15.5rem] justify-between md:w-auto md:max-w-none"}`}
     >
       {[
         { key: "basic" as const, href: "/vlm-token", label: t("basic") },
@@ -54,7 +54,7 @@ export default function VlmModeSwitch({
                 navigator.vibrate(50);
               chooseMode(item.key);
             }}
-            className={`min-h-10 ${inline ? "min-w-[5.35rem] px-4" : "min-w-[5.7rem] px-4 md:min-w-[7rem] md:px-5"} rounded-full text-center font-sans text-[9px] font-black uppercase tracking-[0.2em] transition-colors active:scale-95 ${
+            className={`min-h-10 ${inline ? "min-w-[5.35rem] px-4" : "flex-1 px-4 md:min-w-[7rem] md:flex-none md:px-5"} rounded-full text-center font-sans text-[9px] font-black uppercase tracking-[0.2em] transition-colors active:scale-95 ${
               active
                 ? item.key === "pro"
                   ? "bg-[linear-gradient(135deg,#d4af37,#3a2f16_58%,#101010)] text-[#FFFFF0] shadow-[0_0_34px_rgba(212,175,55,0.2)]"
@@ -76,17 +76,17 @@ export default function VlmModeSwitch({
   return (
     <>
       <VlmModeTransitionOverlay mode={mode} />
-      <div className="fixed bottom-[calc(env(safe-area-inset-bottom)+10.8rem)] right-4 z-[91] md:bottom-[11.1rem] md:right-8">
+      <div className="fixed inset-x-4 bottom-[calc(env(safe-area-inset-bottom)+13.05rem)] z-[94] flex justify-center md:inset-x-auto md:bottom-[11.1rem] md:right-8">
         <button
           type="button"
           onClick={() => setChartOpen(true)}
-          className="inline-flex min-h-12 items-center gap-2 rounded-full border border-velmere-gold/[0.30] bg-[#111113]/[0.94] px-4 font-mono text-[9px] font-black uppercase tracking-[0.18em] text-velmere-gold shadow-[0_18px_60px_rgba(0,0,0,0.52)] backdrop-blur-2xl transition hover:border-velmere-gold/[0.55] hover:bg-velmere-gold/[0.10] active:scale-95"
+          className="inline-flex min-h-11 w-full max-w-[15.5rem] items-center justify-center gap-2 rounded-full border border-velmere-gold/[0.30] bg-[#111113]/[0.96] px-4 font-mono text-[9px] font-black uppercase tracking-[0.18em] text-velmere-gold shadow-[0_18px_60px_rgba(0,0,0,0.52)] backdrop-blur-2xl transition hover:border-velmere-gold/[0.55] hover:bg-velmere-gold/[0.10] active:scale-95 md:min-h-12 md:w-auto md:max-w-none md:justify-start"
         >
           <BarChart3 className="h-4 w-4" />
           <span className="hidden sm:inline">{t("chartButton")}</span>
         </button>
       </div>
-      <div className="fixed bottom-[calc(env(safe-area-inset-bottom)+7rem)] right-4 z-[91] md:bottom-[6.6rem] md:right-8">
+      <div className="fixed inset-x-4 bottom-[calc(env(safe-area-inset-bottom)+9.25rem)] z-[94] flex justify-center md:inset-x-auto md:bottom-[6.6rem] md:right-8">
         {control}
       </div>
 

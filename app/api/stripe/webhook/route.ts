@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
+import type Stripe from "stripe";
 import { markFailed, markFulfilmentPending, markPaid } from "@/lib/orders/order-store";
-import { persistStripeCheckoutOrder, type PersistOrderItemInput } from "@/lib/db/order-service";
+import { hasProcessedStripeWebhookEvent, markStripeWebhookEventProcessed, persistStripeCheckoutOrder, type PersistOrderItemInput } from "@/lib/db/order-service";
 import { getStripeServerClient } from "@/lib/stripe/server";
 import { createPrintfulOrderDraft } from "@/lib/printful/orders";
 
@@ -46,13 +47,17 @@ export async function POST(req: Request) {
   }
 
   const rawBody = await req.text();
-  let event;
+  let event: Stripe.Event;
 
   try {
     event = stripe.webhooks.constructEvent(rawBody, signature, webhookSecret);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Invalid Stripe webhook signature.";
     return NextResponse.json({ error: message }, { status: 400 });
+  }
+
+  if (await hasProcessedStripeWebhookEvent(event.id)) {
+    return NextResponse.json({ received: true, duplicate: true });
   }
 
   if (event.type === "checkout.session.completed") {
@@ -82,10 +87,12 @@ export async function POST(req: Request) {
     });
 
     if (!orderDraftId) {
+      await markStripeWebhookEventProcessed(event.id, event.type);
       return NextResponse.json({ received: true, persisted, warning: "Missing orderDraftId metadata; persisted from Stripe metadata only." });
     }
 
     if (!order) {
+      await markStripeWebhookEventProcessed(event.id, event.type);
       return NextResponse.json({ received: true, persisted, warning: "Order draft not found in current memory store; persisted from Stripe metadata." });
     }
 
@@ -107,6 +114,8 @@ export async function POST(req: Request) {
       markFailed(orderDraftId, error instanceof Error ? error.message : "Printful fulfilment failed.");
     }
   }
+
+  await markStripeWebhookEventProcessed(event.id, event.type);
 
   return NextResponse.json({ received: true });
 }

@@ -303,16 +303,6 @@ export default function VelmereSquareClient() {
     };
   }, [selectedPostId, composerOpen]);
 
-  useEffect(() => {
-    if (!selectedPostId && !composerOpen) return;
-    const prevent = (event: Event) => event.preventDefault();
-    window.addEventListener("wheel", prevent, { passive: false });
-    window.addEventListener("touchmove", prevent, { passive: false });
-    return () => {
-      window.removeEventListener("wheel", prevent as EventListener);
-      window.removeEventListener("touchmove", prevent as EventListener);
-    };
-  }, [selectedPostId, composerOpen]);
 
   useEffect(() => {
     window.dispatchEvent(
@@ -790,7 +780,7 @@ export default function VelmereSquareClient() {
       <AnimatePresence>
         {selectedPost ? (
           <motion.div
-            className="fixed inset-0 z-[220] grid place-items-center overflow-hidden bg-black/[0.80] p-3 backdrop-blur-xl md:p-6"
+            className="fixed inset-0 z-[220] overflow-y-auto bg-black/[0.80] p-0 backdrop-blur-xl overscroll-contain sm:grid sm:place-items-center sm:p-3 md:p-6"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -804,9 +794,17 @@ export default function VelmereSquareClient() {
               exit={{ opacity: 0, y: 18, scale: 0.98 }}
               transition={{ type: "spring", stiffness: 260, damping: 30 }}
               onClick={(event) => event.stopPropagation()}
-              className="grid h-[min(80dvh,52rem)] w-full max-w-[82rem] overflow-hidden rounded-[1.5rem] border border-white/[0.10] bg-[#19191B] shadow-[0_42px_160px_rgba(0,0,0,0.88)] lg:grid-cols-[minmax(0,1.08fr)_minmax(23rem,0.72fr)]"
+              className="relative flex min-h-[100dvh] w-full flex-col overflow-visible rounded-none border border-white/[0.10] bg-[#19191B] shadow-[0_42px_160px_rgba(0,0,0,0.88)] sm:min-h-[calc(100dvh-1.5rem)] sm:max-w-[82rem] sm:rounded-[1.5rem] lg:grid lg:h-[min(86dvh,52rem)] lg:min-h-0 lg:overflow-hidden lg:grid-cols-[minmax(0,1.08fr)_minmax(23rem,0.72fr)]"
             >
-              <div className="min-h-0 overflow-y-auto border-white/[0.10] p-5 md:p-7 lg:border-r">
+              <button
+                type="button"
+                onClick={() => setSelectedPostId(null)}
+                className="absolute right-3 top-[calc(env(safe-area-inset-top)+0.75rem)] z-30 grid h-11 w-11 place-items-center rounded-full border border-white/[0.12] bg-[#19191B]/[0.88] text-white/[0.70] shadow-[0_18px_60px_rgba(0,0,0,0.55)] backdrop-blur-xl transition hover:text-white active:scale-95 sm:right-4 sm:top-4"
+                aria-label={text.close}
+              >
+                <X className="h-4 w-4" />
+              </button>
+              <div className="border-white/[0.10] p-5 pt-[calc(env(safe-area-inset-top)+4.5rem)] sm:min-h-0 sm:overflow-y-auto sm:pt-7 md:p-7 lg:border-r">
                 <p className="font-mono text-[10px] font-black uppercase tracking-[0.28em] text-[#d4af37]">
                   {text.modalKicker}
                 </p>
@@ -855,7 +853,7 @@ export default function VelmereSquareClient() {
                   ))}
                 </div>
               </div>
-              <div className="flex min-h-0 flex-col">
+              <div className="flex min-h-[58dvh] flex-col border-t border-white/[0.10] lg:min-h-0 lg:border-t-0">
                 <div className="flex items-center justify-between gap-4 border-b border-white/[0.10] p-5">
                   <div>
                     <p className="font-serif text-2xl text-white">
@@ -869,13 +867,13 @@ export default function VelmereSquareClient() {
                   <button
                     type="button"
                     onClick={() => setSelectedPostId(null)}
-                    className="flex h-11 w-11 items-center justify-center rounded-full border border-white/[0.10] bg-white/[0.035] text-white/[0.55] transition hover:text-white active:scale-95"
+                    className="hidden h-11 w-11 items-center justify-center rounded-full border border-white/[0.10] bg-white/[0.035] text-white/[0.55] transition hover:text-white active:scale-95 sm:flex"
                     aria-label={text.close}
                   >
                     <X className="h-4 w-4" />
                   </button>
                 </div>
-                <div className="min-h-0 flex-1 overflow-hidden px-5 pb-5">
+                <div className="min-h-0 flex-1 overflow-y-auto px-5 pb-[calc(env(safe-area-inset-bottom)+1.25rem)] luxury-scrollbar">
                   <CommentThread
                     comments={selectedComments}
                     draft={commentDrafts[selectedPost.id] ?? ""}
@@ -911,7 +909,7 @@ export default function VelmereSquareClient() {
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: "105%", opacity: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="fixed inset-x-3 top-24 z-[230] flex max-h-[calc(100dvh-7rem)] flex-col rounded-[1.35rem] border border-white/[0.10] bg-[#1A1A1C] p-5 pb-[calc(env(safe-area-inset-bottom)+1.25rem)] shadow-[0_32px_120px_rgba(0,0,0,0.88)] overscroll-contain md:bottom-4 md:left-auto md:right-4 md:w-[min(34rem,calc(100vw-2rem))]"
+            className="fixed inset-x-3 top-24 z-[230] flex max-h-[calc(100dvh-7rem)] flex-col overflow-y-auto rounded-[1.35rem] border border-white/[0.10] bg-[#1A1A1C] p-5 pb-[calc(env(safe-area-inset-bottom)+1.25rem)] shadow-[0_32px_120px_rgba(0,0,0,0.88)] overscroll-contain md:bottom-4 md:left-auto md:right-4 md:w-[min(34rem,calc(100vw-2rem))]"
           >
             <div className="flex items-center justify-between gap-4 border-b border-white/[0.10] pb-4">
               <p className="font-serif text-2xl text-white">{text.composer}</p>

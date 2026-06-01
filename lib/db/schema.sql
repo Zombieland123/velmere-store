@@ -105,3 +105,14 @@ alter table public.velmere_order_items enable row level security;
 create index if not exists velmere_orders_stripe_session_id_idx on public.velmere_orders(stripe_session_id);
 create index if not exists velmere_orders_customer_email_idx on public.velmere_orders(customer_email);
 create index if not exists velmere_order_items_order_id_idx on public.velmere_order_items(order_id);
+
+
+-- Stripe webhook idempotency ledger. Keep RLS enabled and use only server/service-role writes.
+create table if not exists public.velmere_stripe_webhook_events (
+  id text primary key,
+  type text not null,
+  processed_at timestamptz not null default now()
+);
+
+alter table public.velmere_stripe_webhook_events enable row level security;
+create index if not exists velmere_stripe_webhook_events_processed_at_idx on public.velmere_stripe_webhook_events(processed_at);

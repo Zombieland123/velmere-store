@@ -15,9 +15,19 @@ export type CartItem = {
   quantity: number;
 };
 
+const MAX_QUANTITY_PER_LINE = 10;
+
+function clampQuantity(value: unknown) {
+  const numeric = Math.floor(Number(value));
+  if (!Number.isFinite(numeric)) return 1;
+  return Math.max(1, Math.min(MAX_QUANTITY_PER_LINE, numeric));
+}
+
 type CartState = {
   items: CartItem[];
   isOpen: boolean;
+  hasHydrated: boolean;
+  markHydrated: () => void;
   openCart: () => void;
   closeCart: () => void;
   toggleCart: () => void;
@@ -32,18 +42,20 @@ export const useCartStore = create<CartState>()(
     (set) => ({
       items: [],
       isOpen: false,
+      hasHydrated: false,
+      markHydrated: () => set({ hasHydrated: true }),
       openCart: () => set({ isOpen: true }),
       closeCart: () => set({ isOpen: false }),
       toggleCart: () => set((state) => ({ isOpen: !state.isOpen })),
       addItem: (item) => set((state) => {
-        const quantity = item.quantity ?? 1;
+        const quantity = clampQuantity(item.quantity ?? 1);
         const existing = state.items.find((entry) => entry.id === item.id && entry.size === item.size);
         if (existing) {
           return {
             isOpen: true,
             items: state.items.map((entry) =>
               entry.id === item.id && entry.size === item.size
-                ? { ...entry, quantity: entry.quantity + quantity }
+                ? { ...entry, quantity: clampQuantity(entry.quantity + quantity) }
                 : entry,
             ),
           };
@@ -62,7 +74,7 @@ export const useCartStore = create<CartState>()(
             items: state.items
               .filter((entry) => !(entry.id === id && entry.size === oldSize))
               .map((entry) => entry.id === id && entry.size === newSize
-                ? { ...entry, quantity: entry.quantity + target.quantity }
+                ? { ...entry, quantity: clampQuantity(entry.quantity + target.quantity) }
                 : entry),
           };
         }
@@ -80,6 +92,9 @@ export const useCartStore = create<CartState>()(
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({ items: state.items }),
       skipHydration: true,
+      onRehydrateStorage: () => (state) => {
+        state?.markHydrated();
+      },
     },
   ),
 );

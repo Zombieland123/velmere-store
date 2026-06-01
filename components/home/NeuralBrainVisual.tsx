@@ -154,6 +154,11 @@ export default function NeuralBrainVisual() {
     let height = 0;
     let frame = 0;
     let projected: Array<{ key: string; x: number; y: number; z: number; size: number }> = [];
+    const lowPowerMode = Boolean(
+      reducedMotion ||
+      window.matchMedia?.("(max-width: 767px), (pointer: coarse)").matches ||
+      (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData
+    );
 
     const resize = () => {
       const rect = wrapper.getBoundingClientRect();
@@ -175,7 +180,9 @@ export default function NeuralBrainVisual() {
 
     const visibilityObserver = new IntersectionObserver(([entry]) => {
       visibleRef.current = Boolean(entry?.isIntersecting);
-      if (visibleRef.current && rafRef.current === null) rafRef.current = requestAnimationFrame(draw);
+      if (visibleRef.current && rafRef.current === null) {
+        rafRef.current = requestAnimationFrame(draw);
+      }
     }, { threshold: 0.12 });
     visibilityObserver.observe(wrapper);
 
@@ -207,7 +214,7 @@ export default function NeuralBrainVisual() {
         return;
       }
       frame += 1;
-      if (!dragRef.current.active && !reducedMotion) {
+      if (!dragRef.current.active && !lowPowerMode) {
         rotationRef.current.y += velocityRef.current.x;
         rotationRef.current.x += velocityRef.current.y;
         velocityRef.current.x *= 0.955;
@@ -272,7 +279,7 @@ export default function NeuralBrainVisual() {
         ctx.fill();
       }
 
-      rafRef.current = requestAnimationFrame(draw);
+      rafRef.current = lowPowerMode ? null : requestAnimationFrame(draw);
     }
 
     const pointerDown = (event: PointerEvent) => {
@@ -313,11 +320,17 @@ export default function NeuralBrainVisual() {
       }
     };
 
+    if (lowPowerMode) {
+      visibleRef.current = true;
+      rafRef.current = requestAnimationFrame(draw);
+    } else {
+      rafRef.current = requestAnimationFrame(draw);
+    }
+
     canvas.addEventListener("pointerdown", pointerDown);
     canvas.addEventListener("pointermove", pointerMove);
     canvas.addEventListener("pointerup", pointerUp);
     canvas.addEventListener("pointercancel", pointerUp);
-    rafRef.current = requestAnimationFrame(draw);
 
     return () => {
       observer.disconnect();

@@ -8,8 +8,8 @@ import { Search, Sparkles, WalletCards, Zap } from "lucide-react";
 import { useLocale } from "next-intl";
 import { useRouter } from "@/navigation";
 import { useUiSounds } from "@/lib/audio/useUiSounds";
-import { useWalletConnect } from "@/lib/wallet/useWalletConnect";
 import { useModeStore } from "@/store/useModeStore";
+import { useWalletUiStore } from "@/store/useWalletUiStore";
 
 type CommandAction = {
   label: string;
@@ -22,7 +22,7 @@ export default function CommandPalette() {
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const locale = useLocale();
-  const wallet = useWalletConnect();
+  const walletUi = useWalletUiStore();
   const { setProMode, toggleMode } = useModeStore();
   const { playHover, playClick, playSystemOn } = useUiSounds();
 
@@ -79,12 +79,12 @@ export default function CommandPalette() {
       },
       {
         label: "> Connect Wallet",
-        hint: wallet.connectedWallet ? wallet.connectedWallet.shortAddress : "WAGMI INJECTED",
+        hint: walletUi.connected ? walletUi.shortAddress : "OPTIONAL WALLET",
         icon: <WalletCards className="h-3.5 w-3.5" aria-hidden="true" />,
-        perform: () => void wallet.connectMetaMask(),
+        perform: () => window.dispatchEvent(new Event("velmere:open-wallet")),
       },
     ],
-    [playClick, playSystemOn, router, setProMode, toggleMode, wallet],
+    [playClick, playSystemOn, router, setProMode, toggleMode, walletUi.connected, walletUi.shortAddress],
   );
 
   const run = (command: CommandAction) => {

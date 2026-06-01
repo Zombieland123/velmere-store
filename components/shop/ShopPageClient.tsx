@@ -150,12 +150,12 @@ export default function ShopPage() {
           variants={{ hidden: {}, show: { transition: { staggerChildren: 0.055 } } }}
           className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:gap-5"
         >
-          {visibleSlots.map((slot) => {
+          {visibleSlots.map((slot, index) => {
             const product = typeof slot === "string" ? undefined : slot;
             if (product) {
               return (
                 <motion.div key={product.id} variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0 } }} transition={{ type: "spring", stiffness: 300, damping: 30 }}>
-                  <ProductCard product={product} />
+                  <ProductCard product={product} priority={index < 2} />
                 </motion.div>
               );
             }

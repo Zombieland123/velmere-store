@@ -11,7 +11,8 @@ import { useCart } from "@/components/CartProvider";
 import { formatMoney } from "@/lib/products/catalog";
 import { getStripeClient } from "@/lib/stripe/client";
 import { useUiSounds } from "@/lib/audio/useUiSounds";
-import { useWalletConnect } from "@/lib/wallet/useWalletConnect";
+import { useMounted } from "@/lib/hooks/useMounted";
+import { useWalletUiStore } from "@/store/useWalletUiStore";
 
 const SIZES = ["XS", "S", "M", "L", "XL"];
 const VAT_RATE = 0.19;
@@ -22,8 +23,9 @@ export default function CartDrawer() {
   const trust = useTranslations("Trust");
   const pathname = usePathname();
   const locale = useLocale();
-  const { items, isOpen, closeCart, removeItem, updateSize, addItem, subtotal, itemCount, currency } = useCart();
-  const wallet = useWalletConnect();
+  const { items, isOpen, hasHydrated, closeCart, removeItem, updateSize, addItem, subtotal, itemCount, currency } = useCart();
+  const walletUi = useWalletUiStore();
+  const mounted = useMounted();
   const [checkoutState, setCheckoutState] = useState<"idle" | "loading" | "failed">("idle");
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const [agreedPolicies, setAgreedPolicies] = useState(false);
@@ -56,7 +58,7 @@ export default function CartDrawer() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           locale,
-          walletAddress: wallet.connectedWallet?.address ?? null,
+          walletAddress: walletUi.connected ? walletUi.fullAddress : null,
           items: items.map((item) => ({
             productId: item.id,
             variantId: item.variantId,
@@ -84,6 +86,8 @@ export default function CartDrawer() {
       setCheckoutError(error instanceof Error ? error.message : t("checkoutFailed"));
     }
   };
+
+  if (!mounted || !hasHydrated) return null;
 
   return (
     <Drawer.Root open={isOpen} onOpenChange={(open) => !open && closeCart()}>

@@ -11,6 +11,7 @@ import type { Product } from "@/lib/products/types";
 
 type ProductCardProps = {
   product: Product;
+  priority?: boolean;
 };
 
 const proMetrics = [
@@ -19,7 +20,7 @@ const proMetrics = [
   { icon: Wind, label: "Breath", value: "Medium" },
 ] as const;
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({ product, priority = false }: ProductCardProps) {
   const productT = useTranslations("Product");
   const locale = useLocale();
   const { isProMode } = useModeStore();
@@ -70,7 +71,8 @@ export default function ProductCard({ product }: ProductCardProps) {
               src={image.url}
               alt={getLocalizedString(image.alt, locale)}
               fill
-              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+              sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"
+              priority={priority}
               className="object-cover object-center contrast-105 transition-transform duration-700 group-hover:scale-[1.025]"
             />
           ) : null}
@@ -79,7 +81,7 @@ export default function ProductCard({ product }: ProductCardProps) {
               src={hoverImage.url}
               alt=""
               fill
-              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+              sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"
               className="object-cover object-center contrast-105 opacity-0 transition-opacity duration-700 group-hover:opacity-100"
             />
           ) : null}

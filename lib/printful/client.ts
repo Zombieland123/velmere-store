@@ -3,6 +3,13 @@ const PRINTFUL_API_BASE = "https://api.printful.com";
 export type PrintfulRequestOptions = {
   method?: "GET" | "POST";
   body?: unknown;
+  revalidate?: number;
+};
+
+type NextFetchInit = RequestInit & {
+  next?: {
+    revalidate: number;
+  };
 };
 
 export function isPrintfulConfigured() {
@@ -15,6 +22,7 @@ export async function printfulRequest<T>(path: string, options: PrintfulRequestO
     throw new Error("Missing PRINTFUL_API_TOKEN on server.");
   }
 
+  const method = options.method ?? "GET";
   const headers: Record<string, string> = {
     Authorization: `Bearer ${token}`,
     "Content-Type": "application/json",
@@ -24,12 +32,19 @@ export async function printfulRequest<T>(path: string, options: PrintfulRequestO
     headers["X-PF-Store-Id"] = process.env.PRINTFUL_STORE_ID;
   }
 
-  const response = await fetch(`${PRINTFUL_API_BASE}${path}`, {
-    method: options.method ?? "GET",
+  const init: NextFetchInit = {
+    method,
     headers,
     body: options.body ? JSON.stringify(options.body) : undefined,
-    cache: "no-store",
-  });
+  };
+
+  if (method === "GET") {
+    init.next = { revalidate: options.revalidate ?? 3600 };
+  } else {
+    init.cache = "no-store";
+  }
+
+  const response = await fetch(`${PRINTFUL_API_BASE}${path}`, init);
 
   if (!response.ok) {
     const text = await response.text().catch(() => "");

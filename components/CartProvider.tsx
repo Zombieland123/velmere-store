@@ -9,6 +9,7 @@ export type { CartItem } from "@/store/useCartStore";
 type CartContextValue = {
   items: CartItem[];
   isOpen: boolean;
+  hasHydrated: boolean;
   itemCount: number;
   subtotal: number;
   currency: SupportedCurrency;
@@ -25,7 +26,9 @@ const CartContext = createContext<CartContextValue | null>(null);
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const items = useCartStore((state) => state.items);
-  const isOpen = useCartStore((state) => state.isOpen);
+  const rawIsOpen = useCartStore((state) => state.isOpen);
+  const hasHydrated = useCartStore((state) => state.hasHydrated);
+  const markHydrated = useCartStore((state) => state.markHydrated);
   const openCart = useCartStore((state) => state.openCart);
   const closeCart = useCartStore((state) => state.closeCart);
   const toggleCart = useCartStore((state) => state.toggleCart);
@@ -35,16 +38,23 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const clearCart = useCartStore((state) => state.clearCart);
 
   useEffect(() => {
+    if (useCartStore.persist.hasHydrated()) {
+      markHydrated();
+      return;
+    }
     void useCartStore.persist.rehydrate();
-  }, []);
+  }, [markHydrated]);
 
-  const itemCount = useMemo(() => items.reduce((sum, item) => sum + item.quantity, 0), [items]);
-  const subtotal = useMemo(() => items.reduce((sum, item) => sum + item.price * item.quantity, 0), [items]);
-  const currency = items[0]?.currency ?? "EUR";
+  const safeItems = hasHydrated ? items : [];
+  const isOpen = hasHydrated ? rawIsOpen : false;
+  const itemCount = useMemo(() => safeItems.reduce((sum, item) => sum + item.quantity, 0), [safeItems]);
+  const subtotal = useMemo(() => safeItems.reduce((sum, item) => sum + item.price * item.quantity, 0), [safeItems]);
+  const currency = safeItems[0]?.currency ?? "EUR";
 
   const value = useMemo<CartContextValue>(() => ({
-    items,
+    items: safeItems,
     isOpen,
+    hasHydrated,
     itemCount,
     subtotal,
     currency,
@@ -55,7 +65,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     removeItem,
     updateSize,
     clearCart,
-  }), [addItem, clearCart, closeCart, currency, isOpen, itemCount, items, openCart, removeItem, subtotal, toggleCart, updateSize]);
+  }), [addItem, clearCart, closeCart, currency, hasHydrated, isOpen, itemCount, openCart, removeItem, safeItems, subtotal, toggleCart, updateSize]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
