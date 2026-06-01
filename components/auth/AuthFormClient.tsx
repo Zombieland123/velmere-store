@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { Chrome, Loader2, LockKeyhole, ShieldCheck, WalletCards } from "lucide-react";
 import Image from "next/image";
-import { Link, useRouter } from "@/navigation";
+import { Link } from "@/navigation";
+import { useLocale } from "next-intl";
 import { setVelmereLocalSession } from "@/components/auth/AuthGate";
 import { useWalletConnect } from "@/lib/wallet/useWalletConnect";
 import { useWalletUiStore } from "@/store/useWalletUiStore";
@@ -68,7 +69,9 @@ function WalletButton({ icon, title, body, onClick, disabled }: { icon: string; 
 }
 
 export default function AuthFormClient({ labels }: AuthFormClientProps) {
-  const router = useRouter();
+  const locale = useLocale();
+  const accountHref = `/${locale || "pl"}/account`;
+  const goToAccount = () => { window.location.assign(accountHref); };
   const wallet = useWalletConnect();
   const walletUi = useWalletUiStore();
   const [email, setEmail] = useState("");
@@ -101,7 +104,7 @@ export default function AuthFormClient({ labels }: AuthFormClientProps) {
         email,
       });
       setLoading(false);
-      router.push("/account");
+      goToAccount();
     }, 420);
   };
 
@@ -110,7 +113,7 @@ export default function AuthFormClient({ labels }: AuthFormClientProps) {
     window.setTimeout(() => {
       setVelmereLocalSession(true, { displayName: "Velmère Preview" });
       setLoading(false);
-      router.push("/account");
+      goToAccount();
     }, 320);
   };
 

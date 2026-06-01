@@ -197,7 +197,8 @@ try {
 
 try {
   const middleware = read("middleware.ts");
-  if (!/api\|_next\|_vercel\|\.\*\\\.\.\*/.test(middleware) && !/api\|_next\|_vercel\|\.\*\\\.\*/.test(middleware)) {
+  const hasRequiredExclusions = ["api", "_next", "_vercel"].every((part) => middleware.includes(part)) && (middleware.includes(".*\\\\..*") || middleware.includes(".*\\..*"));
+  if (!hasRequiredExclusions) {
     errors.push("middleware.ts: matcher must exclude api, _next, _vercel and static files with extensions to avoid Edge work on images/assets.");
   }
 } catch (error) {
@@ -288,6 +289,55 @@ try {
   }
 } catch (error) {
   errors.push(`Locale route smoke guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+
+
+try {
+  const authGate = read("components/auth/AuthGate.tsx");
+  const localeDeclarations = [...authGate.matchAll(/const\s+locale\s*=\s*useLocale\(/g)].length;
+  if (localeDeclarations > 1) {
+    errors.push("components/auth/AuthGate.tsx: useLocale() was declared as const locale more than once; keep one rawLocale/useLocale declaration to avoid SWC compile errors.");
+  }
+  if (/const\s+locale\s*=\s*useLocale\(\);[\s\S]{0,240}const\s+locale\s*=\s*useLocale\(\)/.test(authGate)) {
+    errors.push("components/auth/AuthGate.tsx: duplicate locale constant detected near AuthGate; this breaks next dev/build.");
+  }
+} catch (error) {
+  errors.push(`AuthGate duplicate-locale guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+try {
+  const navbar = read("components/Navbar.tsx");
+  const middleware = read("middleware.ts");
+  const authForm = read("components/auth/AuthFormClient.tsx");
+  if (!/localizedLoginHref/.test(navbar) || !/localizedAccountHref/.test(navbar)) {
+    errors.push("components/Navbar.tsx: account/header icon must use hard locale-prefixed login/account hrefs to avoid /login or false 404 navigation on Vercel.");
+  }
+  if (/href=\{isMemberActive \? \"\/account\" : \"\/login\"\}/.test(navbar) || /href=\"\/login\"/.test(navbar)) {
+    errors.push("components/Navbar.tsx: do not use raw /login or /account in header/member navigation; use /${locale}/login or /${locale}/account.");
+  }
+  for (const route of [
+    "app/login/page.tsx",
+    "app/account/page.tsx",
+    "app/logowanie/page.tsx",
+    "app/[locale]/login/page.tsx",
+    "app/[locale]/account/page.tsx",
+    "app/[locale]/logowanie/page.tsx",
+    "app/[locale]/sign-in/page.tsx",
+    "app/[locale]/signin/page.tsx",
+  ]) {
+    if (!fs.existsSync(path.join(root, route))) {
+      errors.push(`${route}: auth route or alias is missing; login/member clicks may show 404.`);
+    }
+  }
+  if (!/ROOT_AUTH_ALIASES/.test(middleware) || !/LOCALE_AUTH_ALIASES/.test(middleware)) {
+    errors.push("middleware.ts: auth aliases must redirect /login, /account and /pl/logowanie-style paths to stable locale routes.");
+  }
+  if (!/window\.location\.assign\(accountHref\)/.test(authForm)) {
+    errors.push("components/auth/AuthFormClient.tsx: after preview login, redirect with a hard locale-prefixed accountHref to avoid router locale confusion.");
+  }
+} catch (error) {
+  errors.push(`Auth route hardening guard failed: ${error instanceof Error ? error.message : String(error)}`);
 }
 
 if (errors.length) {

@@ -3,7 +3,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { LockKeyhole, ShieldCheck, UserPlus, WalletCards } from "lucide-react";
 import { useLocale } from "next-intl";
-import { Link } from "@/navigation";
 import { useWalletUiStore } from "@/store/useWalletUiStore";
 import WalletConnectOptions from "@/components/wallet/WalletConnectOptions";
 
@@ -89,8 +88,10 @@ export function useVelmereAuth() {
 }
 
 export default function AuthGate({ children, title, body }: AuthGateProps) {
+  const rawLocale = useLocale();
+  const locale = (["en", "pl", "de"].includes(rawLocale) ? rawLocale : "pl") as "en" | "pl" | "de";
+  const loginHref = `/${locale}/login`;
   const { ready, authenticated } = useVelmereAuth();
-  const locale = useLocale() as "en" | "pl" | "de";
   const local = {
     en: {
       gate: "Account gate",
@@ -163,9 +164,9 @@ export default function AuthGate({ children, title, body }: AuthGateProps) {
               {body ?? local.body}
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link href="/login" className="velmere-button-primary">
+              <a href={loginHref} className="velmere-button-primary">
                 <UserPlus className="h-4 w-4" /> {local.signin}
-              </Link>
+              </a>
               <button
                 type="button"
                 onClick={() => setVelmereLocalSession(true, { displayName: "Velmère Preview" })}

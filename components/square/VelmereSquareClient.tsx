@@ -489,12 +489,12 @@ export default function VelmereSquareClient() {
               </p>
             </div>
             {!authenticated ? (
-              <Link
-                href="/login"
+              <a
+                href={`/${locale || "pl"}/login`}
                 className="mt-5 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-[#d4af37]/[0.30] bg-[#d4af37]/[0.10] px-4 font-mono text-[10px] font-black uppercase tracking-[0.18em] text-[#d4af37] transition hover:bg-[#d4af37]/[0.20] active:scale-95"
               >
                 <Wallet className="h-4 w-4" /> {text.connect}
-              </Link>
+              </a>
             ) : null}
           </section>
           <section className="rounded-[1.25rem] border border-white/[0.10] bg-[#1A1A1C] p-5">

@@ -215,6 +215,10 @@ export default function Navbar() {
     setMemberOpen(false);
   };
 
+  const activeLocale = LOCALES.includes(locale as (typeof LOCALES)[number]) ? locale : "pl";
+  const localizedAccountHref = `/${activeLocale}/account`;
+  const localizedLoginHref = `/${activeLocale}/login`;
+
   const localizedPrimaryLinks = [
     { href: "/clothing", label: labels.collection },
     { href: "/shop?category=men", label: labels.men },
@@ -339,14 +343,14 @@ export default function Navbar() {
               </AnimatePresence>
             </div>
 
-            <Link
-              href={isMemberActive ? "/account" : "/login"}
+            <a
+              href={isMemberActive ? localizedAccountHref : localizedLoginHref}
               aria-label={accountLabel}
               title={accountLabel}
               className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/[0.10] bg-white/[0.035] text-white/[0.62] transition hover:border-white/[0.22] hover:text-white active:scale-95 sm:h-11 sm:w-11"
             >
               <User className="h-4 w-4" />
-            </Link>
+            </a>
             <button
               type="button"
               aria-label="Open private mail"
@@ -408,13 +412,13 @@ export default function Navbar() {
                           {walletUi.connected ? walletUi.fullAddress : t.noWalletConnected}
                         </p>
                       </div>
-                      <Link
-                        href="/account"
+                      <a
+                        href={localizedAccountHref}
                         className="mt-2 flex items-center gap-3 rounded-xl px-3 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-white/[0.70] transition hover:bg-white/[0.055] hover:text-velmere-gold"
                       >
                         <ShieldCheck className="h-4 w-4" />
                         {t.memberConsole}
-                      </Link>
+                      </a>
                       <button
                         type="button"
                         onClick={disconnectWallet}
@@ -526,8 +530,8 @@ export default function Navbar() {
                             ? "KONTO"
                             : "ACCOUNT",
                       links: [
-                        { href: isMemberActive ? "/account" : "/login", label: isMemberActive ? t.privateConsole : labels.login },
-                        { href: "/account", label: t.account },
+                        { href: isMemberActive ? localizedAccountHref : localizedLoginHref, label: isMemberActive ? t.privateConsole : labels.login },
+                        { href: localizedAccountHref, label: t.account },
                         { href: "/contact", label: labels.contact },
                       ],
                     },
@@ -537,16 +541,25 @@ export default function Navbar() {
                         {group.title}
                       </p>
                       <div className="mt-2 grid">
-                        {group.links.map((link) => (
-                          <Link
-                            key={link.href}
-                            href={link.href}
-                            onClick={closeMenuPanel}
-                            className="border-b border-white/[0.10] py-3 text-sm font-semibold uppercase tracking-[0.16em] text-white/[0.78] transition hover:text-velmere-gold"
-                          >
-                            {link.label}
-                          </Link>
-                        ))}
+                        {group.links.map((link) => {
+                          const isHardLocaleHref = link.href.startsWith(`/${activeLocale}/`);
+                          const className = "border-b border-white/[0.10] py-3 text-sm font-semibold uppercase tracking-[0.16em] text-white/[0.78] transition hover:text-velmere-gold";
+
+                          return isHardLocaleHref ? (
+                            <a key={link.href} href={link.href} onClick={closeMenuPanel} className={className}>
+                              {link.label}
+                            </a>
+                          ) : (
+                            <Link
+                              key={link.href}
+                              href={link.href}
+                              onClick={closeMenuPanel}
+                              className={className}
+                            >
+                              {link.label}
+                            </Link>
+                          );
+                        })}
                       </div>
                     </div>
                   ))}
