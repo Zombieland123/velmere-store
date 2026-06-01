@@ -3,24 +3,24 @@ import type { Product } from "./types";
 export const PRODUCTS: Product[] = [
   {
     id: "1",
-    slug: "essential-oversized-hoodie",
+    slug: "velmere-frost-zip-hoodie",
     provider: "manual",
     status: "coming_soon",
     fulfilmentMode: "disabled",
     title: {
-      pl: "Bluza oversize Essential",
-      en: "Essential Oversized Hoodie",
-      de: "Essential Oversized Hoodie",
+      pl: "Bluza Frost Zip Hoodie",
+      en: "Frost Zip Hoodie",
+      de: "Frost Zip Hoodie",
     },
     shortDescription: {
-      pl: "Cięższa bluza o spokojnej, pudełkowej sylwetce.",
-      en: "A heavier hoodie with a quiet boxy silhouette.",
-      de: "Ein schwererer Hoodie mit ruhiger, kastiger Silhouette.",
+      pl: "Szara bluza z kapturem i spokojnym brandingiem Velmère.",
+      en: "A grey zip hoodie with quiet Velmère branding.",
+      de: "Ein grauer Zip-Hoodie mit ruhigem Velmère Branding.",
     },
     description: {
-      pl: "Powściągliwa bluza Velmère z obniżoną linią ramion, miękką objętością i naciskiem na ciężar materiału. Finalny skład, kraj produkcji i tabela wymiarów zostaną potwierdzone przed sprzedażą.",
-      en: "A restrained Velmère hoodie with a dropped shoulder, soft volume, and focus on fabric weight. Final composition, production country, and measurements will be confirmed before sales.",
-      de: "Ein reduzierter Velmère Hoodie mit überschnittener Schulter, ruhigem Volumen und Fokus auf Materialgewicht. Finale Zusammensetzung, Produktionsland und Maße werden vor dem Verkauf bestätigt.",
+      pl: "Bluza Velmère w jasnoszarej palecie, z zamkiem, kapturem i pudełkową sylwetką. Produkt jest tymczasowym podglądem pierwszego dropu; finalny skład, tabela wymiarów, produkcja i fulfillment zostaną potwierdzone przed sprzedażą.",
+      en: "A Velmère hoodie in a light grey palette, with a zip front, hood, and boxy silhouette. This is a temporary first-drop preview; final composition, measurements, production, and fulfilment will be confirmed before sales.",
+      de: "Ein Velmère Hoodie in hellgrauer Palette, mit Reißverschluss, Kapuze und kastiger Silhouette. Dies ist eine temporäre Vorschau des ersten Drops; finale Zusammensetzung, Maße, Produktion und Fulfilment werden vor dem Verkauf bestätigt.",
     },
     price: {
       amount: 24000,
@@ -28,28 +28,18 @@ export const PRODUCTS: Product[] = [
     },
     images: [
       {
-        url: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1400&auto=format&fit=crop&sat=-100&contrast=18",
+        url: "/products/velmere-preview/1.webp",
         alt: {
-          pl: "Bluza oversize Velmère w edytorialnym ujęciu",
-          en: "Velmère oversized hoodie in an editorial image",
-          de: "Velmère Oversized Hoodie in einer Editorial-Aufnahme",
+          pl: "Szara bluza z kapturem Velmère — podgląd pierwszego dropu",
+          en: "Grey Velmère zip hoodie — first drop preview",
+          de: "Grauer Velmère Zip-Hoodie — Vorschau des ersten Drops",
         },
-        width: 1400,
-        height: 1750,
-      },
-      {
-        url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1400&auto=format&fit=crop&sat=-100&contrast=20",
-        alt: {
-          pl: "Detal sylwetki bluzy Velmère",
-          en: "Velmère hoodie silhouette detail",
-          de: "Detail der Velmère Hoodie-Silhouette",
-        },
-        width: 1400,
-        height: 1750,
+        width: 1024,
+        height: 1024,
       },
     ],
     variants: ["S", "M", "L", "XL"].map((size) => ({
-      id: `essential-oversized-hoodie-${size.toLowerCase()}`,
+      id: `velmere-frost-zip-hoodie-${size.toLowerCase()}`,
       title: size,
       size,
       price: {
@@ -58,89 +48,29 @@ export const PRODUCTS: Product[] = [
       },
       available: false,
     })),
-    tags: ["hoodie", "new-drop", "coming-soon"],
+    tags: ["hoodie", "zip", "new-drop", "coming-soon"],
     collection: "new-drop",
   },
   {
     id: "2",
-    slug: "signature-heavy-tee",
+    slug: "velmere-contrast-varsity-jacket",
     provider: "manual",
     status: "coming_soon",
     fulfilmentMode: "disabled",
     title: {
-      pl: "T-shirt Signature Heavy",
-      en: "Signature Heavy Tee",
-      de: "Signature Heavy Tee",
+      pl: "Kurtka Contrast Varsity",
+      en: "Contrast Varsity Jacket",
+      de: "Contrast Varsity Jacket",
     },
     shortDescription: {
-      pl: "T-shirt premium o czystej linii i cięższym chwycie.",
-      en: "A premium tee with a clean line and heavier hand.",
-      de: "Ein Premium-T-Shirt mit klarer Linie und schwererem Griff.",
+      pl: "Czarno-kremowa kurtka varsity z metalicznym znakiem Velmère.",
+      en: "A black and cream varsity jacket with a metallic Velmère mark.",
+      de: "Eine schwarz-cremefarbene Varsity-Jacke mit metallischem Velmère Zeichen.",
     },
     description: {
-      pl: "Minimalny T-shirt Velmère zaprojektowany jako baza dropu: spokojny branding, stabilna forma i nacisk na proporcję. Dane produkcyjne zostaną uzupełnione przed startem sprzedaży.",
-      en: "A minimal Velmère tee designed as a drop foundation: quiet branding, stable form, and emphasis on proportion. Production data will be completed before sales launch.",
-      de: "Ein minimales Velmère T-Shirt als Basis des Drops: ruhiges Branding, stabile Form und Fokus auf Proportion. Produktionsdaten werden vor Verkaufsstart ergänzt.",
-    },
-    price: {
-      amount: 12000,
-      currency: "EUR",
-    },
-    images: [
-      {
-        url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1400&auto=format&fit=crop&sat=-100&contrast=20",
-        alt: {
-          pl: "T-shirt Velmère w edytorialnym świetle",
-          en: "Velmère tee in editorial light",
-          de: "Velmère T-Shirt in Editorial-Licht",
-        },
-        width: 1400,
-        height: 1750,
-      },
-      {
-        url: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=1400&auto=format&fit=crop&sat=-100&contrast=20",
-        alt: {
-          pl: "Detal linii T-shirtu Velmère",
-          en: "Velmère tee line detail",
-          de: "Detail der Velmère T-Shirt-Linie",
-        },
-        width: 1400,
-        height: 1750,
-      },
-    ],
-    variants: ["S", "M", "L", "XL"].map((size) => ({
-      id: `signature-heavy-tee-${size.toLowerCase()}`,
-      title: size,
-      size,
-      price: {
-        amount: 12000,
-        currency: "EUR",
-      },
-      available: false,
-    })),
-    tags: ["tshirt", "new-drop", "coming-soon"],
-    collection: "new-drop",
-  },
-  {
-    id: "3",
-    slug: "structured-cargo-trouser",
-    provider: "manual",
-    status: "coming_soon",
-    fulfilmentMode: "disabled",
-    title: {
-      pl: "Spodnie cargo Structured",
-      en: "Structured Cargo Trouser",
-      de: "Structured Cargo Trouser",
-    },
-    shortDescription: {
-      pl: "Spodnie o technicznej linii, zbudowane na proporcji i ciężarze.",
-      en: "A technical trouser built around proportion and weight.",
-      de: "Eine technische Hose, gebaut um Proportion und Gewicht.",
-    },
-    description: {
-      pl: "Spodnie Velmère o mocniejszej strukturze i użytkowej sylwetce. Produkt pozostaje w trybie przygotowania do czasu potwierdzenia wariantów, kosztów wysyłki i fulfillmentu.",
-      en: "Velmère trousers with stronger structure and a utility silhouette. The product stays in preparation until variants, shipping cost, and fulfilment are confirmed.",
-      de: "Velmère Hose mit stärkerer Struktur und Utility-Silhouette. Das Produkt bleibt in Vorbereitung, bis Varianten, Versandkosten und Fulfilment bestätigt sind.",
+      pl: "Kurtka Velmère z kontrastowymi rękawami, prążkowanymi wykończeniami i spokojnym znakiem na piersi. Produkt pozostaje w trybie preview do czasu potwierdzenia finalnych wariantów, ceny i fulfillmentu.",
+      en: "A Velmère jacket with contrast sleeves, ribbed trims, and a quiet chest mark. The product remains in preview mode until final variants, pricing, and fulfilment are confirmed.",
+      de: "Eine Velmère Jacke mit kontrastierenden Ärmeln, gerippten Abschlüssen und ruhigem Brustzeichen. Das Produkt bleibt im Preview-Modus, bis finale Varianten, Preise und Fulfilment bestätigt sind.",
     },
     price: {
       amount: 35000,
@@ -148,28 +78,18 @@ export const PRODUCTS: Product[] = [
     },
     images: [
       {
-        url: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=1400&auto=format&fit=crop&sat=-100&contrast=20",
+        url: "/products/velmere-preview/2.webp",
         alt: {
-          pl: "Spodnie Velmère w spokojnej sylwetce",
-          en: "Velmère trousers in a quiet silhouette",
-          de: "Velmère Hose in ruhiger Silhouette",
+          pl: "Kurtka varsity Velmère — podgląd pierwszego dropu",
+          en: "Velmère varsity jacket — first drop preview",
+          de: "Velmère Varsity-Jacke — Vorschau des ersten Drops",
         },
-        width: 1400,
-        height: 1750,
-      },
-      {
-        url: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1400&auto=format&fit=crop&sat=-100&contrast=18",
-        alt: {
-          pl: "Detal proporcji spodni Velmère",
-          en: "Velmère trouser proportion detail",
-          de: "Detail der Velmère Hosenproportion",
-        },
-        width: 1400,
-        height: 1750,
+        width: 1024,
+        height: 1024,
       },
     ],
-    variants: ["M", "L", "XL"].map((size) => ({
-      id: `structured-cargo-trouser-${size.toLowerCase()}`,
+    variants: ["S", "M", "L", "XL"].map((size) => ({
+      id: `velmere-contrast-varsity-jacket-${size.toLowerCase()}`,
       title: size,
       size,
       price: {
@@ -178,7 +98,107 @@ export const PRODUCTS: Product[] = [
       },
       available: false,
     })),
-    tags: ["pants", "new-drop", "coming-soon"],
+    tags: ["jacket", "varsity", "new-drop", "coming-soon"],
+    collection: "new-drop",
+  },
+  {
+    id: "3",
+    slug: "velmere-black-track-pants",
+    provider: "manual",
+    status: "coming_soon",
+    fulfilmentMode: "disabled",
+    title: {
+      pl: "Spodnie Black Track",
+      en: "Black Track Pants",
+      de: "Black Track Pants",
+    },
+    shortDescription: {
+      pl: "Czarne spodnie o czystej linii, kontrastowym pasie i prostym ciężarze.",
+      en: "Black pants with a clean line, contrast stripe, and straight weight.",
+      de: "Schwarze Hose mit klarer Linie, Kontraststreifen und ruhigem Gewicht.",
+    },
+    description: {
+      pl: "Spodnie Velmère z elastycznym pasem, jasnymi liniami bocznymi i minimalistycznym brandingiem. Produkt pozostaje jako podgląd pierwszego dropu do czasu podpięcia produkcji, stanów i wysyłki.",
+      en: "Velmère pants with an elastic waist, light side lines, and minimal branding. The product remains a first-drop preview until production, stock, and shipping are connected.",
+      de: "Velmère Hose mit elastischem Bund, hellen Seitenlinien und minimalem Branding. Das Produkt bleibt eine Vorschau des ersten Drops, bis Produktion, Bestand und Versand verbunden sind.",
+    },
+    price: {
+      amount: 18000,
+      currency: "EUR",
+    },
+    images: [
+      {
+        url: "/products/velmere-preview/3.webp",
+        alt: {
+          pl: "Czarne spodnie Velmère — podgląd pierwszego dropu",
+          en: "Black Velmère pants — first drop preview",
+          de: "Schwarze Velmère Hose — Vorschau des ersten Drops",
+        },
+        width: 1024,
+        height: 1024,
+      },
+    ],
+    variants: ["S", "M", "L", "XL"].map((size) => ({
+      id: `velmere-black-track-pants-${size.toLowerCase()}`,
+      title: size,
+      size,
+      price: {
+        amount: 18000,
+        currency: "EUR",
+      },
+      available: false,
+    })),
+    tags: ["pants", "track", "new-drop", "coming-soon"],
+    collection: "new-drop",
+  },
+  {
+    id: "4",
+    slug: "velmere-ivory-collar-tee",
+    provider: "manual",
+    status: "coming_soon",
+    fulfilmentMode: "disabled",
+    title: {
+      pl: "Koszulka Ivory Collar",
+      en: "Ivory Collar Tee",
+      de: "Ivory Collar Tee",
+    },
+    shortDescription: {
+      pl: "Kremowa koszulka z kołnierzem i kontrastowym wykończeniem Velmère.",
+      en: "An ivory collared tee with contrast Velmère detailing.",
+      de: "Ein elfenbeinfarbenes Shirt mit Kragen und kontrastierenden Velmère Details.",
+    },
+    description: {
+      pl: "Koszulka Velmère w jasnej palecie z prążkowanym kołnierzem, kontrastowymi liniami i centralnym podpisem marki. Produkt jest tymczasowym preview, bez aktywnego checkoutu do czasu finalnej produkcji.",
+      en: "A Velmère tee in an ivory palette with a ribbed collar, contrast lines, and a centered brand signature. This is a temporary preview without active checkout until final production is ready.",
+      de: "Ein Velmère Shirt in elfenbeinfarbener Palette mit geripptem Kragen, Kontrastlinien und zentraler Markensignatur. Dies ist eine temporäre Vorschau ohne aktiven Checkout bis zur finalen Produktion.",
+    },
+    price: {
+      amount: 12000,
+      currency: "EUR",
+    },
+    images: [
+      {
+        url: "/products/velmere-preview/4.webp",
+        alt: {
+          pl: "Kremowa koszulka z kołnierzem Velmère — podgląd pierwszego dropu",
+          en: "Ivory Velmère collared tee — first drop preview",
+          de: "Elfenbeinfarbenes Velmère Shirt mit Kragen — Vorschau des ersten Drops",
+        },
+        width: 1024,
+        height: 1024,
+      },
+    ],
+    variants: ["S", "M", "L", "XL"].map((size) => ({
+      id: `velmere-ivory-collar-tee-${size.toLowerCase()}`,
+      title: size,
+      size,
+      price: {
+        amount: 12000,
+        currency: "EUR",
+      },
+      available: false,
+    })),
+    tags: ["tee", "collar", "new-drop", "coming-soon"],
     collection: "new-drop",
   },
 ];

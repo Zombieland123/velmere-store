@@ -224,7 +224,7 @@ export default function ProductDetailPage({
                 {...fadeUp}
                 transition={{ ...fadeUp.transition, delay: index * 0.05 }}
                 viewport={{ once: true, margin: "-80px" }}
-                className="relative aspect-[4/5] overflow-hidden rounded-2xl border border-white/[0.10] bg-[#1A1A1C] shadow-2xl shadow-black/[0.30]"
+                className="relative aspect-[4/5] overflow-hidden rounded-2xl border border-white/[0.10] bg-white shadow-2xl shadow-black/[0.30]"
               >
                 <Image
                   src={image.url}
@@ -232,7 +232,7 @@ export default function ProductDetailPage({
                   fill
                   priority={index === 0}
                   sizes="(min-width: 1024px) 58vw, 100vw"
-                  className="object-cover object-center contrast-105"
+                  className="object-contain object-center p-5 contrast-105"
                 />
               </motion.div>
             ))}

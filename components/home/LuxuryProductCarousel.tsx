@@ -47,13 +47,13 @@ export default function LuxuryProductCarousel() {
               href={`/shop/${product.slug}`}
               className="group overflow-hidden rounded-[1.75rem] border border-white/[0.10] bg-[#111113] shadow-velmere-card transition duration-500 hover:-translate-y-1 hover:border-velmere-gold/[0.26] hover:bg-[#151518] active:scale-[0.99]"
             >
-              <div className="relative aspect-[4/5] overflow-hidden bg-black">
+              <div className="relative aspect-[4/5] overflow-hidden bg-white">
                 <Image
                   src={product.images[0].url}
                   alt={getLocalizedString(product.images[0].alt, locale)}
                   fill
                   sizes="(min-width:1280px) 25vw, (min-width:768px) 50vw, 100vw"
-                  className="object-cover object-center contrast-105 transition duration-700 group-hover:scale-[1.035] group-hover:brightness-110"
+                  className="object-contain object-center p-4 contrast-105 transition duration-700 group-hover:scale-[1.025] group-hover:brightness-110"
                   priority={index === 0}
                 />
                 <div className="pointer-events-none absolute inset-x-4 top-4 flex items-center justify-between gap-3">

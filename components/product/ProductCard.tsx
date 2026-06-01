@@ -65,7 +65,7 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
         transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
         className="group relative flex h-full flex-col overflow-hidden rounded-[2rem] border border-[#d4af37]/[0.15] bg-[linear-gradient(145deg,rgba(255,255,255,0.065),rgba(255,255,255,0.018)_44%,rgba(212,175,55,0.045))] shadow-[0_28px_90px_rgba(0,0,0,0.36)]"
       >
-        <motion.div layoutId={`product-image-${product.id}`} className="relative aspect-[4/5] overflow-hidden bg-white/[0.035]">
+        <motion.div layoutId={`product-image-${product.id}`} className="relative aspect-[4/5] overflow-hidden bg-white">
           {image ? (
             <Image
               src={image.url}
@@ -73,7 +73,7 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
               fill
               sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"
               priority={priority}
-              className="object-cover object-center contrast-105 transition-transform duration-700 group-hover:scale-[1.025]"
+              className="object-contain object-center p-4 contrast-105 transition-transform duration-700 group-hover:scale-[1.02]"
             />
           ) : null}
           {hoverImage && hoverImage.url !== image?.url ? (
@@ -82,7 +82,7 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
               alt=""
               fill
               sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"
-              className="object-cover object-center contrast-105 opacity-0 transition-opacity duration-700 group-hover:opacity-100"
+              className="object-contain object-center p-4 contrast-105 opacity-0 transition-opacity duration-700 group-hover:opacity-100"
             />
           ) : null}
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(212,175,55,0.12),transparent_42%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />

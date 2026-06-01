@@ -71,7 +71,7 @@ export default function EditorialFeatureSwitcher() {
                   alt={getLocalizedString(active.images[0].alt, locale)}
                   fill
                   sizes="(min-width: 1024px) 60vw, 100vw"
-                  className="object-cover object-center grayscale contrast-110"
+                  className="object-contain object-center bg-white p-6 grayscale contrast-110"
                   priority
                 />
                 <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.06),rgba(0,0,0,0.28))]" />
