@@ -258,6 +258,38 @@ try {
   errors.push(`Locale root route guard failed: ${error instanceof Error ? error.message : String(error)}`);
 }
 
+try {
+  const requiredLocaleRoutes = [
+    "page.tsx",
+    "login/page.tsx",
+    "account/page.tsx",
+    "cart/page.tsx",
+    "shop/page.tsx",
+    "clothing/page.tsx",
+    "square/page.tsx",
+    "vlm-token/page.tsx",
+    "community/page.tsx",
+    "contact/page.tsx",
+    "returns/page.tsx",
+    "shipping/page.tsx",
+    "terms/page.tsx",
+    "privacy/page.tsx",
+  ];
+  for (const route of requiredLocaleRoutes) {
+    const routePath = path.join(root, "app/[locale]", route);
+    if (!fs.existsSync(routePath)) {
+      errors.push(`app/[locale]/${route}: required locale route is missing; Vercel may show a false 404.`);
+    }
+  }
+
+  const missingFallback = read("app/[locale]/[...missing]/page.tsx");
+  if (!/LOGIN_ALIASES/.test(missingFallback) || !/LoginPage/.test(missingFallback)) {
+    errors.push("app/[locale]/[...missing]/page.tsx: catch-all route must rescue /login aliases so stale Vercel rewrites cannot show a false 404 for /pl/login.");
+  }
+} catch (error) {
+  errors.push(`Locale route smoke guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
 if (errors.length) {
   console.error("Velmère preflight failed:");
   for (const error of errors) console.error(`- ${error}`);
