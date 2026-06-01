@@ -244,6 +244,20 @@ try {
   errors.push(`Mobile animation guard failed: ${error instanceof Error ? error.message : String(error)}`);
 }
 
+
+try {
+  const localeLayout = read("app/[locale]/layout.tsx");
+  const localeHome = read("app/[locale]/page.tsx");
+  if (!/unstable_setRequestLocale\(locale\)/.test(localeLayout)) {
+    errors.push("app/[locale]/layout.tsx: locale layout must call unstable_setRequestLocale(locale) so /pl, /en and /de resolve reliably on Vercel.");
+  }
+  if (!/export default function HomePage/.test(localeHome) || !/HomePageClient/.test(localeHome)) {
+    errors.push("app/[locale]/page.tsx: locale root pages /pl, /en and /de must render the homepage instead of falling to global 404.");
+  }
+} catch (error) {
+  errors.push(`Locale root route guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
 if (errors.length) {
   console.error("Velmère preflight failed:");
   for (const error of errors) console.error(`- ${error}`);
