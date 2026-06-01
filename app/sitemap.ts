@@ -8,6 +8,8 @@ const routes = [
   "/shop",
   "/clothing",
   "/vlm-token",
+  "/market-integrity",
+  "/market-integrity/about",
   "/square",
   "/lookbook",
   "/archive",

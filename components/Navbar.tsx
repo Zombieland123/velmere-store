@@ -27,6 +27,7 @@ const navLabels = {
     support: "Support",
     login: "Login",
     contact: "Contact",
+    shield: "Shield",
   },
   pl: {
     collection: "Kolekcja",
@@ -40,6 +41,7 @@ const navLabels = {
     support: "Pomoc",
     login: "Logowanie",
     contact: "Kontakt",
+    shield: "Shield",
   },
   de: {
     collection: "Kollektion",
@@ -53,6 +55,7 @@ const navLabels = {
     support: "Support",
     login: "Login",
     contact: "Kontakt",
+    shield: "Shield",
   },
 } as const;
 
@@ -309,6 +312,16 @@ export default function Navbar() {
               </AnimatePresence>
             </div>
 
+
+            <Link
+              href="/market-integrity"
+              aria-label={labels.shield}
+              title={labels.shield}
+              className="hidden h-11 w-11 shrink-0 items-center justify-center rounded-full border border-velmere-gold/[0.18] bg-velmere-gold/[0.06] text-velmere-gold transition hover:border-velmere-gold/[0.38] hover:bg-velmere-gold/[0.11] active:scale-95 md:inline-flex"
+            >
+              <ShieldCheck className="h-4 w-4" />
+            </Link>
+
             <div ref={walletRef} className="relative hidden md:block">
               <button
                 type="button"
@@ -519,6 +532,7 @@ export default function Navbar() {
                       title: "VLM / WEB3",
                       links: [
                         { href: "/vlm-token", label: labels.vlm },
+                        { href: "/market-integrity", label: labels.shield },
                         { href: "/token-agreement", label: "Token agreement" },
                       ],
                     },

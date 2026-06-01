@@ -269,6 +269,7 @@ try {
     "clothing/page.tsx",
     "square/page.tsx",
     "vlm-token/page.tsx",
+    "market-integrity/page.tsx",
     "community/page.tsx",
     "contact/page.tsx",
     "returns/page.tsx",
@@ -338,6 +339,47 @@ try {
   }
 } catch (error) {
   errors.push(`Auth route hardening guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+try {
+  const marketPage = read("app/[locale]/market-integrity/page.tsx");
+  const riskEngine = read("lib/market-integrity/risk-engine.ts");
+  const apiRoute = read("app/api/market-integrity/analyze/route.ts");
+  const client = read("components/market-integrity/MarketIntegrityClient.tsx");
+  const riskCard = read("components/market-integrity/TokenRiskCard.tsx");
+  const modal = read("components/market-integrity/TokenRiskModal.tsx");
+  const klinesRoute = read("app/api/market-integrity/klines/route.ts");
+  const sentinelRoute = read("app/api/market-integrity/sentinel/route.ts");
+  const alertsLib = read("lib/market-integrity/risk-alerts.ts");
+  if (!/MarketIntegrityClient/.test(marketPage)) {
+    errors.push("app/[locale]/market-integrity/page.tsx: market integrity route must render the Shield dashboard.");
+  }
+  if (!/analyzeTokenRisk/.test(riskEngine) || /This is not an accusation/.test(riskEngine)) {
+    errors.push("lib/market-integrity/risk-engine.ts: engine should return signal IDs/data only; legal/i18n copy belongs in UI messages.");
+  }
+  if (!/api\.dexscreener\.com\/latest\/dex\/search/.test(apiRoute) && !/analyzeDexScreenerToken/.test(apiRoute)) {
+    errors.push("app/api/market-integrity/analyze/route.ts: live token scan should stay server-side and use the data adapter, not client-side API keys.");
+  }
+  if (!/legalDisclaimer/.test(riskCard) || !/market-integrity-search/.test(client)) {
+    errors.push("components/market-integrity/MarketIntegrityClient.tsx: dashboard must include search input and visible legal disclaimer rendering.");
+  }
+  if (!/ExchangeCandlesChart/.test(modal) || !/api\/market-integrity\/klines/.test(modal) || !/chartMode === "candles"/.test(modal)) {
+    errors.push("components/market-integrity/TokenRiskModal.tsx: token modal must keep exchange-style candles/volume chart modes backed by the klines endpoint.");
+  }
+  if (!/OrderBookDepthChart/.test(modal) || !/chartMode === "depth"/.test(modal)) {
+    errors.push("components/market-integrity/TokenRiskModal.tsx: token modal must keep exchange-style order-book depth chart mode.");
+  }
+  if (!/fetchBinanceKlines/.test(klinesRoute)) {
+    errors.push("app/api/market-integrity/klines/route.ts: missing Binance kline proxy for server-side OHLC chart data.");
+  }
+  if (!/buildSentinelAlerts/.test(sentinelRoute) || !/ShieldSentinelAlert/.test(alertsLib) || !/sentinelAlerts/.test(client)) {
+    errors.push("market-integrity sentinel: dashboard must keep the server-side Sentinel alert agent and compact watch panel.");
+  }
+  if (!/Shield scenario matrix/.test(modal) || !/Evidence/.test(modal)) {
+    errors.push("components/market-integrity/TokenRiskModal.tsx: modal must keep scenario matrix and evidence report export link.");
+  }
+} catch (error) {
+  errors.push(`Market integrity guard failed: ${error instanceof Error ? error.message : String(error)}`);
 }
 
 if (errors.length) {

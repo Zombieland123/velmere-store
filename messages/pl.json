@@ -3049,5 +3049,339 @@
     },
     "basicHint": "Basic to spokojna warstwa publiczna: prosty opis tego, co VLM odblokowuje, dlaczego jest oddzielony od checkoutu i jak członek wchodzi bez hałasu.",
     "proHint": "Pro: technical access surface."
+  },
+  "MarketIntegrity": {
+    "kicker": "VELMÈRE SHIELD / MARKET INTEGRITY",
+    "title": "Radar manipulacji bez oskarżeń.",
+    "subtitle": "Prywatny terminal RegTech: cena, wolumen, momentum, order book, płynność i kontrakt są składane w jeden czytelny sygnał ryzyka. To nie wyrok ani porada — to warstwa wczesnego ostrzegania.",
+    "searchLabel": "Wyszukaj token lub kontrakt",
+    "searchPlaceholder": "Wpisz ticker albo adres kontraktu, np. OM, PEPE, ETH...",
+    "scanButton": "Skanuj token",
+    "scanning": "Skanowanie...",
+    "cardKicker": "Market integrity signal",
+    "riskScore": "Risk score",
+    "scoreNote": "Wyższy wynik oznacza więcej wykrytych anomalii. Wynik nie dowodzi winy ani manipulacji.",
+    "legalDisclaimer": "Automatyczny sygnał ryzyka. To nie jest oskarżenie, porada inwestycyjna, dowód prawny ani rekomendacja kupna/sprzedaży.",
+    "openSource": "Źródło danych",
+    "dataQuality": "Dane: {quality}",
+    "roadmapKicker": "Następny poziom",
+    "roadmapTitle": "Od dema do bota rynkowego.",
+    "roadmapBody": "Pełny skaner działa warstwowo: live market sweep, wyszukiwanie każdego tokena przez API, karta dowodowa i później bot cron z cache bazy danych. Wynik nie jest poradą inwestycyjną ani oskarżeniem.",
+    "quality": {
+      "demo": "demo / case study",
+      "partial": "częściowe",
+      "live": "live API"
+    },
+    "badges": {
+      "low_detected_risk": "Low detected risk",
+      "elevated_risk": "Elevated risk",
+      "possible_manipulation_risk": "Possible manipulation risk",
+      "critical_market_integrity_risk": "Critical market-integrity risk"
+    },
+    "metrics": {
+      "price": "Cena",
+      "change24h": "Zmiana 24h",
+      "liquidity": "Płynność",
+      "volume": "Wolumen 24h",
+      "change7d": "Zmiana 7d",
+      "marketCap": "Market cap"
+    },
+    "pillars": {
+      "live": {
+        "title": "Szybki lookup",
+        "body": "Wpisujesz ticker albo kontrakt. System podpowiada maksymalnie trzy najtrafniejsze aktywa, żeby UI nie zamieniało się w chaos."
+      },
+      "sources": {
+        "title": "Market + DEX + order book",
+        "body": "Łączymy CoinGecko, DEX Screener, GoPlus dla kontraktów oraz publiczny depth Binance tam, gdzie para jest dostępna."
+      },
+      "compliance": {
+        "title": "Bezpieczny język",
+        "body": "Velmère Shield mówi o anomaliach i prawdopodobieństwie ryzyka. Nie oskarża projektu i wymaga human review."
+      }
+    },
+    "roadmap": {
+      "market": {
+        "title": "Market sweep",
+        "body": "Cron skanujący listę tokenów, cache wyników i ranking największych anomalii."
+      },
+      "bot": {
+        "title": "Evidence bot",
+        "body": "Bot zbierający timeline: crash, liquidity, transfery, rebrand, wolumen i status kontraktu."
+      },
+      "grant": {
+        "title": "Grant-ready demo",
+        "body": "Dashboard + API + raport PDF/JSON jako projekt cyberbezpieczeństwa / market abuse detection."
+      }
+    },
+    "errors": {
+      "prefix": "Błąd skanu",
+      "generic": "Nie udało się wykonać skanu."
+    },
+    "signals": {
+      "extreme_drawdown": {
+        "label": "Wykryto ekstremalny spadek",
+        "description": "Token jest bardzo daleko od historycznego maksimum. To silna anomalia market-integrity, nie dowód winy."
+      },
+      "major_drawdown": {
+        "label": "Wykryto duży drawdown",
+        "description": "Token stracił dużą część wartości od ATH i wymaga sprawdzenia płynności oraz kontekstu."
+      },
+      "severe_24h_drop": {
+        "label": "Silny spadek 24h",
+        "description": "Duży jednodniowy spadek może oznaczać kaskadę likwidacji, cienką płynność albo presję sprzedaży."
+      },
+      "high_24h_drop": {
+        "label": "Duży spadek 24h",
+        "description": "Wykryto mocną wyprzedaż 24h. Przed wnioskami potrzebny jest order book i analiza przepływów."
+      },
+      "thin_liquidity": {
+        "label": "Ryzyko cienkiej płynności",
+        "description": "Wartość rynkowa jest duża względem dostępnej płynności. Cena może gwałtownie reagować na mniejsze zlecenia."
+      },
+      "very_thin_liquidity": {
+        "label": "Bardzo cienka płynność",
+        "description": "Płynność wygląda ekstremalnie słabo względem wartości rynkowej. To krytyczna czerwona flaga."
+      },
+      "volume_spike": {
+        "label": "Nietypowy skok wolumenu",
+        "description": "Wolumen jest nietypowo wysoki względem płynności albo średniej. Może wynikać z newsów albo sztucznej aktywności."
+      },
+      "holder_concentration": {
+        "label": "Wysoka koncentracja holderów",
+        "description": "Duża koncentracja podaży może zwiększać ryzyko zrzutu albo kontroli governance."
+      },
+      "orderbook_depth_collapse": {
+        "label": "Załamanie głębokości order booka",
+        "description": "Głębokość rynku mocno spadła, co może ułatwiać przesunięcie ceny albo likwidacje."
+      },
+      "rebrand_after_crash": {
+        "label": "Rebrand po crashu",
+        "description": "Zmiana nazwy/tickera po dużym zdarzeniu może utrudnić czytanie historycznego ryzyka."
+      },
+      "exchange_deposit_anomaly": {
+        "label": "Anomalia depozytów na giełdy",
+        "description": "Duże ruchy na giełdy w oknie zdarzenia mogą wskazywać możliwe przygotowanie podaży sprzedażowej."
+      },
+      "contract_privileges": {
+        "label": "Ryzykowne uprawnienia kontraktu",
+        "description": "Kontrola ownera typu mint, pause, blacklist albo wysokie tax logic może zwiększać ryzyko nadużyć technicznych."
+      },
+      "sell_pressure_imbalance": {
+        "label": "Nierównowaga kupna/sprzedaży",
+        "description": "Transakcje pokazują mocną nierównowagę. Samo w sobie to słaby sygnał, ale przydatny z innymi flagami."
+      },
+      "low_dex_liquidity": {
+        "label": "Niska płynność DEX",
+        "description": "Dostępna płynność DEX jest niska, więc jakość ceny i wykonania może być krucha."
+      },
+      "insufficient_data": {
+        "label": "Za mało danych",
+        "description": "Brakuje danych rynkowych do wiarygodnej oceny ryzyka."
+      },
+      "market_volume_stress": {
+        "label": "Stres wolumen/market cap",
+        "description": "Wolumen 24h jest nietypowo wysoki względem kapitalizacji. Może to oznaczać panikę, presję newsową albo sztuczną aktywność."
+      },
+      "supply_overhang": {
+        "label": "Ryzyko nawisu podaży",
+        "description": "Duża część całkowitej podaży nie jest w obiegu. Przyszłe unlocki mogą tworzyć dodatkową presję sprzedażową."
+      },
+      "rapid_intraday_move": {
+        "label": "Gwałtowny ruch intraday",
+        "description": "Bardzo szybki ruch w krótkim oknie może oznaczać news, cienką płynność, squeeze albo sztuczną aktywność."
+      },
+      "parabolic_24h_gain": {
+        "label": "Paraboliczny wzrost 24h",
+        "description": "Silny pionowy wzrost w 24h jest czerwonym sygnałem ryzyka. Nie oznacza winy, ale wymaga sprawdzenia płynności i struktury wolumenu."
+      },
+      "parabolic_7d_gain": {
+        "label": "Paraboliczny wzrost 7d",
+        "description": "Bardzo duży wzrost w 7 dni może wyglądać zdrowo na wykresie, ale często zwiększa ryzyko dumpu, euforii i płytkiego order booka."
+      },
+      "parabolic_30d_gain": {
+        "label": "Paraboliczny wzrost 30d",
+        "description": "Ekstremalny wzrost w 30 dni może oznaczać fazę pompowania, szczególnie przy słabej płynności i koncentracji podaży."
+      },
+      "multi_timeframe_pump": {
+        "label": "Pump na wielu interwałach",
+        "description": "Token rośnie jednocześnie mocno w 24h i 7d. Taki układ często wymaga kontroli płynności, wolumenu i holderów."
+      },
+      "new_ath_repricing": {
+        "label": "Gwałtowne dojście pod ATH",
+        "description": "Cena jest blisko maksimum po szybkim wzroście. Rynek może być przegrzany albo podatny na nagły zrzut."
+      },
+      "wash_trading_risk": {
+        "label": "Ryzyko wash tradingu",
+        "description": "Wolumen 24h jest bardzo wysoki względem kapitalizacji. Może to oznaczać sztucznie generowany obrót albo ekstremalną rotację."
+      },
+      "fdv_marketcap_gap": {
+        "label": "Duża luka FDV / market cap",
+        "description": "Pełna wycena FDV jest dużo większa od bieżącej kapitalizacji. Przyszłe unlocki mogą zmienić presję podaży."
+      },
+      "orderbook_slippage_risk": {
+        "label": "Ryzyko poślizgu order booka",
+        "description": "Symulacja zlecenia pokazuje, że nawet relatywnie mała transakcja może mocno przesunąć cenę."
+      },
+      "orderbook_imbalance": {
+        "label": "Nierównowaga order booka",
+        "description": "Widoczna głębokość kupna i sprzedaży jest mocno niesymetryczna, co może ułatwiać przesunięcie ceny."
+      },
+      "honeypot_risk": {
+        "label": "Ryzyko honeypot",
+        "description": "Skan kontraktu wskazuje ryzyko mechanizmu, który może utrudniać lub blokować sprzedaż tokena."
+      },
+      "high_sell_tax": {
+        "label": "Wysoki podatek sprzedaży",
+        "description": "Sell tax jest wysoki. To może utrudnić wyjście z pozycji i wymaga ręcznej kontroli kontraktu."
+      },
+      "mint_risk": {
+        "label": "Ryzyko mintowania",
+        "description": "Kontrakt może pozwalać na tworzenie nowych tokenów, co zwiększa ryzyko rozcieńczenia podaży."
+      },
+      "blacklist_risk": {
+        "label": "Ryzyko blacklist/whitelist",
+        "description": "Kontrakt może zawierać mechanizmy blokowania albo selektywnego dopuszczania adresów."
+      }
+    },
+    "tabs": {
+      "top": "Top",
+      "trending": "Trending",
+      "watchlist": "Watchlist",
+      "highestRisk": "Najwyższe ryzyko"
+    },
+    "sweepStats": {
+      "marketCap": "Skan market cap",
+      "volume": "Skan wolumenu 24h",
+      "highestRisk": "Najwyższe ryzyko",
+      "coverage": "Zasięg",
+      "assets": "aktywa"
+    },
+    "marketTable": {
+      "name": "Nazwa",
+      "price": "Cena",
+      "marketCap": "Market cap",
+      "volume": "Wolumen (24h)",
+      "risk": "Ryzyko",
+      "last7d": "Ostatnie 7 dni",
+      "liveNote": "Live market sweep z danych rynkowych po stronie serwera",
+      "coverageNote": "Lista ładuje kolejne strony rynku z API. Wyszukiwarka powyżej potrafi znaleźć także tokeny spoza aktualnie załadowanej tabeli.",
+      "loadMore": "Załaduj więcej tokenów"
+    },
+    "modal": {
+      "kicker": "Karta wywiadowcza tokena",
+      "close": "Zamknij",
+      "aiTitle": "Integrity AI summary",
+      "aiFallback": "Brak wystarczających danych do pełnego streszczenia.",
+      "noSignals": "W podłączonych źródłach danych nie wykryto dużych sygnałów anomalii.",
+      "chartFallback": "Wykres używa fallbacku z lokalnej próbki, bo źródło API zwróciło limit lub brak danych",
+      "chartModes": {
+        "line": "Wykres 1",
+        "candles": "Świece",
+        "volume": "Słupki",
+        "source": "Źródło",
+        "bars": "OHLC bars",
+        "points": "punkty",
+        "depth": "Głębokość"
+      }
+    },
+    "riskScale": {
+      "low": {
+        "range": "0–34",
+        "label": "Niskie wykryte ryzyko",
+        "body": "Brak dużych anomalii w podłączonych źródłach. To nadal nie jest rekomendacja inwestycyjna."
+      },
+      "medium": {
+        "range": "35–64",
+        "label": "Podwyższone ryzyko",
+        "body": "Wykryto sygnały warte ręcznej kontroli: momentum, wolumen, płynność albo struktura podaży."
+      },
+      "high": {
+        "range": "65–84",
+        "label": "Możliwe ryzyko manipulacji",
+        "body": "Kilka mocnych anomalii naraz. Wymaga sprawdzenia order booka, holderów i kontraktu."
+      },
+      "critical": {
+        "range": "85–100",
+        "label": "Krytyczny profil ryzyka",
+        "body": "Kombinacja czerwonych flag. To alert do analizy, nie oskarżenie i nie dowód prawny."
+      }
+    },
+    "deep": {
+      "loading": "Ładowanie głębokiej warstwy…",
+      "orderbook": {
+        "title": "Order book / microstructure",
+        "spread": "Spread",
+        "depth": "Głębokość top 100",
+        "sellSlip": "Poślizg sprzedaży $10k",
+        "imbalance": "Bid/ask imbalance",
+        "clean": "Brak dużych anomalii w widocznej głębokości.",
+        "unavailable": "Order book CEX niedostępny dla tej pary."
+      },
+      "holders": {
+        "title": "Holder allocation",
+        "top10": "Top 10 holderów",
+        "count": "Liczba holderów",
+        "note": "Dane holderów pojawią się, gdy token ma adres kontraktu i obsługiwany skan danych z łańcucha. Dla zwykłych coinów CEX ta warstwa może być niedostępna."
+      },
+      "contract": {
+        "title": "Smart contract scan",
+        "sellTax": "Sell tax",
+        "buyTax": "Buy tax",
+        "noAddress": "Brak adresu kontraktu w aktualnym źródle danych."
+      }
+    },
+    "method": {
+      "title": "Jak liczony jest wynik",
+      "body": "Wynik składa się z warstw: velocity/pump, płynność i order book, koncentracja podaży oraz ryzyko kontraktu. Brak danych nie jest uznawany za bezpieczeństwo.",
+      "velocity": "Velocity / pump",
+      "liquidity": "Płynność / order book",
+      "holders": "Holderzy / podaż",
+      "contract": "Kontrakt / podatki"
+    },
+    "agents": {
+      "title": "Multi-agent fusion",
+      "formula": "Formuła",
+      "confidence": "pewność",
+      "metaVerdict": "Werdykt meta-modelu",
+      "conflict": "Konflikt sygnałów",
+      "matrixTitle": "Matryca agentów Shield",
+      "matrixBody": "Każdy agent analizuje inną warstwę: momentum, płynność, order book, holderów, kontrakt i jakość danych. Meta-model łączy ich wnioski bez oskarżania projektu.",
+      "evidence": "dowody",
+      "names": {
+        "velocity": "Agent velocity / pump",
+        "liquidity": "Agent płynności / wolumenu",
+        "microstructure": "Agent order booka",
+        "holders": "Agent holderów / podaży",
+        "contract": "Agent kontraktu",
+        "data": "Agent jakości danych"
+      }
+    },
+    "bot": {
+      "kicker": "VELMÈRE SHIELD BOT",
+      "title": "Agent pamięci rynku",
+      "body": "Warstwa AI zapisuje ostatnie snapshoty ryzyka w pamięci serwera i wykrywa zmianę wyniku, ceny oraz wolumenu między kolejnymi skanami. To etap przed pełną bazą danych i cronem produkcyjnym.",
+      "memory": "aktywa",
+      "snapshots": "snapshoty",
+      "hot": "najwyższe",
+      "run": "uruchom sweep bota",
+      "insightsKicker": "AI anomaly ledger",
+      "insightsTitle": "Najważniejsze ruchy do review",
+      "noMajorSignal": "brak dużej anomalii w bieżącym skanie"
+    },
+    "history": {
+      "title": "Pamięć ryzyka",
+      "body": "Mini-timeline pokazuje, jak wynik zmieniał się między kolejnymi skanami w aktualnej instancji serwera."
+    },
+    "aboutButton": "Czym jest Shield",
+    "privateSystem": "Prywatny terminal anomalii: live market data, agenci ryzyka, świece OHLC, pamięć skanów i raport dowodowy. To sygnał ostrzegawczy, nie wyrok ani porada inwestycyjna.",
+    "sentinel": {
+      "title": "Shield Sentinel",
+      "scanning": "skanowanie",
+      "alerts": "alerty",
+      "waiting": "oczekiwanie na sweep",
+      "emptyHeadline": "Brak krytycznego alertu",
+      "emptyBody": "Sentinel wypełni to po następnym skanie rynku."
+    }
   }
 }

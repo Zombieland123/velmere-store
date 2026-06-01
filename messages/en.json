@@ -3049,5 +3049,339 @@
     },
     "basicHint": "Basic is the calm public layer: a compact explanation of what VLM unlocks, why it stays separate from checkout and how members enter without noise.",
     "proHint": "Pro: technical access surface."
+  },
+  "MarketIntegrity": {
+    "kicker": "VELMÈRE SHIELD / MARKET INTEGRITY",
+    "title": "Manipulation radar without accusations.",
+    "subtitle": "Private RegTech terminal: price, volume, momentum, order book, liquidity and contract data are compressed into one readable risk signal. Not a verdict, not advice — an early-warning layer.",
+    "searchLabel": "Search token or contract",
+    "searchPlaceholder": "Enter ticker or contract, e.g. OM, PEPE, ETH...",
+    "scanButton": "Scan token",
+    "scanning": "Scanning...",
+    "cardKicker": "Market integrity signal",
+    "riskScore": "Risk score",
+    "scoreNote": "Higher score means more detected anomalies. The score does not prove wrongdoing or manipulation.",
+    "legalDisclaimer": "Automated risk signal. This is not an accusation, investment advice, legal proof, or a buy/sell recommendation.",
+    "openSource": "Data source",
+    "dataQuality": "Data: {quality}",
+    "roadmapKicker": "Next layer",
+    "roadmapTitle": "From demo to market bot.",
+    "roadmapBody": "The full scanner works in layers: live market sweep, API search for any token, evidence card and later a cron bot with database cache. The result is not investment advice or an accusation.",
+    "quality": {
+      "demo": "demo / case study",
+      "partial": "partial",
+      "live": "live API"
+    },
+    "badges": {
+      "low_detected_risk": "Low detected risk",
+      "elevated_risk": "Elevated risk",
+      "possible_manipulation_risk": "Possible manipulation risk",
+      "critical_market_integrity_risk": "Critical market-integrity risk"
+    },
+    "metrics": {
+      "price": "Price",
+      "change24h": "24h change",
+      "liquidity": "Liquidity",
+      "volume": "24h volume",
+      "change7d": "Change 7d",
+      "marketCap": "Market cap"
+    },
+    "pillars": {
+      "live": {
+        "title": "Fast lookup",
+        "body": "Type a ticker or contract. The system shows only the three most relevant suggestions, so the interface stays clean."
+      },
+      "sources": {
+        "title": "Market + DEX + order book",
+        "body": "CoinGecko, DEX Screener, GoPlus for contracts and public Binance depth are combined where the pair is available."
+      },
+      "compliance": {
+        "title": "Safe language",
+        "body": "Velmère Shield speaks about anomalies and risk probability. It does not accuse a project and requires human review."
+      }
+    },
+    "roadmap": {
+      "market": {
+        "title": "Market sweep",
+        "body": "Cron scan for a token universe, cached scores and a ranking of major anomalies."
+      },
+      "bot": {
+        "title": "Evidence bot",
+        "body": "Bot that collects a timeline: crash, liquidity, transfers, rebrand, volume and contract status."
+      },
+      "grant": {
+        "title": "Grant-ready demo",
+        "body": "Dashboard + API + PDF/JSON report as a cybersecurity / market-abuse detection project."
+      }
+    },
+    "errors": {
+      "prefix": "Scan error",
+      "generic": "Could not complete the scan."
+    },
+    "signals": {
+      "extreme_drawdown": {
+        "label": "Extreme crash detected",
+        "description": "Token is far below its recorded high. This is a severe market-integrity anomaly, not proof of wrongdoing."
+      },
+      "major_drawdown": {
+        "label": "Major drawdown detected",
+        "description": "Token lost a large part of its value from ATH and needs additional liquidity/context review."
+      },
+      "severe_24h_drop": {
+        "label": "Severe 24h drop",
+        "description": "Large one-day collapse may indicate liquidation cascade, thin liquidity or panic sell pressure."
+      },
+      "high_24h_drop": {
+        "label": "High 24h drop",
+        "description": "Strong 24h sell-off detected. Needs order book and flow review before drawing conclusions."
+      },
+      "thin_liquidity": {
+        "label": "Thin liquidity risk",
+        "description": "Market value is large compared with available liquidity. Price can move violently on modest orders."
+      },
+      "very_thin_liquidity": {
+        "label": "Very thin liquidity",
+        "description": "Liquidity appears extremely weak relative to market value. This is a critical red flag."
+      },
+      "volume_spike": {
+        "label": "Abnormal volume spike",
+        "description": "Volume is unusually high relative to liquidity or baseline. This can happen during organic news or artificial activity."
+      },
+      "holder_concentration": {
+        "label": "High holder concentration",
+        "description": "Large supply concentration can increase dump or governance-control risk."
+      },
+      "orderbook_depth_collapse": {
+        "label": "Order book depth collapse",
+        "description": "Market depth fell sharply, which can make price easier to move or liquidate."
+      },
+      "rebrand_after_crash": {
+        "label": "Rebrand after crash",
+        "description": "Ticker/name migration after a major event can make historical risk harder to read."
+      },
+      "exchange_deposit_anomaly": {
+        "label": "Exchange deposit anomaly",
+        "description": "Large movements toward exchanges near an event window can indicate potential sell-side preparation."
+      },
+      "contract_privileges": {
+        "label": "Risky contract privileges",
+        "description": "Owner controls such as mint, pause, blacklist or high tax logic can increase technical abuse risk."
+      },
+      "sell_pressure_imbalance": {
+        "label": "Buy/sell imbalance",
+        "description": "Transactions show a strong imbalance. This is a weak signal alone, but useful with other red flags."
+      },
+      "low_dex_liquidity": {
+        "label": "Low DEX liquidity",
+        "description": "Available DEX liquidity is low, so price quality and execution can be fragile."
+      },
+      "insufficient_data": {
+        "label": "Insufficient data",
+        "description": "There is not enough market data to produce a reliable risk assessment."
+      },
+      "market_volume_stress": {
+        "label": "Market/volume stress",
+        "description": "24h volume is unusually high compared with market capitalization. This may indicate panic, news pressure or artificial activity."
+      },
+      "supply_overhang": {
+        "label": "Supply overhang risk",
+        "description": "A large part of total supply is not circulating. Future unlocks can create additional sell pressure."
+      },
+      "rapid_intraday_move": {
+        "label": "Rapid intraday move",
+        "description": "A very fast move in a short window may come from news, thin liquidity, squeeze conditions or artificial activity."
+      },
+      "parabolic_24h_gain": {
+        "label": "Parabolic 24h gain",
+        "description": "A vertical 24h rally is a risk signal. It is not proof of wrongdoing, but liquidity and volume structure should be reviewed."
+      },
+      "parabolic_7d_gain": {
+        "label": "Parabolic 7d gain",
+        "description": "A very large 7-day rally can look healthy on a chart, but it often raises dump, euphoria and thin-order-book risk."
+      },
+      "parabolic_30d_gain": {
+        "label": "Parabolic 30d gain",
+        "description": "Extreme 30-day growth can indicate a pump phase, especially with weak liquidity and concentrated supply."
+      },
+      "multi_timeframe_pump": {
+        "label": "Multi-timeframe pump",
+        "description": "Token is rising sharply on both 24h and 7d windows. This requires liquidity, volume and holder review."
+      },
+      "new_ath_repricing": {
+        "label": "Rapid repricing near ATH",
+        "description": "Price is near its high after a fast move. The market may be overheated or vulnerable to a sudden sell-off."
+      },
+      "wash_trading_risk": {
+        "label": "Wash trading risk",
+        "description": "24h volume is very high compared with market cap. This may indicate artificial turnover or extreme rotation."
+      },
+      "fdv_marketcap_gap": {
+        "label": "Large FDV / market cap gap",
+        "description": "FDV is much larger than current market cap. Future unlocks may change supply pressure."
+      },
+      "orderbook_slippage_risk": {
+        "label": "Order book slippage risk",
+        "description": "Order simulation indicates that a relatively small trade could move the price strongly."
+      },
+      "orderbook_imbalance": {
+        "label": "Order book imbalance",
+        "description": "Visible bid and ask depth is strongly asymmetric, which can make price movement easier."
+      },
+      "honeypot_risk": {
+        "label": "Honeypot risk",
+        "description": "Contract scan indicates a mechanism that may restrict or block token selling."
+      },
+      "high_sell_tax": {
+        "label": "High sell tax",
+        "description": "Sell tax is high. This can make exiting difficult and requires manual contract review."
+      },
+      "mint_risk": {
+        "label": "Mint risk",
+        "description": "Contract may allow new token creation, increasing dilution risk."
+      },
+      "blacklist_risk": {
+        "label": "Blacklist/whitelist risk",
+        "description": "Contract may contain address blocking or selective allowlist mechanisms."
+      }
+    },
+    "tabs": {
+      "top": "Top",
+      "trending": "Trending",
+      "watchlist": "Watchlist",
+      "highestRisk": "Highest risk"
+    },
+    "sweepStats": {
+      "marketCap": "Market cap scan",
+      "volume": "24h volume scan",
+      "highestRisk": "Highest risk",
+      "coverage": "Coverage",
+      "assets": "assets"
+    },
+    "marketTable": {
+      "name": "Name",
+      "price": "Price",
+      "marketCap": "Market cap",
+      "volume": "Volume (24h)",
+      "risk": "Risk",
+      "last7d": "Last 7 days",
+      "liveNote": "Live market sweep from server-side market data",
+      "coverageNote": "The table loads additional market pages from the API. The search above can also find tokens outside the currently loaded list.",
+      "loadMore": "Load more tokens"
+    },
+    "modal": {
+      "kicker": "Token intelligence card",
+      "close": "Close",
+      "aiTitle": "Integrity AI summary",
+      "aiFallback": "Not enough data for a full summary.",
+      "noSignals": "No major anomaly signals were detected in the connected data sources.",
+      "chartFallback": "Chart is using a local fallback sample because the API source returned a limit or missing data",
+      "chartModes": {
+        "line": "Chart 1",
+        "candles": "Candles",
+        "volume": "Bars",
+        "source": "Source",
+        "bars": "OHLC bars",
+        "points": "points",
+        "depth": "Depth"
+      }
+    },
+    "riskScale": {
+      "low": {
+        "range": "0–34",
+        "label": "Low detected risk",
+        "body": "No major anomalies in connected sources. This is still not investment advice."
+      },
+      "medium": {
+        "range": "35–64",
+        "label": "Elevated risk",
+        "body": "Signals require human review: momentum, volume, liquidity or supply structure."
+      },
+      "high": {
+        "range": "65–84",
+        "label": "Possible manipulation risk",
+        "body": "Several strong anomalies at once. Check order book, holders and contract layer."
+      },
+      "critical": {
+        "range": "85–100",
+        "label": "Critical risk profile",
+        "body": "Multiple red flags combined. This is an analysis alert, not an accusation or legal proof."
+      }
+    },
+    "deep": {
+      "loading": "Loading deep layer…",
+      "orderbook": {
+        "title": "Order book / microstructure",
+        "spread": "Spread",
+        "depth": "Top 100 depth",
+        "sellSlip": "$10k sell slippage",
+        "imbalance": "Bid/ask imbalance",
+        "clean": "No major anomaly in visible depth.",
+        "unavailable": "CEX order book unavailable for this pair."
+      },
+      "holders": {
+        "title": "Holder allocation",
+        "top10": "Top 10 holders",
+        "count": "Holder count",
+        "note": "Holder data appears when a token has a contract address and supported chain-data scan. For pure CEX coins this layer may be unavailable."
+      },
+      "contract": {
+        "title": "Smart contract scan",
+        "sellTax": "Sell tax",
+        "buyTax": "Buy tax",
+        "noAddress": "No contract address in the current data source."
+      }
+    },
+    "method": {
+      "title": "How the score is built",
+      "body": "The score is built from layers: velocity/pump, liquidity and order book, supply concentration and contract risk. Missing data is not treated as safety.",
+      "velocity": "Velocity / pump",
+      "liquidity": "Liquidity / order book",
+      "holders": "Holders / supply",
+      "contract": "Contract / taxes"
+    },
+    "agents": {
+      "title": "Multi-agent fusion",
+      "formula": "Formula",
+      "confidence": "confidence",
+      "metaVerdict": "Meta-model verdict",
+      "conflict": "Signal conflict",
+      "matrixTitle": "Shield agent matrix",
+      "matrixBody": "Each agent reviews a separate layer: momentum, liquidity, order book, holders, contract and data quality. The meta-model fuses conclusions without accusing the project.",
+      "evidence": "evidence",
+      "names": {
+        "velocity": "Velocity / pump agent",
+        "liquidity": "Liquidity / volume agent",
+        "microstructure": "Order book agent",
+        "holders": "Holders / supply agent",
+        "contract": "Smart contract agent",
+        "data": "Data quality agent"
+      }
+    },
+    "bot": {
+      "kicker": "VELMÈRE SHIELD BOT",
+      "title": "Market memory agent",
+      "body": "The AI layer stores recent risk snapshots in server memory and detects score, price and volume changes between scans. This is the step before a production database and scheduled cron jobs.",
+      "memory": "assets",
+      "snapshots": "snapshots",
+      "hot": "hottest",
+      "run": "run sweep bot",
+      "insightsKicker": "AI anomaly ledger",
+      "insightsTitle": "Key moves for review",
+      "noMajorSignal": "no major anomaly in the current scan"
+    },
+    "history": {
+      "title": "Risk memory",
+      "body": "Mini timeline shows how the score changed between scans in the current server instance."
+    },
+    "aboutButton": "What is Shield",
+    "privateSystem": "Private anomaly terminal: live market data, risk agents, OHLC candles, scan memory and evidence reporting. It is an early-warning signal, not a verdict or investment advice.",
+    "sentinel": {
+      "title": "Shield Sentinel",
+      "scanning": "scanning",
+      "alerts": "alerts",
+      "waiting": "waiting for sweep",
+      "emptyHeadline": "No critical alert",
+      "emptyBody": "Sentinel will fill this after the next market sweep."
+    }
   }
 }

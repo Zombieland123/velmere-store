@@ -13,6 +13,7 @@ const proExplanation = {
     ["Bajak Protocol", "The Bajak layer is treated as numerical-audit lore and research identity, not a theorem, not a guarantee and not financial advice."],
     ["Named action → signature", "Every wallet prompt must first name the action: connect, sign, approve or send. No hidden approvals."],
     ["Signal engine", "The dots represent UI checks: wallet route, contract status, audit queue and moderation readiness — not random decoration."],
+    ["Velmère Shield", "Pro connects to Market Integrity Radar: velocity, liquidity, order book and contract-risk signals. It is a cyber/RegTech warning layer, not a trading guarantee."],
   ],
   pl: [
     ["Routing Möbiusa", "Jedna spokojna pętla dostępu: produkt → sygnał dropu → kontekst archiwum → wątek Square. To nawigacja, nie obietnica finansowa."],
@@ -20,6 +21,7 @@ const proExplanation = {
     ["Protokół Bajaka", "Warstwa Bajaka jest tutaj lore/audytem numerycznym i tożsamością research, nie twierdzeniem, nie gwarancją i nie poradą finansową."],
     ["Nazwa akcji → podpis", "Każdy prompt portfela najpierw nazywa akcję: connect, sign, approve albo send. Zero ukrytych approvali."],
     ["Silnik sygnału", "Kropki oznaczają realne checki UI: ścieżkę portfela, status kontraktu, kolejkę audytu i gotowość moderacji — nie losową dekorację."],
+    ["Velmère Shield", "Pro łączy się z radarem Market Integrity: velocity, płynność, order book i ryzyko kontraktu. To warstwa cyber/RegTech ostrzegania, nie gwarancja tradingowa."],
   ],
   de: [
     ["Möbius Routing", "Eine ruhige Access-Schleife: Produkt → Drop-Signal → Archivkontext → Square-Thread. Navigation, keine Finanzzusage."],
@@ -27,6 +29,7 @@ const proExplanation = {
     ["Bajak Protocol", "Die Bajak-Ebene bleibt Numerical-Audit-Lore und Research-Identität, kein Theorem, keine Garantie und keine Finanzberatung."],
     ["Aktion benennen → Signatur", "Jeder Wallet-Prompt nennt zuerst die Aktion: connect, sign, approve oder send. Keine versteckten Approvals."],
     ["Signal Engine", "Die Punkte zeigen UI-Checks: Wallet-Route, Contract-Status, Audit-Queue und Moderation — keine zufällige Dekoration."],
+    ["Velmère Shield", "Pro verbindet sich mit Market Integrity Radar: Velocity, Liquidität, Order Book und Contract-Risiko. Eine Cyber/RegTech-Warnschicht, keine Trading-Garantie."],
   ],
 } as const;
 
