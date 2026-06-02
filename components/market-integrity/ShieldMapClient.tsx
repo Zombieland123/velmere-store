@@ -1,0 +1,1111 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import {
+  AlertTriangle,
+  ArrowLeft,
+  Brain,
+  Database,
+  FileText,
+  GitBranch,
+  LockKeyhole,
+  Network,
+  Radar,
+  ShieldCheck,
+  Workflow,
+} from "lucide-react";
+import { Link } from "@/navigation";
+
+type ShieldCaseTimelineEvent = {
+  id: string;
+  timestamp: string;
+  label: string;
+  body: string;
+  score: number;
+  tone: "neutral" | "watch" | "warning" | "critical";
+};
+
+type SentinelAlert = {
+  id: string;
+  type:
+    | "critical_cluster"
+    | "rising_risk"
+    | "parabolic_pump"
+    | "liquidity_stress"
+    | "data_gap";
+  symbol: string;
+  name: string;
+  score: number;
+  level: "low" | "medium" | "high" | "critical";
+  headline: string;
+  reason: string;
+  action: string;
+  caseId?: string;
+  firstSeenAt?: string;
+  lastSeenAt?: string;
+  timestamp?: string;
+  timeline?: ShieldCaseTimelineEvent[];
+};
+
+type ShieldRuleHit = {
+  id: string;
+  ruleId: string;
+  symbol: string;
+  name: string;
+  score: number;
+  severity: "info" | "watch" | "warning" | "critical";
+  action:
+    | "monitor"
+    | "open_case"
+    | "review_liquidity"
+    | "review_contract"
+    | "review_data"
+    | "cool_down";
+  priority: number;
+  headline: string;
+  reason: string;
+  nextStep: string;
+  timestamp: string;
+};
+
+type ShieldRulesSummary = {
+  version: string;
+  totalHits: number;
+  critical: number;
+  warning: number;
+  watch: number;
+  watchlistHits: number;
+  risingFast: number;
+  watchlist: string[];
+};
+
+type SentinelApiResponse =
+  | {
+      mode: "live";
+      alerts: SentinelAlert[];
+      inbox?: SentinelAlert[];
+      rules?: { summary: ShieldRulesSummary; hits: ShieldRuleHit[] };
+      generatedAt: string;
+      rowsScanned: number;
+    }
+  | { mode: "error"; error: string };
+
+type ShieldMapClientCopy = {
+  back: string;
+  kicker: string;
+  title: string;
+  subtitle: string;
+  privateNote: string;
+  sourceTitle: string;
+  sourceBody: string;
+  criticalTitle: string;
+  criticalBody: string;
+  noCases: string;
+  disclaimer: string;
+  layers: ReadonlyArray<{
+    label: string;
+    body: string;
+    icon: "database" | "brain" | "network" | "workflow" | "file" | "shield";
+  }>;
+  lanes: ReadonlyArray<{ label: string; body: string; status: string }>;
+  guardrails: ReadonlyArray<string>;
+};
+
+const iconMap = {
+  database: Database,
+  brain: Brain,
+  network: Network,
+  workflow: Workflow,
+  file: FileText,
+  shield: ShieldCheck,
+};
+
+const defaultWatchlist = "BTC,ETH,SOL,OM,PEPE,DOGE,VLM";
+
+function severityClass(score: number) {
+  if (score >= 85)
+    return "border-red-300/[0.22] bg-red-400/[0.075] text-red-100";
+  if (score >= 65)
+    return "border-amber-300/[0.22] bg-amber-300/[0.070] text-amber-100";
+  if (score >= 35)
+    return "border-velmere-gold/[0.20] bg-velmere-gold/[0.060] text-velmere-gold";
+  return "border-white/[0.08] bg-white/[0.026] text-white/[0.54]";
+}
+
+function formatDate(value?: string) {
+  if (!value) return "—";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "—";
+  return new Intl.DateTimeFormat(undefined, {
+    month: "short",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
+}
+
+export default function ShieldMapClient({
+  copy,
+}: {
+  copy: ShieldMapClientCopy;
+}) {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [inbox, setInbox] = useState<SentinelAlert[]>([]);
+  const [ruleHits, setRuleHits] = useState<ShieldRuleHit[]>([]);
+  const [summary, setSummary] = useState<ShieldRulesSummary | null>(null);
+  const [activeAtlasNode, setActiveAtlasNode] = useState("Agent fusion");
+
+  useEffect(() => {
+    let active = true;
+    async function loadShieldMap() {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await fetch(
+          `/api/market-integrity/sentinel?pages=1&perPage=160&watchlist=${encodeURIComponent(defaultWatchlist)}`,
+          { headers: { accept: "application/json" } },
+        );
+        const data = (await response.json()) as SentinelApiResponse;
+        if (!active) return;
+        if (!response.ok || data.mode === "error") {
+          throw new Error(
+            data.mode === "error" ? data.error : "Shield Map source failed",
+          );
+        }
+        setInbox((data.inbox?.length ? data.inbox : data.alerts).slice(0, 12));
+        setRuleHits(data.rules?.hits.slice(0, 12) ?? []);
+        setSummary(data.rules?.summary ?? null);
+      } catch (mapError) {
+        if (active)
+          setError(
+            mapError instanceof Error
+              ? mapError.message
+              : "Shield Map source failed",
+          );
+      } finally {
+        if (active) setLoading(false);
+      }
+    }
+    void loadShieldMap();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const reviewRows = useMemo(
+    () =>
+      [
+        ...inbox.map((item) => ({
+          id: item.caseId ?? item.id,
+          symbol: item.symbol,
+          name: item.name,
+          score: item.score,
+          label: item.headline,
+          body: item.reason,
+          action: item.action,
+          source: "case inbox",
+          timestamp: item.lastSeenAt ?? item.timestamp ?? item.firstSeenAt,
+        })),
+        ...ruleHits.map((item) => ({
+          id: item.id,
+          symbol: item.symbol,
+          name: item.name,
+          score: item.score,
+          label: item.headline,
+          body: item.reason,
+          action: item.nextStep,
+          source: item.severity,
+          timestamp: item.timestamp,
+        })),
+      ]
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 10),
+    [inbox, ruleHits],
+  );
+
+  const criticalCount =
+    summary?.critical ?? reviewRows.filter((row) => row.score >= 85).length;
+  const watchCount = (summary?.warning ?? 0) + (summary?.watch ?? 0);
+  const atlasNodes = [
+    {
+      label: "Intake",
+      body: "Ticker, contract, logo, OHLCV and market identity are resolved before the terminal opens.",
+      icon: Database,
+      status: "source state",
+    },
+    {
+      label: "Normalize",
+      body: "Live, partial, fallback and missing inputs are separated so the UI does not fake certainty.",
+      icon: GitBranch,
+      status: "uncertainty visible",
+    },
+    {
+      label: "Agent fusion",
+      body: "Velocity, liquidity, holders, contract, order book and data quality are routed as separate lenses.",
+      icon: Brain,
+      status: "multi-agent",
+    },
+    {
+      label: "SOC routing",
+      body: "Shield converts anomaly signals into operator commands instead of dramatic accusations.",
+      icon: Workflow,
+      status: "review path",
+    },
+    {
+      label: "Evidence",
+      body: "A case draft must carry sources, timestamps, missing data and legal disclaimers.",
+      icon: FileText,
+      status: "guarded export",
+    },
+    {
+      label: "Release rails",
+      body: "Public launch remains blocked until rate limits, audit logs and data-source policy are connected.",
+      icon: ShieldCheck,
+      status: "launch control",
+    },
+  ];
+  const sourceRails = [
+    { label: "Candles", state: "live / fallback", body: "OHLCV, VWAP and replay timeline." },
+    { label: "Liquidity", state: "partial", body: "Depth, slippage and danger zones require live feeds." },
+    { label: "Holders", state: "proxy", body: "Cluster labels need chain API and CEX exclusion." },
+    { label: "Contract", state: "pending", body: "Owner flags, taxes, mint/pause and blacklist checks." },
+  ];
+  const systemBoundaryCards = [
+    {
+      label: "Public explanation",
+      state: "visible",
+      body: "User sees intake, source quality, agent lanes, review queue and evidence handoff. This builds trust without exposing private scoring weights.",
+    },
+    {
+      label: "Private scoring core",
+      state: "hidden",
+      body: "Weights, thresholds and heuristics stay private. Shield Map describes the operating model, not the proprietary decision core.",
+    },
+    {
+      label: "Operator actions",
+      state: "guided",
+      body: "Each anomaly routes to a next step: check candles, verify holders, inspect depth, audit contract or draft evidence with uncertainty.",
+    },
+    {
+      label: "RegTech rail",
+      state: "locked",
+      body: "Language stays: anomaly, requires review, uncertainty. No scam/fraud claims, no legal proof, no financial advice.",
+    },
+  ];
+  const copilotPlaybook = [
+    "Explain the dominant layer before showing numbers.",
+    "Ask what source is missing before lowering uncertainty.",
+    "Route to evidence only when source ledger is attached.",
+    "Keep VLM as access utility, never an investment promise.",
+  ];
+  const shieldMapMilestones = [
+    { label: "Now", body: "Premium map, source ledger, review queue and safe disclosure boundaries." },
+    { label: "Next", body: "Live chain-level holder labels, order-book depth and operator audit logs." },
+    { label: "Launch", body: "Rate limits, policy pages, export manifest and VLM session gating." },
+  ];
+  const activeAtlas = atlasNodes.find((node) => node.label === activeAtlasNode) ?? atlasNodes[2];
+  const ActiveAtlasIcon = activeAtlas.icon;
+  const commandRoomCards = [
+    { label: "queue", value: String(reviewRows.length), body: "open review lanes from current market sweep" },
+    { label: "critical", value: String(criticalCount), body: "high-priority anomalies, still not proof" },
+    { label: "watch", value: String(watchCount), body: "requires manual review before escalation" },
+    { label: "policy", value: "locked", body: "no accusation, no advice, VLM utility only" },
+  ];
+  const launchBridgeContracts = [
+    { label: "search intake", state: "ready", body: "Empty premium search, icon submit, outside-click dismiss and guarded resolver path." },
+    { label: "modal runtime", state: "ready", body: "Terminal opens in a client-only chunk with boot skeleton and safe-mode boundary." },
+    { label: "live data spine", state: "partial", body: "Candles are live/fallback aware; holder and order-book feeds still need production APIs." },
+    { label: "audit storage", state: "blocked", body: "Operator commands, AI prompts and export manifests need persistent storage." },
+    { label: "VLM access", state: "blocked", body: "Utility-only session gating still needs wallet/signature and membership limits." },
+    { label: "export evidence", state: "blocked", body: "Case export needs source ledger, missing-data appendix and legal-safe renderer." },
+  ];
+  const sourceTrustAdapters = [
+    { label: "Search resolver", state: "ready", body: "Local table and suggestions resolve first; external analyze only runs after guarded lookup." },
+    { label: "429 cooldown", state: "partial", body: "Client cooldown is visible; production still needs server cache and abuse/rate-limit middleware." },
+    { label: "Candles / OHLCV", state: "partial", body: "Klines and fallback charts are labeled, with density shown before chart confidence." },
+    { label: "Orderbook depth", state: "blocked", body: "Live depth, spread, slippage and imbalance must be wired before exit-liquidity claims." },
+    { label: "Holder clusters", state: "partial", body: "Whales, CEX/custody, team, LP, retail and unknown buckets need source labels." },
+    { label: "Evidence export", state: "blocked", body: "PDF/JSON export needs case id, immutable source ledger, missing-data appendix and legal copy." },
+  ];
+  const evidenceExportStages = [
+    { label: "Case header", state: "ready", body: "Symbol, timestamp, case id and active review state are always included." },
+    { label: "Source ledger", state: "partial", body: "Live, partial, fallback and blocked source modes must travel with every report." },
+    { label: "Missing-data appendix", state: "partial", body: "Unknown holders, missing orderbook and weak candles become uncertainty, never safety." },
+    { label: "Redaction rules", state: "ready", body: "Private scoring weights, internal prompts and raw wallet labels stay out of public exports." },
+    { label: "Audit storage", state: "blocked", body: "Production export needs persistent command logs, source snapshots and operator handoff." },
+    { label: "Renderer", state: "blocked", body: "PDF/JSON evidence renderer is still blocked until legal copy and export infrastructure are wired." },
+  ];
+  const runtimeHealthLanes = [
+    { label: "Modal runtime", state: "ready", body: "Token terminal loads as client-only chunk with boot skeleton and safe-mode boundary, so one panel cannot kill the market table." },
+    { label: "Chart runtime", state: "partial", body: "Candles prefer Binance klines; fallback sparkline mode remains labeled and keeps confidence limited." },
+    { label: "Orderbook runtime", state: "blocked", body: "Live multi-exchange depth is not production wired yet, so depth claims stay in review mode." },
+    { label: "History runtime", state: "partial", body: "Replay snapshots exist, but sparse history must be treated as context, not proof." },
+    { label: "Search runtime", state: "ready", body: "Local-first resolver, outside-click dismiss and one-letter guard reduce API spam and kernel-panic style UX." },
+    { label: "Evidence runtime", state: "blocked", body: "Export remains manifest-first until renderer, persistent audit storage and legal policy pages are ready." },
+  ];
+  const runtimeRegressionLocks = [
+    "stress simulator is accessed through safe helpers, not spread as an array",
+    "Shield Map opens as a full page; header shield remains compact quick lens",
+    "table wheel scroll must never trap the page",
+    "raw API JSON links stay out of the user-facing buttons",
+    "search/analyze 429 states show cooldown and local-first fallback",
+  ];
+  const operatorFocusLanes = [
+    { label: "First paint", state: "ready", body: "Chart, source label and command palette should appear before heavy AI/SOC modules. This reduces the lag feeling after clicking an asset row." },
+    { label: "Focused panel routing", state: "ready", body: "The modal renders one active command console in the main lane instead of stacking every PASS panel under the chart." },
+    { label: "AI SOC review", state: "partial", body: "AI should guide the operator with missing-data checks, review prompts and calm wording. It is not a hype machine and not legal proof." },
+    { label: "Evidence export", state: "blocked", body: "Export is still manifest/draft mode until persistent audit storage, renderer and legal policy pages are wired." },
+    { label: "Source trust", state: "partial", body: "Live, partial, fallback and blocked lanes remain visible before any summary can sound confident." },
+    { label: "Launch controls", state: "blocked", body: "Rate-limit middleware, VLM session gating, wallet proof and audit logs remain P0 before public production launch." },
+  ];
+  const operatorFocusRules = [
+    "One visible command console per main-lane route; inactive consoles stay behind the palette.",
+    "Heavy modules are deferred until terminalBooted; boot skeleton protects first paint.",
+    "Header buttons change active command state; they never open raw JSON API pages.",
+    "AI copy says anomaly/review/uncertainty, never accusation, legal proof, ROI or investment advice.",
+  ];
+  const interactionStabilityLanes = [
+    { label: "Click intake", state: "ready", body: "Token clicks resolve local rows first, keep one-letter scans blocked and open the terminal shell before external analyze calls can rate-limit." },
+    { label: "Chart-first boot", state: "ready", body: "The first paint should show identity, chart skeleton, source label and command palette before SOC, holders, replay or evidence panels." },
+    { label: "One active panel", state: "ready", body: "The selected command owns the main lane; inactive consoles stay behind routing so Shield does not become a long wall of cards." },
+    { label: "Source cooldown", state: "partial", body: "Client cooldown is visible and local table interactions continue. Production still needs server cache and abuse middleware." },
+    { label: "Scroll surface", state: "ready", body: "Market table horizontal overflow must not trap vertical mouse-wheel scrolling over rows." },
+    { label: "Regression locks", state: "ready", body: "Stress helpers, modal boundary, missing icon imports and raw JSON buttons are checked so previous crashes do not return." },
+  ];
+  const interactionStabilityRules = [
+    "No [...stress] or direct stress spreading; use helper contracts only.",
+    "No heavy inline Shield Map under the main search; full map stays on its own route.",
+    "No raw /api JSON buttons inside premium UI.",
+    "No scan placeholder, no text scan button and no single-letter API spam.",
+    "Every strong visual claim carries source mode, uncertainty and manual-review wording.",
+  ];
+  const reviewDeckLanes = [
+    { label: "Operator brief", state: "ready", body: "PASS77 opens with a concise decision surface before any deep console. The first screen should say what to review next, not dump every module." },
+    { label: "Source truth", state: "partial", body: "Live, partial, fallback and blocked source modes stay visible before the AI bot can sound confident." },
+    { label: "AI review", state: "partial", body: "Bot tone stays SOC-style: missing data, next commands, calm review language and no hype." },
+    { label: "Evidence gate", state: "blocked", body: "Export remains draft-only until persistent audit log, renderer and legal policy pack are wired." },
+    { label: "Interaction path", state: "ready", body: "Chart-first boot, one active panel, outside-click dropdown dismiss and table scroll locks remain regression guarded." },
+    { label: "Launch blockers", state: "blocked", body: "Rate limits, wallet/session access, VLM utility gating and export infrastructure remain P0 launch blockers." },
+  ];
+  const reviewDeckRules = [
+    "Default terminal command is /deck, then the user drills into one lane only.",
+    "Deep panels stay hidden until selected; premium UI cannot become a wall of consoles.",
+    "Shield Map explains workflow, not private scoring weights or internal prompts.",
+    "Every deck card uses anomaly/review/uncertainty language and keeps Not financial advice visible.",
+  ];
+  const statePillClass = (state: string) =>
+    state === "ready"
+      ? "border-emerald-300/[0.18] bg-emerald-400/[0.055] text-emerald-100"
+      : state === "partial"
+        ? "border-velmere-gold/[0.18] bg-velmere-gold/[0.055] text-velmere-gold"
+        : "border-red-300/[0.18] bg-red-400/[0.055] text-red-100";
+
+  return (
+    <main className="shield-typography-root bg-velmere-black text-velmere-ivory">
+      <section className="luxury-section-wide border-b border-white/[0.06] py-8 md:py-12">
+        <div className="mx-auto max-w-none">
+          <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+            <div className="min-w-0">
+              <Link
+                href="/market-integrity"
+                className="shield-premium-focus inline-flex items-center gap-2 rounded-full border border-white/[0.10] bg-white/[0.026] px-4 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-white/[0.55] transition hover:border-velmere-gold/[0.30] hover:text-velmere-gold"
+              >
+                <ArrowLeft className="h-3.5 w-3.5" /> {copy.back}
+              </Link>
+              <p className="mt-7 font-mono text-[10px] uppercase tracking-[0.20em] text-velmere-gold">
+                {copy.kicker}
+              </p>
+              <h1 className="mt-3 max-w-4xl text-[clamp(2.2rem,5vw,5.4rem)] font-semibold leading-[0.92] tracking-[-0.07em] text-white">
+                {copy.title}
+              </h1>
+              <p className="shield-copy-safe mt-5 max-w-3xl text-sm leading-7 text-white/[0.58] md:text-base">
+                {copy.subtitle}
+              </p>
+            </div>
+            <div className="shield-map-panel min-w-0 p-4 md:w-[22rem]">
+              <div className="flex items-center gap-3">
+                <span className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-velmere-gold/[0.22] bg-velmere-gold/[0.08] text-velmere-gold">
+                  <Radar className="h-5 w-5" />
+                </span>
+                <div className="min-w-0">
+                  <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-white/[0.35]">
+                    safe disclosure mode
+                  </p>
+                  <p className="mt-1 text-sm font-semibold text-white">
+                    Private scoring core hidden
+                  </p>
+                </div>
+              </div>
+              <p className="shield-copy-safe mt-4 text-xs leading-6 text-white/[0.48]">
+                {copy.privateNote}
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="luxury-section-wide py-6 md:py-8">
+        <div className="mx-auto grid max-w-none gap-4 lg:grid-cols-[minmax(0,0.82fr)_minmax(20rem,0.46fr)]">
+          <div className="shield-map-command-room p-4 md:p-5">
+            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+              <div className="min-w-0">
+                <p className="font-mono text-[10px] uppercase tracking-[0.20em] text-velmere-gold">
+                  Shield Map command room
+                </p>
+                <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-white md:text-4xl">
+                  Mapa ma tłumaczyć produkt, nie wyglądać jak zwykły opis.
+                </h2>
+                <p className="shield-copy-safe mt-3 max-w-3xl text-sm leading-7 text-white/[0.54]">
+                  Tu użytkownik widzi, które części terminala są live, które są partial/fallback i gdzie operator musi zrobić review. Prywatne wagi scoringu zostają ukryte, ale workflow jest jasny.
+                </p>
+              </div>
+              <Link
+                href="/market-integrity"
+                className="shield-premium-focus inline-flex shrink-0 items-center justify-center rounded-full border border-velmere-gold/[0.20] bg-velmere-gold/[0.075] px-4 py-2.5 font-mono text-[10px] uppercase tracking-[0.14em] text-velmere-gold transition hover:bg-velmere-gold/[0.12]"
+              >
+                open terminal
+              </Link>
+            </div>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              {commandRoomCards.map((card) => (
+                <div key={card.label} className="shield-map-command-card">
+                  <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-white/[0.36]">{card.label}</p>
+                  <p className="mt-2 font-mono text-2xl text-white tabular-nums">{card.value}</p>
+                  <p className="shield-copy-safe mt-2 text-[11px] leading-5 text-white/[0.42]">{card.body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="shield-map-radar-board p-4 md:p-5">
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-velmere-gold">active layer preview</p>
+            <div className="mt-4 flex items-center gap-4">
+              <span className="relative inline-flex h-20 w-20 shrink-0 items-center justify-center rounded-full border border-velmere-gold/[0.24] bg-velmere-gold/[0.06] text-velmere-gold">
+                <span className="absolute inset-[-0.8rem] rounded-full border border-dashed border-velmere-gold/[0.13]" />
+                <ActiveAtlasIcon className="h-7 w-7" />
+              </span>
+              <div className="min-w-0">
+                <p className="truncate text-lg font-semibold text-white">{activeAtlas.label}</p>
+                <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.14em] text-velmere-gold/[0.82]">{activeAtlas.status}</p>
+                <p className="shield-copy-safe mt-2 text-xs leading-6 text-white/[0.46]">{activeAtlas.body}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="luxury-section-wide py-6 md:py-10">
+        <div className="mx-auto max-w-none">
+          <div className="shield-map-launch-bridge p-4 md:p-5">
+            <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+              <div className="min-w-0">
+                <p className="font-mono text-[10px] uppercase tracking-[0.20em] text-velmere-gold">
+                  Launch bridge · PASS71
+                </p>
+                <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-white md:text-4xl">
+                  Co musi być gotowe zanim Shield będzie produkcyjnym terminalem.
+                </h2>
+                <p className="shield-copy-safe mt-3 max-w-3xl text-sm leading-7 text-white/[0.54]">
+                  To jest most z obecnego premium UI do realnego produktu: live data contracts, audit logs, rate limits, VLM utility access i evidence export. Czerwone pola zostają blokadami, nie udajemy gotowości.
+                </p>
+              </div>
+              <span className="w-fit rounded-full border border-velmere-gold/[0.18] bg-velmere-gold/[0.060] px-3 py-2 font-mono text-[9px] uppercase tracking-[0.14em] text-velmere-gold">
+                build-to-100 spine
+              </span>
+            </div>
+            <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {launchBridgeContracts.map((contract) => (
+                <div key={contract.label} className="shield-map-launch-card">
+                  <div className="flex min-w-0 items-center justify-between gap-3">
+                    <p className="truncate font-mono text-[10px] uppercase tracking-[0.15em] text-white/[0.72]">
+                      {contract.label}
+                    </p>
+                    <span className={`shrink-0 rounded-full border px-2.5 py-1 font-mono text-[8px] uppercase tracking-[0.12em] ${statePillClass(contract.state)}`}>
+                      {contract.state}
+                    </span>
+                  </div>
+                  <p className="shield-copy-safe mt-3 text-xs leading-6 text-white/[0.46]">
+                    {contract.body}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <section className="luxury-section-wide py-6 md:py-10">
+        <div className="mx-auto max-w-none">
+          <div className="shield-map-source-trust p-4 md:p-5">
+            <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+              <div className="min-w-0">
+                <p className="font-mono text-[10px] uppercase tracking-[0.20em] text-velmere-gold">
+                  source trust console · PASS72
+                </p>
+                <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-white md:text-4xl">
+                  Shield Map ma pokazywać prawdę o źródłach, nie tylko ładny radar.
+                </h2>
+                <p className="shield-copy-safe mt-3 max-w-3xl text-sm leading-7 text-white/[0.54]">
+                  Każda warstwa ma stan: ready, partial albo blocked. Dzięki temu użytkownik widzi, czy terminal pracuje na live danych, fallbacku albo brakującym źródle. Premium design nie może udawać większej pewności niż mamy w danych.
+                </p>
+              </div>
+              <span className="w-fit rounded-full border border-velmere-gold/[0.18] bg-velmere-gold/[0.060] px-3 py-2 font-mono text-[9px] uppercase tracking-[0.14em] text-velmere-gold">
+                no fake certainty
+              </span>
+            </div>
+            <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {sourceTrustAdapters.map((adapter) => (
+                <div key={adapter.label} className="shield-map-source-card">
+                  <div className="flex min-w-0 items-center justify-between gap-3">
+                    <p className="truncate font-mono text-[10px] uppercase tracking-[0.15em] text-white/[0.72]">
+                      {adapter.label}
+                    </p>
+                    <span className={`shrink-0 rounded-full border px-2.5 py-1 font-mono text-[8px] uppercase tracking-[0.12em] ${statePillClass(adapter.state)}`}>
+                      {adapter.state}
+                    </span>
+                  </div>
+                  <p className="shield-copy-safe mt-3 text-xs leading-6 text-white/[0.46]">
+                    {adapter.body}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <section className="luxury-section-wide py-6 md:py-10">
+        <div className="mx-auto max-w-none">
+          <div className="shield-map-evidence-export p-4 md:p-5">
+            <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+              <div className="min-w-0">
+                <p className="font-mono text-[10px] uppercase tracking-[0.20em] text-velmere-gold">
+                  evidence export console · PASS73
+                </p>
+                <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-white md:text-4xl">
+                  Raport ma być kontrolowanym exportem, nie ścianą JSON ani dekoracją.
+                </h2>
+                <p className="shield-copy-safe mt-3 max-w-3xl text-sm leading-7 text-white/[0.54]">
+                  Shield Map pokazuje, co musi trafić do evidence reportu: case header, source ledger, missing-data appendix, redakcje i legal note. Dopóki audit log i renderer są zablokowane, export zostaje manifestem/operator preview.
+                </p>
+              </div>
+              <span className="w-fit rounded-full border border-velmere-gold/[0.18] bg-velmere-gold/[0.060] px-3 py-2 font-mono text-[9px] uppercase tracking-[0.14em] text-velmere-gold">
+                manifest before export
+              </span>
+            </div>
+            <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {evidenceExportStages.map((stage) => (
+                <div key={stage.label} className="shield-map-export-card">
+                  <div className="flex min-w-0 items-center justify-between gap-3">
+                    <p className="truncate font-mono text-[10px] uppercase tracking-[0.15em] text-white/[0.72]">
+                      {stage.label}
+                    </p>
+                    <span className={`shrink-0 rounded-full border px-2.5 py-1 font-mono text-[8px] uppercase tracking-[0.12em] ${statePillClass(stage.state)}`}>
+                      {stage.state}
+                    </span>
+                  </div>
+                  <p className="shield-copy-safe mt-3 text-xs leading-6 text-white/[0.46]">
+                    {stage.body}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <p className="shield-copy-safe mt-5 rounded-2xl border border-amber-300/[0.16] bg-amber-300/[0.055] p-3 text-[11px] leading-6 text-amber-100/[0.84]">
+              Evidence export is an internal review aid: Not financial advice. Algorithmic risk flag only. Manual review required.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="luxury-section-wide py-6 md:py-10">
+        <div className="mx-auto grid max-w-none gap-4 lg:grid-cols-[minmax(0,0.75fr)_minmax(0,0.55fr)]">
+          <div className="shield-map-boundary p-4 md:p-5">
+            <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+              <div className="min-w-0">
+                <p className="font-mono text-[10px] uppercase tracking-[0.20em] text-velmere-gold">
+                  system boundary
+                </p>
+                <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-white md:text-4xl">
+                  Shield Map ma budować zaufanie, ale nie zdradzać prywatnego jądra.
+                </h2>
+              </div>
+              <span className="w-fit rounded-full border border-velmere-gold/[0.18] bg-velmere-gold/[0.060] px-3 py-2 font-mono text-[9px] uppercase tracking-[0.14em] text-velmere-gold">
+                private core protected
+              </span>
+            </div>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              {systemBoundaryCards.map((card) => (
+                <div key={card.label} className="shield-map-boundary-card">
+                  <div className="flex min-w-0 items-center justify-between gap-3">
+                    <p className="truncate font-mono text-[10px] uppercase tracking-[0.15em] text-white/[0.72]">
+                      {card.label}
+                    </p>
+                    <span className="shrink-0 rounded-full border border-white/[0.08] bg-black/[0.22] px-2.5 py-1 font-mono text-[8px] uppercase tracking-[0.12em] text-velmere-gold">
+                      {card.state}
+                    </span>
+                  </div>
+                  <p className="shield-copy-safe mt-3 text-xs leading-6 text-white/[0.46]">
+                    {card.body}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="shield-map-copilot p-4 md:p-5">
+            <p className="font-mono text-[10px] uppercase tracking-[0.20em] text-velmere-gold">
+              AI copilot playbook
+            </p>
+            <p className="shield-copy-safe mt-3 text-sm leading-7 text-white/[0.54]">
+              Bot w Shield Map nie ma straszyć ani robić hype'u. Ma prowadzić operatora krótkimi komendami: co sprawdzić, czego brakuje i kiedy nie wolno robić mocnych wniosków.
+            </p>
+            <div className="mt-4 grid gap-2">
+              {copilotPlaybook.map((item, index) => (
+                <div key={item} className="flex gap-3 rounded-2xl border border-white/[0.08] bg-black/[0.18] p-3">
+                  <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-velmere-gold/[0.18] bg-velmere-gold/[0.060] font-mono text-[9px] text-velmere-gold">
+                    {index + 1}
+                  </span>
+                  <p className="shield-copy-safe text-xs leading-6 text-white/[0.50]">{item}</p>
+                </div>
+              ))}
+            </div>
+            <div className="mt-4 grid gap-2">
+              {shieldMapMilestones.map((item) => (
+                <div key={item.label} className="rounded-2xl border border-white/[0.08] bg-white/[0.024] p-3">
+                  <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-velmere-gold">{item.label}</p>
+                  <p className="shield-copy-safe mt-1 text-[11px] leading-5 text-white/[0.42]">{item.body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="luxury-section-wide py-6 md:py-10">
+        <div className="mx-auto max-w-none">
+          <div className="shield-map-panel overflow-hidden p-4 md:p-5">
+            <div className="grid gap-5 lg:grid-cols-[minmax(0,0.92fr)_minmax(18rem,0.38fr)] lg:items-stretch">
+              <div className="min-w-0">
+                <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+                  <div className="min-w-0">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.20em] text-velmere-gold">
+                      operating atlas
+                    </p>
+                    <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-white md:text-4xl">
+                      Jak Shield prowadzi analizę bez robienia fałszywych werdyktów.
+                    </h2>
+                  </div>
+                  <div className="flex shrink-0 flex-wrap gap-2 font-mono text-[9px] uppercase tracking-[0.13em] text-white/[0.46]">
+                    <span className="rounded-full border border-velmere-gold/[0.18] bg-velmere-gold/[0.065] px-3 py-1.5 text-velmere-gold">
+                      private core hidden
+                    </span>
+                    <span className="rounded-full border border-white/[0.10] bg-white/[0.026] px-3 py-1.5">
+                      no accusations
+                    </span>
+                  </div>
+                </div>
+                <div className="mt-5 grid gap-3 md:grid-cols-3">
+                  {atlasNodes.map((node, index) => {
+                    const Icon = node.icon;
+                    return (
+                      <button
+                        key={node.label}
+                        type="button"
+                        onClick={() => setActiveAtlasNode(node.label)}
+                        className={`group relative min-w-0 overflow-hidden rounded-[1.35rem] border p-4 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-velmere-gold/[0.35] ${activeAtlas.label === node.label ? "border-velmere-gold/[0.34] bg-velmere-gold/[0.065]" : "border-white/[0.08] bg-black/[0.20] hover:border-velmere-gold/[0.22] hover:bg-white/[0.026]"}`}
+                      >
+                        <div className="absolute right-3 top-3 font-mono text-[2.4rem] leading-none text-white/[0.025]">
+                          {index + 1}
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-velmere-gold/[0.18] bg-velmere-gold/[0.07] text-velmere-gold">
+                            <Icon className="h-4 w-4" />
+                          </span>
+                          <div className="min-w-0">
+                            <p className="truncate font-mono text-[10px] uppercase tracking-[0.15em] text-white/[0.72]">
+                              {node.label}
+                            </p>
+                            <p className="mt-1 truncate font-mono text-[9px] uppercase tracking-[0.12em] text-velmere-gold/[0.82]">
+                              {node.status}
+                            </p>
+                          </div>
+                        </div>
+                        <p className="shield-copy-safe mt-3 text-xs leading-6 text-white/[0.46]">
+                          {node.body}
+                        </p>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+              <div className="min-w-0 rounded-[1.35rem] border border-white/[0.08] bg-black/[0.22] p-4">
+                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-velmere-gold">
+                  source truth ledger
+                </p>
+                <div className="mt-4 space-y-2">
+                  {sourceRails.map((rail) => (
+                    <div
+                      key={rail.label}
+                      className="rounded-2xl border border-white/[0.075] bg-white/[0.024] p-3"
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="truncate font-mono text-[10px] uppercase tracking-[0.14em] text-white/[0.70]">
+                          {rail.label}
+                        </p>
+                        <span className="shrink-0 rounded-full border border-velmere-gold/[0.16] bg-velmere-gold/[0.055] px-2 py-1 font-mono text-[8px] uppercase tracking-[0.12em] text-velmere-gold">
+                          {rail.state}
+                        </span>
+                      </div>
+                      <p className="shield-copy-safe mt-2 text-[11px] leading-5 text-white/[0.42]">
+                        {rail.body}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+                <p className="shield-copy-safe mt-4 rounded-2xl border border-white/[0.075] bg-white/[0.024] p-3 text-[11px] leading-6 text-white/[0.43]">
+                  Shield Map pokazuje architekturę i workflow. Nie ujawnia prywatnych wag, progów ani heurystyk scoringu. Brak flagi nie oznacza bezpieczeństwa.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="luxury-section-wide py-8 md:py-12">
+        <div className="mx-auto grid max-w-none gap-4 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
+          <div className="shield-map-panel p-4 md:p-5">
+            <div className="flex items-start justify-between gap-4">
+              <div className="min-w-0">
+                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-velmere-gold">
+                  {copy.sourceTitle}
+                </p>
+                <h2 className="mt-2 text-xl font-semibold tracking-tight text-white md:text-2xl">
+                  Source → agents → review → evidence
+                </h2>
+              </div>
+              <LockKeyhole className="h-5 w-5 shrink-0 text-velmere-gold" />
+            </div>
+            <p className="shield-copy-safe mt-3 text-sm leading-7 text-white/[0.54]">
+              {copy.sourceBody}
+            </p>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              {copy.layers.map((layer) => {
+                const Icon = iconMap[layer.icon];
+                return (
+                  <div
+                    key={layer.label}
+                    className="rounded-[1.25rem] border border-white/[0.08] bg-black/[0.18] p-4"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-velmere-gold/[0.18] bg-velmere-gold/[0.07] text-velmere-gold">
+                        <Icon className="h-4 w-4" />
+                      </span>
+                      <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/[0.70]">
+                        {layer.label}
+                      </p>
+                    </div>
+                    <p className="shield-copy-safe mt-3 text-xs leading-6 text-white/[0.45]">
+                      {layer.body}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="shield-map-panel p-4 md:p-5">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div className="min-w-0">
+                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-velmere-gold">
+                  {copy.criticalTitle}
+                </p>
+                <p className="mt-2 text-sm leading-6 text-white/[0.50]">
+                  {copy.criticalBody}
+                </p>
+              </div>
+              <div className="flex shrink-0 gap-2 font-mono text-[9px] uppercase tracking-[0.13em] text-white/[0.50]">
+                <span className="rounded-full border border-red-300/[0.18] bg-red-400/[0.06] px-3 py-1.5">
+                  C {criticalCount}
+                </span>
+                <span className="rounded-full border border-velmere-gold/[0.18] bg-velmere-gold/[0.06] px-3 py-1.5">
+                  W {watchCount}
+                </span>
+              </div>
+            </div>
+            <div className="shield-safe-scroll mt-4 max-h-[30rem] rounded-[1.25rem] border border-white/[0.08]">
+              {loading ? (
+                <div className="p-5 text-sm text-white/[0.48]">
+                  Loading Shield Map queue…
+                </div>
+              ) : error ? (
+                <div className="p-5 text-sm leading-6 text-amber-100">
+                  Shield Map source is partial: {error}
+                </div>
+              ) : reviewRows.length ? (
+                reviewRows.map((row) => (
+                  <Link
+                    key={row.id}
+                    href={`/market-integrity?scan=${encodeURIComponent(row.symbol)}`}
+                    className="grid min-w-0 gap-3 border-b border-white/[0.06] p-3 transition last:border-b-0 hover:bg-white/[0.035] md:grid-cols-[4.5rem_minmax(0,1fr)_4.5rem] md:items-center"
+                  >
+                    <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-white/[0.65]">
+                      {row.symbol}
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block truncate text-sm font-semibold text-white/[0.78]">
+                        {row.label}
+                      </span>
+                      <span className="shield-copy-safe mt-1 block text-[11px] leading-5 text-white/[0.42]">
+                        {row.body}
+                      </span>
+                      <span className="mt-2 block truncate font-mono text-[9px] uppercase tracking-[0.12em] text-white/[0.32]">
+                        {row.source} · {formatDate(row.timestamp)} ·{" "}
+                        {row.action}
+                      </span>
+                    </span>
+                    <span
+                      className={`inline-flex justify-center rounded-full border px-2.5 py-1.5 text-center font-mono text-[10px] tabular-nums ${severityClass(row.score)}`}
+                    >
+                      {row.score}/100
+                    </span>
+                  </Link>
+                ))
+              ) : (
+                <div className="p-5 text-sm leading-7 text-white/[0.46]">
+                  {copy.noCases}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <section className="luxury-section-wide py-6 md:py-10">
+        <div className="mx-auto max-w-none">
+          <div className="shield-map-operator-focus p-4 md:p-5">
+            <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+              <div className="min-w-0">
+                <p className="font-mono text-[10px] uppercase tracking-[0.20em] text-velmere-gold">
+                  operator focus router · PASS75
+                </p>
+                <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-white md:text-4xl">
+                  Shield ma działać jak system operacyjny analityka, nie ściana losowych paneli.
+                </h2>
+                <p className="shield-copy-safe mt-3 max-w-3xl text-sm leading-7 text-white/[0.54]">
+                  PASS75 porządkuje terminal: jeden aktywny panel komendy, deferred heavy modules, runtime guards, source trust i evidence blockers. To ma zmniejszać lag po kliknięciu tokena i prowadzić operatora po logicznej ścieżce review.
+                </p>
+              </div>
+              <span className="w-fit rounded-full border border-velmere-gold/[0.18] bg-velmere-gold/[0.060] px-3 py-2 font-mono text-[9px] uppercase tracking-[0.14em] text-velmere-gold">
+                focused terminal OS
+              </span>
+            </div>
+            <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {operatorFocusLanes.map((lane) => (
+                <div key={lane.label} className={`shield-map-focus-card ${statePillClass(lane.state)}`}>
+                  <div className="flex min-w-0 items-center justify-between gap-3">
+                    <p className="truncate font-mono text-[10px] uppercase tracking-[0.15em]">{lane.label}</p>
+                    <span className="shrink-0 rounded-full border border-white/[0.10] bg-black/[0.18] px-2.5 py-1 font-mono text-[8px] uppercase tracking-[0.12em]">{lane.state}</span>
+                  </div>
+                  <p className="shield-copy-safe mt-3 text-xs leading-6 opacity-80">{lane.body}</p>
+                </div>
+              ))}
+            </div>
+            <div className="mt-4 grid gap-2 md:grid-cols-4">
+              {operatorFocusRules.map((rule) => (
+                <p key={rule} className="shield-copy-safe rounded-2xl border border-white/[0.08] bg-black/[0.18] p-3 text-[10px] leading-5 text-white/[0.46]">
+                  {rule}
+                </p>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <section className="luxury-section-wide py-6 md:py-10">
+        <div className="mx-auto max-w-none shield-map-review-deck p-4 md:p-5">
+          <div className="grid gap-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(18rem,0.38fr)] lg:items-start">
+            <div className="min-w-0">
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-velmere-gold">
+                review deck · PASS77
+              </p>
+              <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-white md:text-4xl">
+                Pierwszy ekran terminala ma prowadzić decyzję, a nie zasypywać panelami.
+              </h2>
+              <p className="shield-copy-safe mt-3 max-w-3xl text-sm leading-7 text-white/[0.54]">
+                PASS77 dodaje Review Deck: krótki briefing operatora, prawdę o źródłach, AI review, evidence gate, stabilność interakcji i launch blockers. Deep modules zostają dostępne, ale dopiero po wyborze komendy.
+              </p>
+            </div>
+            <div className="rounded-[1.25rem] border border-velmere-gold/[0.16] bg-velmere-gold/[0.055] p-4">
+              <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-velmere-gold">deck rule</p>
+              <p className="shield-copy-safe mt-2 text-xs leading-6 text-white/[0.58]">
+                Review Deck is an operator workflow summary. It is not legal proof, not investment advice and not an accusation.
+              </p>
+            </div>
+          </div>
+          <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+            {reviewDeckLanes.map((lane) => (
+              <div key={lane.label} className={`shield-map-review-card ${statePillClass(lane.state)}`}>
+                <div className="flex min-w-0 items-center justify-between gap-2">
+                  <p className="truncate font-mono text-[9px] uppercase tracking-[0.14em]">{lane.label}</p>
+                  <span className="shrink-0 font-mono text-[8px] uppercase tracking-[0.12em]">{lane.state}</span>
+                </div>
+                <p className="shield-copy-safe mt-2 text-[11px] leading-5 opacity-80">{lane.body}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 grid gap-2 md:grid-cols-4">
+            {reviewDeckRules.map((rule) => (
+              <p key={rule} className="shield-copy-safe rounded-2xl border border-white/[0.08] bg-black/[0.18] p-3 text-[10px] leading-5 text-white/[0.46]">
+                {rule}
+              </p>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="luxury-section-wide py-6 md:py-10">
+        <div className="mx-auto max-w-none shield-map-interaction-stability p-4 md:p-5">
+          <div className="grid gap-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(18rem,0.38fr)] lg:items-start">
+            <div className="min-w-0">
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-velmere-gold">
+                interaction stability console · PASS76
+              </p>
+              <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-white md:text-4xl">
+                Shield Map ma pilnować realnej ścieżki kliknięcia, nie tylko opisywać system.
+              </h2>
+              <p className="shield-copy-safe mt-3 max-w-3xl text-sm leading-7 text-white/[0.54]">
+                PASS76 dodaje warstwę kontroli interakcji: kliknięcie tokena, chart-first boot, jeden aktywny panel, cooldown źródeł, scroll tabeli i regression locks. To jest mapa stabilności produktu, nie scoring tokena.
+              </p>
+            </div>
+            <div className="rounded-[1.25rem] border border-velmere-gold/[0.16] bg-velmere-gold/[0.055] p-4">
+              <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-velmere-gold">private core boundary</p>
+              <p className="shield-copy-safe mt-2 text-xs leading-6 text-white/[0.58]">
+                Public map shows workflow and safety rails. Private scoring weights, internal prompts and sensitive heuristics remain hidden.
+              </p>
+            </div>
+          </div>
+          <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+            {interactionStabilityLanes.map((lane) => (
+              <div key={lane.label} className={`shield-map-interaction-card ${statePillClass(lane.state)}`}>
+                <div className="flex min-w-0 items-center justify-between gap-2">
+                  <p className="truncate font-mono text-[9px] uppercase tracking-[0.14em]">{lane.label}</p>
+                  <span className="shrink-0 font-mono text-[8px] uppercase tracking-[0.12em]">{lane.state}</span>
+                </div>
+                <p className="shield-copy-safe mt-2 text-[11px] leading-5 opacity-80">{lane.body}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 grid gap-2 md:grid-cols-5">
+            {interactionStabilityRules.map((rule) => (
+              <p key={rule} className="shield-copy-safe rounded-2xl border border-white/[0.08] bg-black/[0.18] p-3 text-[10px] leading-5 text-white/[0.46]">
+                {rule}
+              </p>
+            ))}
+          </div>
+        </div>
+      </section>
+
+
+      <section className="luxury-section-wide py-6 md:py-8">
+        <div className="mx-auto max-w-none shield-map-runtime-health p-4 md:p-5">
+          <div className="grid gap-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(18rem,0.38fr)] lg:items-start">
+            <div className="min-w-0">
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-velmere-gold">
+                runtime health console · PASS74
+              </p>
+              <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-white md:text-4xl">
+                Shield Map musi pokazywać też stan samego terminala.
+              </h2>
+              <p className="shield-copy-safe mt-3 max-w-3xl text-sm leading-7 text-white/[0.54]">
+                Ta sekcja tłumaczy runtime safeguards: które elementy produktu są stabilne, które są częściowe, a które blokują launch. Dzięki temu premium UI nie udaje pełnej produkcji, kiedy brakuje orderbooka, audit storage albo export rendererów.
+              </p>
+            </div>
+            <div className="rounded-[1.25rem] border border-velmere-gold/[0.16] bg-velmere-gold/[0.055] p-4">
+              <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-velmere-gold">runtime rule</p>
+              <p className="shield-copy-safe mt-2 text-xs leading-6 text-white/[0.58]">
+                Terminal runtime is product QA. Runtime safeguards are not a token score. Not financial advice. Algorithmic risk flag only.
+              </p>
+            </div>
+          </div>
+          <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+            {runtimeHealthLanes.map((lane) => (
+              <div key={lane.label} className={`shield-map-runtime-card ${statePillClass(lane.state)}`}>
+                <div className="flex min-w-0 items-center justify-between gap-2">
+                  <p className="truncate font-mono text-[9px] uppercase tracking-[0.14em]">{lane.label}</p>
+                  <span className="shrink-0 font-mono text-[8px] uppercase tracking-[0.12em]">{lane.state}</span>
+                </div>
+                <p className="shield-copy-safe mt-2 text-[11px] leading-5 opacity-80">{lane.body}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 grid gap-2 md:grid-cols-5">
+            {runtimeRegressionLocks.map((item) => (
+              <p key={item} className="shield-copy-safe rounded-2xl border border-white/[0.08] bg-black/[0.18] p-3 text-[10px] leading-5 text-white/[0.46]">
+                {item}
+              </p>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section className="luxury-section-wide pb-14">
+        <div className="mx-auto grid max-w-none gap-4 lg:grid-cols-[minmax(0,1fr)_24rem]">
+          <div className="shield-map-panel p-4 md:p-5">
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-velmere-gold">
+              operator lanes
+            </p>
+            <div className="mt-4 grid gap-3 md:grid-cols-2">
+              {copy.lanes.map((lane, index) => (
+                <div
+                  key={lane.label}
+                  className="rounded-[1.25rem] border border-white/[0.08] bg-black/[0.18] p-4"
+                >
+                  <div className="flex items-start gap-3">
+                    <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/[0.10] bg-white/[0.035] font-mono text-[10px] text-velmere-gold">
+                      {index + 1}
+                    </span>
+                    <div className="min-w-0">
+                      <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-white/[0.70]">
+                        {lane.label}
+                      </p>
+                      <p className="shield-copy-safe mt-2 text-xs leading-6 text-white/[0.45]">
+                        {lane.body}
+                      </p>
+                      <p className="mt-3 inline-flex rounded-full border border-velmere-gold/[0.16] bg-velmere-gold/[0.055] px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.12em] text-velmere-gold">
+                        {lane.status}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="shield-map-panel p-4 md:p-5">
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-velmere-gold">
+              release guardrails
+            </p>
+            <div className="mt-4 space-y-2">
+              {copy.guardrails.map((item) => (
+                <div
+                  key={item}
+                  className="flex gap-3 rounded-2xl border border-white/[0.08] bg-black/[0.18] p-3"
+                >
+                  <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-velmere-gold" />
+                  <p className="shield-copy-safe text-xs leading-6 text-white/[0.50]">
+                    {item}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <p className="shield-copy-safe mt-4 rounded-2xl border border-white/[0.08] bg-white/[0.026] p-3 text-[11px] leading-6 text-white/[0.42]">
+              {copy.disclaimer}
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}

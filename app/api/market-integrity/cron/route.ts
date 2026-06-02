@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import { fetchCoinGeckoMarkets } from "@/lib/market-integrity/coingecko";
 import { buildSweepInsights, getMarketMemoryStatus, recordMarketRows } from "@/lib/market-integrity/market-memory";
 import { getRiskLedgerStatus, persistMarketRows } from "@/lib/market-integrity/risk-ledger";
+import { buildSentinelAlerts } from "@/lib/market-integrity/risk-alerts";
+import { persistSentinelAlerts } from "@/lib/market-integrity/alert-ledger";
+import { buildShieldRuleHits } from "@/lib/market-integrity/rule-engine";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -34,6 +37,9 @@ export async function GET(request: Request) {
     const rows = recordMarketRows(chunks.flat());
     const ledger = await persistMarketRows(rows);
     const insights = buildSweepInsights(rows);
+    const sentinelAlerts = buildSentinelAlerts(rows);
+    const alertLedger = await persistSentinelAlerts(sentinelAlerts);
+    const rules = buildShieldRuleHits(rows, searchParams.get("watchlist"));
     const critical = rows.filter((row) => row.result.score >= 85).length;
     const high = rows.filter((row) => row.result.score >= 65 && row.result.score < 85).length;
     const rising = rows.filter((row) => row.memory?.trend === "rising_risk").length;
@@ -50,6 +56,9 @@ export async function GET(request: Request) {
       high,
       rising,
       ledger,
+      alertLedger,
+      sentinelAlerts,
+      rules,
       memory: getMarketMemoryStatus(),
       ledgerStatus: await getRiskLedgerStatus(),
       insights,

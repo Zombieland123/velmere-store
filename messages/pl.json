@@ -3283,6 +3283,71 @@
         "bars": "OHLC bars",
         "points": "punkty",
         "depth": "Głębokość"
+      },
+      "scenario": {
+        "title": "Shield scenario matrix",
+        "body": "Projekcja multi-agent: nie przewiduje ceny, tylko pokazuje, które warstwy wymagają dalszego śledztwa.",
+        "pump": {
+          "label": "Pump velocity",
+          "body": "Czy wzrost ceny wygląda organicznie, czy jak szybka dystrybucja przed zrzutem."
+        },
+        "liquidity": {
+          "label": "Exit liquidity",
+          "body": "Czy rynek ma realną głębokość, czy tylko wygląda płynnie na wykresie."
+        },
+        "book": {
+          "label": "Order book stress",
+          "body": "Symulacja poślizgu i imbalance między bid/ask; im wyżej, tym trudniej wyjść z pozycji."
+        },
+        "forensics": {
+          "label": "Forensic review need",
+          "body": "Czy wynik wymaga ręcznego review źródeł, holderów, kontraktu i historii anomalii."
+        }
+      },
+      "attackSurface": {
+        "title": "Attack surface review",
+        "body": "Warstwa testera ryzyka pokazuje, który scenariusz manipulacji byłby najłatwiejszy do ukrycia w aktualnych danych.",
+        "verify": "Zweryfikuj:",
+        "evidence": "Dowody:",
+        "noEvidence": "brak twardego sygnału; traktuj jako warstwę kontrolną.",
+        "openPlaybook": "Otwórz playbook JSON",
+        "verdicts": {
+          "weak": "słaba osłona",
+          "partial": "częściowa osłona",
+          "strong": "mocna osłona"
+        },
+        "vectors": {
+          "velocity_abuse": {
+            "label": "Velocity abuse",
+            "body": "Sprawdza, czy ruch ceny wygląda jak organiczne odkrywanie ceny, czy szybka dystrybucja przed zrzutem.",
+            "verify": "porównaj momentum z wolumenem, płynnością i zmianą świec w kilku oknach."
+          },
+          "exit_liquidity": {
+            "label": "Exit liquidity",
+            "body": "Ocenia, czy deklarowany market cap ma realną głębokość wyjścia, czy tylko wygląda płynnie na wykresie.",
+            "verify": "uruchom slippage dla średniego zlecenia i sprawdź wolumen względem realnej płynności."
+          },
+          "spoofing_depth": {
+            "label": "Spoofing / depth",
+            "body": "Szuka sytuacji, w której bid/ask wygląda stabilnie, ale książka zleceń może znikać przy większym ruchu.",
+            "verify": "porównaj imbalance, spread, głębokość i reakcję order booka po większych świecach."
+          },
+          "holder_cluster": {
+            "label": "Holder cluster",
+            "body": "Sprawdza, czy ryzyko podaży może siedzieć w koncentracji holderów, FDV lub nadchodzącym nawisu tokenów.",
+            "verify": "przejrzyj top holderów, vesting, CEX wallets i relację FDV do market cap."
+          },
+          "contract_control": {
+            "label": "Contract control",
+            "body": "Kontroluje flagi kontraktu: podatki, mint, pause, blacklist i honeypot, jeśli adres jest dostępny.",
+            "verify": "potwierdź adres kontraktu, chain i uruchom zewnętrzny skan bezpieczeństwa przed wnioskiem."
+          },
+          "data_blindspot": {
+            "label": "Data blindspot",
+            "body": "Pokazuje, gdzie brak danych może fałszywie obniżać ryzyko. Brak danych nie oznacza bezpieczeństwa.",
+            "verify": "uzupełnij brakujące źródła: holders, contract, order book, historia i social/on-chain."
+          }
+        }
       }
     },
     "riskScale": {
@@ -3382,6 +3447,63 @@
       "waiting": "oczekiwanie na sweep",
       "emptyHeadline": "Brak krytycznego alertu",
       "emptyBody": "Sentinel wypełni to po następnym skanie rynku."
+    },
+    "caseInbox": {
+      "title": "Persistent alert inbox",
+      "loading": "Sentinel buduje kolejkę spraw…",
+      "subtitle": "Zapisane alerty Sentinela zmienione w sprawy do review.",
+      "cases": "sprawy",
+      "emptyTitle": "Brak zapisanej sprawy",
+      "emptyBody": "Po pierwszym sweepie pojawi się tutaj kolejka alertów.",
+      "types": {
+        "critical_cluster": "klaster krytyczny",
+        "rising_risk": "rosnące ryzyko",
+        "parabolic_pump": "parabolic pump",
+        "liquidity_stress": "stres płynności",
+        "data_gap": "luka danych"
+      },
+      "timeline": {
+        "opened": "Sprawa otwarta",
+        "action": "Następna akcja"
+      }
+    },
+    "caseFile": {
+      "title": "Case file / timeline",
+      "openToken": "Otwórz kartę",
+      "evidence": "Evidence JSON",
+      "score": "Score",
+      "delta": "Risk delta",
+      "confidence": "Pewność",
+      "observations": "Obserwacje",
+      "timeline": "Severity timeline",
+      "metaAgent": "meta-agent",
+      "nextAction": "Następny krok:",
+      "empty": "Brak aktywnej sprawy. Sentinel pokaże tutaj timeline po sweepie."
+    },
+    "watchlist": {
+      "title": "Watchlista Shielda",
+      "body": "Lokalnie przypięte symbole sterują zakładką watchlist i progami rules engine. Kliknij symbol, żeby od razu go przeskanować.",
+      "addQuery": "Dodaj query",
+      "reset": "Reset",
+      "remove": "Usuń"
+    },
+    "rules": {
+      "title": "Rules engine",
+      "body": "Deterministyczne guardraile nad agentami AI: szybko rosnące ryzyko, ruch watchlisty, stres płynności, luki danych i eskalacja kontroli kontraktu.",
+      "total": "trafienia",
+      "critical": "critical",
+      "rising": "rośnie",
+      "watch": "watch",
+      "next": "Dalej:",
+      "empty": "Żadna reguła nie odpaliła w ostatnim oknie sweepu. Zostaw aktywny automatyczny skan.",
+      "actions": {
+        "monitor": "monitor",
+        "open_case": "case",
+        "review_liquidity": "płynność",
+        "review_contract": "kontrakt",
+        "review_data": "dane",
+        "cool_down": "cooling"
+      }
     }
   }
 }

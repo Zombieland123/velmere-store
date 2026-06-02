@@ -275,17 +275,41 @@ export async function searchCoinGeckoMarket(query: string) {
   return rows[0] ?? null;
 }
 
-function targetMinutes(range: MarketChartRange) {
-  if (range === "1m") return 1;
-  if (range === "15m") return 15;
-  if (range === "1h") return 60;
-  if (range === "4h") return 240;
-  if (range === "1d") return 1440;
-  return 10080;
+type ChartRangeProfile = {
+  days: string;
+  intervalMinutes: number;
+  targetPoints: number;
+};
+
+function chartRangeProfile(range: MarketChartRange): ChartRangeProfile {
+  // PASS 57: chart buttons now act like exchange intervals. CoinGecko is a
+  // fallback source, so we request enough history and resample toward the same
+  // target density used by Binance klines.
+  if (range === "1m") return { days: "1", intervalMinutes: 1, targetPoints: 180 };
+  if (range === "15m") return { days: "3", intervalMinutes: 15, targetPoints: 180 };
+  if (range === "1h") return { days: "14", intervalMinutes: 60, targetPoints: 180 };
+  if (range === "4h") return { days: "90", intervalMinutes: 240, targetPoints: 180 };
+  if (range === "1d") return { days: "365", intervalMinutes: 1440, targetPoints: 180 };
+  return { days: "max", intervalMinutes: 10080, targetPoints: 104 };
 }
 
-function daysForRange(range: MarketChartRange) {
-  return range === "7d" ? "7" : "1";
+function resampleMarketChartPoints(points: MarketChartPoint[], range: MarketChartRange) {
+  const profile = chartRangeProfile(range);
+  if (points.length <= profile.targetPoints) return points;
+  const intervalMs = profile.intervalMinutes * 60 * 1000;
+  const sorted = [...points].sort((a, b) => a.timestamp - b.timestamp);
+  const sampled: MarketChartPoint[] = [];
+  let nextAllowed = Number.POSITIVE_INFINITY;
+  for (let index = sorted.length - 1; index >= 0; index -= 1) {
+    const point = sorted[index];
+    if (point.timestamp <= nextAllowed) {
+      sampled.push(point);
+      nextAllowed = point.timestamp - intervalMs;
+    }
+    if (sampled.length >= profile.targetPoints) break;
+  }
+  const normalized = sampled.reverse();
+  return normalized.length >= 2 ? normalized : sorted.slice(-Math.min(sorted.length, profile.targetPoints));
 }
 
 export async function fetchCoinGeckoMarketChart(
@@ -294,9 +318,10 @@ export async function fetchCoinGeckoMarketChart(
 ) {
   const clean = id.trim().toLowerCase().slice(0, 120);
   if (!clean) throw new Error("Missing CoinGecko coin id");
+  const profile = chartRangeProfile(range);
   const params = new URLSearchParams({
     vs_currency: "usd",
-    days: daysForRange(range),
+    days: profile.days,
   });
   const data = await fetchJson<{
     prices?: [number, number][];
@@ -304,7 +329,7 @@ export async function fetchCoinGeckoMarketChart(
     total_volumes?: [number, number][];
   }>(
     `${COINGECKO_BASE}/coins/${encodeURIComponent(clean)}/market_chart?${params.toString()}`,
-    range === "7d" ? 180 : 90,
+    range === "1m" || range === "15m" ? 90 : 240,
   );
   const prices = (data.prices ?? []).filter(
     ([timestamp, price]) =>
@@ -325,12 +350,5 @@ export async function fetchCoinGeckoMarketChart(
     volume: volumes.get(timestamp),
     marketCap: marketCaps.get(timestamp),
   }));
-  if (range === "7d" || range === "1d") return allPoints;
-  const minutes = targetMinutes(range);
-  const newest = allPoints.at(-1)?.timestamp ?? Date.now();
-  const cutoff = newest - minutes * 60 * 1000;
-  const sliced = allPoints.filter((point) => point.timestamp >= cutoff);
-  return sliced.length >= 2
-    ? sliced
-    : allPoints.slice(-Math.min(allPoints.length, 32));
+  return resampleMarketChartPoints(allPoints, range);
 }

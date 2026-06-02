@@ -3283,6 +3283,71 @@
         "bars": "OHLC bars",
         "points": "points",
         "depth": "Depth"
+      },
+      "scenario": {
+        "title": "Shield scenario matrix",
+        "body": "Multi-agent projection: it does not predict price; it shows which layers need deeper investigation.",
+        "pump": {
+          "label": "Pump velocity",
+          "body": "Whether the price move looks organic or like fast distribution before a dump."
+        },
+        "liquidity": {
+          "label": "Exit liquidity",
+          "body": "Whether the market has real depth or only appears liquid on the chart."
+        },
+        "book": {
+          "label": "Order book stress",
+          "body": "Slippage and bid/ask imbalance simulation; the higher it is, the harder it may be to exit."
+        },
+        "forensics": {
+          "label": "Forensic review need",
+          "body": "Whether the score needs manual review of sources, holders, contract data and anomaly history."
+        }
+      },
+      "attackSurface": {
+        "title": "Attack surface review",
+        "body": "The risk-testing layer shows which manipulation scenario would be easiest to hide in the current evidence stack.",
+        "verify": "Verify:",
+        "evidence": "Evidence:",
+        "noEvidence": "no hard signal yet; treat as a control layer.",
+        "openPlaybook": "Open playbook JSON",
+        "verdicts": {
+          "weak": "weak cover",
+          "partial": "partial cover",
+          "strong": "strong cover"
+        },
+        "vectors": {
+          "velocity_abuse": {
+            "label": "Velocity abuse",
+            "body": "Checks whether the price move looks like organic price discovery or rapid distribution before a dump.",
+            "verify": "compare momentum with volume, liquidity and candle changes across multiple windows."
+          },
+          "exit_liquidity": {
+            "label": "Exit liquidity",
+            "body": "Tests whether the reported market cap has usable exit depth or only looks liquid on the chart.",
+            "verify": "run slippage for a medium order and compare volume with real usable liquidity."
+          },
+          "spoofing_depth": {
+            "label": "Spoofing / depth",
+            "body": "Looks for a stable-looking bid/ask while the order book may disappear during a larger move.",
+            "verify": "compare imbalance, spread, depth and order-book reaction after larger candles."
+          },
+          "holder_cluster": {
+            "label": "Holder cluster",
+            "body": "Checks whether supply risk is hidden in holder concentration, FDV or future token overhang.",
+            "verify": "review top holders, vesting, CEX wallets and FDV-to-market-cap relation."
+          },
+          "contract_control": {
+            "label": "Contract control",
+            "body": "Controls contract flags: tax, mint, pause, blacklist and honeypot when an address is available.",
+            "verify": "confirm contract address and chain, then run an external security scan before concluding."
+          },
+          "data_blindspot": {
+            "label": "Data blindspot",
+            "body": "Shows where missing data could falsely lower risk. Missing data is not safety.",
+            "verify": "fill missing layers: holders, contract, order book, history and social/on-chain."
+          }
+        }
       }
     },
     "riskScale": {
@@ -3382,6 +3447,63 @@
       "waiting": "waiting for sweep",
       "emptyHeadline": "No critical alert",
       "emptyBody": "Sentinel will fill this after the next market sweep."
+    },
+    "caseInbox": {
+      "title": "Persistent alert inbox",
+      "loading": "Sentinel is building the case queue…",
+      "subtitle": "Stored Sentinel alerts turned into review cases.",
+      "cases": "cases",
+      "emptyTitle": "No stored case yet",
+      "emptyBody": "The alert queue will appear here after the first sweep.",
+      "types": {
+        "critical_cluster": "critical cluster",
+        "rising_risk": "rising risk",
+        "parabolic_pump": "parabolic pump",
+        "liquidity_stress": "liquidity stress",
+        "data_gap": "data gap"
+      },
+      "timeline": {
+        "opened": "Case opened",
+        "action": "Next action"
+      }
+    },
+    "caseFile": {
+      "title": "Case file / timeline",
+      "openToken": "Open card",
+      "evidence": "Evidence JSON",
+      "score": "Score",
+      "delta": "Risk delta",
+      "confidence": "Confidence",
+      "observations": "Observations",
+      "timeline": "Severity timeline",
+      "metaAgent": "meta-agent",
+      "nextAction": "Next step:",
+      "empty": "No active case yet. Sentinel will show the timeline here after a sweep."
+    },
+    "watchlist": {
+      "title": "Shield watchlist",
+      "body": "Local pinned symbols drive the watchlist tab and the rules engine thresholds. Click a symbol to scan it instantly.",
+      "addQuery": "Add query",
+      "reset": "Reset",
+      "remove": "Remove"
+    },
+    "rules": {
+      "title": "Rules engine",
+      "body": "Deterministic guardrails sit above the AI agents: rising-fast risk, watchlist movement, liquidity stress, data blindspots and contract-control escalation.",
+      "total": "hits",
+      "critical": "critical",
+      "rising": "rising",
+      "watch": "watch",
+      "next": "Next:",
+      "empty": "No rules fired in the latest sweep window. Keep the automated scan active.",
+      "actions": {
+        "monitor": "monitor",
+        "open_case": "open case",
+        "review_liquidity": "liquidity",
+        "review_contract": "contract",
+        "review_data": "data",
+        "cool_down": "cooling"
+      }
     }
   }
 }

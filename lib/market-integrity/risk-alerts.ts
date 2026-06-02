@@ -1,4 +1,5 @@
 import type { MarketIntegrityRow } from "./coingecko";
+import type { MarketMemoryMeta } from "./market-memory";
 import type { RiskAgentId, RiskLevel } from "./risk-types";
 
 export type ShieldSentinelAlertType =
@@ -17,9 +18,18 @@ export type ShieldSentinelAlert = {
   level: RiskLevel;
   confidence?: number;
   dominantAgent?: RiskAgentId;
+  riskDelta?: number;
+  priceDeltaPercent?: number;
+  volumeDeltaPercent?: number;
+  trend?: MarketMemoryMeta["trend"];
+  timestamp?: string;
   headline: string;
   reason: string;
   action: string;
+};
+
+type MarketIntegrityRowWithMemory = MarketIntegrityRow & {
+  memory?: MarketMemoryMeta;
 };
 
 function firstSignal(row: MarketIntegrityRow, ids: string[]) {
@@ -31,7 +41,7 @@ function pushUnique(alerts: ShieldSentinelAlert[], alert: ShieldSentinelAlert) {
   alerts.push(alert);
 }
 
-export function buildSentinelAlerts(rows: MarketIntegrityRow[]): ShieldSentinelAlert[] {
+export function buildSentinelAlerts(rows: MarketIntegrityRowWithMemory[]): ShieldSentinelAlert[] {
   const alerts: ShieldSentinelAlert[] = [];
   const ranked = [...rows].sort((a, b) => b.result.score - a.result.score);
 
@@ -45,6 +55,11 @@ export function buildSentinelAlerts(rows: MarketIntegrityRow[]): ShieldSentinelA
       level: result.level,
       confidence: result.confidence,
       dominantAgent,
+      riskDelta: row.memory?.riskDeltaLatest,
+      priceDeltaPercent: row.memory?.priceDeltaLatestPercent,
+      volumeDeltaPercent: row.memory?.volumeDeltaLatestPercent,
+      trend: row.memory?.trend,
+      timestamp: row.memory?.lastSeenAt ?? new Date().toISOString(),
     };
 
     if (result.score >= 85) {

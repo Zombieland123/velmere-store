@@ -14,7 +14,10 @@
     "vercel:preflight": "node scripts/vercel-preflight.mjs",
     "printful:debug": "node scripts/printful-debug-token.mjs",
     "printful:stores": "node scripts/printful-find-store-id.mjs",
-    "printful:test": "node scripts/printful-smoke-test.mjs"
+    "printful:test": "node scripts/printful-smoke-test.mjs",
+    "verify:shield": "node scripts/verify-market-integrity-no-truncation.mjs",
+    "verify:shield-design": "node scripts/verify-shield-design-safety.mjs",
+    "verify:shield-all": "npm run verify:shield && npm run verify:shield-design"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

@@ -1,19 +1,30 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
 import {
-  ArrowRight,
+  Component,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useTransition,
+  type FormEvent,
+  type ReactNode,
+  type WheelEvent,
+} from "react";
+import {
+  Brain,
   ChevronDown,
   LineChart,
   Loader2,
   Search,
-  ShieldAlert,
+  Radar,
   Star,
+  X,
 } from "lucide-react";
+import dynamic from "next/dynamic";
 import { motion, useReducedMotion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { Link } from "@/navigation";
-import TokenRiskModal from "@/components/market-integrity/TokenRiskModal";
 import type { MarketIntegrityRow } from "@/lib/market-integrity/coingecko";
 import type { TokenRiskResult } from "@/lib/market-integrity/risk-types";
 
@@ -63,7 +74,6 @@ type MarketsApiResponse =
     }
   | { mode: "error"; error: string };
 
-
 type Suggestion = {
   id: string;
   symbol: string;
@@ -75,25 +85,174 @@ type SuggestionsApiResponse =
   | { mode: "live"; suggestions: Suggestion[] }
   | { mode: "error"; error: string };
 
+type ShieldCaseTimelineEvent = {
+  id: string;
+  timestamp: string;
+  label: string;
+  body: string;
+  score: number;
+  tone: "neutral" | "watch" | "warning" | "critical";
+};
 
 type SentinelAlert = {
   id: string;
-  type: "critical_cluster" | "rising_risk" | "parabolic_pump" | "liquidity_stress" | "data_gap";
+  type:
+    | "critical_cluster"
+    | "rising_risk"
+    | "parabolic_pump"
+    | "liquidity_stress"
+    | "data_gap";
   symbol: string;
   name: string;
   score: number;
   level: TokenRiskResult["level"];
   confidence?: number;
   dominantAgent?: string;
+  riskDelta?: number;
+  priceDeltaPercent?: number;
+  volumeDeltaPercent?: number;
+  trend?: "new" | "stable" | "rising_risk" | "cooling" | "volatile";
+  timestamp?: string;
   headline: string;
   reason: string;
   action: string;
+  caseId?: string;
+  firstSeenAt?: string;
+  lastSeenAt?: string;
+  observations?: number;
+  caseStatus?: "open" | "watch" | "cooling";
+  timeline?: ShieldCaseTimelineEvent[];
 };
 type SentinelApiResponse =
-  | { mode: "live"; alerts: SentinelAlert[]; generatedAt: string; rowsScanned: number }
+  | {
+      mode: "live";
+      alerts: SentinelAlert[];
+      inbox?: SentinelAlert[];
+      rules?: { summary: ShieldRulesSummary; hits: ShieldRuleHit[] };
+      generatedAt: string;
+      rowsScanned: number;
+    }
   | { mode: "error"; error: string };
 
+type ShieldRuleHit = {
+  id: string;
+  ruleId: string;
+  symbol: string;
+  name: string;
+  score: number;
+  severity: "info" | "watch" | "warning" | "critical";
+  action:
+    | "monitor"
+    | "open_case"
+    | "review_liquidity"
+    | "review_contract"
+    | "review_data"
+    | "cool_down";
+  priority: number;
+  headline: string;
+  reason: string;
+  nextStep: string;
+  values?: Record<string, number | string | boolean | null | undefined>;
+  timestamp: string;
+};
+type ShieldRulesSummary = {
+  version: string;
+  totalHits: number;
+  critical: number;
+  warning: number;
+  watch: number;
+  watchlistHits: number;
+  risingFast: number;
+  watchlist: string[];
+};
+const defaultWatchlist = ["BTC", "ETH", "SOL", "OM", "PEPE", "DOGE", "VLM"];
+
+const TokenRiskModal = dynamic(
+  () => import("@/components/market-integrity/TokenRiskModal"),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/[0.88] p-4 text-velmere-ivory backdrop-blur-2xl">
+        <div className="shield-terminal-loader max-w-md p-5">
+          <div className="flex items-center gap-3">
+            <span className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-velmere-gold/[0.22] bg-velmere-gold/[0.08] text-velmere-gold">
+              <Loader2 className="h-4 w-4 animate-spin" />
+            </span>
+            <div className="min-w-0">
+              <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-velmere-gold">
+                Shield terminal booting
+              </p>
+              <p className="mt-1 text-xs leading-6 text-white/[0.48]">
+                Ładuję terminal w osobnym chunku, żeby klik tokena nie lagował main page.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+);
+
+class ShieldModalErrorBoundary extends Component<
+  { children: ReactNode; resetKey: string; onClose: () => void },
+  { hasError: boolean; message?: string }
+> {
+  state = { hasError: false, message: undefined as string | undefined };
+
+  static getDerivedStateFromError(error: unknown) {
+    return {
+      hasError: true,
+      message:
+        error instanceof Error ? error.message : "Terminal render failed",
+    };
+  }
+
+  componentDidUpdate(previousProps: { resetKey: string }) {
+    if (previousProps.resetKey !== this.props.resetKey && this.state.hasError) {
+      this.setState({ hasError: false, message: undefined });
+    }
+  }
+
+  render() {
+    if (!this.state.hasError) return this.props.children;
+    return (
+      <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/[0.86] p-4 text-velmere-ivory backdrop-blur-xl">
+        <div className="max-w-lg rounded-[1.5rem] border border-amber-300/[0.24] bg-[#0b0b0d] p-5 shadow-[0_30px_110px_rgba(0,0,0,0.75)]">
+          <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-velmere-gold">
+            Shield terminal safe mode
+          </p>
+          <h3 className="mt-3 text-lg font-semibold text-white">
+            Modal został zatrzymany zanim rozwalił UI.
+          </h3>
+          <p className="mt-2 text-sm leading-7 text-white/[0.55]">
+            Shield złapał błąd renderowania terminala i przełączył go w tryb
+            awaryjny. To nie jest wynik analizy tokena.
+          </p>
+          <p className="mt-3 rounded-2xl border border-white/[0.08] bg-white/[0.035] p-3 font-mono text-[10px] leading-5 text-white/[0.44]">
+            {this.state.message ?? "Unknown modal error"}
+          </p>
+          <button
+            type="button"
+            onClick={this.props.onClose}
+            className="mt-4 inline-flex rounded-full border border-white/[0.12] bg-white/[0.05] px-4 py-2 font-mono text-[10px] uppercase tracking-[0.14em] text-white/[0.72] transition hover:border-velmere-gold/[0.35] hover:text-velmere-gold"
+          >
+            Zamknij terminal
+          </button>
+        </div>
+      </div>
+    );
+  }
+}
+
 const tabs = ["top", "trending", "watchlist", "highestRisk"] as const;
+type MarketSortKey =
+  | "rank"
+  | "price"
+  | "change24h"
+  | "change7d"
+  | "marketCap"
+  | "volume"
+  | "risk";
 
 function formatNumber(value?: number, options?: Intl.NumberFormatOptions) {
   if (value === undefined || value === null || Number.isNaN(value)) return "—";
@@ -118,6 +277,10 @@ function formatPercent(value?: number) {
 
 function proxiedIcon(image?: string) {
   if (!image) return undefined;
+  if (image.startsWith("/api/market-integrity/icon?url=")) return image;
+  if (image.startsWith("http://") || image.startsWith("https://")) {
+    return `/api/market-integrity/icon?url=${encodeURIComponent(image)}`;
+  }
   return image;
 }
 
@@ -126,7 +289,7 @@ function TokenAvatar({ image, symbol }: { image?: string; symbol: string }) {
   const src = proxiedIcon(image);
   if (!src || failed) {
     return (
-      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/[0.10] bg-white/[0.06] font-mono text-[10px] text-white/[0.62]">
+      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/[0.10] bg-white/[0.06] font-mono text-[10px] text-white/[0.62] shadow-[0_0_22px_rgba(210,176,94,0.08)] ring-1 ring-white/[0.08] tabular-nums">
         {symbol.slice(0, 2).toUpperCase()}
       </span>
     );
@@ -135,8 +298,9 @@ function TokenAvatar({ image, symbol }: { image?: string; symbol: string }) {
     <img
       src={src}
       alt=""
-      className="h-8 w-8 shrink-0 rounded-full bg-white/[0.05] object-cover"
+      className="h-9 w-9 shrink-0 rounded-full bg-white/[0.05] object-cover shadow-[0_0_22px_rgba(210,176,94,0.08)] ring-1 ring-white/[0.08]"
       loading="lazy"
+      decoding="async"
       referrerPolicy="no-referrer"
       onError={() => setFailed(true)}
     />
@@ -193,6 +357,28 @@ function levelLabel(score: number) {
   return "low";
 }
 
+const marketSortLabels: Record<MarketSortKey, string> = {
+  rank: "rank",
+  price: "price",
+  change24h: "24h change",
+  change7d: "7d change",
+  marketCap: "market cap",
+  volume: "24h volume",
+  risk: "risk score",
+};
+
+function sortDirectionCopy(key: MarketSortKey, direction: "asc" | "desc") {
+  if (key === "rank")
+    return direction === "asc"
+      ? "lowest rank first"
+      : "highest rank number first";
+  if (key === "risk")
+    return direction === "desc" ? "highest risk first" : "lowest risk first";
+  return direction === "desc"
+    ? "largest values first"
+    : "smallest values first";
+}
+
 export default function MarketIntegrityClient({
   demoResults,
 }: {
@@ -216,8 +402,32 @@ export default function MarketIntegrityClient({
   const [error, setError] = useState<string | null>(null);
   const [marketError, setMarketError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<(typeof tabs)[number]>("top");
+  const [sortKey, setSortKey] = useState<MarketSortKey>("rank");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [sentinelAlerts, setSentinelAlerts] = useState<SentinelAlert[]>([]);
+  const [caseInbox, setCaseInbox] = useState<SentinelAlert[]>([]);
+  const [activeCaseId, setActiveCaseId] = useState<string | null>(null);
   const [sentinelLoading, setSentinelLoading] = useState(true);
+  const [watchlistSymbols, setWatchlistSymbols] =
+    useState<string[]>(defaultWatchlist);
+  const [rulesLoading, setRulesLoading] = useState(true);
+  const [rulesSummary, setRulesSummary] = useState<ShieldRulesSummary | null>(
+    null,
+  );
+  const [ruleHits, setRuleHits] = useState<ShieldRuleHit[]>([]);
+  const [shieldInspectorOpen, setShieldInspectorOpen] = useState(false);
+  const [interactionPulse, setInteractionPulse] = useState(0);
+  const [sourceCooldownUntil, setSourceCooldownUntil] = useState<number | null>(null);
+  const [cooldownTick, setCooldownTick] = useState(0);
+  const searchShellRef = useRef<HTMLFormElement | null>(null);
+  const [activeShieldLayer, setActiveShieldLayer] = useState("Velocity");
+  const routeScanHandledRef = useRef(false);
+  const [isOpeningTerminal, startTerminalTransition] = useTransition();
+  void cooldownTick;
+  const sourceCooldownActive = Boolean(sourceCooldownUntil && sourceCooldownUntil > Date.now());
+  const sourceCooldownSeconds = sourceCooldownActive && sourceCooldownUntil
+    ? Math.max(1, Math.ceil((sourceCooldownUntil - Date.now()) / 1000))
+    : 0;
 
   async function loadMarkets(
     nextPage = 1,
@@ -261,27 +471,89 @@ export default function MarketIntegrityClient({
     let active = true;
     async function loadSentinel() {
       setSentinelLoading(true);
+      setRulesLoading(true);
       try {
-        const response = await fetch("/api/market-integrity/sentinel?pages=1&perPage=120", {
-          headers: { accept: "application/json" },
-        });
+        const watch = watchlistSymbols.join(",");
+        const response = await fetch(
+          `/api/market-integrity/sentinel?pages=1&perPage=120&watchlist=${encodeURIComponent(watch)}`,
+          {
+            headers: { accept: "application/json" },
+          },
+        );
         const data = (await response.json()) as SentinelApiResponse;
-        if (active && response.ok && data.mode === "live") setSentinelAlerts(data.alerts.slice(0, 4));
+        if (active && response.ok && data.mode === "live") {
+          const inbox = data.inbox?.length ? data.inbox : data.alerts;
+          setSentinelAlerts(data.alerts.slice(0, 4));
+          setCaseInbox(inbox.slice(0, 8));
+          if (data.rules) {
+            setRulesSummary(data.rules.summary);
+            setRuleHits(data.rules.hits.slice(0, 6));
+          }
+          setActiveCaseId(
+            (current) => current ?? inbox[0]?.caseId ?? inbox[0]?.id ?? null,
+          );
+        }
       } catch {
-        if (active) setSentinelAlerts([]);
+        if (active) {
+          setSentinelAlerts([]);
+          setRulesSummary(null);
+          setRuleHits([]);
+        }
       } finally {
-        if (active) setSentinelLoading(false);
+        if (active) {
+          setSentinelLoading(false);
+          setRulesLoading(false);
+        }
       }
     }
     void loadSentinel();
     return () => {
       active = false;
     };
+  }, [watchlistSymbols]);
+
+  useEffect(() => {
+    const saved = window.localStorage.getItem("velmere-shield-watchlist");
+    if (!saved) return;
+    const parsed = saved
+      .split(/[\s,;|]+/)
+      .map((item) =>
+        item
+          .trim()
+          .toUpperCase()
+          .replace(/[^A-Z0-9:_-]/g, ""),
+      )
+      .filter(Boolean);
+    if (parsed.length)
+      setWatchlistSymbols(Array.from(new Set(parsed)).slice(0, 18));
   }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem(
+      "velmere-shield-watchlist",
+      watchlistSymbols.join(","),
+    );
+  }, [watchlistSymbols]);
+
+  useEffect(() => {
+    if (!sourceCooldownUntil) return;
+    const timer = window.setInterval(() => {
+      setCooldownTick((current) => current + 1);
+      if (sourceCooldownUntil <= Date.now()) {
+        setSourceCooldownUntil(null);
+      }
+    }, 1000);
+    return () => window.clearInterval(timer);
+  }, [sourceCooldownUntil]);
 
   useEffect(() => {
     const clean = query.trim();
     if (clean.length < 2) {
+      setSuggestions([]);
+      setSuggestionsOpen(false);
+      return;
+    }
+    if (sourceCooldownActive) {
       setSuggestions([]);
       setSuggestionsOpen(false);
       return;
@@ -294,6 +566,14 @@ export default function MarketIntegrityClient({
           `/api/market-integrity/search?query=${encodeURIComponent(clean)}`,
           { headers: { accept: "application/json" } },
         );
+        if (response.status === 429) {
+          if (active) {
+            setSourceCooldownUntil(Date.now() + 45_000);
+            setSuggestions([]);
+            setSuggestionsOpen(false);
+          }
+          return;
+        }
         const data = (await response.json()) as SuggestionsApiResponse;
         if (active && response.ok && data.mode === "live") {
           setSuggestions(data.suggestions.slice(0, 3));
@@ -309,29 +589,67 @@ export default function MarketIntegrityClient({
       active = false;
       window.clearTimeout(timer);
     };
-  }, [query]);
+  }, [query, sourceCooldownActive]);
+
+  useEffect(() => {
+    function handleOutsidePointer(event: PointerEvent) {
+      const target = event.target;
+      if (!(target instanceof Node)) return;
+      if (searchShellRef.current?.contains(target)) return;
+      setSuggestionsOpen(false);
+    }
+    document.addEventListener("pointerdown", handleOutsidePointer);
+    return () =>
+      document.removeEventListener("pointerdown", handleOutsidePointer);
+  }, []);
 
   const visibleRows = useMemo(() => {
-    const rows = [...marketRows];
-    if (activeTab === "highestRisk")
-      return rows.sort(
+    let rows = [...marketRows];
+    if (activeTab === "highestRisk") {
+      rows = rows.sort(
         (a, b) =>
           b.result.score - a.result.score ||
           (a.rank ?? 9999) - (b.rank ?? 9999),
       );
-    if (activeTab === "trending")
-      return rows.sort(
+    } else if (activeTab === "trending") {
+      rows = rows.sort(
         (a, b) =>
           Math.abs(b.priceChange24h ?? 0) - Math.abs(a.priceChange24h ?? 0),
       );
-    if (activeTab === "watchlist")
-      return rows
-        .filter((row) =>
-          ["BTC", "ETH", "SOL", "OM", "PEPE", "DOGE"].includes(row.symbol),
-        )
-        .sort((a, b) => (a.rank ?? 9999) - (b.rank ?? 9999));
-    return rows.sort((a, b) => (a.rank ?? 9999) - (b.rank ?? 9999));
-  }, [activeTab, marketRows]);
+    } else if (activeTab === "watchlist") {
+      rows = rows.filter(
+        (row) =>
+          watchlistSymbols.includes(row.symbol) ||
+          watchlistSymbols.includes(row.id.toUpperCase()),
+      );
+    }
+
+    const valueForSort = (row: MarketIntegrityRow): number | undefined => {
+      if (sortKey === "price") return row.price;
+      if (sortKey === "change24h") return row.priceChange24h;
+      if (sortKey === "change7d") return row.priceChange7d;
+      if (sortKey === "marketCap") return row.marketCap;
+      if (sortKey === "volume") return row.volume24h;
+      if (sortKey === "risk") return row.result.score;
+      return row.rank;
+    };
+
+    return rows.sort((a, b) => {
+      const aValue = valueForSort(a);
+      const bValue = valueForSort(b);
+      const aMissing =
+        aValue === undefined || aValue === null || Number.isNaN(aValue);
+      const bMissing =
+        bValue === undefined || bValue === null || Number.isNaN(bValue);
+      if (aMissing && bMissing) return (a.rank ?? 9999) - (b.rank ?? 9999);
+      if (aMissing) return 1;
+      if (bMissing) return -1;
+      const direction = sortDirection === "asc" ? 1 : -1;
+      const delta = aValue - bValue;
+      if (delta !== 0) return delta * direction;
+      return (a.rank ?? 9999) - (b.rank ?? 9999);
+    });
+  }, [activeTab, marketRows, sortDirection, sortKey, watchlistSymbols]);
 
   const stats = useMemo(() => {
     const marketCap = marketRows.reduce(
@@ -358,22 +676,101 @@ export default function MarketIntegrityClient({
     ? `${result["token"].symbol} · ${t(`badges.${result.badge}`)} · ${result.score}/100`
     : "";
 
+  function findLocalMarketMatch(value: string) {
+    const clean = value.trim().toLowerCase();
+    if (!clean) return undefined;
+    return marketRows.find(
+      (row) =>
+        row.id.toLowerCase() === clean ||
+        row.symbol.toLowerCase() === clean ||
+        row.name.toLowerCase() === clean,
+    );
+  }
+
+  async function fetchSuggestionHit(value: string) {
+    const clean = value.trim();
+    if (!clean || clean.length < 2) return undefined;
+    try {
+      const response = await fetch(
+        `/api/market-integrity/search?query=${encodeURIComponent(clean)}`,
+        {
+          headers: { accept: "application/json" },
+        },
+      );
+      const data = (await response.json()) as SuggestionsApiResponse;
+      if (!response.ok || data.mode === "error") return undefined;
+      const lower = clean.toLowerCase();
+      return (
+        data.suggestions.find(
+          (item) =>
+            item.id.toLowerCase() === lower ||
+            item.symbol.toLowerCase() === lower ||
+            item.name.toLowerCase() === lower,
+        ) ?? data.suggestions[0]
+      );
+    } catch {
+      return undefined;
+    }
+  }
+
+  async function resolveScanQuery(value: string) {
+    const clean = value.trim();
+    if (!clean) return clean;
+    const lower = clean.toLowerCase();
+    const suggestionHit = suggestions.find(
+      (item) =>
+        item.id.toLowerCase() === lower ||
+        item.symbol.toLowerCase() === lower ||
+        item.name.toLowerCase() === lower,
+    );
+    if (suggestionHit) return suggestionHit.id;
+    const remoteHit = await fetchSuggestionHit(clean);
+    return remoteHit?.id ?? clean;
+  }
+
   async function scanToken(nextQuery = query) {
     const clean = nextQuery.trim();
     if (!clean) return;
-    setLoading(true);
     setError(null);
     setSuggestionsOpen(false);
+    if (clean.length < 2) {
+      return;
+    }
+    const localMatch = findLocalMarketMatch(clean);
+    if (localMatch) {
+      setResult(localMatch.result);
+      openTokenModal(localMatch);
+      return;
+    }
+    if (sourceCooldownActive) {
+      setError(`Źródło live ma chwilowy cooldown (${sourceCooldownSeconds}s). Wybierz token z tabeli albo poczekaj chwilę przed kolejnym skanem.`);
+      return;
+    }
+    setLoading(true);
     try {
+      const resolvedQuery = await resolveScanQuery(clean);
+      const resolvedLocalMatch = findLocalMarketMatch(resolvedQuery);
+      if (resolvedLocalMatch) {
+        setResult(resolvedLocalMatch.result);
+        openTokenModal(resolvedLocalMatch);
+        return;
+      }
       const response = await fetch(
-        `/api/market-integrity/analyze?query=${encodeURIComponent(clean)}`,
+        `/api/market-integrity/analyze?query=${encodeURIComponent(resolvedQuery)}`,
         { method: "GET", headers: { accept: "application/json" } },
       );
+      if (response.status === 429) {
+        setSourceCooldownUntil(Date.now() + 45_000);
+        throw new Error(
+          "Zewnętrzne źródło danych chwilowo ograniczyło zapytania (429). Shield przełącza search w tryb local-first — wybierz monetę z tabeli albo spróbuj ponownie za chwilę.",
+        );
+      }
       const data = (await response.json()) as ApiResponse;
       if (!response.ok || data.mode === "error")
         throw new Error(
           data.mode === "error" ? data.error : t("errors.generic"),
         );
+      if (!data.result) throw new Error("Scan returned no terminal result");
       setResult(data.result);
       openTokenModal(data.marketRow ?? data.result);
     } catch (scanError) {
@@ -386,7 +783,7 @@ export default function MarketIntegrityClient({
   }
 
   function openTokenModal(item: MarketIntegrityRow | TokenRiskResult) {
-    setSelected(item);
+    startTerminalTransition(() => setSelected(item));
   }
 
   function closeTokenModal() {
@@ -398,214 +795,562 @@ export default function MarketIntegrityClient({
     void scanToken();
   }
 
+  useEffect(() => {
+    if (routeScanHandledRef.current || marketLoading || !marketRows.length)
+      return;
+    const routeScan = new URLSearchParams(window.location.search).get("scan");
+    if (!routeScan) return;
+    routeScanHandledRef.current = true;
+    setQuery(routeScan.toUpperCase());
+    void scanToken(routeScan);
+    // scanToken intentionally reads the latest resolver state after markets load.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [marketLoading, marketRows.length]);
+
+  function cleanWatchSymbol(value: string) {
+    return value
+      .trim()
+      .toUpperCase()
+      .replace(/[^A-Z0-9:_-]/g, "")
+      .slice(0, 32);
+  }
+
+  function addWatchlistSymbol(value = query) {
+    const clean = cleanWatchSymbol(value);
+    if (!clean) return;
+    setWatchlistSymbols((current) =>
+      Array.from(new Set([clean, ...current])).slice(0, 18),
+    );
+  }
+
+  function removeWatchlistSymbol(value: string) {
+    setWatchlistSymbols((current) => current.filter((item) => item !== value));
+  }
+
+  function selectTab(tab: (typeof tabs)[number]) {
+    setActiveTab(tab);
+    if (tab === "highestRisk") {
+      setSortKey("risk");
+      setSortDirection("desc");
+      return;
+    }
+    if (tab === "trending") {
+      setSortKey("change24h");
+      setSortDirection("desc");
+      return;
+    }
+    if (tab === "top") {
+      setSortKey("rank");
+      setSortDirection("asc");
+    }
+  }
+
+  function updateSort(nextKey: MarketSortKey) {
+    setSortKey((current) => {
+      if (current === nextKey) {
+        setSortDirection((direction) => (direction === "asc" ? "desc" : "asc"));
+        return current;
+      }
+      setSortDirection(nextKey === "rank" ? "asc" : "desc");
+      return nextKey;
+    });
+  }
+
+  function SortHeader({
+    label,
+    sort,
+    align = "left",
+  }: {
+    label: string;
+    sort: MarketSortKey;
+    align?: "left" | "right";
+  }) {
+    const active = sortKey === sort;
+    return (
+      <button
+        type="button"
+        onClick={() => updateSort(sort)}
+        aria-label={`Sort by ${label}. ${active ? sortDirectionCopy(sort, sortDirection) : "Click once for primary direction, click again to reverse."}`}
+        title={`Sort by ${label} · ${active ? sortDirectionCopy(sort, sortDirection) : "click twice to reverse"}`}
+        className={`inline-flex items-center gap-1.5 transition hover:text-white ${align === "right" ? "justify-end" : "justify-start"} ${active ? "text-velmere-gold" : "text-white/[0.38]"}`}
+      >
+        {label}
+        <span className={`text-[9px] ${active ? "opacity-100" : "opacity-30"}`}>
+          {active ? (sortDirection === "asc" ? "↑" : "↓") : "↕"}
+        </span>
+        <span className="sr-only">
+          {active ? sortDirectionCopy(sort, sortDirection) : "not sorted"}
+        </span>
+      </button>
+    );
+  }
+
+  function handleTableWheel(event: WheelEvent<HTMLDivElement>) {
+    if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+    const scroller = document.scrollingElement ?? document.documentElement;
+    const before = scroller.scrollTop;
+    scroller.scrollTop += event.deltaY;
+    if (scroller.scrollTop !== before) event.preventDefault();
+  }
+
+  const activeCase = useMemo(() => {
+    if (!caseInbox.length) return null;
+    return (
+      caseInbox.find((item) => (item.caseId ?? item.id) === activeCaseId) ??
+      caseInbox[0]
+    );
+  }, [activeCaseId, caseInbox]);
+
   function sentinelTone(type: SentinelAlert["type"]) {
-    if (type === "critical_cluster") return "border-red-300/[0.20] bg-red-400/[0.055] text-red-100";
-    if (type === "rising_risk") return "border-amber-300/[0.20] bg-amber-300/[0.055] text-amber-100";
-    if (type === "parabolic_pump") return "border-orange-300/[0.20] bg-orange-300/[0.055] text-orange-100";
-    if (type === "liquidity_stress") return "border-velmere-gold/[0.20] bg-velmere-gold/[0.055] text-velmere-gold";
+    if (type === "critical_cluster")
+      return "border-red-300/[0.20] bg-red-400/[0.055] text-red-100";
+    if (type === "rising_risk")
+      return "border-amber-300/[0.20] bg-amber-300/[0.055] text-amber-100";
+    if (type === "parabolic_pump")
+      return "border-orange-300/[0.20] bg-orange-300/[0.055] text-orange-100";
+    if (type === "liquidity_stress")
+      return "border-velmere-gold/[0.20] bg-velmere-gold/[0.055] text-velmere-gold";
     return "border-white/[0.10] bg-white/[0.035] text-white/[0.66]";
   }
 
+  function caseTone(tone?: ShieldCaseTimelineEvent["tone"]) {
+    if (tone === "critical")
+      return "border-red-300/[0.26] bg-red-400/[0.08] text-red-100";
+    if (tone === "warning")
+      return "border-amber-300/[0.22] bg-amber-300/[0.07] text-amber-100";
+    if (tone === "watch")
+      return "border-velmere-gold/[0.20] bg-velmere-gold/[0.06] text-velmere-gold";
+    return "border-white/[0.10] bg-white/[0.035] text-white/[0.62]";
+  }
+
+  function alertTypeLabel(type: SentinelAlert["type"]) {
+    return t(`caseInbox.types.${type}`);
+  }
+
+  function ruleTone(severity: ShieldRuleHit["severity"]) {
+    if (severity === "critical")
+      return "border-red-300/[0.24] bg-red-400/[0.07] text-red-100";
+    if (severity === "warning")
+      return "border-amber-300/[0.22] bg-amber-300/[0.07] text-amber-100";
+    if (severity === "watch")
+      return "border-velmere-gold/[0.20] bg-velmere-gold/[0.06] text-velmere-gold";
+    return "border-white/[0.10] bg-white/[0.028] text-white/[0.58]";
+  }
+
+  function ruleActionLabel(action: ShieldRuleHit["action"]) {
+    return t(`rules.actions.${action}`);
+  }
+
+  function formatCaseDate(value?: string) {
+    if (!value) return "—";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "—";
+    return new Intl.DateTimeFormat(undefined, {
+      month: "short",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(date);
+  }
+
+  const fallbackTimeline: ShieldCaseTimelineEvent[] = activeCase
+    ? [
+        {
+          id: "opened",
+          timestamp:
+            activeCase.firstSeenAt ??
+            activeCase.timestamp ??
+            new Date().toISOString(),
+          label: t("caseInbox.timeline.opened"),
+          body: activeCase.reason,
+          score: activeCase.score,
+          tone: activeCase.score >= 65 ? "warning" : "watch",
+        },
+        {
+          id: "action",
+          timestamp:
+            activeCase.lastSeenAt ??
+            activeCase.timestamp ??
+            new Date().toISOString(),
+          label: t("caseInbox.timeline.action"),
+          body: activeCase.action,
+          score: activeCase.score,
+          tone: activeCase.score >= 85 ? "critical" : "watch",
+        },
+      ]
+    : [];
+
+  const shieldLayers = [
+    {
+      label: "Velocity",
+      score:
+        result?.agentAssessments?.find((agent) => agent.id === "velocity")
+          ?.score ?? 42 + ((interactionPulse * 7) % 28),
+      body: "Detects parabolic moves, sharp reversals and abnormal multi-timeframe acceleration.",
+      action: "Compare candles, volume and replay before opening a case.",
+    },
+    {
+      label: "Liquidity",
+      score:
+        result?.agentAssessments?.find((agent) => agent.id === "liquidity")
+          ?.score ?? 38 + ((interactionPulse * 5) % 32),
+      body: "Measures visible exit depth, liquidity/market-cap coverage and sell-impact pressure.",
+      action:
+        "Open the token card and verify depth, slippage and stress simulator.",
+    },
+    {
+      label: "Holders",
+      score:
+        result?.agentAssessments?.find((agent) => agent.id === "holders")
+          ?.score ?? 36 + ((interactionPulse * 9) % 30),
+      body: "Tracks concentration, float uncertainty, whale pressure and unresolved wallet clusters.",
+      action:
+        "Use holder intelligence and never treat missing chain data as safety.",
+    },
+    {
+      label: "Contract",
+      score:
+        result?.agentAssessments?.find((agent) => agent.id === "contract")
+          ?.score ?? 28 + ((interactionPulse * 4) % 22),
+      body: "Escalates taxes, privilege flags, honeypot risk and missing contract metadata.",
+      action:
+        "Verify owner controls, blacklist/mint/pause permissions and tax changes.",
+    },
+    {
+      label: "Order book",
+      score:
+        result?.agentAssessments?.find((agent) => agent.id === "microstructure")
+          ?.score ?? 34 + ((interactionPulse * 6) % 34),
+      body: "Looks for thin depth, imbalance, spoof-like stress and weak support zones.",
+      action:
+        "Inspect heatmap and danger zones when opening the terminal modal.",
+    },
+    {
+      label: "Data",
+      score:
+        result?.agentAssessments?.find((agent) => agent.id === "data")?.score ??
+        26 + ((interactionPulse * 3) % 20),
+      body: "Separates real evidence from uncertainty, stale data and unsupported tokens.",
+      action:
+        "Connect Supabase cron, holders and order-book feeds for stronger confidence.",
+    },
+  ];
+  const activeLayer =
+    shieldLayers.find((layer) => layer.label === activeShieldLayer) ??
+    shieldLayers[0];
+  const socCritical =
+    rulesSummary?.critical ??
+    caseInbox.filter((item) => item.score >= 85).length;
+  const socWatch =
+    (rulesSummary?.warning ?? 0) +
+    (rulesSummary?.watch ?? 0) +
+    caseInbox.filter((item) => item.score >= 35 && item.score < 85).length;
+  const criticalReviewRows = [
+    ...caseInbox.map((item) => ({
+      id: item.caseId ?? item.id,
+      symbol: item.symbol,
+      label: item.headline,
+      score: item.score,
+      action: item.action,
+      source: "case",
+    })),
+    ...ruleHits.map((item) => ({
+      id: item.id,
+      symbol: item.symbol,
+      label: item.headline,
+      score: item.score,
+      action: item.nextStep,
+      source: item.severity,
+    })),
+  ]
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 6);
+
   return (
-    <main className="bg-velmere-black text-velmere-ivory">
-      <section className="luxury-section pt-14 md:pt-18">
+    <main className="shield-typography-root shield-no-overlap bg-velmere-black text-velmere-ivory">
+      <section className="luxury-section shield-no-overlap sticky top-[4.35rem] z-30 border-b border-white/[0.06] bg-velmere-black/[0.86] py-4 backdrop-blur-xl md:top-[4.75rem]">
         <motion.div
           initial={reducedMotion ? false : { opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
-          className="mx-auto max-w-5xl text-center"
+          className="mx-auto max-w-6xl min-w-0"
         >
-          <p className="velmere-label text-velmere-gold">{t("kicker")}</p>
-          <h1 className="mx-auto mt-3 max-w-[12ch] font-serif text-[clamp(2.25rem,5vw,5.35rem)] leading-[0.88] tracking-[-0.06em]">
-            {t("title")}
-          </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-velmere-grey-soft md:text-base">
-            {t("subtitle")}
-          </p>
-
-          <div className="mx-auto mt-7 grid max-w-4xl gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
-            <form
-              onSubmit={onSubmit}
-              className="relative rounded-full border border-white/[0.12] bg-[#101012]/[0.88] p-2 shadow-[0_24px_90px_rgba(0,0,0,0.38)] backdrop-blur-xl"
-            >
-              <label className="sr-only" htmlFor="market-integrity-search">
-                {t("searchLabel")}
-              </label>
-              <div className="flex min-h-[3.25rem] items-center gap-3 rounded-full bg-black/[0.30] px-4 md:px-5">
-                <Search className="h-4 w-4 shrink-0 text-velmere-gold" />
-                <input
-                  id="market-integrity-search"
-                  value={query}
-                  onFocus={() => suggestions.length && setSuggestionsOpen(true)}
-                  onChange={(event) => setQuery(event.target.value)}
-                  placeholder={t("searchPlaceholder")}
-                  className="min-w-0 flex-1 bg-transparent font-mono text-sm uppercase tracking-[0.08em] text-white outline-none placeholder:text-white/[0.32]"
-                  autoComplete="off"
-                  spellCheck={false}
-                />
-                {suggestionLoading ? <Loader2 className="h-4 w-4 animate-spin text-white/[0.35]" /> : null}
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-full bg-velmere-ivory px-4 font-mono text-[10px] font-semibold uppercase tracking-[0.15em] text-black transition hover:bg-velmere-gold disabled:cursor-wait disabled:opacity-70 md:px-5"
-                >
-                  {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : t("scanButton")}
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </button>
-              </div>
-
-              {suggestionsOpen && suggestions.length ? (
-                <div className="absolute left-1/2 top-[calc(100%+0.55rem)] z-40 w-[min(29rem,calc(100vw-2rem))] -translate-x-1/2 overflow-hidden rounded-[1.1rem] border border-white/[0.12] bg-[#101013]/[0.98] text-left shadow-[0_30px_90px_rgba(0,0,0,0.55)] backdrop-blur-xl">
-                  {suggestions.slice(0, 3).map((item) => (
+          <div className="mx-auto max-w-4xl min-w-0">
+            <div className="grid min-w-0 gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
+              <form
+                ref={searchShellRef}
+                onSubmit={onSubmit}
+                className="shield-search-shell"
+              >
+                <label className="sr-only" htmlFor="market-integrity-search">
+                  {t("searchLabel")}
+                </label>
+                <div className="flex min-h-[3.5rem] items-center gap-3 rounded-full bg-black/[0.34] px-4 md:px-5">
+                  <input
+                    id="market-integrity-search"
+                    value={query}
+                    onFocus={() =>
+                      suggestions.length && setSuggestionsOpen(true)
+                    }
+                    onChange={(event) => setQuery(event.target.value)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Escape") {
+                        setSuggestionsOpen(false);
+                        if (query) setQuery("");
+                      }
+                    }}
+                    placeholder=""
+                    aria-label={t("searchLabel")}
+                    className="shield-search-input"
+                    autoComplete="off"
+                    spellCheck={false}
+                  />
+                  {suggestionLoading ? (
+                    <Loader2 className="h-4 w-4 animate-spin text-white/[0.35]" />
+                  ) : null}
+                  {query ? (
                     <button
-                      key={item.id}
                       type="button"
                       onClick={() => {
-                        setQuery(item.symbol);
+                        setQuery("");
+                        setSuggestions([]);
                         setSuggestionsOpen(false);
-                        void scanToken(item.id);
                       }}
-                      className="flex w-full items-center gap-3 border-b border-white/[0.06] px-4 py-2.5 text-left transition last:border-b-0 hover:bg-white/[0.055]"
+                      aria-label="Clear search"
+                      className="shield-search-icon-button shield-premium-focus text-white/[0.34] hover:text-white"
                     >
-                      <TokenAvatar image={item.image} symbol={item.symbol} />
-                      <span className="min-w-0 flex-1">
-                        <span className="block truncate text-sm font-semibold text-white">{item.name}</span>
-                        <span className="block font-mono text-[10px] uppercase tracking-[0.14em] text-white/[0.42]">
-                          {item.symbol}{item.rank ? ` · #${item.rank}` : ""}
-                        </span>
-                      </span>
+                      <X className="h-3.5 w-3.5" />
                     </button>
-                  ))}
+                  ) : null}
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    aria-label={t("scanButton")}
+                    className="shield-premium-focus inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-velmere-gold/[0.18] bg-velmere-gold/[0.08] text-velmere-gold transition hover:border-velmere-gold/[0.38] hover:bg-velmere-gold/[0.14] disabled:cursor-wait disabled:opacity-70"
+                  >
+                    {loading ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Search className="h-4 w-4" />
+                    )}
+                  </button>
                 </div>
-              ) : null}
-            </form>
 
-            <Link
-              href="/market-integrity/about"
-              className="inline-flex min-h-14 items-center justify-center gap-3 rounded-full border border-velmere-gold/[0.24] bg-velmere-gold/[0.08] px-5 font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-velmere-gold transition hover:border-velmere-gold/[0.44] hover:bg-velmere-gold/[0.14]"
-            >
-              <ShieldAlert className="h-4 w-4" />
-              {t("aboutButton")}
-            </Link>
-          </div>
-
-          <p className="mx-auto mt-3 max-w-3xl text-xs leading-6 text-white/[0.40]">
-            {t("privateSystem")}
-          </p>
-
-          {error ? (
-            <div className="mx-auto mt-4 max-w-3xl rounded-2xl border border-red-400/[0.22] bg-red-500/[0.08] p-4 text-sm leading-7 text-red-100">
-              {t("errors.prefix")}: {error}
-            </div>
-          ) : null}
-
-          <div className="mx-auto mt-5 max-w-5xl rounded-[1.35rem] border border-white/[0.09] bg-white/[0.025] p-3 text-left">
-            <div className="mb-2 flex items-center justify-between gap-3 px-1">
-              <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-velmere-gold">
-                {t("sentinel.title")}
-              </p>
-              <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-white/[0.30]">
-                {sentinelLoading ? t("sentinel.scanning") : `${sentinelAlerts.length} ${t("sentinel.alerts")}`}
-              </span>
-            </div>
-            <div className="grid gap-2 md:grid-cols-4">
-              {(sentinelAlerts.length ? sentinelAlerts : Array.from({ length: 4 }).map((_, index) => ({
-                id: `empty-${index}`,
-                type: "data_gap" as const,
-                symbol: "—",
-                name: t("sentinel.waiting"),
-                score: 0,
-                level: "low" as const,
-                headline: t("sentinel.emptyHeadline"),
-                reason: t("sentinel.emptyBody"),
-                action: "",
-              }))).map((alert) => (
-                <button
-                  key={alert.id}
-                  type="button"
-                  disabled={alert.symbol === "—"}
-                  onClick={() => alert.symbol !== "—" && void scanToken(alert.symbol)}
-                  className={`min-h-[5.75rem] rounded-2xl border p-3 text-left transition hover:border-velmere-gold/[0.35] disabled:cursor-default ${sentinelTone(alert.type)}`}
-                >
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.14em]">{alert.symbol}</span>
-                    <span className="font-mono text-[10px] text-white/[0.56]">{alert.score ? `${alert.score}/100` : "—"}</span>
+                {suggestionsOpen && suggestions.length ? (
+                  <div className="absolute left-1/2 top-[calc(100%+0.55rem)] z-40 w-[min(29rem,calc(100vw-2rem))] -translate-x-1/2 overflow-hidden rounded-[1.1rem] border border-white/[0.12] bg-[#101013]/[0.98] text-left shadow-[0_30px_90px_rgba(0,0,0,0.55)] backdrop-blur-xl">
+                    {suggestions.slice(0, 3).map((item) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => {
+                          setQuery(item.symbol);
+                          setSuggestionsOpen(false);
+                          void scanToken(item.id);
+                        }}
+                        className="flex w-full items-center gap-3 border-b border-white/[0.06] px-4 py-2.5 text-left transition last:border-b-0 hover:bg-white/[0.055]"
+                      >
+                        <TokenAvatar image={item.image} symbol={item.symbol} />
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate text-sm font-semibold text-white">
+                            {item.name}
+                          </span>
+                          <span className="block font-mono text-[10px] uppercase tracking-[0.14em] text-white/[0.42]">
+                            {item.symbol}
+                            {item.rank ? ` · #${item.rank}` : ""}
+                          </span>
+                        </span>
+                      </button>
+                    ))}
                   </div>
-                  <p className="mt-2 line-clamp-2 text-xs font-semibold leading-5 text-white/[0.82]">{alert.headline}</p>
-                  <p className="mt-1 line-clamp-1 text-[11px] text-white/[0.40]">{alert.name}</p>
-                </button>
-              ))}
+                ) : null}
+              </form>
+
+              <div className="flex items-center justify-end gap-2">
+                <Link
+                  href="/market-integrity/shield-map"
+                  className="shield-map-button shield-premium-focus"
+                  aria-label="Open full Shield Map page"
+                >
+                  <Radar className="h-3.5 w-3.5" />
+                  Shield map
+                </Link>
+              </div>
             </div>
+
+            {sourceCooldownActive ? (
+              <div className="shield-source-cooldown mt-3" role="status" aria-live="polite">
+                <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-velmere-gold">source cooldown</span>
+                <span className="text-xs leading-5 text-white/[0.54]">External search/analyze is rate-limited for {sourceCooldownSeconds}s. Table clicks stay local-first and safe.</span>
+              </div>
+            ) : null}
+
+            {false ? (
+              <motion.div
+                key={interactionPulse}
+                initial={
+                  reducedMotion ? false : { opacity: 0, y: -6, scale: 0.99 }
+                }
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                className="shield-quick-panel mt-3"
+              >
+                <div className="grid gap-3 lg:grid-cols-[minmax(0,0.86fr)_minmax(18rem,0.44fr)] lg:items-stretch">
+                  <div className="min-w-0 rounded-[1.25rem] border border-white/[0.075] bg-black/[0.18] p-3">
+                    <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                      <div className="flex min-w-0 items-center gap-3">
+                        <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-velmere-gold/[0.28] bg-black/[0.24] text-velmere-gold">
+                          <Brain className="h-4 w-4" />
+                          {loading ? (
+                            <span className="absolute inset-0 animate-ping rounded-full border border-velmere-gold/[0.20]" />
+                          ) : null}
+                        </span>
+                        <div className="min-w-0">
+                          <p className="truncate font-mono text-[10px] uppercase tracking-[0.16em] text-velmere-gold">
+                            Shield lens · quick status
+                          </p>
+                          <p className="shield-copy-safe mt-1 text-[11px] leading-5 text-white/[0.42]">
+                            Tarcza pokazuje tylko warstwy review. Pełna mapa działania jest na osobnej stronie Shield Map.
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex shrink-0 flex-wrap gap-2">
+                        <span className="shield-readability-grade">
+                          <span className="text-white/[0.34]">safe wording</span>
+                          <span className="text-velmere-gold">requires review</span>
+                        </span>
+                        <span className="shield-readability-grade">
+                          <span className="text-white/[0.34]">legal rail</span>
+                          <span className="text-velmere-gold">Not financial advice</span>
+                        </span>
+                      </div>
+                    </div>
+                    <div className="mt-3 grid gap-2 sm:grid-cols-3 lg:grid-cols-6">
+                      {shieldLayers.map((layer) => {
+                        const active = activeLayer.label === layer.label;
+                        return (
+                          <button
+                            key={layer.label}
+                            type="button"
+                            onClick={() => setActiveShieldLayer(layer.label)}
+                            className={`shield-inspector-layer ${active ? "border-velmere-gold/[0.36] bg-velmere-gold/[0.08] shadow-[0_0_0_1px_rgba(200,169,106,0.10)]" : "border-white/[0.08] bg-black/[0.20] hover:border-white/[0.18] hover:bg-white/[0.026]"}`}
+                            aria-pressed={active}
+                          >
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="truncate font-mono text-[9px] uppercase tracking-[0.12em] text-white/[0.50]">
+                                {layer.label}
+                              </span>
+                              <span
+                                className={`h-1.5 w-1.5 shrink-0 rounded-full ${layer.score >= 65 ? "bg-amber-300" : "bg-velmere-gold"}`}
+                              />
+                            </div>
+                            <div className="mt-2 h-1 overflow-hidden rounded-full bg-white/[0.07]">
+                              <motion.div
+                                initial={reducedMotion ? false : { width: "8%" }}
+                                animate={{
+                                  width: `${Math.max(8, Math.min(100, layer.score))}%`,
+                                }}
+                                transition={{
+                                  duration: 0.55,
+                                  ease: [0.16, 1, 0.3, 1],
+                                }}
+                                className="h-full rounded-full bg-velmere-gold"
+                              />
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div className="min-w-0 rounded-[1.25rem] border border-velmere-gold/[0.16] bg-[radial-gradient(circle_at_0%_0%,rgba(200,169,106,0.10),transparent_36%),rgba(255,255,255,0.022)] p-3">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/[0.38]">
+                      selected layer · {activeLayer.label}
+                    </p>
+                    <p className="shield-copy-safe mt-1 text-xs leading-6 text-white/[0.56]">
+                      {activeLayer.body}
+                    </p>
+                    <p className="shield-copy-safe mt-2 text-[11px] leading-5 text-white/[0.40]">
+                      {activeLayer.action}
+                    </p>
+                    <div className="mt-3 rounded-[1rem] border border-white/[0.07] bg-black/[0.16] p-2">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-mono text-[8px] uppercase tracking-[0.13em] text-white/[0.34]">runtime guard</span>
+                        <span className="font-mono text-[8px] uppercase tracking-[0.13em] text-velmere-gold">PASS74</span>
+                      </div>
+                      <p className="shield-copy-safe mt-1 text-[10px] leading-5 text-white/[0.40]">
+                        Tarcza nie pokazuje pełnego systemu ani JSON. To szybki lens: warstwa, następny krok i skrót do pełnej Shield Map.
+                      </p>
+                      <div className="mt-2 grid gap-1.5">
+                        {(criticalReviewRows.length ? criticalReviewRows : [{ id: "no-critical", symbol: "—", label: "No critical queue from current sweep", score: 0, action: "Open full map for source lanes", source: "runtime" }]).slice(0, 3).map((row) => (
+                          <Link
+                            key={row.id}
+                            href={row.symbol !== "—" ? `/market-integrity?scan=${encodeURIComponent(row.symbol)}` : "/market-integrity/shield-map"}
+                            className="shield-lens-review-row shield-premium-focus"
+                          >
+                            <span className="min-w-0 truncate font-mono text-[9px] uppercase tracking-[0.12em] text-white/[0.62]">{row.symbol}</span>
+                            <span className="min-w-0 flex-1 truncate text-[10px] text-white/[0.42]">{row.label}</span>
+                            <span className="shrink-0 font-mono text-[9px] text-velmere-gold">{row.score}/100</span>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                      <Link
+                        href="/market-integrity/shield-map"
+                        className="shield-premium-focus rounded-full border border-velmere-gold/[0.20] bg-velmere-gold/[0.075] px-3 py-2 text-center font-mono text-[9px] uppercase tracking-[0.13em] text-velmere-gold transition hover:bg-velmere-gold/[0.12]"
+                      >
+                        open full map
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => setShieldInspectorOpen(false)}
+                        className="shield-premium-focus rounded-full border border-white/[0.10] bg-white/[0.026] px-3 py-2 font-mono text-[9px] uppercase tracking-[0.13em] text-white/[0.48] transition hover:border-white/[0.20] hover:text-white"
+                      >
+                        hide lens
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ) : null}
+
+            {error ? (
+              <div className="mt-4 rounded-2xl border border-red-400/[0.22] bg-red-500/[0.08] p-4 text-sm leading-7 text-red-100">
+                {t("errors.prefix")}: {error}
+              </div>
+            ) : null}
           </div>
         </motion.div>
       </section>
 
-      <section className="luxury-section py-5">
-        <div className="grid gap-3 md:grid-cols-4">
-          {[
-            {
-              label: t("sweepStats.marketCap"),
-              value: formatUsd(stats.marketCap),
-              tone: stats.avgChange >= 0 ? "text-emerald-300" : "text-red-300",
-              sub: formatPercent(stats.avgChange),
-            },
-            {
-              label: t("sweepStats.volume"),
-              value: formatUsd(stats.volume),
-              tone: "text-white",
-              sub: "24h",
-            },
-            {
-              label: t("sweepStats.highestRisk"),
-              value: stats.highestRisk ? stats.highestRisk.symbol : "—",
-              tone: "text-velmere-gold",
-              sub: stats.highestRisk
-                ? `${stats.highestRisk.result.score}/100`
-                : "—",
-            },
-            {
-              label: t("sweepStats.coverage"),
-              value: `${marketRows.length}`,
-              tone: "text-white",
-              sub: t("sweepStats.assets"),
-            },
-          ].map((item) => (
-            <div
-              key={item.label}
-              className="rounded-2xl border border-white/[0.10] bg-white/[0.030] p-3.5"
-            >
-              <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/[0.35]">
-                {item.label}
-              </p>
-              <p
-                className={`mt-2 font-mono text-lg font-semibold ${item.tone}`}
-              >
-                {item.value}
-              </p>
-              <p className="mt-1 text-xs text-white/[0.38]">{item.sub}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="luxury-section pb-16 md:pb-24">
-        <div className="overflow-hidden rounded-[2rem] border border-white/[0.10] bg-[#0d0d10] shadow-velmere-card">
+      <section className="luxury-section shield-no-overlap pb-16 pt-5 md:pb-24">
+        <div className="shield-table-shell">
           <div className="flex flex-col gap-4 border-b border-white/[0.08] p-4 md:flex-row md:items-center md:justify-between">
             <div className="flex flex-wrap gap-2">
               {tabs.map((tab) => (
                 <button
                   key={tab}
                   type="button"
-                  onClick={() => setActiveTab(tab)}
+                  onClick={() => selectTab(tab)}
                   className={`rounded-full border px-4 py-2 font-mono text-[10px] uppercase tracking-[0.15em] transition ${activeTab === tab ? "border-velmere-gold/[0.45] bg-velmere-gold/[0.12] text-velmere-gold" : "border-white/[0.10] bg-white/[0.025] text-white/[0.42] hover:border-white/[0.22] hover:text-white"}`}
                 >
                   {t(`tabs.${tab}`)}
                 </button>
               ))}
             </div>
-            <div className="inline-flex items-center gap-2 text-xs text-white/[0.38]">
-              <LineChart className="h-4 w-4 text-velmere-gold" />{" "}
-              {t("marketTable.liveNote")}
+            <div className="inline-flex flex-wrap items-center gap-3 text-xs text-white/[0.38]">
+              <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-white/[0.32]">
+                {visibleRows.length}/{marketRows.length}
+              </span>
+              <span className="hidden h-4 w-px bg-white/[0.10] md:inline-flex" />
+              <span className="inline-flex items-center gap-2">
+                <LineChart className="h-4 w-4 text-velmere-gold" />
+                {t("marketTable.liveNote")}
+              </span>
+              <span className="shield-sort-hint">
+                sort · {marketSortLabels[sortKey]} ·{" "}
+                {sortDirectionCopy(sortKey, sortDirection)}
+              </span>
             </div>
           </div>
 
@@ -624,110 +1369,253 @@ export default function MarketIntegrityClient({
             </div>
           ) : (
             <>
-              <div className="overflow-x-auto">
-                <table className="min-w-[1080px] w-full border-collapse text-left">
-                  <thead className="border-b border-white/[0.08] bg-white/[0.025] font-mono text-[10px] uppercase tracking-[0.14em] text-white/[0.38]">
+              <div className="grid gap-3 p-3 md:hidden">
+                {visibleRows.slice(0, 80).map((row) => {
+                  const inWatchlist =
+                    watchlistSymbols.includes(row.symbol) ||
+                    watchlistSymbols.includes(row.id.toUpperCase());
+                  return (
+                    <button
+                      key={`mobile-${row.id}`}
+                      type="button"
+                      onClick={() => openTokenModal(row)}
+                      className="shield-mobile-coin-card shield-premium-focus text-left transition hover:border-velmere-gold/[0.28] hover:bg-white/[0.042]"
+                    >
+                      <div className="flex min-w-0 items-start justify-between gap-3">
+                        <div className="flex min-w-0 items-center gap-3">
+                          <TokenAvatar image={row.image} symbol={row.symbol} />
+                          <div className="min-w-0">
+                            <p className="truncate text-sm font-semibold text-white">
+                              {row.name}
+                            </p>
+                            <p className="mt-1 truncate font-mono text-[10px] uppercase tracking-[0.13em] text-white/[0.38]">
+                              #{row.rank ?? "—"} · {row.symbol}
+                            </p>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            if (inWatchlist) removeWatchlistSymbol(row.symbol);
+                            else addWatchlistSymbol(row.symbol);
+                          }}
+                          className={`shield-premium-focus shrink-0 rounded-full border border-white/[0.08] p-2 transition ${inWatchlist ? "text-velmere-gold" : "text-white/[0.24]"}`}
+                          aria-label={
+                            inWatchlist
+                              ? `${t("watchlist.remove")} ${row.symbol}`
+                              : `${t("watchlist.addQuery")} ${row.symbol}`
+                          }
+                        >
+                          <Star
+                            className={`h-3.5 w-3.5 ${inWatchlist ? "fill-current" : ""}`}
+                          />
+                        </button>
+                      </div>
+                      <div className="mt-4 grid grid-cols-3 gap-2 font-mono text-[10px] tabular-nums">
+                        <div className="shield-kpi-compact">
+                          <p className="uppercase tracking-[0.13em] text-white/[0.30]">
+                            price
+                          </p>
+                          <p className="mt-1 truncate text-white">
+                            {formatUsd(row.price)}
+                          </p>
+                        </div>
+                        <div className="shield-kpi-compact">
+                          <p className="uppercase tracking-[0.13em] text-white/[0.30]">
+                            24h
+                          </p>
+                          <p
+                            className={`mt-1 ${row.priceChange24h === undefined ? "text-white/[0.32]" : row.priceChange24h >= 0 ? "text-emerald-300" : "text-red-300"}`}
+                          >
+                            {formatPercent(row.priceChange24h)}
+                          </p>
+                        </div>
+                        <div className="shield-kpi-compact">
+                          <p className="uppercase tracking-[0.13em] text-white/[0.30]">
+                            risk
+                          </p>
+                          <p className="mt-1 inline-flex items-center gap-1.5 text-white/[0.78]">
+                            <RiskDot level={row.result.level} />{" "}
+                            {row.result.score}/100
+                          </p>
+                        </div>
+                      </div>
+                      <div className="mt-3 flex items-center justify-between gap-3">
+                        <Sparkline
+                          values={row.sparkline7d}
+                          change={row.priceChange7d}
+                        />
+                        <span className="shield-readability-grade shrink-0">
+                          review terminal
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+              <div
+                className="shield-table-scroll-x hidden md:block"
+                onWheel={handleTableWheel}
+              >
+                <table className="w-full min-w-[1080px] table-fixed border-collapse text-left tabular-nums">
+                  <thead className="sticky top-0 z-20 border-b border-white/[0.08] bg-[#101013]/[0.98] font-mono text-[10px] uppercase tracking-[0.14em] text-white/[0.38] backdrop-blur-xl">
                     <tr>
-                      <th className="px-4 py-4">#</th>
-                      <th className="px-4 py-4">{t("marketTable.name")}</th>
+                      <th className="px-4 py-4">
+                        <SortHeader label="#" sort="rank" />
+                      </th>
+                      <th className="w-[17rem] px-4 py-4">
+                        {t("marketTable.name")}
+                      </th>
                       <th className="px-4 py-4 text-right">
-                        {t("marketTable.price")}
+                        <SortHeader
+                          label={t("marketTable.price")}
+                          sort="price"
+                          align="right"
+                        />
                       </th>
                       <th className="px-4 py-4 text-right">1h</th>
-                      <th className="px-4 py-4 text-right">24h</th>
-                      <th className="px-4 py-4 text-right">7d</th>
+                      <th className="px-4 py-4 text-right">
+                        <SortHeader
+                          label="24h"
+                          sort="change24h"
+                          align="right"
+                        />
+                      </th>
+                      <th className="px-4 py-4 text-right">
+                        <SortHeader label="7d" sort="change7d" align="right" />
+                      </th>
                       <th className="px-4 py-4 text-right">30d</th>
                       <th className="px-4 py-4 text-right">
-                        {t("marketTable.marketCap")}
+                        <SortHeader
+                          label={t("marketTable.marketCap")}
+                          sort="marketCap"
+                          align="right"
+                        />
                       </th>
                       <th className="px-4 py-4 text-right">
-                        {t("marketTable.volume")}
+                        <SortHeader
+                          label={t("marketTable.volume")}
+                          sort="volume"
+                          align="right"
+                        />
                       </th>
-                      <th className="px-4 py-4">{t("marketTable.risk")}</th>
-                      <th className="px-4 py-4">{t("marketTable.last7d")}</th>
+                      <th className="px-4 py-4">
+                        <SortHeader label={t("marketTable.risk")} sort="risk" />
+                      </th>
+                      <th className="w-[10rem] px-4 py-4">
+                        {t("marketTable.last7d")}
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
-                    {visibleRows.map((row) => (
-                      <tr
-                        key={row.id}
-                        onClick={() => openTokenModal(row)}
-                        className="cursor-pointer border-b border-white/[0.06] transition hover:bg-white/[0.045]"
-                      >
-                        <td className="px-4 py-4 font-mono text-xs text-white/[0.42]">
-                          <span className="inline-flex items-center gap-3">
-                            <Star className="h-3.5 w-3.5 text-white/[0.18]" />
-                            {row.rank ?? "—"}
-                          </span>
-                        </td>
-                        <td className="px-4 py-4">
-                          <div className="flex items-center gap-3">
-                            <TokenAvatar
-                              image={row.image}
-                              symbol={row.symbol}
-                            />
-                            <div>
-                              <p className="text-sm font-semibold text-white">
-                                {row.name}
-                              </p>
-                              <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-white/[0.38]">
-                                {row.symbol}
-                              </p>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-4 py-4 text-right font-mono text-sm text-white">
-                          {formatUsd(row.price)}
-                        </td>
-                        {[
-                          row.priceChange1h,
-                          row.priceChange24h,
-                          row.priceChange7d,
-                          row.priceChange30d,
-                        ].map((value, index) => (
-                          <td
-                            key={index}
-                            className={`px-4 py-4 text-right font-mono text-xs ${value === undefined ? "text-white/[0.32]" : value >= 0 ? "text-emerald-300" : "text-red-300"}`}
-                          >
-                            {formatPercent(value)}
+                    {visibleRows.map((row) => {
+                      const inWatchlist =
+                        watchlistSymbols.includes(row.symbol) ||
+                        watchlistSymbols.includes(row.id.toUpperCase());
+                      return (
+                        <tr
+                          key={row.id}
+                          onClick={() => openTokenModal(row)}
+                          className="shield-market-row group"
+                        >
+                          <td className="shield-table-cell font-mono text-xs text-white/[0.42]">
+                            <span className="inline-flex items-center gap-3">
+                              <button
+                                type="button"
+                                onClick={(event) => {
+                                  event.stopPropagation();
+                                  if (inWatchlist)
+                                    removeWatchlistSymbol(row.symbol);
+                                  else addWatchlistSymbol(row.symbol);
+                                }}
+                                className={`shield-premium-focus rounded-full p-1 transition ${inWatchlist ? "text-velmere-gold" : "text-white/[0.18] hover:text-velmere-gold"}`}
+                                aria-label={
+                                  inWatchlist
+                                    ? `${t("watchlist.remove")} ${row.symbol}`
+                                    : `${t("watchlist.addQuery")} ${row.symbol}`
+                                }
+                              >
+                                <Star
+                                  className={`h-3.5 w-3.5 ${inWatchlist ? "fill-current" : ""}`}
+                                />
+                              </button>
+                              {row.rank ?? "—"}
+                            </span>
                           </td>
-                        ))}
-                        <td className="px-4 py-4 text-right font-mono text-xs text-white/[0.75]">
-                          {formatUsd(row.marketCap)}
-                        </td>
-                        <td className="px-4 py-4 text-right font-mono text-xs text-white/[0.75]">
-                          {formatUsd(row.volume24h)}
-                        </td>
-                        <td className="px-4 py-4">
-                          <span className="inline-flex items-center gap-2">
-                            <RiskDot level={row.result.level} />
-                            <span className="font-mono text-xs text-white/[0.68]">
-                              {row.result.score}/100
-                            </span>
-                            {row.memory?.riskDeltaLatest ? (
-                              <span className={`font-mono text-[9px] uppercase tracking-[0.12em] ${row.memory.riskDeltaLatest > 0 ? "text-amber-200" : "text-emerald-200"}`}>
-                                Δ{row.memory.riskDeltaLatest > 0 ? "+" : ""}{row.memory.riskDeltaLatest}
+                          <td className="shield-table-cell">
+                            <div className="flex min-w-0 items-center gap-3">
+                              <TokenAvatar
+                                image={row.image}
+                                symbol={row.symbol}
+                              />
+                              <div className="min-w-0">
+                                <p className="truncate text-sm font-semibold text-white transition group-hover:text-velmere-gold">
+                                  {row.name}
+                                </p>
+                                <p className="truncate font-mono text-[10px] uppercase tracking-[0.12em] text-white/[0.38]">
+                                  {row.symbol}
+                                </p>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="shield-table-cell text-right font-mono text-sm text-white">
+                            {formatUsd(row.price)}
+                          </td>
+                          {[
+                            row.priceChange1h,
+                            row.priceChange24h,
+                            row.priceChange7d,
+                            row.priceChange30d,
+                          ].map((value, index) => (
+                            <td
+                              key={index}
+                              className={`shield-table-cell text-right font-mono text-xs ${value === undefined ? "text-white/[0.32]" : value >= 0 ? "text-emerald-300" : "text-red-300"}`}
+                            >
+                              {formatPercent(value)}
+                            </td>
+                          ))}
+                          <td className="shield-table-cell text-right font-mono text-xs text-white/[0.75]">
+                            {formatUsd(row.marketCap)}
+                          </td>
+                          <td className="shield-table-cell text-right font-mono text-xs text-white/[0.75]">
+                            {formatUsd(row.volume24h)}
+                          </td>
+                          <td className="shield-table-cell">
+                            <span className="inline-flex min-w-0 items-center gap-2">
+                              <RiskDot level={row.result.level} />
+                              <span className="font-mono text-xs text-white/[0.68]">
+                                {row.result.score}/100
                               </span>
-                            ) : null}
-                            <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-white/[0.30]">
-                              {levelLabel(row.result.score)}
+                              {row.memory?.riskDeltaLatest ? (
+                                <span
+                                  className={`font-mono text-[9px] uppercase tracking-[0.12em] ${row.memory.riskDeltaLatest > 0 ? "text-amber-200" : "text-emerald-200"}`}
+                                >
+                                  Δ{row.memory.riskDeltaLatest > 0 ? "+" : ""}
+                                  {row.memory.riskDeltaLatest}
+                                </span>
+                              ) : null}
+                              <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-white/[0.30]">
+                                {levelLabel(row.result.score)}
+                              </span>
                             </span>
-                          </span>
-                        </td>
-                        <td className="px-4 py-4">
-                          <Sparkline
-                            values={row.sparkline7d}
-                            change={row.priceChange7d}
-                          />
-                        </td>
-                      </tr>
-                    ))}
+                          </td>
+                          <td className="shield-table-cell">
+                            <Sparkline
+                              values={row.sparkline7d}
+                              change={row.priceChange7d}
+                            />
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
               <div className="flex flex-col gap-3 border-t border-white/[0.08] p-4 md:flex-row md:items-center md:justify-between">
-                <p className="text-xs leading-6 text-white/[0.42]">
-                  {t("marketTable.coverageNote")}
+                <p className="shield-copy-rhythm text-xs text-white/[0.42]">
+                  {t("marketTable.coverageNote")} · Not financial advice.
+                  Algorithmic risk flag only.
                 </p>
                 <button
                   type="button"
@@ -746,53 +1634,21 @@ export default function MarketIntegrityClient({
             </>
           )}
         </div>
-
-        <div className="mt-5 grid gap-3 md:grid-cols-4">
-          {["low", "medium", "high", "critical"].map((key) => (
-            <div
-              key={key}
-              className="rounded-2xl border border-white/[0.10] bg-white/[0.025] p-4"
-            >
-              <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/[0.35]">
-                {t(`riskScale.${key}.range`)}
-              </p>
-              <p className="mt-2 text-sm font-semibold text-white">
-                {t(`riskScale.${key}.label`)}
-              </p>
-              <p className="mt-2 text-xs leading-6 text-white/[0.44]">
-                {t(`riskScale.${key}.body`)}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        {loading ? (
-          <div className="mt-6 min-h-[9rem] animate-pulse rounded-[2rem] border border-white/[0.10] bg-white/[0.04]" />
-        ) : result ? (
-          <div className="mt-6">
-            <button
-              type="button"
-              onClick={() => openTokenModal(result)}
-              className="w-full text-left"
-            >
-              <div className="rounded-[1.5rem] border border-white/[0.10] bg-white/[0.035] p-5 transition hover:border-velmere-gold/[0.24]">
-                <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-velmere-gold">
-                  {t("cardKicker")}
-                </p>
-                <p className="mt-2 text-xl font-semibold text-white">
-                  {scannedSummary}
-                </p>
-                <p className="mt-2 text-sm leading-7 text-white/[0.48]">
-                  {result.aiSummary}
-                </p>
-              </div>
-            </button>
-          </div>
-        ) : null}
       </section>
 
+      {isOpeningTerminal && !selected ? (
+        <div className="fixed bottom-5 left-1/2 z-[99998] -translate-x-1/2 rounded-full border border-velmere-gold/[0.18] bg-black/[0.72] px-4 py-2 font-mono text-[10px] uppercase tracking-[0.14em] text-velmere-gold shadow-[0_20px_70px_rgba(0,0,0,0.45)] backdrop-blur-xl">
+          opening terminal
+        </div>
+      ) : null}
+
       {selected ? (
-        <TokenRiskModal item={selected} onClose={closeTokenModal} />
+        <ShieldModalErrorBoundary
+          resetKey={"id" in selected ? selected.id : selected.token.symbol}
+          onClose={closeTokenModal}
+        >
+          <TokenRiskModal item={selected} onClose={closeTokenModal} />
+        </ShieldModalErrorBoundary>
       ) : null}
     </main>
   );

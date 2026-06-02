@@ -10,6 +10,9 @@ const copy = {
     kicker: "Velmère Shield",
     title: "Czym jest Shield?",
     body: "Prywatna warstwa RegTech/Web3, która łączy dane rynkowe, mikrostukturę order booka, płynność, kontrakt i pamięć ryzyka w jeden czytelny sygnał. To nie jest wyrok ani porada inwestycyjna — to system wczesnego ostrzegania.",
+    visualTitle: "Jak działa sygnał Shielda",
+    visualBody: "Dane wchodzą warstwami, agenci robią scoring, a meta-model zamienia chaos rynku w czytelną kartę ryzyka i case file do ręcznego review.",
+    layers: ["Market data", "Klines + depth", "Risk agents", "Evidence report"],
     cta: "Wróć do radaru",
     blocks: [
       ["Live market data", "CoinGecko, DEX Screener, Binance depth/klines i GoPlus dostarczają dane po stronie serwera, bez ujawniania kluczy w przeglądarce."],
@@ -21,13 +24,20 @@ const copy = {
     disclaimer: "Shield nie oskarża projektów i nie przewiduje zysków. Pokazuje anomalię, prawdopodobieństwo ryzyka i materiał do human review.",
     matrixTitle: "Co działa dziś / co jest R&D",
     matrixBody: "Shield jest budowany uczciwie: moduły live są oddzielone od modułów badawczych, żeby partnerzy, granty i użytkownicy widzieli, co już działa, a co wymaga finansowania R&D.",
-    live: ["Live market data", "Multi-agent risk score", "Klines / order book", "Risk memory ledger", "Evidence report API"],
+    live: ["Live market data", "Multi-agent risk score", "Klines / order book", "Risk memory ledger", "Evidence report API", "Rules engine / watchlist"],
     rd: ["Wallet clustering", "Social NLP", "Mempool simulation", "Cross-chain tracking", "GNN anomaly model"],
+    buildMeter: "Miernik budowy",
+    progressTitle: "Budowa systemu krok po kroku",
+    progressBody: "Aktualny etap to mocny MVP techniczny: mamy dane, agentów, wykres, ledger, crona i case files. Do wersji produkcyjnej brakuje głównie pełnego Supabase, alertów użytkownika, dokładniejszych źródeł on-chain, monitoringu SOC i testów build/e2e.",
+    progress: [["MVP interfejsu", "82%"], ["Silnik ryzyka", "72%"], ["Produkcja/SOC", "42%"]],
   },
   en: {
     kicker: "Velmère Shield",
     title: "What is Shield?",
     body: "A private RegTech/Web3 layer that fuses market data, order-book microstructure, liquidity, contract data and risk memory into one readable signal. It is not a verdict or investment advice — it is an early-warning system.",
+    visualTitle: "How the Shield signal works",
+    visualBody: "Data enters in layers, agents score the evidence, and the meta-model turns market chaos into a readable risk card and case file for human review.",
+    layers: ["Market data", "Klines + depth", "Risk agents", "Evidence report"],
     cta: "Back to radar",
     blocks: [
       ["Live market data", "CoinGecko, DEX Screener, Binance depth/klines and GoPlus provide server-side data without exposing keys in the browser."],
@@ -39,13 +49,20 @@ const copy = {
     disclaimer: "Shield does not accuse projects and does not predict profit. It surfaces anomalies, risk probability and material for human review.",
     matrixTitle: "What runs today / what is R&D",
     matrixBody: "Shield is built honestly: live modules are separated from research-grade modules so grants, partners and users can see what is already running and what needs R&D funding.",
-    live: ["Live market data", "Multi-agent risk score", "Klines / order book", "Risk memory ledger", "Evidence report API"],
+    live: ["Live market data", "Multi-agent risk score", "Klines / order book", "Risk memory ledger", "Evidence report API", "Rules engine / watchlist"],
     rd: ["Wallet clustering", "Social NLP", "Mempool simulation", "Cross-chain tracking", "GNN anomaly model"],
+    buildMeter: "Build meter",
+    progressTitle: "Build progress, step by step",
+    progressBody: "The current stage is a strong technical MVP: data, agents, charting, ledger, cron and case files are in place. Production still needs full Supabase rollout, user alerts, richer on-chain sources, SOC monitoring and build/e2e testing.",
+    progress: [["Interface MVP", "82%"], ["Risk engine", "72%"], ["Production/SOC", "42%"]],
   },
   de: {
     kicker: "Velmère Shield",
     title: "Was ist Shield?",
     body: "Eine private RegTech/Web3-Schicht, die Marktdaten, Orderbook-Mikrostruktur, Liquidität, Contract-Daten und Risk Memory zu einem lesbaren Signal verdichtet. Kein Urteil und keine Anlageberatung — ein Frühwarnsystem.",
+    visualTitle: "Wie das Shield-Signal funktioniert",
+    visualBody: "Daten kommen in Schichten hinein, Agenten bewerten die Evidenz, und das Meta-Modell macht aus Marktchaos eine lesbare Risikokarte und einen Case File für Human Review.",
+    layers: ["Market data", "Klines + depth", "Risk agents", "Evidence report"],
     cta: "Zurück zum Radar",
     blocks: [
       ["Live-Marktdaten", "CoinGecko, DEX Screener, Binance Depth/Klines und GoPlus liefern serverseitige Daten, ohne Schlüssel im Browser offenzulegen."],
@@ -57,8 +74,12 @@ const copy = {
     disclaimer: "Shield beschuldigt keine Projekte und prognostiziert keine Gewinne. Es zeigt Anomalien, Risikowahrscheinlichkeit und Material für Human Review.",
     matrixTitle: "Was heute läuft / was R&D ist",
     matrixBody: "Shield wird transparent aufgebaut: Live-Module sind von Forschungsmodulen getrennt, damit Partner, Fördergeber und Nutzer sehen, was bereits läuft und was R&D-Finanzierung braucht.",
-    live: ["Live market data", "Multi-agent risk score", "Klines / order book", "Risk memory ledger", "Evidence report API"],
-    rd: ["Wallet clustering", "Social NLP", "Mempool simulation", "Cross-chain tracking", "GNN anomaly model"],
+    live: ["Live market data", "Multi-agent risk score", "Klines / order book", "Risk memory ledger", "Evidence report API", "Rules engine / watchlist"],
+    rd: ["Wallet clustering", "Social NLP", "Mempool simulation", "Cross-chain Tracking", "GNN-Anomalie-Modell"],
+    buildMeter: "Build-Meter",
+    progressTitle: "Systemaufbau Schritt für Schritt",
+    progressBody: "Der aktuelle Stand ist ein starkes technisches MVP: Daten, Agenten, Charts, Ledger, Cron und Case Files sind vorhanden. Für Produktion fehlen vor allem vollständiges Supabase, Nutzer-Alerts, bessere On-chain-Quellen, SOC-Monitoring und Build/e2e-Tests.",
+    progress: [["Interface-MVP", "82%"], ["Risk Engine", "72%"], ["Produktion/SOC", "42%"]],
   },
 } as const;
 
@@ -87,6 +108,39 @@ export default function MarketIntegrityAboutPage({ params: { locale } }: { param
           <Link href="/market-integrity" className="mt-7 inline-flex items-center gap-3 rounded-full border border-velmere-gold/[0.24] bg-velmere-gold/[0.08] px-6 py-3 font-mono text-[10px] uppercase tracking-[0.16em] text-velmere-gold transition hover:bg-velmere-gold/[0.14]">
             <ShieldCheck className="h-4 w-4" /> {t.cta} <ArrowRight className="h-4 w-4" />
           </Link>
+        </div>
+      </section>
+
+      <section className="luxury-section py-6">
+        <div className="grid gap-4 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+          <div className="relative min-h-[24rem] overflow-hidden rounded-[2rem] border border-white/[0.10] bg-[#0b0b0d] p-6 shadow-velmere-card">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(200,169,106,0.14),transparent_34%),linear-gradient(to_right,rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:auto,58px_58px,58px_58px]" />
+            <div className="absolute left-1/2 top-1/2 h-60 w-60 -translate-x-1/2 -translate-y-1/2"><div className="h-full w-full rounded-full border border-velmere-gold/[0.16] velmere-signal-ring" /></div>
+            <div className="absolute left-1/2 top-1/2 h-44 w-44 -translate-x-1/2 -translate-y-1/2"><div className="h-full w-full rounded-full border border-white/[0.10] velmere-signal-ring" /></div>
+            <div className="absolute left-1/2 top-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2"><div className="h-full w-full rounded-full border border-emerald-300/[0.12] velmere-signal-ring" /></div>
+            <div className="absolute left-1/2 top-1/2 h-[1px] w-36 origin-left bg-gradient-to-r from-velmere-gold to-transparent velmere-signal-ring" />
+            <div className="relative z-10 flex h-full min-h-[20rem] flex-col items-center justify-center text-center">
+              <ShieldCheck className="h-9 w-9 text-velmere-gold velmere-soft-breathe" />
+              <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.22em] text-velmere-gold">Live anomaly fusion</p>
+              <p className="mt-3 max-w-xs text-sm leading-7 text-white/[0.58]">{t.visualBody}</p>
+            </div>
+          </div>
+          <div>
+            <p className="velmere-label text-velmere-gold">System map</p>
+            <h2 className="mt-3 font-serif text-4xl tracking-[-0.05em] md:text-5xl">{t.visualTitle}</h2>
+            <p className="mt-4 max-w-2xl text-sm leading-7 text-white/[0.52]">{t.visualBody}</p>
+            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+              {t.layers.map((layer, index) => (
+                <div key={layer} className="group rounded-2xl border border-white/[0.10] bg-white/[0.025] p-4 transition hover:border-velmere-gold/[0.24] hover:bg-velmere-gold/[0.045]">
+                  <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/[0.34]">0{index + 1}</span>
+                  <p className="mt-2 text-sm font-semibold text-white">{layer}</p>
+                  <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/[0.07]">
+                    <div className="h-full rounded-full bg-velmere-gold transition-all duration-700 group-hover:w-full" style={{ width: `${26 + index * 18}%` }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -120,6 +174,31 @@ export default function MarketIntegrityAboutPage({ params: { locale } }: { param
                 <p className="text-sm leading-7 text-white/[0.62]">{step}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="luxury-section py-8">
+        <div className="overflow-hidden rounded-[2rem] border border-white/[0.10] bg-[#0b0b0d] p-6 shadow-velmere-card md:p-8">
+          <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
+            <div>
+              <p className="velmere-label text-velmere-gold">{t.buildMeter}</p>
+              <h2 className="mt-3 font-serif text-4xl tracking-[-0.05em] md:text-5xl">{t.progressTitle}</h2>
+              <p className="mt-4 text-sm leading-7 text-white/[0.50]">{t.progressBody}</p>
+            </div>
+            <div className="grid gap-3">
+              {t.progress.map(([label, value], index) => (
+                <div key={label} className="rounded-2xl border border-white/[0.10] bg-white/[0.025] p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/[0.44]">0{index + 1} · {label}</span>
+                    <span className="font-mono text-sm text-velmere-gold">{value}</span>
+                  </div>
+                  <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/[0.08]">
+                    <div className="h-full rounded-full bg-velmere-gold" style={{ width: value }} />
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
