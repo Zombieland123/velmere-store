@@ -4357,8 +4357,9 @@ function VlmAiSequenceOverlay({
   }, [mode, readNodes, bootMs, orbMs, lineStartMs, lineDurationMs, revealGapMs]);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    const canvasNode = canvasRef.current;
+    if (!canvasNode) return;
+    const canvas: HTMLCanvasElement = canvasNode;
     const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
 

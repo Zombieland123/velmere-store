@@ -3,6 +3,7 @@ import { searchCoinGeckoMarket } from "@/lib/market-integrity/coingecko";
 import { analyzeDexScreenerToken } from "@/lib/market-integrity/dexscreener";
 import { buildVlmShieldInvestigator } from "@/lib/market-integrity/shield-investigator";
 import { buildEvidenceReportDraft } from "@/lib/market-integrity/evidence-report";
+import { checkRateLimit, guardrailHeaders } from "@/lib/market-integrity/api-guardrails";
 import { persistSourceSnapshot } from "@/lib/market-integrity/source-snapshot-ledger";
 import { buildTerminalEvidenceExport } from "@/lib/market-integrity/terminal-evidence-export";
 
@@ -20,12 +21,18 @@ function safeFilename(value: string) {
 }
 
 export async function GET(request: Request) {
+  const rateLimit = checkRateLimit(request, "evidence-export");
+  const baseHeaders = guardrailHeaders(rateLimit);
+  if (!rateLimit.ok) {
+    return NextResponse.json<ErrorPayload>({ mode: "error", error: "Rate limit exceeded. Try again after cooldown." }, { status: 429, headers: baseHeaders });
+  }
+
   const { searchParams } = new URL(request.url);
   const query = searchParams.get("query")?.trim();
   const format = searchParams.get("format")?.trim().toLowerCase() === "json" ? "json" : "markdown";
 
   if (!query) {
-    return NextResponse.json<ErrorPayload>({ mode: "error", error: "Missing query" }, { status: 400 });
+    return NextResponse.json<ErrorPayload>({ mode: "error", error: "Missing query" }, { status: 400, headers: baseHeaders });
   }
 
   try {
@@ -49,7 +56,7 @@ export async function GET(request: Request) {
         headers: {
           "content-type": "application/json; charset=utf-8",
           "content-disposition": `attachment; filename="${filename}.json"`,
-          "cache-control": "no-store",
+          ...baseHeaders,
         },
       });
     }
@@ -58,13 +65,13 @@ export async function GET(request: Request) {
       headers: {
         "content-type": "text/markdown; charset=utf-8",
         "content-disposition": `attachment; filename="${filename}.md"`,
-        "cache-control": "no-store",
+        ...baseHeaders,
       },
     });
   } catch (error) {
     return NextResponse.json<ErrorPayload>(
       { mode: "error", error: error instanceof Error ? error.message : "Evidence export failed" },
-      { status: 502 },
+      { status: 502, headers: baseHeaders },
     );
   }
 }

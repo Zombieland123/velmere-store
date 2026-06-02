@@ -3,6 +3,7 @@ import { searchCoinGeckoMarket } from "@/lib/market-integrity/coingecko";
 import { analyzeDexScreenerToken } from "@/lib/market-integrity/dexscreener";
 import { getPersistentRiskHistory } from "@/lib/market-integrity/risk-ledger";
 import { buildVlmShieldInvestigator } from "@/lib/market-integrity/shield-investigator";
+import { checkRateLimit, guardrailHeaders } from "@/lib/market-integrity/api-guardrails";
 import { buildEvidenceReportDraft } from "@/lib/market-integrity/evidence-report";
 import { persistSourceSnapshot } from "@/lib/market-integrity/source-snapshot-ledger";
 
@@ -12,11 +13,17 @@ export const dynamic = "force-dynamic";
 type ErrorPayload = { mode: "error"; error: string };
 
 export async function GET(request: Request) {
+  const rateLimit = checkRateLimit(request, "investigator");
+  const headers = guardrailHeaders(rateLimit);
+  if (!rateLimit.ok) {
+    return NextResponse.json<ErrorPayload>({ mode: "error", error: "Rate limit exceeded. Try again after cooldown." }, { status: 429, headers });
+  }
+
   const { searchParams } = new URL(request.url);
   const query = searchParams.get("query")?.trim();
 
   if (!query) {
-    return NextResponse.json<ErrorPayload>({ mode: "error", error: "Missing query" }, { status: 400 });
+    return NextResponse.json<ErrorPayload>({ mode: "error", error: "Missing query" }, { status: 400, headers });
   }
 
   try {
@@ -37,11 +44,12 @@ export async function GET(request: Request) {
       history,
       generatedAt: new Date().toISOString(),
       note: "This endpoint prepares the VLM Shield Investigator protocol and current market-data context. Full OSINT verdict still requires current web search against the provided queries.",
-    });
+      guardrails: { remaining: rateLimit.remaining, resetAt: rateLimit.resetAt },
+    }, { headers });
   } catch (error) {
     return NextResponse.json<ErrorPayload>(
       { mode: "error", error: error instanceof Error ? error.message : "VLM Shield Investigator request failed" },
-      { status: 502 },
+      { status: 502, headers },
     );
   }
 }
