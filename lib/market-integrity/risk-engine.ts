@@ -8,6 +8,7 @@ import type {
   TokenRiskResult,
   TokenRiskSignal,
 } from "./risk-types";
+import { validateTokenRiskInput } from "./data-backbone";
 
 export function levelFromScore(score: number): RiskLevel {
   if (score >= 85) return "critical";
@@ -470,22 +471,42 @@ export function analyzeTokenRisk(
   input: TokenRiskInput,
   dataQuality: TokenRiskResult["dataQuality"] = "partial",
 ): TokenRiskResult {
+  const validation = validateTokenRiskInput(input);
+  const validationWarnings = validation.ok ? validation.warnings : validation.warnings;
+  const safeInput = validation.ok ? validation.data : input;
   const signals: TokenRiskSignal[] = [];
-  const marketCap = finiteNumber(input.marketCap) ?? finiteNumber(input.fdv);
-  const fdv = finiteNumber(input.fdv);
-  const liquidityUsd = finiteNumber(input.liquidityUsd);
-  const currentPrice = finiteNumber(input.currentPrice);
-  const athPrice = finiteNumber(input.athPrice);
-  const volume24h = finiteNumber(input.volume24h);
-  const averageVolume7d = finiteNumber(input.averageVolume7d);
-  const priceChange1h = finiteNumber(input.priceChange1h);
-  const priceChange6h = finiteNumber(input.priceChange6h);
-  const priceChange24h = finiteNumber(input.priceChange24h);
-  const priceChange7d = finiteNumber(input.priceChange7d);
-  const priceChange14d = finiteNumber(input.priceChange14d);
-  const priceChange30d = finiteNumber(input.priceChange30d);
-  const buys24h = finiteNumber(input.buys24h);
-  const sells24h = finiteNumber(input.sells24h);
+
+  if (!validation.ok) {
+    addSignal(signals, {
+      id: "insufficient_data",
+      severity: "high",
+      points: 18,
+      metrics: { validation: "failed" },
+    });
+  } else if (validationWarnings.length) {
+    addSignal(signals, {
+      id: "insufficient_data",
+      severity: "medium",
+      points: Math.min(14, 4 + validationWarnings.length * 3),
+      metrics: { warnings: validationWarnings.length },
+    });
+  }
+
+  const marketCap = finiteNumber(safeInput.marketCap) ?? finiteNumber(safeInput.fdv);
+  const fdv = finiteNumber(safeInput.fdv);
+  const liquidityUsd = finiteNumber(safeInput.liquidityUsd);
+  const currentPrice = finiteNumber(safeInput.currentPrice);
+  const athPrice = finiteNumber(safeInput.athPrice);
+  const volume24h = finiteNumber(safeInput.volume24h);
+  const averageVolume7d = finiteNumber(safeInput.averageVolume7d);
+  const priceChange1h = finiteNumber(safeInput.priceChange1h);
+  const priceChange6h = finiteNumber(safeInput.priceChange6h);
+  const priceChange24h = finiteNumber(safeInput.priceChange24h);
+  const priceChange7d = finiteNumber(safeInput.priceChange7d);
+  const priceChange14d = finiteNumber(safeInput.priceChange14d);
+  const priceChange30d = finiteNumber(safeInput.priceChange30d);
+  const buys24h = finiteNumber(safeInput.buys24h);
+  const sells24h = finiteNumber(safeInput.sells24h);
 
   let drawdownPercent: number | undefined;
   if (athPrice && currentPrice && athPrice > 0 && currentPrice > 0) {
@@ -752,12 +773,12 @@ export function analyzeTokenRisk(
       });
   }
   if (
-    input.totalSupply &&
-    input.circulatingSupply &&
-    input.totalSupply > input.circulatingSupply
+    safeInput.totalSupply &&
+    safeInput.circulatingSupply &&
+    safeInput.totalSupply > safeInput.circulatingSupply
   ) {
     const lockedOrUncirculating =
-      ((input.totalSupply - input.circulatingSupply) / input.totalSupply) * 100;
+      ((safeInput.totalSupply - safeInput.circulatingSupply) / safeInput.totalSupply) * 100;
     if (lockedOrUncirculating >= 60)
       addSignal(signals, {
         id: "supply_overhang",
@@ -767,85 +788,85 @@ export function analyzeTokenRisk(
       });
   }
 
-  if (input.orderBookDepthDropPercent && input.orderBookDepthDropPercent >= 60)
+  if (safeInput.orderBookDepthDropPercent && safeInput.orderBookDepthDropPercent >= 60)
     addSignal(signals, {
       id: "orderbook_depth_collapse",
       severity: "high",
       points: 20,
       metrics: {
-        orderBookDepthDropPercent: rounded(input.orderBookDepthDropPercent),
+        orderBookDepthDropPercent: rounded(safeInput.orderBookDepthDropPercent),
       },
     });
-  if (input.simulatedSlippage10k && input.simulatedSlippage10k >= 15)
+  if (safeInput.simulatedSlippage10k && safeInput.simulatedSlippage10k >= 15)
     addSignal(signals, {
       id: "orderbook_slippage_risk",
-      severity: input.simulatedSlippage10k >= 35 ? "critical" : "high",
-      points: input.simulatedSlippage10k >= 35 ? 30 : 18,
-      metrics: { simulatedSlippage10k: rounded(input.simulatedSlippage10k) },
+      severity: safeInput.simulatedSlippage10k >= 35 ? "critical" : "high",
+      points: safeInput.simulatedSlippage10k >= 35 ? 30 : 18,
+      metrics: { simulatedSlippage10k: rounded(safeInput.simulatedSlippage10k) },
     });
   if (
-    input.bidAskImbalancePercent &&
-    Math.abs(input.bidAskImbalancePercent) >= 55
+    safeInput.bidAskImbalancePercent &&
+    Math.abs(safeInput.bidAskImbalancePercent) >= 55
   )
     addSignal(signals, {
       id: "orderbook_imbalance",
       severity: "medium",
       points: 10,
       metrics: {
-        bidAskImbalancePercent: rounded(input.bidAskImbalancePercent),
+        bidAskImbalancePercent: rounded(safeInput.bidAskImbalancePercent),
       },
     });
 
-  if (input.top10HolderPercent && input.top10HolderPercent >= 50)
+  if (safeInput.top10HolderPercent && safeInput.top10HolderPercent >= 50)
     addSignal(signals, {
       id: "holder_concentration",
-      severity: input.top10HolderPercent >= 70 ? "critical" : "high",
-      points: input.top10HolderPercent >= 70 ? 24 : 15,
-      metrics: { top10HolderPercent: rounded(input.top10HolderPercent) },
+      severity: safeInput.top10HolderPercent >= 70 ? "critical" : "high",
+      points: safeInput.top10HolderPercent >= 70 ? 24 : 15,
+      metrics: { top10HolderPercent: rounded(safeInput.top10HolderPercent) },
     });
-  if (input.hadRebrandAfterCrash)
+  if (safeInput.hadRebrandAfterCrash)
     addSignal(signals, {
       id: "rebrand_after_crash",
       severity: "medium",
       points: 10,
       metrics: { rebrandAfterCrash: true },
     });
-  if (input.abnormalExchangeDeposits)
+  if (safeInput.abnormalExchangeDeposits)
     addSignal(signals, {
       id: "exchange_deposit_anomaly",
       severity: "high",
       points: 20,
       metrics: { exchangeDepositAnomaly: true },
     });
-  if (input.suspiciousContractPrivileges || input.canPauseTrading)
+  if (safeInput.suspiciousContractPrivileges || safeInput.canPauseTrading)
     addSignal(signals, {
       id: "contract_privileges",
       severity: "critical",
       points: 25,
       metrics: { suspiciousContractPrivileges: true },
     });
-  if (input.isHoneypot)
+  if (safeInput.isHoneypot)
     addSignal(signals, {
       id: "honeypot_risk",
       severity: "critical",
       points: 45,
       metrics: { isHoneypot: true },
     });
-  if (input.sellTaxPercentage !== undefined && input.sellTaxPercentage >= 15)
+  if (safeInput.sellTaxPercentage !== undefined && safeInput.sellTaxPercentage >= 15)
     addSignal(signals, {
       id: "high_sell_tax",
-      severity: input.sellTaxPercentage >= 50 ? "critical" : "high",
-      points: input.sellTaxPercentage >= 50 ? 35 : 20,
-      metrics: { sellTaxPercentage: rounded(input.sellTaxPercentage) },
+      severity: safeInput.sellTaxPercentage >= 50 ? "critical" : "high",
+      points: safeInput.sellTaxPercentage >= 50 ? 35 : 20,
+      metrics: { sellTaxPercentage: rounded(safeInput.sellTaxPercentage) },
     });
-  if (input.canMintNewTokens)
+  if (safeInput.canMintNewTokens)
     addSignal(signals, {
       id: "mint_risk",
       severity: "high",
       points: 18,
       metrics: { canMintNewTokens: true },
     });
-  if (input.canBlacklist)
+  if (safeInput.canBlacklist)
     addSignal(signals, {
       id: "blacklist_risk",
       severity: "high",
@@ -889,20 +910,20 @@ export function analyzeTokenRisk(
   const scoreBreakdown = buildScoreBreakdown(signals, confidence);
   const agentAssessments = buildAgentAssessments(signals, input, confidence);
   const level = levelFromScore(score);
-  const metaModel = buildMetaModel(input.symbol, score, level, confidence, agentAssessments, signals);
+  const metaModel = buildMetaModel(safeInput.symbol, score, level, confidence, agentAssessments, signals);
 
   return {
     token: {
-      marketId: input.marketId,
-      symbol: input.symbol,
-      name: input.name,
-      image: input.image,
-      rank: input.rank,
-      chainId: input.chainId,
-      tokenAddress: input.tokenAddress,
-      pairAddress: input.pairAddress,
-      dexId: input.dexId,
-      url: input.url,
+      marketId: safeInput.marketId,
+      symbol: safeInput.symbol,
+      name: safeInput.name,
+      image: safeInput.image,
+      rank: safeInput.rank,
+      chainId: safeInput.chainId,
+      tokenAddress: safeInput.tokenAddress,
+      pairAddress: safeInput.pairAddress,
+      dexId: safeInput.dexId,
+      url: safeInput.url,
     },
     score,
     scoreFormula: "multi_agent_fusion_v2_weighted_signal_matrix",
@@ -948,20 +969,20 @@ export function analyzeTokenRisk(
         buySellImbalancePercent !== undefined
           ? rounded(buySellImbalancePercent)
           : undefined,
-      top10HolderPercent: finiteNumber(input.top10HolderPercent),
-      holderCount: finiteNumber(input.holderCount),
-      buyTaxPercentage: finiteNumber(input.buyTaxPercentage),
-      sellTaxPercentage: finiteNumber(input.sellTaxPercentage),
-      simulatedSlippage10k: finiteNumber(input.simulatedSlippage10k),
-      bidAskImbalancePercent: finiteNumber(input.bidAskImbalancePercent),
-      circulatingSupply: finiteNumber(input.circulatingSupply),
-      totalSupply: finiteNumber(input.totalSupply),
-      maxSupply: finiteNumber(input.maxSupply),
+      top10HolderPercent: finiteNumber(safeInput.top10HolderPercent),
+      holderCount: finiteNumber(safeInput.holderCount),
+      buyTaxPercentage: finiteNumber(safeInput.buyTaxPercentage),
+      sellTaxPercentage: finiteNumber(safeInput.sellTaxPercentage),
+      simulatedSlippage10k: finiteNumber(safeInput.simulatedSlippage10k),
+      bidAskImbalancePercent: finiteNumber(safeInput.bidAskImbalancePercent),
+      circulatingSupply: finiteNumber(safeInput.circulatingSupply),
+      totalSupply: finiteNumber(safeInput.totalSupply),
+      maxSupply: finiteNumber(safeInput.maxSupply),
     },
     dataQuality,
-    chart: { sevenDay: input.sparkline7d },
-    aiSummary: metaModel.summary || buildAiSummary(input.symbol, level, signals),
-    dataSources: input.dataSources ?? [],
+    chart: { sevenDay: safeInput.sparkline7d },
+    aiSummary: metaModel.summary || buildAiSummary(safeInput.symbol, level, signals),
+    dataSources: safeInput.dataSources ?? [],
     generatedAt: new Date().toISOString(),
   };
 }

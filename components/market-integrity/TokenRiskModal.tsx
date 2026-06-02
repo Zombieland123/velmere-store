@@ -4360,8 +4360,9 @@ function VlmAiSequenceOverlay({
     const canvasNode = canvasRef.current;
     if (!canvasNode) return;
     const canvas: HTMLCanvasElement = canvasNode;
-    const ctx = canvas.getContext("2d", { alpha: true });
-    if (!ctx) return;
+    const contextNode = canvas.getContext("2d", { alpha: true });
+    if (!contextNode) return;
+    const ctx: CanvasRenderingContext2D = contextNode;
 
     let raf = 0;
     let width = 0;
