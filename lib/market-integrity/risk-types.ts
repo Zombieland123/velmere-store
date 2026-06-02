@@ -172,6 +172,9 @@ export type TokenRiskResult = {
     sellTaxPercentage?: number;
     simulatedSlippage10k?: number;
     bidAskImbalancePercent?: number;
+    circulatingSupply?: number;
+    totalSupply?: number;
+    maxSupply?: number;
   };
   dataQuality: "demo" | "partial" | "live";
   chart?: { sevenDay?: number[] };

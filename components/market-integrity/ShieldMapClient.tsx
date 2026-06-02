@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { type FormEvent, useEffect, useMemo, useState } from "react";
 import {
   AlertTriangle,
   ArrowLeft,
@@ -8,9 +8,11 @@ import {
   Database,
   FileText,
   GitBranch,
+  Loader2,
   LockKeyhole,
   Network,
   Radar,
+  Search,
   ShieldCheck,
   Workflow,
 } from "lucide-react";
@@ -90,6 +92,47 @@ type SentinelApiResponse =
     }
   | { mode: "error"; error: string };
 
+type InvestigatorLane = {
+  id: string;
+  label: string;
+  score: number;
+  status: "confirmed" | "likely" | "unverified" | "red_flag" | "unknown";
+  headline: string;
+  body: string;
+  nextStep: string;
+};
+
+type InvestigatorEvidence = {
+  label: string;
+  status: "confirmed" | "likely" | "unverified" | "red_flag" | "unknown";
+  value: string;
+  body: string;
+};
+
+type InvestigatorResult = {
+  title: string;
+  subtitle: string;
+  quickVerdict: string;
+  finalVerdict: string;
+  overallRisk: number;
+  confidence: "Low" | "Medium" | "High";
+  confidenceScore: number;
+  redFlags: string[];
+  lanes: InvestigatorLane[];
+  evidence: InvestigatorEvidence[];
+  webRequired: boolean;
+  webQueries: string[];
+};
+
+type InvestigatorApiResponse =
+  | {
+      mode: "live";
+      investigator: InvestigatorResult;
+      result?: { token?: { symbol?: string; name?: string } };
+      generatedAt: string;
+    }
+  | { mode: "error"; error: string };
+
 type ShieldMapClientCopy = {
   back: string;
   kicker: string;
@@ -155,6 +198,10 @@ export default function ShieldMapClient({
   const [ruleHits, setRuleHits] = useState<ShieldRuleHit[]>([]);
   const [summary, setSummary] = useState<ShieldRulesSummary | null>(null);
   const [activeAtlasNode, setActiveAtlasNode] = useState("Agent fusion");
+  const [investigatorQuery, setInvestigatorQuery] = useState("SOL");
+  const [investigatorLoading, setInvestigatorLoading] = useState(false);
+  const [investigatorError, setInvestigatorError] = useState<string | null>(null);
+  const [investigatorResult, setInvestigatorResult] = useState<InvestigatorResult | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -192,6 +239,33 @@ export default function ShieldMapClient({
       active = false;
     };
   }, []);
+
+  async function runInvestigatorScan(event?: FormEvent<HTMLFormElement>) {
+    event?.preventDefault();
+    const query = investigatorQuery.trim();
+    if (query.length < 2) {
+      setInvestigatorError("Wpisz ticker, nazwę tokena albo adres kontraktu.");
+      return;
+    }
+
+    setInvestigatorLoading(true);
+    setInvestigatorError(null);
+    try {
+      const response = await fetch(`/api/market-integrity/investigator?query=${encodeURIComponent(query)}`, {
+        headers: { accept: "application/json" },
+      });
+      const data = (await response.json()) as InvestigatorApiResponse;
+      if (!response.ok || data.mode === "error") {
+        throw new Error(data.mode === "error" ? data.error : "Investigator scan failed");
+      }
+      setInvestigatorResult(data.investigator);
+    } catch (scanError) {
+      setInvestigatorError(scanError instanceof Error ? scanError.message : "Investigator scan failed");
+      setInvestigatorResult(null);
+    } finally {
+      setInvestigatorLoading(false);
+    }
+  }
 
   const reviewRows = useMemo(
     () =>
@@ -304,6 +378,44 @@ export default function ShieldMapClient({
     { label: "Next", body: "Live chain-level holder labels, order-book depth and operator audit logs." },
     { label: "Launch", body: "Rate limits, policy pages, export manifest and VLM session gating." },
   ];
+  const investigatorProtocol = [
+    {
+      label: "Supply / float",
+      score: "0–100",
+      body: "Circulating supply is compared with total/max supply and FDV. Low float is never treated as neutral.",
+    },
+    {
+      label: "Unlock / vesting",
+      score: "red flag first",
+      body: "Team, investor, advisor, OTC and whale unlocks must be verified before any clean verdict.",
+    },
+    {
+      label: "Buy pressure",
+      score: "engineered demand",
+      body: "Buybacks, market-maker support, short squeezes and volume spikes are separated from organic demand.",
+    },
+    {
+      label: "KOL / social",
+      score: "disclosure risk",
+      body: "Paid shill patterns, undisclosed allocations and coordinated hype are routed to OSINT review.",
+    },
+    {
+      label: "Contract control",
+      score: "admin risk",
+      body: "Owner, proxy, mint, blacklist, pause, tax and audit status are treated as contract transparency gates.",
+    },
+    {
+      label: "Evidence standard",
+      score: "proof level",
+      body: "Every claim is marked confirmed, likely, unverified, red flag or unknown before the bot speaks.",
+    },
+  ];
+  const investigatorGuardrails = [
+    "No hype, no buy/sell calls and no safe-investment language.",
+    "No scam/manipulation accusation without evidence; use red flag / requires review.",
+    "Missing vesting, holder or contract transparency increases risk.",
+    "Final token verdict must use fresh web OSINT plus current market data.",
+  ];
   const activeAtlas = atlasNodes.find((node) => node.label === activeAtlasNode) ?? atlasNodes[2];
   const ActiveAtlasIcon = activeAtlas.icon;
   const commandRoomCards = [
@@ -394,6 +506,35 @@ export default function ShieldMapClient({
     "Shield Map explains workflow, not private scoring weights or internal prompts.",
     "Every deck card uses anomaly/review/uncertainty language and keeps Not financial advice visible.",
   ];
+  const neuralCommandStages = [
+    { label: "Intake prism", state: "ready", body: "Search, token identity, logo, contract and market row resolve before VLM starts any neural interpretation." },
+    { label: "Risk cortex", state: "partial", body: "The VLM core separates price movement, liquidity stress, holder layer and source confidence into independent brain lobes." },
+    { label: "Source immune system", state: "partial", body: "Fallback, missing and blocked data are surfaced as uncertainty instead of being hidden behind a confident score." },
+    { label: "SOC copilot", state: "ready", body: "The AI bot speaks like an operator assistant: next check, missing source, review step, evidence gate." },
+    { label: "Evidence membrane", state: "blocked", body: "Export remains locked until source ledger, audit storage, legal copy and redaction rules are production wired." },
+    { label: "VLM access shell", state: "blocked", body: "Advanced rails stay designed for member/holder access, but no value promise, no custody and no seed phrase flow." },
+  ];
+  const cyberDefenseMatrix = [
+    { label: "Rate-limit shield", state: "blocked", body: "Server cache, abuse throttles and cooldown policy must protect scan endpoints before public traffic." },
+    { label: "Wallet safety", state: "partial", body: "Every wallet screen must repeat non-custodial rules: never seed phrase, never hidden approval, never forced transaction." },
+    { label: "Contract sentinel", state: "partial", body: "Owner, tax, mint, pause, blacklist and proxy checks need verified source labels before being shown as strong warnings." },
+    { label: "Data provenance", state: "partial", body: "Every readout card needs source mode: live, partial, fallback, blocked or simulated. Premium means no fake certainty." },
+    { label: "Evidence redaction", state: "ready", body: "Public reports hide private scoring weights, internal prompts and sensitive heuristics while keeping review logic visible." },
+    { label: "Operator audit log", state: "blocked", body: "Actions, command route, prompt, timestamp and source snapshot need persistent logs before export can be trusted." },
+  ];
+  const trustPsychologyRails = [
+    { label: "Calm danger", body: "Use anomaly/review language. Red highlights are for priority, not drama. This lowers panic and increases trust." },
+    { label: "Show uncertainty", body: "When data is missing, show the missing source. Users trust a system that admits incomplete evidence." },
+    { label: "One next action", body: "Every complex signal should end with one clear operator move: inspect depth, verify holders, audit contract, or wait." },
+    { label: "Private core", body: "Explain the workflow, not the secret weights. The product feels transparent without exposing the system." },
+  ];
+  const launchReadinessBars = [
+    { label: "UI shell", value: "82%", body: "Premium layout, modal shell, search intake and Shield routes are in place." },
+    { label: "Motion", value: "64%", body: "VLM neural readout works; next passes should keep polishing 3D brain pacing and mobile performance." },
+    { label: "Data spine", value: "48%", body: "Candles and fallback labels exist; holder, orderbook, contract and source ledger still need production feeds." },
+    { label: "Launch safety", value: "38%", body: "Legal-safe copy exists, but audit storage, rate limits and evidence renderer remain blockers." },
+  ];
+
   const statePillClass = (state: string) =>
     state === "ready"
       ? "border-emerald-300/[0.18] bg-emerald-400/[0.055] text-emerald-100"
@@ -440,6 +581,256 @@ export default function ShieldMapClient({
               <p className="shield-copy-safe mt-4 text-xs leading-6 text-white/[0.48]">
                 {copy.privateNote}
               </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="luxury-section-wide py-6 md:py-10">
+        <div className="shield-map-nexus-grid mx-auto grid max-w-none gap-4 xl:grid-cols-[minmax(0,0.82fr)_minmax(22rem,0.46fr)]">
+          <div className="shield-map-neural-nexus p-4 md:p-6">
+            <div className="grid gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(18rem,0.48fr)] lg:items-center">
+              <div className="min-w-0">
+                <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-velmere-gold">
+                  VLM Shield neural core · PASS90
+                </p>
+                <h2 className="mt-3 max-w-4xl text-3xl font-semibold tracking-[-0.055em] text-white md:text-5xl">
+                  Shield ma wyglądać jak żywy system obronny, nie statyczny opis.
+                </h2>
+                <p className="shield-copy-safe mt-4 max-w-3xl text-sm leading-7 text-white/[0.56]">
+                  Ta warstwa tłumaczy, jak VLM AI rozbija token na źródła, ryzyko, płynność, holderów, kontrakt, dowody i blokady launchu. Użytkownik widzi logikę systemu, ale prywatny scoring core zostaje ukryty.
+                </p>
+                <div className="mt-5 grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+                  {neuralCommandStages.map((stage) => (
+                    <div key={stage.label} className={`shield-nexus-stage ${statePillClass(stage.state)}`}>
+                      <div className="flex min-w-0 items-center justify-between gap-2">
+                        <p className="truncate font-mono text-[9px] uppercase tracking-[0.14em]">{stage.label}</p>
+                        <span className="shrink-0 font-mono text-[8px] uppercase tracking-[0.11em]">{stage.state}</span>
+                      </div>
+                      <p className="shield-copy-safe mt-2 text-[11px] leading-5 opacity-80">{stage.body}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="shield-nexus-visual" aria-hidden="true">
+                <div className="shield-nexus-orbit shield-nexus-orbit-one" />
+                <div className="shield-nexus-orbit shield-nexus-orbit-two" />
+                <div className="shield-nexus-orbit shield-nexus-orbit-three" />
+                <div className="shield-nexus-brain">
+                  <span className="shield-nexus-core-label">VLM</span>
+                  <span className="shield-nexus-risk-label">SHIELD CORE</span>
+                  {Array.from({ length: 16 }).map((_, index) => (
+                    <span
+                      key={index}
+                      className="shield-nexus-synapse"
+                      style={{
+                        transform: `rotate(${index * 22.5}deg) translateX(${5.2 + (index % 4) * 0.55}rem)`,
+                        animationDelay: `${index * 90}ms`,
+                      }}
+                    />
+                  ))}
+                </div>
+                <div className="shield-nexus-caption">360 neural policy brain · adaptive motion</div>
+              </div>
+            </div>
+          </div>
+          <div className="shield-map-cyber-brief p-4 md:p-5">
+            <p className="font-mono text-[10px] uppercase tracking-[0.20em] text-velmere-gold">cybersecurity launch brief</p>
+            <h3 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-white">Co musi chronić Shield przed startem.</h3>
+            <div className="mt-4 grid gap-2">
+              {cyberDefenseMatrix.map((item) => (
+                <div key={item.label} className={`shield-cyber-defense-card ${statePillClass(item.state)}`}>
+                  <div className="flex min-w-0 items-center justify-between gap-2">
+                    <p className="truncate font-mono text-[9px] uppercase tracking-[0.14em]">{item.label}</p>
+                    <span className="shrink-0 font-mono text-[8px] uppercase tracking-[0.11em]">{item.state}</span>
+                  </div>
+                  <p className="shield-copy-safe mt-2 text-[11px] leading-5 opacity-80">{item.body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="luxury-section-wide py-4 md:py-6">
+        <div className="shield-investigator-live-console mx-auto max-w-none rounded-[2rem] border border-cyan-300/[0.14] bg-[radial-gradient(circle_at_18%_12%,rgba(34,211,238,0.10),transparent_34%),rgba(255,255,255,0.024)] p-4 md:p-6">
+          <div className="grid gap-5 xl:grid-cols-[minmax(0,0.78fr)_minmax(22rem,0.42fr)] xl:items-start">
+            <div className="min-w-0">
+              <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-cyan-100">live investigator console</p>
+              <h2 className="mt-3 max-w-4xl text-3xl font-semibold tracking-[-0.055em] text-white md:text-5xl">
+                Wpisz token — Shield odpala protokół śledczy, nie hype.
+              </h2>
+              <p className="shield-copy-safe mt-4 max-w-3xl text-sm leading-7 text-white/[0.56]">
+                Ten panel używa aktualnego endpointu market-integrity, buduje score supply/unlock/liquidity/KOL/contract i generuje zapytania OSINT do świeżego web researchu. Brak danych zwiększa ryzyko.
+              </p>
+              <form onSubmit={runInvestigatorScan} className="mt-5 grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
+                <label className="group flex min-h-14 items-center gap-3 rounded-full border border-white/[0.10] bg-black/[0.28] px-4 transition focus-within:border-cyan-200/[0.35]">
+                  <Search className="h-4 w-4 shrink-0 text-cyan-100/[0.62]" />
+                  <input
+                    value={investigatorQuery}
+                    onChange={(event) => setInvestigatorQuery(event.target.value)}
+                    placeholder="SOL, BTC, OM albo contract address"
+                    className="min-w-0 flex-1 bg-transparent font-mono text-[13px] uppercase tracking-[0.12em] text-white outline-none placeholder:text-white/[0.25]"
+                  />
+                </label>
+                <button
+                  type="submit"
+                  disabled={investigatorLoading}
+                  className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full border border-cyan-200/[0.22] bg-cyan-300/[0.075] px-6 font-mono text-[10px] uppercase tracking-[0.16em] text-cyan-50 transition hover:bg-cyan-300/[0.12] disabled:cursor-wait disabled:opacity-60"
+                >
+                  {investigatorLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Radar className="h-4 w-4" />}
+                  scan
+                </button>
+              </form>
+              {investigatorError ? (
+                <p className="shield-copy-safe mt-3 rounded-2xl border border-red-300/[0.18] bg-red-400/[0.055] p-3 text-xs leading-6 text-red-100">{investigatorError}</p>
+              ) : null}
+            </div>
+
+            <div className="rounded-[1.5rem] border border-white/[0.09] bg-black/[0.28] p-4">
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-velmere-gold">operator rule</p>
+              <p className="shield-copy-safe mt-3 text-xs leading-6 text-white/[0.54]">
+                Verdict z rynku bez web OSINT jest tylko pre-screenem. Finalna analiza musi sprawdzić supply, vesting, KOL, unlocki i kontrakt w aktualnych źródłach.
+              </p>
+              <div className="mt-4 grid grid-cols-2 gap-2">
+                {["float", "unlock", "liquidity", "KOL"].map((item) => (
+                  <span key={item} className="rounded-full border border-white/[0.08] bg-white/[0.025] px-3 py-2 text-center font-mono text-[8px] uppercase tracking-[0.12em] text-white/[0.42]">{item}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {investigatorResult ? (
+            <div className="mt-5 grid gap-4 xl:grid-cols-[minmax(0,0.88fr)_minmax(20rem,0.38fr)]">
+              <div className="rounded-[1.6rem] border border-white/[0.09] bg-black/[0.22] p-4">
+                <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                  <div className="min-w-0">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-cyan-100">{investigatorResult.title}</p>
+                    <h3 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-white">{investigatorResult.finalVerdict}</h3>
+                    <p className="shield-copy-safe mt-2 text-xs leading-6 text-white/[0.54]">{investigatorResult.quickVerdict}</p>
+                  </div>
+                  <div className="grid shrink-0 grid-cols-2 gap-2 text-center">
+                    <span className="rounded-2xl border border-white/[0.10] bg-white/[0.025] px-4 py-3">
+                      <span className="block font-mono text-[8px] uppercase tracking-[0.13em] text-white/[0.34]">risk</span>
+                      <span className="mt-1 block font-mono text-2xl text-white tabular-nums">{investigatorResult.overallRisk}</span>
+                    </span>
+                    <span className="rounded-2xl border border-white/[0.10] bg-white/[0.025] px-4 py-3">
+                      <span className="block font-mono text-[8px] uppercase tracking-[0.13em] text-white/[0.34]">confidence</span>
+                      <span className="mt-1 block font-mono text-sm uppercase tracking-[0.12em] text-velmere-gold">{investigatorResult.confidence}</span>
+                    </span>
+                  </div>
+                </div>
+                <div className="mt-4 grid gap-2 md:grid-cols-2 xl:grid-cols-3">
+                  {investigatorResult.lanes.map((lane) => (
+                    <div key={lane.id} className={`shield-investigator-lane shield-investigator-lane-${lane.status}`}>
+                      <span className="flex min-w-0 items-center justify-between gap-2">
+                        <span className="truncate font-mono text-[9px] uppercase tracking-[0.14em] text-white/[0.56]">{lane.label}</span>
+                        <span className="font-mono text-[10px] text-white tabular-nums">{lane.score}</span>
+                      </span>
+                      <span className="mt-2 block text-[11px] leading-5 text-white/[0.52]">{lane.headline}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded-[1.6rem] border border-velmere-gold/[0.16] bg-velmere-gold/[0.055] p-4">
+                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-velmere-gold">web OSINT queue</p>
+                <div className="mt-3 grid gap-2">
+                  {investigatorResult.webQueries.slice(0, 5).map((query) => (
+                    <p key={query} className="truncate rounded-full border border-white/[0.08] bg-black/[0.22] px-3 py-2 font-mono text-[8px] uppercase tracking-[0.10em] text-white/[0.42]">{query}</p>
+                  ))}
+                </div>
+                <div className="mt-4 grid gap-2">
+                  {investigatorResult.redFlags.slice(0, 4).map((flag) => (
+                    <p key={flag} className="shield-copy-safe rounded-2xl border border-red-300/[0.14] bg-red-400/[0.045] p-3 text-[11px] leading-5 text-red-50/[0.72]">{flag}</p>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : null}
+        </div>
+      </section>
+
+      <section className="luxury-section-wide py-4 md:py-6">
+        <div className="shield-investigator-section mx-auto grid max-w-none gap-4 xl:grid-cols-[minmax(0,0.9fr)_minmax(22rem,0.42fr)]">
+          <div className="rounded-[2rem] border border-cyan-300/[0.14] bg-[radial-gradient(circle_at_30%_20%,rgba(34,211,238,0.10),transparent_34%),rgba(255,255,255,0.026)] p-4 md:p-6">
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-cyan-100">VLM Shield Investigator</p>
+            <h2 className="mt-3 max-w-4xl text-3xl font-semibold tracking-[-0.055em] text-white md:text-5xl">
+              Bot ma działać jak śledczy OSINT, nie jak hype machine.
+            </h2>
+            <p className="shield-copy-safe mt-4 max-w-3xl text-sm leading-7 text-white/[0.56]">
+              Advanced VLM sprawdza low float, unlocki, buybacki, short squeeze, KOL disclosure, holderów i kontrakt. Każdy wniosek ma status dowodu: confirmed, likely, unverified, red flag albo unknown.
+            </p>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+              {investigatorProtocol.map((item) => (
+                <div key={item.label} className="shield-investigator-protocol-card">
+                  <div className="flex min-w-0 items-center justify-between gap-2">
+                    <p className="truncate font-mono text-[9px] uppercase tracking-[0.14em] text-white/[0.58]">{item.label}</p>
+                    <span className="shrink-0 rounded-full border border-cyan-200/[0.16] bg-cyan-300/[0.06] px-2 py-1 font-mono text-[8px] uppercase tracking-[0.10em] text-cyan-100">{item.score}</span>
+                  </div>
+                  <p className="shield-copy-safe mt-3 text-[11px] leading-5 text-white/[0.50]">{item.body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="rounded-[2rem] border border-velmere-gold/[0.16] bg-velmere-gold/[0.055] p-4 md:p-5">
+            <p className="font-mono text-[10px] uppercase tracking-[0.20em] text-velmere-gold">investigator rules</p>
+            <div className="mt-4 grid gap-2">
+              {investigatorGuardrails.map((rule) => (
+                <div key={rule} className="flex gap-3 rounded-2xl border border-white/[0.08] bg-black/[0.20] p-3">
+                  <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-velmere-gold" />
+                  <p className="shield-copy-safe text-xs leading-6 text-white/[0.54]">{rule}</p>
+                </div>
+              ))}
+            </div>
+            <p className="shield-copy-safe mt-4 rounded-2xl border border-cyan-200/[0.14] bg-cyan-300/[0.045] p-3 text-[11px] leading-6 text-cyan-50/[0.72]">
+              Missing transparency is not neutral. In VLM Shield it increases risk until a current source proves otherwise.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="luxury-section-wide py-4 md:py-6">
+        <div className="mx-auto grid max-w-none gap-4 lg:grid-cols-[minmax(0,0.74fr)_minmax(0,0.55fr)]">
+          <div className="shield-map-psychology p-4 md:p-5">
+            <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+              <div className="min-w-0">
+                <p className="font-mono text-[10px] uppercase tracking-[0.20em] text-velmere-gold">trust psychology</p>
+                <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-white md:text-4xl">
+                  Premium bezpieczeństwo to spokojna kontrola, nie panika.
+                </h2>
+                <p className="shield-copy-safe mt-3 max-w-3xl text-sm leading-7 text-white/[0.54]">
+                  Shield ma prowadzić użytkownika przez niepewność: pokazuje co wiadomo, czego brakuje i jaki jest następny bezpieczny krok. To buduje zaufanie mocniej niż agresywne alerty.
+                </p>
+              </div>
+              <span className="w-fit rounded-full border border-velmere-gold/[0.18] bg-velmere-gold/[0.060] px-3 py-2 font-mono text-[9px] uppercase tracking-[0.14em] text-velmere-gold">
+                calm SOC language
+              </span>
+            </div>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              {trustPsychologyRails.map((rail) => (
+                <div key={rail.label} className="shield-trust-psych-card">
+                  <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-velmere-gold">{rail.label}</p>
+                  <p className="shield-copy-safe mt-2 text-xs leading-6 text-white/[0.50]">{rail.body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="shield-map-launch-score p-4 md:p-5">
+            <p className="font-mono text-[10px] uppercase tracking-[0.20em] text-velmere-gold">launch readiness</p>
+            <div className="mt-4 grid gap-3">
+              {launchReadinessBars.map((bar) => (
+                <div key={bar.label} className="shield-launch-score-row">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/[0.68]">{bar.label}</p>
+                    <span className="font-mono text-sm text-white tabular-nums">{bar.value}</span>
+                  </div>
+                  <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/[0.08]">
+                    <div className="h-full rounded-full bg-gradient-to-r from-velmere-gold via-cyan-200 to-emerald-200" style={{ width: bar.value }} />
+                  </div>
+                  <p className="shield-copy-safe mt-2 text-[11px] leading-5 text-white/[0.42]">{bar.body}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>

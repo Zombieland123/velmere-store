@@ -10,6 +10,7 @@ import Reveal from "@/components/ui/Reveal";
 import VlmAccessVisual from "@/components/vlm/VlmAccessVisual";
 import VlmBasicProShowcase from "@/components/vlm/VlmBasicProShowcase";
 import VlmModeChoicePrompt from "@/components/vlm/VlmModeChoicePrompt";
+import VlmCybersecurityStack from "@/components/vlm/VlmCybersecurityStack";
 import VlmModeSwitch from "@/components/vlm/VlmModeSwitch";
 import VlmBuyAccessPanel from "@/components/vlm/VlmBuyAccessPanel";
 import WalletSafetyExplainer from "@/components/vlm/WalletSafetyExplainer";

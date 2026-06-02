@@ -213,7 +213,7 @@ export async function getPersistentRiskHistory(id: string, limit = 144): Promise
 
 export async function getRiskLedgerStatus() {
   const store = getStore();
-  const histories = [...store.snapshots.values()];
+  const histories = Array.from(store.snapshots.values());
   const allSnapshots = histories.flat();
   const latest = histories
     .map((history) => history.at(-1))

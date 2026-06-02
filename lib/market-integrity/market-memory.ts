@@ -174,7 +174,7 @@ export function getMarketHistory(id: string) {
 
 export function getMarketMemoryStatus() {
   const store = getStore();
-  const histories = [...store.snapshots.values()];
+  const histories = Array.from(store.snapshots.values());
   const allSnapshots = histories.flat();
   const lastById = histories
     .map((history) => history.at(-1))

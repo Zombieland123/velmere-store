@@ -3,6 +3,7 @@ import { searchCoinGeckoMarket } from "@/lib/market-integrity/coingecko";
 import { analyzeDexScreenerToken } from "@/lib/market-integrity/dexscreener";
 import { getPersistentRiskHistory } from "@/lib/market-integrity/risk-ledger";
 import { buildShieldChatResponse } from "@/lib/market-integrity/shield-chat";
+import { buildVlmShieldInvestigator } from "@/lib/market-integrity/shield-investigator";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -21,10 +22,12 @@ export async function GET(request: Request) {
     const id = result.token.marketId ?? result.token.tokenAddress ?? result.token.symbol;
     const history = await getPersistentRiskHistory(id, 144);
     const answer = buildShieldChatResponse(result, history, prompt);
+    const investigator = buildVlmShieldInvestigator(result);
 
     return NextResponse.json({
       mode: "live",
       answer,
+      investigator,
       result,
       generatedAt: new Date().toISOString(),
     });

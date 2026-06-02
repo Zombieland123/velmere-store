@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 function dedupeHistory<T extends { timestamp: string }>(items: T[]) {
   const byTimestamp = new Map<string, T>();
   for (const item of items) byTimestamp.set(item.timestamp, item);
-  return [...byTimestamp.values()].sort((a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp));
+  return Array.from(byTimestamp.values()).sort((a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp));
 }
 
 export async function GET(request: Request) {

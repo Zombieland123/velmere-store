@@ -232,14 +232,14 @@ export async function getPersistentAlertInbox(limit = 20): Promise<PersistedShie
     }
   }
 
-  return [...getStore().alerts.values()]
+  return Array.from(getStore().alerts.values())
     .sort((a, b) => Date.parse(b.lastSeenAt) - Date.parse(a.lastSeenAt) || b.score - a.score)
     .slice(0, boundedLimit);
 }
 
 export async function getAlertLedgerStatus() {
   const store = getStore();
-  const alerts = [...store.alerts.values()];
+  const alerts = Array.from(store.alerts.values());
   return {
     mode: getSupabaseConfig() ? "supabase" as const : "memory" as const,
     lastPersistAt: store.lastPersistAt,

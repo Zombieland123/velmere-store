@@ -39,6 +39,7 @@ import { buildVlmShieldAccess } from "@/lib/market-integrity/vlm-access-layer";
 import { buildTerminalReadiness } from "@/lib/market-integrity/terminal-readiness";
 import { buildEvidenceWorkflow } from "@/lib/market-integrity/evidence-workflow";
 import { buildLiquidityIntelligence } from "@/lib/market-integrity/liquidity-intelligence";
+import { buildVlmShieldInvestigator } from "@/lib/market-integrity/shield-investigator";
 import { buildProductOpsAudit } from "@/lib/market-integrity/product-ops-audit";
 import { buildTerminalControlPlane } from "@/lib/market-integrity/terminal-control-plane";
 import { buildTerminalRiskWorkspace } from "@/lib/market-integrity/terminal-risk-workspace";
@@ -4316,97 +4317,137 @@ function VlmAiSequenceOverlay({
     const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
     const isLow = motionQuality === "low" || reducedMotion;
     const isMedium = motionQuality === "medium";
-    const frameBudget = isLow ? 38 : isMedium ? 25 : 16;
+    const frameBudget = isLow ? 42 : isMedium ? 24 : 16;
     const edge = Math.floor(Math.random() * 8);
-    const flyMs = reducedMotion ? 300 : isAdvanced ? 2050 : 1900;
-    const spawnMs = reducedMotion ? 360 : isAdvanced ? 2650 : 2150;
-    const nodeTarget = reducedMotion ? 6 : isAdvanced ? (isLow ? 18 : isMedium ? 28 : 36) : (isLow ? 8 : 12);
-    const packetTarget = reducedMotion ? 0 : isAdvanced ? (isLow ? 18 : isMedium ? 40 : 64) : (isLow ? 8 : 16);
-    const maxIdleLife = lineStartMs + readNodes.length * revealGapMs + lineDurationMs + 1600;
+    const flyMs = reducedMotion ? 320 : isAdvanced ? 2850 : 2450;
+    const spawnMs = reducedMotion ? 440 : isAdvanced ? 3400 : 2650;
+    const nodeTarget = reducedMotion ? 8 : isAdvanced ? (isLow ? 22 : isMedium ? 34 : 52) : (isLow ? 10 : isMedium ? 15 : 20);
+    const packetTarget = reducedMotion ? 0 : isAdvanced ? (isLow ? 18 : isMedium ? 46 : 78) : (isLow ? 8 : 18);
+    const maxIdleLife = lineStartMs + readNodes.length * revealGapMs + lineDurationMs + 2000;
 
-    type NodePoint = { x: number; y: number; parent: number; radius: number; layer: number; phase: number };
-    type Packet = { edge: number; progress: number; speed: number; glow: number; size: number };
-    let nodes: NodePoint[] = [];
+    type BrainPoint = {
+      x: number;
+      y: number;
+      z: number;
+      parent: number;
+      radius: number;
+      layer: number;
+      phase: number;
+      tone: "gold" | "cyan" | "green";
+    };
+    type ScreenPoint = BrainPoint & { sx: number; sy: number; depth: number; scale: number };
+    type Packet = { edge: number; progress: number; speed: number; glow: number; size: number; phase: number };
+
+    let brain: BrainPoint[] = [];
     let packets: Packet[] = [];
     let launchPoint = { x: 0, y: 0 };
-    let controlPoint = { x: 0, y: 0 };
+    let controlA = { x: 0, y: 0 };
+    let controlB = { x: 0, y: 0 };
 
     function startPoint() {
-      const pad = 160;
-      if (edge === 0) return { x: width * 0.12, y: -pad };
-      if (edge === 1) return { x: width * 0.88, y: -pad };
-      if (edge === 2) return { x: width + pad, y: height * 0.18 };
-      if (edge === 3) return { x: width + pad, y: height * 0.82 };
-      if (edge === 4) return { x: width * 0.88, y: height + pad };
-      if (edge === 5) return { x: width * 0.12, y: height + pad };
-      if (edge === 6) return { x: -pad, y: height * 0.82 };
-      return { x: -pad, y: height * 0.18 };
+      const pad = Math.max(160, Math.min(width, height) * 0.26);
+      if (edge === 0) return { x: width * 0.10, y: -pad };
+      if (edge === 1) return { x: width * 0.90, y: -pad };
+      if (edge === 2) return { x: width + pad, y: height * 0.16 };
+      if (edge === 3) return { x: width + pad, y: height * 0.84 };
+      if (edge === 4) return { x: width * 0.90, y: height + pad };
+      if (edge === 5) return { x: width * 0.10, y: height + pad };
+      if (edge === 6) return { x: -pad, y: height * 0.84 };
+      return { x: -pad, y: height * 0.16 };
     }
 
-    function makeControlPoint(start: { x: number; y: number }) {
+    function makeControls(start: { x: number; y: number }) {
       const centerX = width / 2;
       const centerY = height / 2;
-      const midX = (start.x + centerX) / 2;
-      const midY = (start.y + centerY) / 2;
       const dx = centerX - start.x;
       const dy = centerY - start.y;
       const len = Math.max(1, Math.hypot(dx, dy));
-      const offset = Math.min(width, height) * (isAdvanced ? 0.22 : 0.17);
-      return { x: midX - (dy / len) * offset, y: midY + (dx / len) * offset };
+      const normalX = -dy / len;
+      const normalY = dx / len;
+      const arc = Math.min(width, height) * (isAdvanced ? 0.30 : 0.22);
+      controlA = {
+        x: start.x + dx * 0.34 + normalX * arc,
+        y: start.y + dy * 0.18 + normalY * arc,
+      };
+      controlB = {
+        x: start.x + dx * 0.78 - normalX * arc * 0.55,
+        y: start.y + dy * 0.72 - normalY * arc * 0.55,
+      };
+    }
+
+    function easeOutQuint(value: number) {
+      const clamped = Math.max(0, Math.min(1, value));
+      return 1 - Math.pow(1 - clamped, 5);
+    }
+
+    function easeInOutCubic(value: number) {
+      const clamped = Math.max(0, Math.min(1, value));
+      return clamped < 0.5 ? 4 * clamped * clamped * clamped : 1 - Math.pow(-2 * clamped + 2, 3) / 2;
     }
 
     function pointOnCurve(t: number) {
       const center = { x: width / 2, y: height / 2 };
-      const inv = 1 - t;
-      const overshoot = Math.sin(Math.min(1, t) * Math.PI) * (isAdvanced ? 0.025 : 0.018);
+      const eased = easeInOutCubic(t);
+      const inv = 1 - eased;
+      const x = inv * inv * inv * launchPoint.x + 3 * inv * inv * eased * controlA.x + 3 * inv * eased * eased * controlB.x + eased * eased * eased * center.x;
+      const y = inv * inv * inv * launchPoint.y + 3 * inv * inv * eased * controlA.y + 3 * inv * eased * eased * controlB.y + eased * eased * eased * center.y;
+      const settle = t > 0.82 ? Math.sin((t - 0.82) / 0.18 * Math.PI) * Math.max(0, 1 - t) : 0;
       return {
-        x: inv * inv * launchPoint.x + 2 * inv * t * controlPoint.x + t * t * center.x + (center.x - controlPoint.x) * overshoot,
-        y: inv * inv * launchPoint.y + 2 * inv * t * controlPoint.y + t * t * center.y + (center.y - controlPoint.y) * overshoot,
+        x: x + (center.x - controlB.x) * settle * 0.09,
+        y: y + (center.y - controlB.y) * settle * 0.09,
       };
     }
 
     function rebuildGraph() {
-      const centerX = width / 2;
-      const centerY = height / 2;
-      const maxR = Math.min(width, height) * (isAdvanced ? 0.39 : 0.28);
-      const created: NodePoint[] = [{ x: centerX, y: centerY, parent: -1, radius: isAdvanced ? 22 : 18, layer: 0, phase: 0 }];
-      const rings = isAdvanced ? [7, 9, 10, 10] : [5, 7];
+      const created: BrainPoint[] = [{ x: 0, y: 0, z: 0, parent: -1, radius: isAdvanced ? 4.4 : 5.2, layer: 0, phase: 0, tone: "gold" }];
+      const rings = isAdvanced ? [10, 12, 14, 18] : [7, 10, 6];
       let previousStart = 0;
       let previousEnd = 1;
+
       rings.forEach((count, ringIndex) => {
         const layer = ringIndex + 1;
         const ringStart = created.length;
         for (let i = 0; i < count && created.length < nodeTarget + 1; i += 1) {
-          const angle = (i / count) * Math.PI * 2 + layer * 0.38 + (Math.random() - 0.5) * (isAdvanced ? 0.34 : 0.14);
-          const distance = maxR * (layer / rings.length) * (0.78 + Math.random() * 0.22);
+          const hemi = i % 2 === 0 ? -1 : 1;
+          const theta = (i / count) * Math.PI * 2 + layer * 0.52;
+          const spiral = theta + ringIndex * 0.72;
+          const shell = 0.30 + layer / (rings.length + 0.8);
+          const jitter = isAdvanced ? 0.055 : 0.035;
+          const x = hemi * (0.18 + Math.abs(Math.cos(spiral)) * 0.56 * shell) + (Math.random() - 0.5) * jitter;
+          const y = Math.sin(spiral * 1.18) * 0.72 * shell + (Math.random() - 0.5) * jitter;
+          const z = Math.cos(spiral) * 0.70 * shell + hemi * 0.08 * Math.sin(theta * 2.1);
           const parent = layer === 1
             ? 0
             : previousStart + Math.floor(Math.random() * Math.max(1, previousEnd - previousStart));
           created.push({
-            x: centerX + Math.cos(angle) * distance,
-            y: centerY + Math.sin(angle) * distance,
+            x,
+            y,
+            z,
             parent,
-            radius: isAdvanced ? 1.8 + Math.random() * 2.4 : 3.0 + Math.random() * 2.4,
+            radius: isAdvanced ? 1.35 + Math.random() * 1.65 : 1.85 + Math.random() * 1.8,
             layer,
             phase: Math.random() * Math.PI * 2,
+            tone: layer >= 3 ? "cyan" : i % 3 === 0 ? "green" : "gold",
           });
         }
         previousStart = ringStart;
         previousEnd = created.length;
       });
-      nodes = created;
+
+      brain = created;
       packets = Array.from({ length: packetTarget }, (_, index) => ({
         edge: 1 + (index % Math.max(1, created.length - 1)),
         progress: Math.random(),
-        speed: (isAdvanced ? 0.0038 : 0.0022) + Math.random() * (isAdvanced ? 0.0055 : 0.0026),
+        speed: (isAdvanced ? 0.0026 : 0.0016) + Math.random() * (isAdvanced ? 0.0038 : 0.0018),
         glow: Math.random(),
-        size: isAdvanced ? 0.9 + Math.random() * 0.9 : 1.25 + Math.random() * 0.7,
+        size: isAdvanced ? 0.75 + Math.random() * 0.85 : 1.05 + Math.random() * 0.65,
+        phase: Math.random() * Math.PI * 2,
       }));
     }
 
     function resize() {
       const rect = canvas.getBoundingClientRect();
-      dpr = Math.min(window.devicePixelRatio || 1, isLow ? 1 : isMedium ? 1.2 : 1.45);
+      dpr = Math.min(window.devicePixelRatio || 1, isLow ? 1 : isMedium ? 1.18 : 1.55);
       width = Math.max(1, Math.floor(rect.width));
       height = Math.max(1, Math.floor(rect.height));
       canvas.width = Math.floor(width * dpr);
@@ -4415,53 +4456,166 @@ function VlmAiSequenceOverlay({
       canvas.style.height = `${height}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       launchPoint = startPoint();
-      controlPoint = makeControlPoint(launchPoint);
+      makeControls(launchPoint);
       rebuildGraph();
     }
 
-    function ease(value: number) {
-      const clamped = Math.max(0, Math.min(1, value));
-      return clamped < 0.5 ? 4 * clamped * clamped * clamped : 1 - Math.pow(-2 * clamped + 2, 3) / 2;
+    function project(point: BrainPoint, rotation: number, morph: number, centerX: number, centerY: number, radius: number): ScreenPoint {
+      const rx = -0.16 + Math.sin(rotation * 0.75) * 0.12;
+      const ry = rotation + point.phase * 0.018;
+      const rz = Math.sin(rotation * 0.42) * 0.10;
+      const cosY = Math.cos(ry);
+      const sinY = Math.sin(ry);
+      const cosX = Math.cos(rx);
+      const sinX = Math.sin(rx);
+      const cosZ = Math.cos(rz);
+      const sinZ = Math.sin(rz);
+
+      const x1 = point.x * cosY - point.z * sinY;
+      const z1 = point.x * sinY + point.z * cosY;
+      const y1 = point.y * cosX - z1 * sinX;
+      const z2 = point.y * sinX + z1 * cosX;
+      const x2 = x1 * cosZ - y1 * sinZ;
+      const y2 = x1 * sinZ + y1 * cosZ;
+      const perspective = 1 / (1 + (z2 + 1.15) * 0.18);
+      const shell = radius * morph * perspective;
+      return {
+        ...point,
+        sx: centerX + x2 * shell,
+        sy: centerY + y2 * shell,
+        depth: z2,
+        scale: perspective,
+      };
     }
 
-    function drawLine(a: NodePoint, b: NodePoint, alpha: number, progress: number, pulse: number) {
-      const endX = a.x + (b.x - a.x) * progress;
-      const endY = a.y + (b.y - a.y) * progress;
-      const midX = (a.x + endX) / 2 + Math.sin(pulse + b.phase) * (isAdvanced ? 5 : 2.4);
-      const midY = (a.y + endY) / 2 + Math.cos(pulse + b.phase) * (isAdvanced ? 5 : 2.4);
-      const gradient = ctx.createLinearGradient(a.x, a.y, endX, endY);
+    function drawBackground(now: number) {
+      ctx.fillStyle = "rgba(2,3,7,0.86)";
+      ctx.fillRect(0, 0, width, height);
+      const cx = width / 2;
+      const cy = height / 2;
+      const radial = ctx.createRadialGradient(cx, cy, 10, cx, cy, Math.max(width, height) * 0.68);
+      radial.addColorStop(0, isAdvanced ? "rgba(34,211,238,0.115)" : "rgba(200,169,106,0.105)");
+      radial.addColorStop(0.32, "rgba(200,169,106,0.045)");
+      radial.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = radial;
+      ctx.fillRect(0, 0, width, height);
+
+      if (isLow) return;
+      ctx.save();
+      ctx.globalAlpha = isAdvanced ? 0.42 : 0.26;
+      const step = isAdvanced ? 56 : 76;
+      const drift = (now * 0.010) % step;
+      ctx.strokeStyle = "rgba(255,255,255,0.020)";
+      ctx.lineWidth = 1;
+      for (let x = -step; x < width + step; x += step) {
+        ctx.beginPath();
+        ctx.moveTo(x + drift, 0);
+        ctx.lineTo(x + drift, height);
+        ctx.stroke();
+      }
+      for (let y = -step; y < height + step; y += step) {
+        ctx.beginPath();
+        ctx.moveTo(0, y + drift * 0.38);
+        ctx.lineTo(width, y + drift * 0.38);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    function drawCurve(a: ScreenPoint, b: ScreenPoint, alpha: number, progress: number, pulse: number) {
+      const endX = a.sx + (b.sx - a.sx) * progress;
+      const endY = a.sy + (b.sy - a.sy) * progress;
+      const dx = endX - a.sx;
+      const dy = endY - a.sy;
+      const midX = a.sx + dx * 0.52 - dy * 0.08 + Math.sin(pulse + b.phase) * (isAdvanced ? 5.2 : 2.4);
+      const midY = a.sy + dy * 0.52 + dx * 0.08 + Math.cos(pulse + b.phase) * (isAdvanced ? 4.6 : 2.2);
+      const gradient = ctx.createLinearGradient(a.sx, a.sy, endX, endY);
       gradient.addColorStop(0, `rgba(208,176,94,${alpha})`);
-      gradient.addColorStop(0.58, `rgba(34,211,238,${alpha * 0.70})`);
-      gradient.addColorStop(1, `rgba(52,211,153,${alpha * 0.48})`);
+      gradient.addColorStop(0.56, b.tone === "cyan" ? `rgba(34,211,238,${alpha * 0.82})` : `rgba(250,204,121,${alpha * 0.72})`);
+      gradient.addColorStop(1, b.tone === "green" ? `rgba(52,211,153,${alpha * 0.68})` : `rgba(245,240,232,${alpha * 0.28})`);
       ctx.strokeStyle = gradient;
-      ctx.lineWidth = isAdvanced ? 0.68 : 1.02;
+      ctx.lineWidth = Math.max(0.55, (isAdvanced ? 0.88 : 1.08) * b.scale);
       ctx.beginPath();
-      ctx.moveTo(a.x, a.y);
+      ctx.moveTo(a.sx, a.sy);
       ctx.quadraticCurveTo(midX, midY, endX, endY);
       ctx.stroke();
     }
 
-    function drawCoreBrain(orbX: number, orbY: number, radius: number, morph: number, pulse: number) {
-      const nodeCount = isAdvanced ? 10 : 6;
+    function drawCortexLoops(projected: ScreenPoint[], morph: number, pulse: number) {
+      if (isLow || morph <= 0.05) return;
       ctx.save();
       ctx.globalCompositeOperation = "lighter";
-      ctx.strokeStyle = isAdvanced ? `rgba(34,211,238,${0.18 + morph * 0.32})` : `rgba(208,176,94,${0.18 + morph * 0.28})`;
-      ctx.lineWidth = 1;
-      for (let i = 0; i < nodeCount; i += 1) {
-        const angle = (i / nodeCount) * Math.PI * 2 + pulse * 0.20;
-        const ax = orbX + Math.cos(angle) * radius * 0.50 * morph;
-        const ay = orbY + Math.sin(angle * 1.15) * radius * 0.34 * morph;
-        const bx = orbX + Math.cos(angle + 1.18) * radius * 0.40 * morph;
-        const by = orbY + Math.sin(angle + 1.18) * radius * 0.38 * morph;
+      const loopCount = isAdvanced ? 7 : 4;
+      for (let loop = 0; loop < loopCount; loop += 1) {
+        const items = projected
+          .filter((node) => node.layer > 0 && node.layer % Math.max(1, loop % 3 + 1) === 0)
+          .sort((a, b) => Math.atan2(a.y, a.x) - Math.atan2(b.y, b.x))
+          .slice(0, isAdvanced ? 18 : 10);
+        if (items.length < 3) continue;
         ctx.beginPath();
-        ctx.moveTo(ax, ay);
-        ctx.quadraticCurveTo(orbX, orbY, bx, by);
+        items.forEach((node, index) => {
+          const wobble = Math.sin(pulse * 0.7 + node.phase + loop) * (isAdvanced ? 2.0 : 1.0);
+          if (index === 0) ctx.moveTo(node.sx + wobble, node.sy);
+          else {
+            const prev = items[index - 1];
+            ctx.quadraticCurveTo((prev.sx + node.sx) / 2, (prev.sy + node.sy) / 2 + wobble, node.sx + wobble, node.sy);
+          }
+        });
+        ctx.strokeStyle = loop % 2
+          ? `rgba(34,211,238,${0.040 + morph * 0.070})`
+          : `rgba(208,176,94,${0.045 + morph * 0.075})`;
+        ctx.lineWidth = 0.7;
         ctx.stroke();
-        ctx.fillStyle = i % 2 ? "rgba(34,211,238,0.70)" : "rgba(208,176,94,0.76)";
-        ctx.beginPath();
-        ctx.arc(ax, ay, 1.15 + morph * 1.05, 0, Math.PI * 2);
-        ctx.fill();
       }
+      ctx.restore();
+    }
+
+    function drawOrb(orbX: number, orbY: number, radius: number, morph: number, pulse: number, arrival: number) {
+      const glowRadius = radius * (2.10 + morph * 0.82) + Math.sin(pulse * 1.2) * (isAdvanced ? 6 : 3);
+      const orbGlow = ctx.createRadialGradient(orbX, orbY, 3, orbX, orbY, glowRadius);
+      orbGlow.addColorStop(0, "rgba(255,255,255,0.96)");
+      orbGlow.addColorStop(0.17, "rgba(208,176,94,0.84)");
+      orbGlow.addColorStop(0.47, isAdvanced ? "rgba(34,211,238,0.30)" : "rgba(52,211,153,0.18)");
+      orbGlow.addColorStop(1, "rgba(208,176,94,0)");
+      ctx.save();
+      ctx.globalCompositeOperation = "lighter";
+      ctx.fillStyle = orbGlow;
+      ctx.beginPath();
+      ctx.arc(orbX, orbY, glowRadius * (1 + arrival * 0.18), 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      ctx.save();
+      ctx.fillStyle = "rgba(4,5,8,0.88)";
+      ctx.strokeStyle = isAdvanced ? "rgba(34,211,238,0.66)" : "rgba(208,176,94,0.62)";
+      ctx.lineWidth = 1.28;
+      ctx.beginPath();
+      ctx.arc(orbX, orbY, radius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.save();
+      ctx.globalCompositeOperation = "lighter";
+      for (let ring = 0; ring < 3; ring += 1) {
+        ctx.strokeStyle = ring % 2 ? "rgba(34,211,238,0.32)" : "rgba(208,176,94,0.32)";
+        ctx.lineWidth = 0.8;
+        ctx.beginPath();
+        const spin = pulse * (0.55 + ring * 0.17) + ring * 1.2;
+        ctx.ellipse(orbX, orbY, radius * (0.64 + ring * 0.10), radius * (0.18 + ring * 0.08), spin, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      ctx.font = "900 22px ui-monospace, SFMono-Regular, Menlo, monospace";
+      ctx.textAlign = "center";
+      ctx.fillStyle = "rgba(255,255,255,0.96)";
+      ctx.fillText("VLM", orbX, orbY - 7);
+      ctx.font = "10px ui-monospace, SFMono-Regular, Menlo, monospace";
+      ctx.fillStyle = "rgba(208,176,94,0.96)";
+      ctx.fillText(tokenInfo.symbol, orbX, orbY + 16);
+      ctx.font = "900 10px ui-monospace, SFMono-Regular, Menlo, monospace";
+      ctx.fillStyle = isAdvanced ? "rgba(165,243,252,0.94)" : "rgba(252,211,77,0.94)";
+      ctx.fillText(`RISK ${riskScore}%`, orbX, orbY + radius + 18);
       ctx.restore();
     }
 
@@ -4473,128 +4627,91 @@ function VlmAiSequenceOverlay({
       }
       lastFrame = now;
       const elapsed = now - startedAt;
-      const flyProgress = ease(elapsed / flyMs);
-      const spawnProgress = ease((elapsed - flyMs * 0.92) / spawnMs);
-      const morph = ease((elapsed - flyMs * 0.66) / 950);
+      const flyProgress = easeInOutCubic(elapsed / flyMs);
+      const spawnProgress = easeOutQuint((elapsed - flyMs * 0.82) / spawnMs);
+      const morph = easeOutQuint((elapsed - flyMs * 0.58) / (isAdvanced ? 1450 : 1120));
+      const arrival = Math.max(0, Math.sin(Math.max(0, elapsed - flyMs * 0.84) / (flyMs * 0.16) * Math.PI)) * Math.max(0, 1 - flyProgress);
       const pulse = now * 0.001;
       const orb = pointOnCurve(flyProgress);
+      const centerX = width / 2;
+      const centerY = height / 2;
+      const coreRadius = isAdvanced ? Math.min(width, height) * 0.085 : Math.min(width, height) * 0.070;
+      const brainRadius = Math.min(width, height) * (isAdvanced ? 0.245 : 0.180);
 
-      ctx.clearRect(0, 0, width, height);
-      ctx.fillStyle = "rgba(2,3,7,0.78)";
-      ctx.fillRect(0, 0, width, height);
-
-      if (!isLow) {
-        ctx.save();
-        ctx.globalAlpha = isAdvanced ? 0.48 : 0.28;
-        const step = isAdvanced ? 54 : 72;
-        ctx.strokeStyle = "rgba(255,255,255,0.022)";
-        for (let x = 0; x < width; x += step) {
-          ctx.beginPath();
-          ctx.moveTo(x, 0);
-          ctx.lineTo(x, height);
-          ctx.stroke();
-        }
-        for (let y = 0; y < height; y += step) {
-          ctx.beginPath();
-          ctx.moveTo(0, y);
-          ctx.lineTo(width, y);
-          ctx.stroke();
-        }
-        ctx.restore();
-      }
+      drawBackground(now);
 
       if (!reducedMotion) {
-        for (let i = 7; i >= 1; i -= 1) {
-          const trailT = Math.max(0, flyProgress - i * 0.025);
+        const trailCount = isLow ? 3 : isAdvanced ? 9 : 6;
+        for (let i = trailCount; i >= 1; i -= 1) {
+          const trailT = Math.max(0, flyProgress - i * 0.020);
           const pt = pointOnCurve(trailT);
           ctx.save();
           ctx.globalCompositeOperation = "lighter";
-          ctx.fillStyle = isAdvanced ? `rgba(34,211,238,${0.04 + i * 0.010})` : `rgba(208,176,94,${0.045 + i * 0.011})`;
+          ctx.fillStyle = isAdvanced ? `rgba(34,211,238,${0.026 + i * 0.007})` : `rgba(208,176,94,${0.030 + i * 0.008})`;
           ctx.beginPath();
-          ctx.arc(pt.x, pt.y, (isAdvanced ? 24 : 18) * (1 - i * 0.085), 0, Math.PI * 2);
+          ctx.arc(pt.x, pt.y, Math.max(2, coreRadius * 0.48 * (1 - i * 0.06)), 0, Math.PI * 2);
           ctx.fill();
           ctx.restore();
         }
       }
 
-      if (elapsed > flyMs * 0.88) {
-        nodes.slice(1).forEach((node, index) => {
-          const parent = nodes[node.parent] ?? nodes[0];
-          const local = Math.max(0, Math.min(1, spawnProgress - index * (isAdvanced ? 0.008 : 0.058)));
+      const projected = brain.map((node) => project(node, pulse * (isAdvanced ? 0.38 : 0.25), morph, centerX, centerY, brainRadius));
+      const graphLive = elapsed > flyMs * 0.78;
+      if (graphLive && projected.length) {
+        const edges = projected
+          .map((node, index) => ({ node, index, parent: node.parent >= 0 ? projected[node.parent] : null }))
+          .filter((edgeItem) => edgeItem.parent)
+          .sort((a, b) => ((a.parent?.depth ?? 0) + a.node.depth) - ((b.parent?.depth ?? 0) + b.node.depth));
+
+        drawCortexLoops(projected, spawnProgress, pulse);
+
+        edges.forEach(({ node, index, parent }) => {
+          if (!parent) return;
+          const local = Math.max(0, Math.min(1, spawnProgress - index * (isAdvanced ? 0.010 : 0.045)));
           if (local <= 0) return;
-          const wobble = isLow ? 0 : Math.sin(pulse * (isAdvanced ? 1.0 : 0.70) + node.phase) * (isAdvanced ? 1.45 : 0.72);
-          const shifted = { ...node, x: node.x + wobble, y: node.y + Math.cos(pulse + node.phase) * (isAdvanced ? 1.05 : 0.58) };
-          drawLine(parent, shifted, (isAdvanced ? 0.22 : 0.38) * local, local, pulse);
+          const depthAlpha = node.depth > 0 ? 1 : 0.58;
+          drawCurve(parent, node, (isAdvanced ? 0.26 : 0.36) * local * depthAlpha, local, pulse);
         });
 
         packets.forEach((packet) => {
-          const node = nodes[packet.edge % nodes.length];
-          if (!node || node.parent < 0 || spawnProgress <= 0.16) return;
-          const parent = nodes[node.parent];
+          if (spawnProgress <= 0.18) return;
+          const node = projected[packet.edge % projected.length];
+          if (!node || node.parent < 0) return;
+          const parent = projected[node.parent];
           packet.progress = (packet.progress + packet.speed) % 1;
-          const x = parent.x + (node.x - parent.x) * packet.progress;
-          const y = parent.y + (node.y - parent.y) * packet.progress;
+          const eased = easeInOutCubic(packet.progress);
+          const x = parent.sx + (node.sx - parent.sx) * eased;
+          const y = parent.sy + (node.sy - parent.sy) * eased + Math.sin(packet.progress * Math.PI + packet.phase) * (isAdvanced ? 3.2 : 1.5);
           ctx.save();
           ctx.globalCompositeOperation = "lighter";
-          ctx.shadowBlur = isLow ? 0 : isAdvanced ? 9 : 6;
-          ctx.shadowColor = packet.glow > 0.52 ? "rgba(34,211,238,0.58)" : "rgba(208,176,94,0.58)";
-          ctx.fillStyle = packet.glow > 0.52 ? "rgba(34,211,238,0.72)" : "rgba(208,176,94,0.78)";
+          ctx.shadowBlur = isLow ? 0 : isAdvanced ? 10 : 6;
+          ctx.shadowColor = packet.glow > 0.52 ? "rgba(34,211,238,0.62)" : "rgba(208,176,94,0.62)";
+          ctx.fillStyle = packet.glow > 0.52 ? "rgba(34,211,238,0.74)" : "rgba(250,204,121,0.80)";
           ctx.beginPath();
-          ctx.arc(x, y, packet.size, 0, Math.PI * 2);
+          ctx.arc(x, y, packet.size * node.scale, 0, Math.PI * 2);
           ctx.fill();
           ctx.restore();
         });
 
-        nodes.slice(1).forEach((node, index) => {
-          const local = Math.max(0, Math.min(1, spawnProgress - index * (isAdvanced ? 0.008 : 0.055)));
-          if (local <= 0) return;
-          ctx.save();
-          ctx.globalCompositeOperation = "lighter";
-          ctx.shadowBlur = isLow ? 0 : isAdvanced ? 7 : 5;
-          ctx.shadowColor = node.layer > 2 ? "rgba(34,211,238,0.44)" : "rgba(208,176,94,0.50)";
-          ctx.fillStyle = node.layer > 2 ? "rgba(34,211,238,0.66)" : "rgba(208,176,94,0.72)";
-          ctx.beginPath();
-          ctx.arc(node.x, node.y, node.radius * local, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.restore();
-        });
+        projected
+          .slice(1)
+          .sort((a, b) => a.depth - b.depth)
+          .forEach((node, index) => {
+            const local = Math.max(0, Math.min(1, spawnProgress - index * (isAdvanced ? 0.008 : 0.040)));
+            if (local <= 0) return;
+            ctx.save();
+            ctx.globalCompositeOperation = "lighter";
+            ctx.shadowBlur = isLow ? 0 : node.depth > 0 ? 9 : 4;
+            ctx.shadowColor = node.tone === "cyan" ? "rgba(34,211,238,0.45)" : node.tone === "green" ? "rgba(52,211,153,0.40)" : "rgba(208,176,94,0.48)";
+            ctx.fillStyle = node.tone === "cyan" ? "rgba(34,211,238,0.66)" : node.tone === "green" ? "rgba(52,211,153,0.62)" : "rgba(208,176,94,0.72)";
+            ctx.beginPath();
+            ctx.arc(node.sx, node.sy, Math.max(0.9, node.radius * node.scale * local), 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+          });
       }
 
-      const radius = isAdvanced ? 52 : 42;
-      const glowRadius = isAdvanced ? 108 + Math.sin(pulse * 1.4) * 6 : 82 + Math.sin(pulse * 1.2) * 4;
-      const orbGlow = ctx.createRadialGradient(orb.x, orb.y, 3, orb.x, orb.y, glowRadius);
-      orbGlow.addColorStop(0, "rgba(255,255,255,0.96)");
-      orbGlow.addColorStop(0.18, "rgba(208,176,94,0.82)");
-      orbGlow.addColorStop(0.50, isAdvanced ? "rgba(34,211,238,0.30)" : "rgba(52,211,153,0.18)");
-      orbGlow.addColorStop(1, "rgba(208,176,94,0)");
-      ctx.save();
-      ctx.globalCompositeOperation = "lighter";
-      ctx.fillStyle = orbGlow;
-      ctx.beginPath();
-      ctx.arc(orb.x, orb.y, glowRadius, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-
-      ctx.save();
-      ctx.fillStyle = "rgba(4,5,8,0.86)";
-      ctx.strokeStyle = isAdvanced ? "rgba(34,211,238,0.62)" : "rgba(208,176,94,0.60)";
-      ctx.lineWidth = 1.25;
-      ctx.beginPath();
-      ctx.arc(orb.x, orb.y, radius, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-      drawCoreBrain(orb.x, orb.y, radius, morph, pulse);
-      ctx.font = "800 22px ui-monospace, SFMono-Regular, Menlo, monospace";
-      ctx.textAlign = "center";
-      ctx.fillStyle = "rgba(255,255,255,0.96)";
-      ctx.fillText("VLM", orb.x, orb.y - 7);
-      ctx.font = "10px ui-monospace, SFMono-Regular, Menlo, monospace";
-      ctx.fillStyle = "rgba(208,176,94,0.96)";
-      ctx.fillText(tokenInfo.symbol, orb.x, orb.y + 16);
-      ctx.font = "800 10px ui-monospace, SFMono-Regular, Menlo, monospace";
-      ctx.fillStyle = isAdvanced ? "rgba(165,243,252,0.92)" : "rgba(252,211,77,0.92)";
-      ctx.fillText(`RISK ${riskScore}%`, orb.x, orb.y + radius + 18);
-      ctx.restore();
+      drawOrb(orb.x, orb.y, coreRadius, morph, pulse, arrival);
 
       if (isLow && elapsed > maxIdleLife) return;
       raf = requestAnimationFrame(draw);
@@ -4623,10 +4740,10 @@ function VlmAiSequenceOverlay({
     : phase === "orb"
       ? "token core inbound"
       : phase === "brain"
-        ? "risk brain forming"
+        ? "360 neural brain forming"
         : phase === "readout"
-          ? "extracting data points"
-          : "neural read complete";
+          ? "extracting neural data points"
+          : "360 neural read complete";
 
   return (
     <div className={`shield-vlm-sequence-overlay ${isCompactViewport ? "shield-vlm-sequence-compact" : ""}`} role="dialog" aria-modal="true" aria-label="VLM neural token analysis">
@@ -4637,7 +4754,7 @@ function VlmAiSequenceOverlay({
         <div className="min-w-0">
           <p className="shield-vlm-phase-pill">{phaseLabel}</p>
           <p className="mt-2 font-mono text-[9px] uppercase tracking-[0.18em] text-white/[0.34]">
-            {tokenInfo.symbol} · {isAdvanced ? "advanced 20-point neural readout" : "basic 10-point signal readout"} · {motionQuality} motion
+            {tokenInfo.symbol} · {isAdvanced ? "advanced 20-point 3D neural readout" : "basic 10-point 3D signal readout"} · {motionQuality} motion
           </p>
         </div>
         <button
@@ -4785,6 +4902,7 @@ function AdvancedVlmNeuralConsole({
   onCommand: (id: TerminalCommandId) => void;
 }) {
   const tokenInfo = result["token"];
+  const investigator = useMemo(() => buildVlmShieldInvestigator(result), [result]);
   const strongestAgents = (result.agentAssessments ?? [])
     .slice()
     .sort((a, b) => b.score - a.score)
@@ -4845,6 +4963,58 @@ function AdvancedVlmNeuralConsole({
         <span className="w-fit rounded-full border border-velmere-gold/[0.22] bg-velmere-gold/[0.08] px-3 py-2 font-mono text-[10px] uppercase tracking-[0.14em] text-velmere-gold">
           {advancedTierLabel} · gated
         </span>
+      </div>
+
+      <div className="mt-5 grid gap-3 xl:grid-cols-[minmax(0,0.82fr)_minmax(20rem,0.38fr)]">
+        <div className="shield-investigator-brief rounded-[1.5rem] border border-cyan-300/[0.14] bg-cyan-300/[0.045] p-4">
+          <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+            <div className="min-w-0">
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-cyan-100">{investigator.title}</p>
+              <h4 className="mt-2 text-xl font-semibold tracking-[-0.04em] text-white md:text-2xl">OSINT protocol dla podejrzanych pomp, low-float i ukrytych unlocków.</h4>
+              <p className="shield-copy-safe mt-2 text-xs leading-6 text-white/[0.55]">{investigator.quickVerdict}</p>
+            </div>
+            <div className="grid shrink-0 grid-cols-2 gap-2 text-center">
+              <span className="rounded-2xl border border-white/[0.10] bg-black/[0.26] px-4 py-3">
+                <span className="block font-mono text-[9px] uppercase tracking-[0.14em] text-white/[0.36]">Shield risk</span>
+                <span className="mt-1 block font-mono text-2xl text-white tabular-nums">{investigator.overallRisk}</span>
+              </span>
+              <span className="rounded-2xl border border-white/[0.10] bg-black/[0.26] px-4 py-3">
+                <span className="block font-mono text-[9px] uppercase tracking-[0.14em] text-white/[0.36]">Confidence</span>
+                <span className="mt-1 block font-mono text-sm uppercase tracking-[0.12em] text-velmere-gold">{investigator.confidence}</span>
+              </span>
+            </div>
+          </div>
+          <div className="mt-4 grid gap-2 md:grid-cols-3">
+            {investigator.lanes.slice(0, 6).map((lane) => (
+              <button
+                key={lane.id}
+                type="button"
+                onClick={() => onCommand("evidence")}
+                className={`shield-investigator-lane shield-investigator-lane-${lane.status}`}
+                title={lane.nextStep}
+              >
+                <span className="flex min-w-0 items-center justify-between gap-2">
+                  <span className="truncate font-mono text-[9px] uppercase tracking-[0.14em] text-white/[0.56]">{lane.label}</span>
+                  <span className="font-mono text-[10px] text-white tabular-nums">{lane.score}</span>
+                </span>
+                <span className="mt-2 block text-left text-[11px] leading-5 text-white/[0.52]">{lane.headline}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="rounded-[1.5rem] border border-velmere-gold/[0.16] bg-velmere-gold/[0.055] p-4">
+          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-velmere-gold">Web OSINT required</p>
+          <p className="shield-copy-safe mt-2 text-xs leading-6 text-white/[0.54]">
+            Finalny werdykt tokena musi sprawdzać świeże źródła: supply, vesting, buyback, squeeze, KOL i kontrakt. Brak przejrzystych danych jest red flagą.
+          </p>
+          <div className="mt-3 space-y-2">
+            {investigator.webQueries.slice(0, 4).map((query) => (
+              <p key={query} className="truncate rounded-full border border-white/[0.08] bg-black/[0.24] px-3 py-2 font-mono text-[8px] uppercase tracking-[0.10em] text-white/[0.42]">
+                {query}
+              </p>
+            ))}
+          </div>
+        </div>
       </div>
 
       <div className="mt-5 grid gap-4 xl:grid-cols-[20rem_minmax(0,1fr)_23rem]">
