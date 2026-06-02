@@ -659,7 +659,7 @@ export default function ShieldMapClient({
               AI copilot playbook
             </p>
             <p className="shield-copy-safe mt-3 text-sm leading-7 text-white/[0.54]">
-              Bot w Shield Map nie ma straszyć ani robić hype'u. Ma prowadzić operatora krótkimi komendami: co sprawdzić, czego brakuje i kiedy nie wolno robić mocnych wniosków.
+              Bot w Shield Map nie ma straszyć ani robić hype&apos;u. Ma prowadzić operatora krótkimi komendami: co sprawdzić, czego brakuje i kiedy nie wolno robić mocnych wniosków.
             </p>
             <div className="mt-4 grid gap-2">
               {copilotPlaybook.map((item, index) => (

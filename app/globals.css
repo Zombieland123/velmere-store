@@ -1651,3 +1651,100 @@
     animation-delay: 0ms !important;
   }
 }
+
+/* PASS87: Advanced VLM readout operational polish */
+@layer components {
+  .shield-vlm-topbar {
+    position: absolute;
+    left: 1.15rem;
+    right: 1.15rem;
+    top: 1rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    pointer-events: auto;
+  }
+
+  .shield-vlm-phase-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(200, 169, 106, 0.20);
+    background: rgba(0, 0, 0, 0.46);
+    padding: 0.56rem 0.78rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.20em;
+    text-transform: uppercase;
+    color: rgb(200, 169, 106);
+    box-shadow: 0 0 44px rgba(200, 169, 106, 0.12), inset 0 1px 0 rgba(255,255,255,0.055);
+    backdrop-filter: blur(14px);
+  }
+
+  .shield-vlm-phase-pill::before {
+    content: "";
+    display: inline-block;
+    width: 0.42rem;
+    height: 0.42rem;
+    border-radius: 9999px;
+    background: rgb(200, 169, 106);
+    box-shadow: 0 0 18px rgba(200,169,106,0.75);
+    animation: shieldVlmPhaseBlink 1.85s ease-in-out infinite;
+  }
+
+  .shield-vlm-read-card {
+    contain: layout paint style;
+  }
+
+  .shield-vlm-read-card:active {
+    transform: translate3d(0, 1px, 0) scale(0.985);
+  }
+
+  .shield-vlm-detail-panel {
+    animation: shieldVlmDetailIn 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+}
+
+@keyframes shieldVlmPhaseBlink {
+  0%, 100% { opacity: 0.48; transform: scale(0.82); }
+  50% { opacity: 1; transform: scale(1.18); }
+}
+
+@keyframes shieldVlmDetailIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px) scale(0.985); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+}
+
+@media (max-width: 760px) {
+  .shield-vlm-topbar {
+    left: 0.75rem;
+    right: 0.75rem;
+    top: 0.75rem;
+    align-items: center;
+  }
+
+  .shield-vlm-phase-pill {
+    max-width: calc(100vw - 9.25rem);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding: 0.5rem 0.62rem;
+    font-size: 0.50rem;
+    letter-spacing: 0.14em;
+  }
+
+  .shield-vlm-topbar button {
+    padding-inline: 0.72rem;
+    font-size: 0.52rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shield-vlm-phase-pill::before,
+  .shield-vlm-detail-panel {
+    animation: none !important;
+  }
+}

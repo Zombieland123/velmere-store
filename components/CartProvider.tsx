@@ -45,7 +45,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     void useCartStore.persist.rehydrate();
   }, [markHydrated]);
 
-  const safeItems = hasHydrated ? items : [];
+  const safeItems = useMemo(() => (hasHydrated ? items : []), [hasHydrated, items]);
   const isOpen = hasHydrated ? rawIsOpen : false;
   const itemCount = useMemo(() => safeItems.reduce((sum, item) => sum + item.quantity, 0), [safeItems]);
   const subtotal = useMemo(() => safeItems.reduce((sum, item) => sum + item.price * item.quantity, 0), [safeItems]);

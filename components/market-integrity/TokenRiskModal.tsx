@@ -4153,6 +4153,9 @@ function VlmAiSequenceOverlay({
   riskScore: number;
   onClose: () => void;
 }) {
+  type VlmReadTone = "gold" | "cyan" | "green" | "red";
+  type MotionQuality = "high" | "medium" | "low";
+  type ReadoutPhase = "boot" | "orb" | "brain" | "readout" | "complete";
   type VlmReadNode = {
     label: string;
     value: string;
@@ -4160,18 +4163,22 @@ function VlmAiSequenceOverlay({
     detail: string;
     x: number;
     y: number;
-    tone?: "gold" | "cyan" | "green" | "red";
+    tone?: VlmReadTone;
+    group: "risk" | "price" | "liquidity" | "holders" | "signals" | "source" | "access";
   };
-  type MotionQuality = "high" | "medium" | "low";
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const timersRef = useRef<Array<ReturnType<typeof setTimeout>>>([]);
   const tokenInfo = result["token"];
   const isAdvanced = mode === "advanced";
   const [selectedNode, setSelectedNode] = useState<VlmReadNode | null>(null);
   const [isCompactViewport, setIsCompactViewport] = useState(false);
   const [motionQuality, setMotionQuality] = useState<MotionQuality>("medium");
+  const [phase, setPhase] = useState<ReadoutPhase>("boot");
+  const [revealedCount, setRevealedCount] = useState(0);
+
   const confidence = Math.round((result.confidence ?? 0.42) * 100);
-  const liveBars = candles.filter((candle) => Number.isFinite(candle.close));
+  const liveBars = useMemo(() => candles.filter((candle) => Number.isFinite(candle.close)), [candles]);
   const latest = liveBars.at(-1)?.close ?? result.metrics.currentPrice;
   const first = liveBars[0]?.open ?? result.metrics.currentPrice;
   const candleMove = first && latest ? ((latest - first) / first) * 100 : result.metrics.priceChange24h;
@@ -4198,8 +4205,8 @@ function VlmAiSequenceOverlay({
       const coarse = window.matchMedia?.("(pointer: coarse)").matches ?? false;
       const cores = typeof navigator !== "undefined" ? navigator.hardwareConcurrency ?? 4 : 4;
       const lowPower = reduced || width < 560 || cores <= 4;
-      const mediumPower = width < 980 || coarse || cores <= 6;
-      setIsCompactViewport(width < 760);
+      const mediumPower = width < 1040 || coarse || cores <= 6;
+      setIsCompactViewport(width < 820);
       setMotionQuality(lowPower ? "low" : mediumPower ? "medium" : "high");
     };
     updateQuality();
@@ -4212,52 +4219,86 @@ function VlmAiSequenceOverlay({
     };
   }, []);
 
-  const basicReadNodes: VlmReadNode[] = [
-    { label: "01 risk core", value: `${riskScore}/100`, hint: levelFromScore(riskScore).toUpperCase(), detail: "Main public risk score from price, liquidity, source confidence and active warning signals.", x: 18, y: 20, tone: "gold" },
-    { label: "02 live price", value: formatUsd(result.metrics.currentPrice), hint: "top value", detail: "Current visible price. The chart label is intentionally removed so price is only shown once in the interface.", x: 82, y: 20, tone: "gold" },
-    { label: "03 24h momentum", value: formatPercent(result.metrics.priceChange24h), hint: "public range", detail: "Short-term move used only as context; it is not a buy or sell signal.", x: 16, y: 36, tone: Number(result.metrics.priceChange24h ?? 0) < 0 ? "red" : "green" },
-    { label: "04 liquidity", value: orderbook ? `${liquidityStress}/100` : result.dataQuality, hint: "exit depth", detail: "Combines order-book pressure where available with volume/market-cap pressure and missing-data uncertainty.", x: 84, y: 36, tone: "cyan" },
-    { label: "05 confidence", value: `${confidence}%`, hint: result.dataQuality, detail: "Confidence is lower when live sources, order book or holder context are incomplete.", x: 16, y: 53, tone: "green" },
-    { label: "06 volume", value: formatUsd(result.metrics.volume24h), hint: "24h flow", detail: "Public 24h flow used to compare activity against market cap and candle movement.", x: 84, y: 53, tone: "gold" },
-    { label: "07 volatility", value: `${volatilityScore}/100`, hint: "candle stress", detail: "Candle movement and 24h velocity compressed into a simple volatility readout.", x: 18, y: 70, tone: "cyan" },
-    { label: "08 holder layer", value: holderScore, hint: dominantAgent?.label ?? "basic lane", detail: "Basic mode keeps holder intelligence short. Full holder clustering belongs to gated VLM/Shield layers.", x: 82, y: 70, tone: "cyan" },
-    { label: "09 signal count", value: signalCount ? `${signalCount} active` : "clear", hint: "first pass", detail: "Number of active warning flags detected in the public first-pass model.", x: 34, y: 87, tone: signalCount ? "gold" : "green" },
-    { label: "10 verdict", value: combinedSafeVerdict(riskScore), hint: "public read", detail: "Short public conclusion written as anomaly review, not financial advice or accusation.", x: 66, y: 87, tone: riskScore >= 55 ? "red" : "green" },
-  ];
-  const advancedReadNodes: VlmReadNode[] = [
-    { label: "01 risk core", value: `${riskScore}/100`, hint: levelFromScore(riskScore).toUpperCase(), detail: "Advanced score combines base model, source trust, microstructure stress and active model layers.", x: 10, y: 17, tone: "gold" },
-    { label: "02 24h momentum", value: formatPercent(result.metrics.priceChange24h), hint: "velocity lane", detail: "Intraday velocity compared with broader structure to avoid judging one candle in isolation.", x: 10, y: 31, tone: Number(result.metrics.priceChange24h ?? 0) < 0 ? "red" : "green" },
-    { label: "03 selected range", value: formatPercent(candleMove), hint: `${liveBars.length} candles`, detail: "Range-specific movement from the loaded candles, separate from the headline 24h move.", x: 10, y: 45, tone: "cyan" },
-    { label: "04 orderbook", value: orderbook ? `${orderbook.riskPoints}/100` : "offline", hint: "depth pressure", detail: "Order-book pressure only when a depth feed exists; otherwise the source remains flagged as partial.", x: 10, y: 59, tone: orderbook ? "cyan" : "gold" },
-    { label: "05 market cap", value: formatUsd(result.metrics.marketCap), hint: "scale filter", detail: "Scale filter helps separate tiny-liquidity assets from larger markets.", x: 10, y: 73, tone: "gold" },
-    { label: "06 confidence", value: `${confidence}%`, hint: result.dataQuality, detail: "Source completeness, model coverage and fallback usage summarized into a confidence layer.", x: 10, y: 87, tone: "green" },
-    { label: "07 live price", value: formatUsd(result.metrics.currentPrice), hint: "current top", detail: "Single source-of-truth price display; the candle chart does not duplicate the label.", x: 90, y: 17, tone: "gold" },
-    { label: "08 7d structure", value: formatPercent(result.metrics.priceChange7d), hint: "macro read", detail: "Weekly structure prevents overreacting to a single intraday move.", x: 90, y: 31, tone: Number(result.metrics.priceChange7d ?? 0) < 0 ? "red" : "green" },
-    { label: "09 liquidity stress", value: orderbook ? `${liquidityStress}/100` : "partial", hint: chartSource, detail: "Liquidity stress includes depth, slippage and volume-to-market-cap pressure when sources allow it.", x: 90, y: 45, tone: "cyan" },
-    { label: "10 volume", value: formatUsd(result.metrics.volume24h), hint: "24h flow", detail: "Raw flow layer used against market cap, volatility and anomaly count.", x: 90, y: 59, tone: "gold" },
-    { label: "11 flow ratio", value: `${(flowRatio * 100).toFixed(2)}%`, hint: "vol/mcap", detail: "Volume-to-market-cap ratio: high values may indicate unusual turnover or short-term attention.", x: 90, y: 73, tone: "cyan" },
-    { label: "12 holder graph", value: holderScore, hint: dominantAgent?.label ?? "wallet lane", detail: "Holder and wallet-layer interpretation stays gated until deeper chain data is available.", x: 90, y: 87, tone: "cyan" },
-    { label: "13 anomaly count", value: signalCount ? `${signalCount} signals` : "clear", hint: "review only", detail: "Count of active anomaly flags. Flags are treated as review prompts, not accusations.", x: 24, y: 10, tone: signalCount ? "gold" : "green" },
-    { label: "14 top signal", value: signalPreview, hint: "dominant flag", detail: "Highest visible signal from the current model output.", x: 37, y: 10, tone: "gold" },
-    { label: "15 drawdown", value: formatPercent(Math.min(0, result.metrics.priceChange24h ?? 0)), hint: "red stress", detail: "Downside stress layer derived from visible 24h movement.", x: 50, y: 10, tone: "red" },
-    { label: "16 volatility", value: `${volatilityScore}/100`, hint: "candle noise", detail: "Noise and movement pressure generated from the candle window and headline velocity.", x: 63, y: 10, tone: "cyan" },
-    { label: "17 data quality", value: result.dataQuality, hint: "source truth", detail: "Source state stays visible so missing data cannot be mistaken for safety.", x: 76, y: 10, tone: "green" },
-    { label: "18 source", value: chartSource, hint: "chart feed", detail: "The feed used for this candle/readout session.", x: 30, y: 93, tone: "cyan" },
-    { label: "19 access", value: "VLM gated", hint: "full dataset", detail: "Full advanced analytics should unlock through the VLM member/pro access layer.", x: 50, y: 93, tone: "gold" },
-    { label: "20 verdict", value: combinedSafeVerdict(riskScore), hint: "operator read", detail: "Advanced readout concludes with a controlled review verdict and next evidence path.", x: 70, y: 93, tone: riskScore >= 55 ? "red" : "green" },
-  ];
-  const readNodes = isAdvanced ? advancedReadNodes : basicReadNodes;
+  const readNodes = useMemo<VlmReadNode[]>(() => {
+    const basicReadNodes: VlmReadNode[] = [
+      { label: "01 risk core", value: `${riskScore}/100`, hint: levelFromScore(riskScore).toUpperCase(), detail: "Main public risk score from price, liquidity, source confidence and active warning signals.", x: 18, y: 20, tone: "gold", group: "risk" },
+      { label: "02 live price", value: formatUsd(result.metrics.currentPrice), hint: "top value", detail: "Current visible price. The chart label is intentionally removed so price is only shown once in the interface.", x: 82, y: 20, tone: "gold", group: "price" },
+      { label: "03 24h momentum", value: formatPercent(result.metrics.priceChange24h), hint: "public range", detail: "Short-term move used only as context; it is not a buy or sell signal.", x: 16, y: 36, tone: Number(result.metrics.priceChange24h ?? 0) < 0 ? "red" : "green", group: "price" },
+      { label: "04 liquidity", value: orderbook ? `${liquidityStress}/100` : result.dataQuality, hint: "exit depth", detail: "Combines order-book pressure where available with volume/market-cap pressure and missing-data uncertainty.", x: 84, y: 36, tone: "cyan", group: "liquidity" },
+      { label: "05 confidence", value: `${confidence}%`, hint: result.dataQuality, detail: "Confidence is lower when live sources, order book or holder context are incomplete.", x: 16, y: 53, tone: "green", group: "source" },
+      { label: "06 volume", value: formatUsd(result.metrics.volume24h), hint: "24h flow", detail: "Public 24h flow used to compare activity against market cap and candle movement.", x: 84, y: 53, tone: "gold", group: "liquidity" },
+      { label: "07 volatility", value: `${volatilityScore}/100`, hint: "candle stress", detail: "Candle movement and 24h velocity compressed into a simple volatility readout.", x: 18, y: 70, tone: "cyan", group: "risk" },
+      { label: "08 holder layer", value: holderScore, hint: dominantAgent?.label ?? "basic lane", detail: "Basic mode keeps holder intelligence short. Full holder clustering belongs to gated VLM/Shield layers.", x: 82, y: 70, tone: "cyan", group: "holders" },
+      { label: "09 signal count", value: signalCount ? `${signalCount} active` : "clear", hint: "first pass", detail: "Number of active warning flags detected in the public first-pass model.", x: 34, y: 87, tone: signalCount ? "gold" : "green", group: "signals" },
+      { label: "10 verdict", value: combinedSafeVerdict(riskScore), hint: "public read", detail: "Short public conclusion written as anomaly review, not financial advice or accusation.", x: 66, y: 87, tone: riskScore >= 55 ? "red" : "green", group: "signals" },
+    ];
+
+    const advancedReadNodes: VlmReadNode[] = [
+      { label: "01 risk core", value: `${riskScore}/100`, hint: levelFromScore(riskScore).toUpperCase(), detail: "Advanced score combines base model, source trust, microstructure stress and active model layers.", x: 8, y: 18, tone: "gold", group: "risk" },
+      { label: "02 24h momentum", value: formatPercent(result.metrics.priceChange24h), hint: "velocity lane", detail: "Intraday velocity compared with broader structure to avoid judging one candle in isolation.", x: 8, y: 31, tone: Number(result.metrics.priceChange24h ?? 0) < 0 ? "red" : "green", group: "price" },
+      { label: "03 selected range", value: formatPercent(candleMove), hint: `${liveBars.length} candles`, detail: "Range-specific movement from the loaded candles, separate from the headline 24h move.", x: 8, y: 44, tone: "cyan", group: "price" },
+      { label: "04 orderbook", value: orderbook ? `${orderbook.riskPoints}/100` : "offline", hint: "depth pressure", detail: "Order-book pressure only when a depth feed exists; otherwise the source remains flagged as partial.", x: 8, y: 57, tone: orderbook ? "cyan" : "gold", group: "liquidity" },
+      { label: "05 market cap", value: formatUsd(result.metrics.marketCap), hint: "scale filter", detail: "Scale filter helps separate tiny-liquidity assets from larger markets.", x: 8, y: 70, tone: "gold", group: "price" },
+      { label: "06 confidence", value: `${confidence}%`, hint: result.dataQuality, detail: "Source completeness, model coverage and fallback usage summarized into a confidence layer.", x: 8, y: 83, tone: "green", group: "source" },
+      { label: "07 live price", value: formatUsd(result.metrics.currentPrice), hint: "current top", detail: "Single source-of-truth price display; the candle chart does not duplicate the label.", x: 92, y: 18, tone: "gold", group: "price" },
+      { label: "08 7d structure", value: formatPercent(result.metrics.priceChange7d), hint: "macro read", detail: "Weekly structure prevents overreacting to a single intraday move.", x: 92, y: 31, tone: Number(result.metrics.priceChange7d ?? 0) < 0 ? "red" : "green", group: "price" },
+      { label: "09 liquidity stress", value: orderbook ? `${liquidityStress}/100` : "partial", hint: chartSource, detail: "Liquidity stress includes depth, slippage and volume-to-market-cap pressure when sources allow it.", x: 92, y: 44, tone: "cyan", group: "liquidity" },
+      { label: "10 volume", value: formatUsd(result.metrics.volume24h), hint: "24h flow", detail: "Raw flow layer used against market cap, volatility and anomaly count.", x: 92, y: 57, tone: "gold", group: "liquidity" },
+      { label: "11 flow ratio", value: `${(flowRatio * 100).toFixed(2)}%`, hint: "vol/mcap", detail: "Volume-to-market-cap ratio: high values may indicate unusual turnover or short-term attention.", x: 92, y: 70, tone: "cyan", group: "liquidity" },
+      { label: "12 holder graph", value: holderScore, hint: dominantAgent?.label ?? "wallet lane", detail: "Holder and wallet-layer interpretation stays gated until deeper chain data is available.", x: 92, y: 83, tone: "cyan", group: "holders" },
+      { label: "13 anomaly count", value: signalCount ? `${signalCount} signals` : "clear", hint: "review only", detail: "Count of active anomaly flags. Flags are treated as review prompts, not accusations.", x: 24, y: 10, tone: signalCount ? "gold" : "green", group: "signals" },
+      { label: "14 top signal", value: signalPreview, hint: "dominant flag", detail: "Highest visible signal from the current model output.", x: 37, y: 10, tone: "gold", group: "signals" },
+      { label: "15 drawdown", value: formatPercent(Math.min(0, result.metrics.priceChange24h ?? 0)), hint: "red stress", detail: "Downside stress layer derived from visible 24h movement.", x: 50, y: 10, tone: "red", group: "risk" },
+      { label: "16 volatility", value: `${volatilityScore}/100`, hint: "candle noise", detail: "Noise and movement pressure generated from the candle window and headline velocity.", x: 63, y: 10, tone: "cyan", group: "risk" },
+      { label: "17 data quality", value: result.dataQuality, hint: "source truth", detail: "Source state stays visible so missing data cannot be mistaken for safety.", x: 76, y: 10, tone: "green", group: "source" },
+      { label: "18 source", value: chartSource, hint: "chart feed", detail: "The feed used for this candle/readout session.", x: 30, y: 93, tone: "cyan", group: "source" },
+      { label: "19 access", value: "VLM gated", hint: "full dataset", detail: "Full advanced analytics should unlock through the VLM member/pro access layer.", x: 50, y: 93, tone: "gold", group: "access" },
+      { label: "20 verdict", value: combinedSafeVerdict(riskScore), hint: "operator read", detail: "Advanced readout concludes with a controlled review verdict and next evidence path.", x: 70, y: 93, tone: riskScore >= 55 ? "red" : "green", group: "signals" },
+    ];
+    return isAdvanced ? advancedReadNodes : basicReadNodes;
+  }, [isAdvanced, riskScore, result, orderbook, liquidityStress, confidence, volatilityScore, holderScore, dominantAgent?.label, signalCount, signalPreview, candleMove, liveBars.length, chartSource, flowRatio]);
+
   const useRailLayout = isCompactViewport || motionQuality === "low";
-  const revealGapMs = isAdvanced ? (motionQuality === "high" ? 150 : 190) : 290;
-  const lineDurationMs = isAdvanced ? 1120 : 1380;
+  const revealGapMs = isAdvanced ? (motionQuality === "high" ? 210 : 250) : 360;
+  const lineDurationMs = isAdvanced ? 1280 : 1500;
+  const bootMs = motionQuality === "low" ? 480 : 760;
+  const orbMs = motionQuality === "low" ? 640 : isAdvanced ? 2050 : 1900;
+  const brainMs = motionQuality === "low" ? 620 : isAdvanced ? 1650 : 1450;
+  const lineStartMs = bootMs + orbMs + Math.round(brainMs * 0.38);
   const linePathForNode = (node: VlmReadNode, index: number) => {
     const bend = index % 2 === 0 ? 1 : -1;
-    const cx1 = 50 + (node.x - 50) * 0.18 + bend * (isAdvanced ? 4.8 : 2.5);
-    const cy1 = 50 + (node.y - 50) * 0.10 - bend * (isAdvanced ? 4.2 : 1.8);
-    const cx2 = 50 + (node.x - 50) * 0.70 - bend * (isAdvanced ? 3.3 : 1.7);
-    const cy2 = 50 + (node.y - 50) * 0.76 + bend * (isAdvanced ? 2.9 : 1.2);
+    const cx1 = 50 + (node.x - 50) * 0.16 + bend * (isAdvanced ? 5.2 : 2.8);
+    const cy1 = 50 + (node.y - 50) * 0.10 - bend * (isAdvanced ? 4.5 : 2.0);
+    const cx2 = 50 + (node.x - 50) * 0.70 - bend * (isAdvanced ? 3.7 : 1.8);
+    const cy2 = 50 + (node.y - 50) * 0.78 + bend * (isAdvanced ? 3.2 : 1.3);
     return `M 50 50 C ${cx1.toFixed(2)} ${cy1.toFixed(2)}, ${cx2.toFixed(2)} ${cy2.toFixed(2)}, ${node.x} ${node.y}`;
   };
+
+  useEffect(() => {
+    setSelectedNode(null);
+    setRevealedCount(0);
+    setPhase("boot");
+    timersRef.current.forEach(clearTimeout);
+    timersRef.current = [];
+
+    const pushTimer = (delay: number, action: () => void) => {
+      const timer = setTimeout(action, delay);
+      timersRef.current.push(timer);
+    };
+    pushTimer(bootMs, () => setPhase("orb"));
+    pushTimer(bootMs + orbMs, () => setPhase("brain"));
+    pushTimer(lineStartMs, () => setPhase("readout"));
+    readNodes.forEach((_, index) => {
+      pushTimer(lineStartMs + index * revealGapMs + lineDurationMs * 0.76, () => {
+        setRevealedCount((current) => Math.max(current, index + 1));
+      });
+    });
+    pushTimer(lineStartMs + readNodes.length * revealGapMs + lineDurationMs + 260, () => setPhase("complete"));
+    return () => {
+      timersRef.current.forEach(clearTimeout);
+      timersRef.current = [];
+    };
+  }, [mode, readNodes, bootMs, orbMs, lineStartMs, lineDurationMs, revealGapMs]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -4275,12 +4316,13 @@ function VlmAiSequenceOverlay({
     const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
     const isLow = motionQuality === "low" || reducedMotion;
     const isMedium = motionQuality === "medium";
-    const frameBudget = isLow ? 34 : isMedium ? 24 : 16;
-    const edge = Math.floor(Math.random() * 6);
-    const flyMs = reducedMotion ? 260 : isAdvanced ? 1450 : 1650;
-    const spawnMs = reducedMotion ? 360 : isAdvanced ? 1850 : 2100;
-    const nodeTarget = reducedMotion ? 6 : isAdvanced ? (isLow ? 22 : isMedium ? 34 : 46) : (isLow ? 8 : 11);
-    const packetTarget = reducedMotion ? 0 : isAdvanced ? (isLow ? 34 : isMedium ? 62 : 96) : (isLow ? 10 : 18);
+    const frameBudget = isLow ? 38 : isMedium ? 25 : 16;
+    const edge = Math.floor(Math.random() * 8);
+    const flyMs = reducedMotion ? 300 : isAdvanced ? 2050 : 1900;
+    const spawnMs = reducedMotion ? 360 : isAdvanced ? 2650 : 2150;
+    const nodeTarget = reducedMotion ? 6 : isAdvanced ? (isLow ? 18 : isMedium ? 28 : 36) : (isLow ? 8 : 12);
+    const packetTarget = reducedMotion ? 0 : isAdvanced ? (isLow ? 18 : isMedium ? 40 : 64) : (isLow ? 8 : 16);
+    const maxIdleLife = lineStartMs + readNodes.length * revealGapMs + lineDurationMs + 1600;
 
     type NodePoint = { x: number; y: number; parent: number; radius: number; layer: number; phase: number };
     type Packet = { edge: number; progress: number; speed: number; glow: number; size: number };
@@ -4290,13 +4332,15 @@ function VlmAiSequenceOverlay({
     let controlPoint = { x: 0, y: 0 };
 
     function startPoint() {
-      const pad = 150;
-      if (edge === 0) return { x: width * 0.16, y: -pad };
-      if (edge === 1) return { x: width + pad, y: height * 0.20 };
-      if (edge === 2) return { x: width * 0.84, y: height + pad };
-      if (edge === 3) return { x: -pad, y: height * 0.72 };
-      if (edge === 4) return { x: width + pad, y: height + pad };
-      return { x: -pad, y: -pad };
+      const pad = 160;
+      if (edge === 0) return { x: width * 0.12, y: -pad };
+      if (edge === 1) return { x: width * 0.88, y: -pad };
+      if (edge === 2) return { x: width + pad, y: height * 0.18 };
+      if (edge === 3) return { x: width + pad, y: height * 0.82 };
+      if (edge === 4) return { x: width * 0.88, y: height + pad };
+      if (edge === 5) return { x: width * 0.12, y: height + pad };
+      if (edge === 6) return { x: -pad, y: height * 0.82 };
+      return { x: -pad, y: height * 0.18 };
     }
 
     function makeControlPoint(start: { x: number; y: number }) {
@@ -4307,33 +4351,34 @@ function VlmAiSequenceOverlay({
       const dx = centerX - start.x;
       const dy = centerY - start.y;
       const len = Math.max(1, Math.hypot(dx, dy));
-      const offset = Math.min(width, height) * (isAdvanced ? 0.19 : 0.15);
+      const offset = Math.min(width, height) * (isAdvanced ? 0.22 : 0.17);
       return { x: midX - (dy / len) * offset, y: midY + (dx / len) * offset };
     }
 
     function pointOnCurve(t: number) {
       const center = { x: width / 2, y: height / 2 };
       const inv = 1 - t;
+      const overshoot = Math.sin(Math.min(1, t) * Math.PI) * (isAdvanced ? 0.025 : 0.018);
       return {
-        x: inv * inv * launchPoint.x + 2 * inv * t * controlPoint.x + t * t * center.x,
-        y: inv * inv * launchPoint.y + 2 * inv * t * controlPoint.y + t * t * center.y,
+        x: inv * inv * launchPoint.x + 2 * inv * t * controlPoint.x + t * t * center.x + (center.x - controlPoint.x) * overshoot,
+        y: inv * inv * launchPoint.y + 2 * inv * t * controlPoint.y + t * t * center.y + (center.y - controlPoint.y) * overshoot,
       };
     }
 
     function rebuildGraph() {
       const centerX = width / 2;
       const centerY = height / 2;
-      const maxR = Math.min(width, height) * (isAdvanced ? 0.42 : 0.30);
+      const maxR = Math.min(width, height) * (isAdvanced ? 0.39 : 0.28);
       const created: NodePoint[] = [{ x: centerX, y: centerY, parent: -1, radius: isAdvanced ? 22 : 18, layer: 0, phase: 0 }];
-      const rings = isAdvanced ? [8, 11, 13, 14] : [5, 5];
+      const rings = isAdvanced ? [7, 9, 10, 10] : [5, 7];
       let previousStart = 0;
       let previousEnd = 1;
       rings.forEach((count, ringIndex) => {
         const layer = ringIndex + 1;
         const ringStart = created.length;
         for (let i = 0; i < count && created.length < nodeTarget + 1; i += 1) {
-          const angle = (i / count) * Math.PI * 2 + layer * 0.38 + (Math.random() - 0.5) * (isAdvanced ? 0.42 : 0.18);
-          const distance = maxR * (layer / rings.length) * (0.78 + Math.random() * 0.24);
+          const angle = (i / count) * Math.PI * 2 + layer * 0.38 + (Math.random() - 0.5) * (isAdvanced ? 0.34 : 0.14);
+          const distance = maxR * (layer / rings.length) * (0.78 + Math.random() * 0.22);
           const parent = layer === 1
             ? 0
             : previousStart + Math.floor(Math.random() * Math.max(1, previousEnd - previousStart));
@@ -4341,7 +4386,7 @@ function VlmAiSequenceOverlay({
             x: centerX + Math.cos(angle) * distance,
             y: centerY + Math.sin(angle) * distance,
             parent,
-            radius: isAdvanced ? 2.0 + Math.random() * 3.2 : 3.4 + Math.random() * 2.6,
+            radius: isAdvanced ? 1.8 + Math.random() * 2.4 : 3.0 + Math.random() * 2.4,
             layer,
             phase: Math.random() * Math.PI * 2,
           });
@@ -4353,19 +4398,21 @@ function VlmAiSequenceOverlay({
       packets = Array.from({ length: packetTarget }, (_, index) => ({
         edge: 1 + (index % Math.max(1, created.length - 1)),
         progress: Math.random(),
-        speed: (isAdvanced ? 0.0055 : 0.0028) + Math.random() * (isAdvanced ? 0.010 : 0.0035),
+        speed: (isAdvanced ? 0.0038 : 0.0022) + Math.random() * (isAdvanced ? 0.0055 : 0.0026),
         glow: Math.random(),
-        size: isAdvanced ? 1.0 + Math.random() * 1.1 : 1.5 + Math.random() * 0.9,
+        size: isAdvanced ? 0.9 + Math.random() * 0.9 : 1.25 + Math.random() * 0.7,
       }));
     }
 
     function resize() {
       const rect = canvas.getBoundingClientRect();
-      dpr = Math.min(window.devicePixelRatio || 1, isLow ? 1.05 : isMedium ? 1.25 : 1.55);
+      dpr = Math.min(window.devicePixelRatio || 1, isLow ? 1 : isMedium ? 1.2 : 1.45);
       width = Math.max(1, Math.floor(rect.width));
       height = Math.max(1, Math.floor(rect.height));
       canvas.width = Math.floor(width * dpr);
       canvas.height = Math.floor(height * dpr);
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       launchPoint = startPoint();
       controlPoint = makeControlPoint(launchPoint);
@@ -4380,14 +4427,14 @@ function VlmAiSequenceOverlay({
     function drawLine(a: NodePoint, b: NodePoint, alpha: number, progress: number, pulse: number) {
       const endX = a.x + (b.x - a.x) * progress;
       const endY = a.y + (b.y - a.y) * progress;
-      const midX = (a.x + endX) / 2 + Math.sin(pulse + b.phase) * (isAdvanced ? 7 : 3);
-      const midY = (a.y + endY) / 2 + Math.cos(pulse + b.phase) * (isAdvanced ? 7 : 3);
+      const midX = (a.x + endX) / 2 + Math.sin(pulse + b.phase) * (isAdvanced ? 5 : 2.4);
+      const midY = (a.y + endY) / 2 + Math.cos(pulse + b.phase) * (isAdvanced ? 5 : 2.4);
       const gradient = ctx.createLinearGradient(a.x, a.y, endX, endY);
       gradient.addColorStop(0, `rgba(208,176,94,${alpha})`);
-      gradient.addColorStop(0.55, `rgba(34,211,238,${alpha * 0.78})`);
-      gradient.addColorStop(1, `rgba(52,211,153,${alpha * 0.56})`);
+      gradient.addColorStop(0.58, `rgba(34,211,238,${alpha * 0.70})`);
+      gradient.addColorStop(1, `rgba(52,211,153,${alpha * 0.48})`);
       ctx.strokeStyle = gradient;
-      ctx.lineWidth = isAdvanced ? 0.76 : 1.14;
+      ctx.lineWidth = isAdvanced ? 0.68 : 1.02;
       ctx.beginPath();
       ctx.moveTo(a.x, a.y);
       ctx.quadraticCurveTo(midX, midY, endX, endY);
@@ -4395,24 +4442,24 @@ function VlmAiSequenceOverlay({
     }
 
     function drawCoreBrain(orbX: number, orbY: number, radius: number, morph: number, pulse: number) {
-      const nodeCount = isAdvanced ? 9 : 6;
+      const nodeCount = isAdvanced ? 10 : 6;
       ctx.save();
       ctx.globalCompositeOperation = "lighter";
-      ctx.strokeStyle = isAdvanced ? `rgba(34,211,238,${0.16 + morph * 0.30})` : `rgba(208,176,94,${0.18 + morph * 0.28})`;
+      ctx.strokeStyle = isAdvanced ? `rgba(34,211,238,${0.18 + morph * 0.32})` : `rgba(208,176,94,${0.18 + morph * 0.28})`;
       ctx.lineWidth = 1;
       for (let i = 0; i < nodeCount; i += 1) {
-        const angle = (i / nodeCount) * Math.PI * 2 + pulse * 0.24;
+        const angle = (i / nodeCount) * Math.PI * 2 + pulse * 0.20;
         const ax = orbX + Math.cos(angle) * radius * 0.50 * morph;
         const ay = orbY + Math.sin(angle * 1.15) * radius * 0.34 * morph;
-        const bx = orbX + Math.cos(angle + 1.22) * radius * 0.40 * morph;
-        const by = orbY + Math.sin(angle + 1.22) * radius * 0.38 * morph;
+        const bx = orbX + Math.cos(angle + 1.18) * radius * 0.40 * morph;
+        const by = orbY + Math.sin(angle + 1.18) * radius * 0.38 * morph;
         ctx.beginPath();
         ctx.moveTo(ax, ay);
         ctx.quadraticCurveTo(orbX, orbY, bx, by);
         ctx.stroke();
         ctx.fillStyle = i % 2 ? "rgba(34,211,238,0.70)" : "rgba(208,176,94,0.76)";
         ctx.beginPath();
-        ctx.arc(ax, ay, 1.2 + morph * 1.1, 0, Math.PI * 2);
+        ctx.arc(ax, ay, 1.15 + morph * 1.05, 0, Math.PI * 2);
         ctx.fill();
       }
       ctx.restore();
@@ -4428,21 +4475,19 @@ function VlmAiSequenceOverlay({
       const elapsed = now - startedAt;
       const flyProgress = ease(elapsed / flyMs);
       const spawnProgress = ease((elapsed - flyMs * 0.92) / spawnMs);
-      const morph = ease((elapsed - flyMs * 0.70) / 800);
+      const morph = ease((elapsed - flyMs * 0.66) / 950);
       const pulse = now * 0.001;
       const orb = pointOnCurve(flyProgress);
-      const centerX = width / 2;
-      const centerY = height / 2;
 
       ctx.clearRect(0, 0, width, height);
-      ctx.fillStyle = "rgba(2,3,7,0.76)";
+      ctx.fillStyle = "rgba(2,3,7,0.78)";
       ctx.fillRect(0, 0, width, height);
 
       if (!isLow) {
         ctx.save();
-        ctx.globalAlpha = isAdvanced ? 0.58 : 0.36;
-        const step = isAdvanced ? 44 : 60;
-        ctx.strokeStyle = "rgba(255,255,255,0.024)";
+        ctx.globalAlpha = isAdvanced ? 0.48 : 0.28;
+        const step = isAdvanced ? 54 : 72;
+        ctx.strokeStyle = "rgba(255,255,255,0.022)";
         for (let x = 0; x < width; x += step) {
           ctx.beginPath();
           ctx.moveTo(x, 0);
@@ -4459,14 +4504,14 @@ function VlmAiSequenceOverlay({
       }
 
       if (!reducedMotion) {
-        for (let i = 6; i >= 1; i -= 1) {
-          const trailT = Math.max(0, flyProgress - i * 0.028);
+        for (let i = 7; i >= 1; i -= 1) {
+          const trailT = Math.max(0, flyProgress - i * 0.025);
           const pt = pointOnCurve(trailT);
           ctx.save();
           ctx.globalCompositeOperation = "lighter";
-          ctx.fillStyle = isAdvanced ? `rgba(34,211,238,${0.05 + i * 0.012})` : `rgba(208,176,94,${0.05 + i * 0.012})`;
+          ctx.fillStyle = isAdvanced ? `rgba(34,211,238,${0.04 + i * 0.010})` : `rgba(208,176,94,${0.045 + i * 0.011})`;
           ctx.beginPath();
-          ctx.arc(pt.x, pt.y, (isAdvanced ? 24 : 18) * (1 - i * 0.09), 0, Math.PI * 2);
+          ctx.arc(pt.x, pt.y, (isAdvanced ? 24 : 18) * (1 - i * 0.085), 0, Math.PI * 2);
           ctx.fill();
           ctx.restore();
         }
@@ -4475,25 +4520,25 @@ function VlmAiSequenceOverlay({
       if (elapsed > flyMs * 0.88) {
         nodes.slice(1).forEach((node, index) => {
           const parent = nodes[node.parent] ?? nodes[0];
-          const local = Math.max(0, Math.min(1, spawnProgress - index * (isAdvanced ? 0.006 : 0.055)));
+          const local = Math.max(0, Math.min(1, spawnProgress - index * (isAdvanced ? 0.008 : 0.058)));
           if (local <= 0) return;
-          const wobble = isLow ? 0 : Math.sin(pulse * (isAdvanced ? 1.25 : 0.76) + node.phase) * (isAdvanced ? 2.1 : 0.9);
-          const shifted = { ...node, x: node.x + wobble, y: node.y + Math.cos(pulse + node.phase) * (isAdvanced ? 1.5 : 0.7) };
-          drawLine(parent, shifted, (isAdvanced ? 0.28 : 0.42) * local, local, pulse);
+          const wobble = isLow ? 0 : Math.sin(pulse * (isAdvanced ? 1.0 : 0.70) + node.phase) * (isAdvanced ? 1.45 : 0.72);
+          const shifted = { ...node, x: node.x + wobble, y: node.y + Math.cos(pulse + node.phase) * (isAdvanced ? 1.05 : 0.58) };
+          drawLine(parent, shifted, (isAdvanced ? 0.22 : 0.38) * local, local, pulse);
         });
 
         packets.forEach((packet) => {
           const node = nodes[packet.edge % nodes.length];
-          if (!node || node.parent < 0 || spawnProgress <= 0.12) return;
+          if (!node || node.parent < 0 || spawnProgress <= 0.16) return;
           const parent = nodes[node.parent];
           packet.progress = (packet.progress + packet.speed) % 1;
           const x = parent.x + (node.x - parent.x) * packet.progress;
           const y = parent.y + (node.y - parent.y) * packet.progress;
           ctx.save();
           ctx.globalCompositeOperation = "lighter";
-          ctx.shadowBlur = isLow ? 0 : isAdvanced ? 12 : 8;
-          ctx.shadowColor = packet.glow > 0.52 ? "rgba(34,211,238,0.66)" : "rgba(208,176,94,0.64)";
-          ctx.fillStyle = packet.glow > 0.52 ? "rgba(34,211,238,0.76)" : "rgba(208,176,94,0.82)";
+          ctx.shadowBlur = isLow ? 0 : isAdvanced ? 9 : 6;
+          ctx.shadowColor = packet.glow > 0.52 ? "rgba(34,211,238,0.58)" : "rgba(208,176,94,0.58)";
+          ctx.fillStyle = packet.glow > 0.52 ? "rgba(34,211,238,0.72)" : "rgba(208,176,94,0.78)";
           ctx.beginPath();
           ctx.arc(x, y, packet.size, 0, Math.PI * 2);
           ctx.fill();
@@ -4501,13 +4546,13 @@ function VlmAiSequenceOverlay({
         });
 
         nodes.slice(1).forEach((node, index) => {
-          const local = Math.max(0, Math.min(1, spawnProgress - index * (isAdvanced ? 0.006 : 0.052)));
+          const local = Math.max(0, Math.min(1, spawnProgress - index * (isAdvanced ? 0.008 : 0.055)));
           if (local <= 0) return;
           ctx.save();
           ctx.globalCompositeOperation = "lighter";
-          ctx.shadowBlur = isLow ? 0 : isAdvanced ? 10 : 6;
-          ctx.shadowColor = node.layer > 2 ? "rgba(34,211,238,0.50)" : "rgba(208,176,94,0.56)";
-          ctx.fillStyle = node.layer > 2 ? "rgba(34,211,238,0.70)" : "rgba(208,176,94,0.78)";
+          ctx.shadowBlur = isLow ? 0 : isAdvanced ? 7 : 5;
+          ctx.shadowColor = node.layer > 2 ? "rgba(34,211,238,0.44)" : "rgba(208,176,94,0.50)";
+          ctx.fillStyle = node.layer > 2 ? "rgba(34,211,238,0.66)" : "rgba(208,176,94,0.72)";
           ctx.beginPath();
           ctx.arc(node.x, node.y, node.radius * local, 0, Math.PI * 2);
           ctx.fill();
@@ -4515,12 +4560,12 @@ function VlmAiSequenceOverlay({
         });
       }
 
-      const radius = isAdvanced ? 50 : 41;
-      const glowRadius = isAdvanced ? 118 + Math.sin(pulse * 1.6) * 7 : 88 + Math.sin(pulse * 1.35) * 5;
+      const radius = isAdvanced ? 52 : 42;
+      const glowRadius = isAdvanced ? 108 + Math.sin(pulse * 1.4) * 6 : 82 + Math.sin(pulse * 1.2) * 4;
       const orbGlow = ctx.createRadialGradient(orb.x, orb.y, 3, orb.x, orb.y, glowRadius);
-      orbGlow.addColorStop(0, "rgba(255,255,255,0.98)");
-      orbGlow.addColorStop(0.18, "rgba(208,176,94,0.86)");
-      orbGlow.addColorStop(0.48, isAdvanced ? "rgba(34,211,238,0.35)" : "rgba(52,211,153,0.20)");
+      orbGlow.addColorStop(0, "rgba(255,255,255,0.96)");
+      orbGlow.addColorStop(0.18, "rgba(208,176,94,0.82)");
+      orbGlow.addColorStop(0.50, isAdvanced ? "rgba(34,211,238,0.30)" : "rgba(52,211,153,0.18)");
       orbGlow.addColorStop(1, "rgba(208,176,94,0)");
       ctx.save();
       ctx.globalCompositeOperation = "lighter";
@@ -4531,8 +4576,8 @@ function VlmAiSequenceOverlay({
       ctx.restore();
 
       ctx.save();
-      ctx.fillStyle = "rgba(4,5,8,0.82)";
-      ctx.strokeStyle = isAdvanced ? "rgba(34,211,238,0.64)" : "rgba(208,176,94,0.62)";
+      ctx.fillStyle = "rgba(4,5,8,0.86)";
+      ctx.strokeStyle = isAdvanced ? "rgba(34,211,238,0.62)" : "rgba(208,176,94,0.60)";
       ctx.lineWidth = 1.25;
       ctx.beginPath();
       ctx.arc(orb.x, orb.y, radius, 0, Math.PI * 2);
@@ -4542,16 +4587,16 @@ function VlmAiSequenceOverlay({
       ctx.font = "800 22px ui-monospace, SFMono-Regular, Menlo, monospace";
       ctx.textAlign = "center";
       ctx.fillStyle = "rgba(255,255,255,0.96)";
-      ctx.fillText("VLM", orb.x, orb.y - 5);
+      ctx.fillText("VLM", orb.x, orb.y - 7);
       ctx.font = "10px ui-monospace, SFMono-Regular, Menlo, monospace";
       ctx.fillStyle = "rgba(208,176,94,0.96)";
-      ctx.fillText(tokenInfo.symbol, orb.x, orb.y + 18);
+      ctx.fillText(tokenInfo.symbol, orb.x, orb.y + 16);
       ctx.font = "800 10px ui-monospace, SFMono-Regular, Menlo, monospace";
       ctx.fillStyle = isAdvanced ? "rgba(165,243,252,0.92)" : "rgba(252,211,77,0.92)";
       ctx.fillText(`RISK ${riskScore}%`, orb.x, orb.y + radius + 18);
       ctx.restore();
 
-      if (reducedMotion && elapsed > flyMs + spawnMs + 700) return;
+      if (isLow && elapsed > maxIdleLife) return;
       raf = requestAnimationFrame(draw);
     }
 
@@ -4570,22 +4615,50 @@ function VlmAiSequenceOverlay({
       document.removeEventListener("visibilitychange", onVisibilityChange);
       if (raf) cancelAnimationFrame(raf);
     };
-  }, [isAdvanced, mode, riskScore, tokenInfo.symbol, motionQuality]);
+  }, [isAdvanced, mode, riskScore, tokenInfo.symbol, motionQuality, lineStartMs, lineDurationMs, revealGapMs, readNodes.length]);
+
+  const visibleNodes = readNodes.slice(0, revealedCount);
+  const phaseLabel = phase === "boot"
+    ? "VLM core boot"
+    : phase === "orb"
+      ? "token core inbound"
+      : phase === "brain"
+        ? "risk brain forming"
+        : phase === "readout"
+          ? "extracting data points"
+          : "neural read complete";
 
   return (
     <div className={`shield-vlm-sequence-overlay ${isCompactViewport ? "shield-vlm-sequence-compact" : ""}`} role="dialog" aria-modal="true" aria-label="VLM neural token analysis">
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_44%,rgba(200,169,106,0.11),transparent_34%),linear-gradient(180deg,rgba(0,0,0,0.08),rgba(0,0,0,0.68))]" />
-      <div className="pointer-events-none absolute left-1/2 top-5 z-10 -translate-x-1/2">
-        <div className="shield-vlm-glitch rounded-full border border-velmere-gold/[0.20] bg-black/[0.52] px-4 py-2 font-mono text-[10px] uppercase tracking-[0.22em] text-velmere-gold shadow-[0_0_55px_rgba(200,169,106,0.18)] backdrop-blur-xl">
-          VLM AI Loading... {isAdvanced ? "advanced neural tree" : "basic signal tree"}
+
+      <div className="shield-vlm-topbar z-30">
+        <div className="min-w-0">
+          <p className="shield-vlm-phase-pill">{phaseLabel}</p>
+          <p className="mt-2 font-mono text-[9px] uppercase tracking-[0.18em] text-white/[0.34]">
+            {tokenInfo.symbol} · {isAdvanced ? "advanced 20-point neural readout" : "basic 10-point signal readout"} · {motionQuality} motion
+          </p>
         </div>
+        <button
+          type="button"
+          onClick={onClose}
+          className="rounded-full border border-white/[0.12] bg-white/[0.06] px-4 py-2 font-mono text-[10px] uppercase tracking-[0.14em] text-white/[0.62] backdrop-blur-xl transition hover:border-velmere-gold/[0.35] hover:text-velmere-gold"
+        >
+          back to chart
+        </button>
       </div>
+
+      <div className="pointer-events-none absolute left-1/2 top-[50%] z-10 -translate-x-1/2 translate-y-[4.4rem] text-center">
+        <p className="font-mono text-[9px] uppercase tracking-[0.26em] text-white/[0.36]">risk extraction</p>
+        <p className={`mt-1 font-mono text-[15px] font-black tracking-[0.18em] ${isAdvanced ? "text-cyan-100" : "text-velmere-gold"}`}>RISK {riskScore}%</p>
+      </div>
+
       {!useRailLayout ? (
         <svg className="pointer-events-none absolute inset-0 z-10 h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
           {readNodes.map((node, index) => {
             const pathD = linePathForNode(node, index);
-            const lineDelay = 1100 + index * revealGapMs;
+            const lineDelay = lineStartMs + index * revealGapMs;
             const dotDelay = lineDelay + lineDurationMs * 0.76;
             return (
               <g key={`vlm-line-${node.label}`} className="shield-vlm-ray-group">
@@ -4594,22 +4667,24 @@ function VlmAiSequenceOverlay({
                   className={`shield-vlm-read-line ${isAdvanced ? "shield-vlm-read-line-advanced" : ""}`}
                   style={{ animationDelay: `${lineDelay}ms`, animationDuration: `${lineDurationMs}ms` }}
                 />
-                <path
-                  d={pathD}
-                  className={`shield-vlm-read-flow shield-vlm-read-flow-${node.tone ?? "gold"}`}
-                  style={{ animationDelay: `${lineDelay + lineDurationMs * 0.45}ms` }}
-                />
+                {motionQuality !== "low" ? (
+                  <path
+                    d={pathD}
+                    className={`shield-vlm-read-flow shield-vlm-read-flow-${node.tone ?? "gold"}`}
+                    style={{ animationDelay: `${lineDelay + lineDurationMs * 0.52}ms` }}
+                  />
+                ) : null}
                 <circle
                   cx={node.x}
                   cy={node.y}
-                  r={isAdvanced ? 0.42 : 0.55}
+                  r={isAdvanced ? 0.38 : 0.52}
                   className={`shield-vlm-read-dot shield-vlm-read-dot-${node.tone ?? "gold"}`}
                   style={{ animationDelay: `${dotDelay}ms` }}
                 />
                 <circle
                   cx={node.x}
                   cy={node.y}
-                  r={isAdvanced ? 1.12 : 1.42}
+                  r={isAdvanced ? 1.04 : 1.34}
                   className="shield-vlm-read-pulse"
                   style={{ animationDelay: `${dotDelay + 80}ms` }}
                 />
@@ -4618,38 +4693,33 @@ function VlmAiSequenceOverlay({
           })}
         </svg>
       ) : null}
+
       {useRailLayout ? (
         <div className="shield-vlm-compact-rail z-20">
           <div className="mb-3 flex items-center justify-between gap-3 px-1">
             <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-velmere-gold">{isAdvanced ? "20 neural points" : "10 neural points"}</p>
-            <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-white/[0.34]">optimized mobile motion</p>
+            <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-white/[0.34]">tap a point for detail</p>
           </div>
           <div className="grid gap-2">
-            {readNodes.map((node, index) => {
-              const delay = 1150 + index * revealGapMs;
-              return (
-                <button
-                  key={`vlm-rail-${node.label}`}
-                  type="button"
-                  onClick={() => setSelectedNode(node)}
-                  className={`shield-vlm-read-card shield-vlm-read-card-${node.tone ?? "gold"} ${selectedNode?.label === node.label ? "shield-vlm-read-card-active" : ""}`}
-                  style={{ animationDelay: `${delay}ms` }}
-                >
-                  <div className="shield-vlm-read-card-scan" />
-                  <p className="relative font-mono text-[8px] uppercase tracking-[0.16em] text-white/[0.35]">{node.label}</p>
-                  <p className="relative mt-1 truncate font-mono text-[13px] font-semibold text-white tabular-nums">{node.value}</p>
-                  <p className="relative mt-1 truncate font-mono text-[8px] uppercase tracking-[0.12em] text-velmere-gold">{node.hint}</p>
-                </button>
-              );
-            })}
+            {visibleNodes.map((node) => (
+              <button
+                key={`vlm-rail-${node.label}`}
+                type="button"
+                onClick={() => setSelectedNode(node)}
+                className={`shield-vlm-read-card shield-vlm-read-card-${node.tone ?? "gold"} ${selectedNode?.label === node.label ? "shield-vlm-read-card-active" : ""}`}
+              >
+                <div className="shield-vlm-read-card-scan" />
+                <p className="relative font-mono text-[8px] uppercase tracking-[0.16em] text-white/[0.35]">{node.label}</p>
+                <p className="relative mt-1 truncate font-mono text-[13px] font-semibold text-white tabular-nums">{node.value}</p>
+                <p className="relative mt-1 truncate font-mono text-[8px] uppercase tracking-[0.12em] text-velmere-gold">{node.hint}</p>
+              </button>
+            ))}
           </div>
         </div>
       ) : (
         <div className="pointer-events-none absolute inset-0 z-20">
-          {readNodes.map((node, index) => {
+          {visibleNodes.map((node) => {
             const horizontal = node.x < 16 ? "translate(0%, -50%)" : node.x > 84 ? "translate(-100%, -50%)" : "translate(-50%, -50%)";
-            const lineDelay = 1100 + index * revealGapMs;
-            const cardDelay = lineDelay + lineDurationMs * 0.84;
             return (
               <div
                 key={`vlm-read-${node.label}`}
@@ -4660,7 +4730,6 @@ function VlmAiSequenceOverlay({
                   type="button"
                   onClick={() => setSelectedNode(node)}
                   className={`pointer-events-auto shield-vlm-read-card shield-vlm-read-card-${node.tone ?? "gold"} ${isAdvanced ? "shield-vlm-read-card-advanced" : ""} ${selectedNode?.label === node.label ? "shield-vlm-read-card-active" : ""}`}
-                  style={{ animationDelay: `${cardDelay}ms` }}
                 >
                   <div className="shield-vlm-read-card-scan" />
                   <p className="relative font-mono text-[8px] uppercase tracking-[0.16em] text-white/[0.35]">{node.label}</p>
@@ -4672,28 +4741,27 @@ function VlmAiSequenceOverlay({
           })}
         </div>
       )}
+
       {selectedNode ? (
         <div className="shield-vlm-detail-panel z-30">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-velmere-gold">selected neural point</p>
+              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-velmere-gold">selected neural point · {selectedNode.group}</p>
               <h3 className="mt-2 truncate font-mono text-sm uppercase tracking-[0.10em] text-white">{selectedNode.label}</h3>
             </div>
             <button type="button" onClick={() => setSelectedNode(null)} className="rounded-full border border-white/[0.10] px-2 py-1 font-mono text-[9px] uppercase tracking-[0.12em] text-white/[0.50] hover:text-white">close</button>
           </div>
           <p className="mt-3 font-mono text-2xl text-white tabular-nums">{selectedNode.value}</p>
           <p className="mt-2 text-xs leading-6 text-white/[0.56]">{selectedNode.detail}</p>
+          {isAdvanced ? (
+            <div className="mt-3 grid gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.025] p-3 font-mono text-[9px] uppercase tracking-[0.12em] text-white/[0.40] sm:grid-cols-3">
+              <span>source · {chartSource}</span>
+              <span>confidence · {confidence}%</span>
+              <span>mode · advanced</span>
+            </div>
+          ) : null}
         </div>
       ) : null}
-      <div className="absolute right-5 top-5 z-30 flex items-center gap-2">
-        <button
-          type="button"
-          onClick={onClose}
-          className="rounded-full border border-white/[0.12] bg-white/[0.06] px-4 py-2 font-mono text-[10px] uppercase tracking-[0.14em] text-white/[0.62] backdrop-blur-xl transition hover:border-velmere-gold/[0.35] hover:text-velmere-gold"
-        >
-          back to chart
-        </button>
-      </div>
     </div>
   );
 }
@@ -5146,7 +5214,7 @@ export default function TokenRiskModal({
     return () => {
       active = false;
     };
-  }, [asset.marketId, asset.symbol, range, result.chart?.sevenDay, row?.sparkline7d]);
+  }, [asset.marketId, asset.symbol, range, result, row]);
 
   useEffect(() => {
     let active = true;
