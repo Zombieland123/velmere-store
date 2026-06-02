@@ -1,4 +1,5 @@
 import type { TokenRiskResult, RiskSignalId } from "./risk-types";
+import { lossPreventionPlaybook } from "./loss-prevention-playbook";
 
 export type InvestigatorEvidenceStatus = "confirmed" | "likely" | "unverified" | "red_flag" | "unknown";
 
@@ -27,9 +28,51 @@ export type InvestigatorEvidenceRow = {
   body: string;
 };
 
+export type InvestigatorCaseFrame = {
+  caseId: string;
+  asset: string;
+  sourceState: string;
+  primaryConcern: string;
+  missingData: string[];
+  operatorMode: "monitor" | "review" | "escalate" | "block_verdict";
+};
+
+export type InvestigatorNextAction = {
+  id: string;
+  label: string;
+  priority: "low" | "medium" | "high" | "critical";
+  body: string;
+  command: string;
+};
+
+export type InvestigatorAnswerStep = {
+  label: string;
+  body: string;
+};
+
+export type InvestigatorBehavioralTrap = {
+  label: string;
+  trigger: string;
+  risk: string;
+  counterMove: string;
+};
+
+export type InvestigatorLossPrevention = {
+  thesis: string;
+  caseStudy: string;
+  caseLesson: string;
+  behavioralTrap: InvestigatorBehavioralTrap;
+  stableRiskReminder: string;
+  whyThisMatters: string;
+};
+
 export type InvestigatorProtocol = {
   title: string;
   subtitle: string;
+  caseFrame: InvestigatorCaseFrame;
+  answerContract: InvestigatorAnswerStep[];
+  nextActions: InvestigatorNextAction[];
+  lossPrevention: InvestigatorLossPrevention;
   quickVerdict: string;
   finalVerdict:
     | "Likely organic growth"
@@ -287,11 +330,122 @@ export function buildVlmShieldInvestigator(result: TokenRiskResult): Investigato
     },
   ];
 
-  const systemPrompt = `You are VLM Shield Investigator, an OSINT-style crypto risk analyst. You must use current web sources for token-specific analysis. Do not hype. Do not call something a scam or manipulation unless evidence supports it. Classify every major claim as Confirmed, Likely, Unverified, Red Flag, or Unknown. Analyze supply/float, vesting/unlocks, buybacks/short squeeze, liquidity, KOL/social hype, contract/governance and evidence quality. Missing transparency is a red flag, not neutral. Token: ${symbol}. Required web searches: ${webQueries.join(" | ")}. Return concise sections: Quick Verdict, Key Red Flags, Supply/Float, Vesting/Unlocks, Liquidity/Market Structure, Social/KOL Risk, Contract/Governance Risk, Evidence Table, VLM Shield Score, Final Verdict.`;
+  const missingData = [
+    missingSupply ? "circulating / total supply confirmation" : null,
+    missingVesting ? "team / investor / advisor unlock schedule" : null,
+    holderTop10 === undefined ? "holder concentration and wallet clustering" : null,
+    liquidityCoverage === undefined ? "exit liquidity and slippage depth" : null,
+    token.tokenAddress ? null : "contract address / explorer verification",
+  ].filter((item): item is string => Boolean(item));
+
+  const primaryConcern = lanes.slice().sort((a, b) => b.score - a.score)[0]?.label ?? "source uncertainty";
+  const operatorMode: InvestigatorCaseFrame["operatorMode"] =
+    finalVerdict === "Insufficient transparency — treat as high risk until proven otherwise"
+      ? "block_verdict"
+      : overallRisk >= 72
+        ? "escalate"
+        : overallRisk >= 45
+          ? "review"
+          : "monitor";
+
+  const caseFrame: InvestigatorCaseFrame = {
+    caseId: `${symbol.toLowerCase()}-${String(result.generatedAt ?? Date.now()).slice(0, 10)}`,
+    asset: `${token.name ?? symbol} (${symbol})`,
+    sourceState: result.dataQuality,
+    primaryConcern,
+    missingData,
+    operatorMode,
+  };
+
+  const nextActions: InvestigatorNextAction[] = [
+    {
+      id: "verify-supply",
+      label: "Verify supply",
+      priority: missingSupply || lowFloat ? "high" : "medium",
+      body: "Confirm circulating, total and max supply against explorer and at least one market-data source.",
+      command: `Search ${symbol} circulating supply total supply FDV market cap explorer`,
+    },
+    {
+      id: "inspect-unlocks",
+      label: "Inspect unlocks",
+      priority: "critical",
+      body: "Find team, investor, advisor, ecosystem, OTC and whale unlock schedules before trusting any pump.",
+      command: `Search ${symbol} unlock schedule vesting team investors OTC cliff`,
+    },
+    {
+      id: "check-liquidity",
+      label: "Check liquidity",
+      priority: liquidityRisk >= 65 ? "high" : "medium",
+      body: "Compare DEX depth, CEX order book, spread and slippage so the move is not just thin liquidity.",
+      command: `Review ${symbol} DEX liquidity CEX orderbook slippage volume quality`,
+    },
+    {
+      id: "review-kol",
+      label: "Review KOL/social",
+      priority: socialManipulationRisk >= 55 ? "high" : "medium",
+      body: "Search for paid promotions, undisclosed allocations, coordinated hype and controversy.",
+      command: `Search ${symbol} KOL paid promotion shill controversy manipulation allegations`,
+    },
+    {
+      id: "audit-contract",
+      label: "Audit contract",
+      priority: contractRisk >= 60 ? "high" : "medium",
+      body: "Verify owner, proxy, mint, blacklist, pause, taxes and audit status from explorer/audit sources.",
+      command: token.tokenAddress ? `Inspect ${token.tokenAddress} contract owner proxy mint blacklist tax audit` : `Find ${symbol} contract address and audit`,
+    },
+  ].sort((a, b) => {
+    const rank = { critical: 4, high: 3, medium: 2, low: 1 };
+    return rank[b.priority] - rank[a.priority];
+  });
+
+  const behavioralTrap =
+    socialManipulationRisk >= 55 || pump24 > 18 || pump7 > 55
+      ? lossPreventionPlaybook.behavioralTraps[0]
+      : overallRisk >= 60
+        ? lossPreventionPlaybook.behavioralTraps[2]
+        : lossPreventionPlaybook.behavioralTraps[1];
+  const caseStudy =
+    lowFloat || unlockRisk >= 60
+      ? lossPreventionPlaybook.caseStudies[1]
+      : socialManipulationRisk >= 55
+        ? lossPreventionPlaybook.caseStudies[2]
+        : lossPreventionPlaybook.caseStudies[0];
+  const stableHabit = lossPreventionPlaybook.riskHabits[0];
+
+  const lossPrevention: InvestigatorLossPrevention = {
+    thesis: lossPreventionPlaybook.thesis,
+    caseStudy: caseStudy.title,
+    caseLesson: caseStudy.lesson,
+    behavioralTrap: {
+      label: behavioralTrap.label,
+      trigger: behavioralTrap.trigger,
+      risk: behavioralTrap.risk,
+      counterMove: behavioralTrap.counterMove,
+    },
+    stableRiskReminder: stableHabit.body,
+    whyThisMatters:
+      "Most catastrophic crypto losses happen when a user mistakes momentum for proof. Shield slows the decision down, exposes missing data and forces the thesis to survive supply, unlock, liquidity, social and contract checks.",
+  };
+
+  const answerContract: InvestigatorAnswerStep[] = [
+    { label: "Quick verdict", body: quickVerdict },
+    { label: "Key red flags", body: redFlags.length ? redFlags.slice(0, 3).join(" · ") : "No hard local red flag, but final verdict still needs live OSINT." },
+    { label: "Evidence status", body: evidence.map((item) => `${item.label}: ${item.status}`).join(" · ") },
+    { label: "Missing data", body: missingData.length ? missingData.join(" · ") : "No core missing-data blocker in local model." },
+    { label: "Psychology trap", body: `${behavioralTrap.label}: ${behavioralTrap.risk}` },
+    { label: "Loss-prevention note", body: lossPrevention.whyThisMatters },
+    { label: "Next action", body: nextActions[0]?.command ?? `Run full OSINT for ${symbol}.` },
+  ];
+
+  const systemPrompt = `You are VLM Shield Investigator, an OSINT-style crypto risk analyst and loss-prevention assistant. You must use current web sources for token-specific analysis. Do not hype. Do not call something a scam or manipulation unless evidence supports it. Classify every major claim as Confirmed, Likely, Unverified, Red Flag, or Unknown. Analyze supply/float, vesting/unlocks, buybacks/short squeeze, liquidity, KOL/social hype, contract/governance and evidence quality. Missing transparency is a red flag, not neutral. Token: ${symbol}. Case mode: ${operatorMode}. Primary concern: ${primaryConcern}. Missing data: ${missingData.join(", ") || "none in local model"}. Required web searches: ${webQueries.join(" | ")}. Explain why the checks matter for preventing avoidable losses. Explain the behavioral trap when users chase parabolic tokens. Prefer risk control, position limits, stable compounding and evidence over lottery thinking. Do not give buy/sell instructions. Return concise sections: Quick Verdict, Key Red Flags, Supply/Float, Vesting/Unlocks, Liquidity/Market Structure, Social/KOL Risk, Contract/Governance Risk, Psychology Trap, VLM Shield Score, Final Verdict and one next action.`;
 
   return {
     title: "VLM Shield Investigator",
     subtitle: "OSINT-style on-chain risk protocol · web-search required for final token verdict",
+    caseFrame,
+    answerContract,
+    nextActions,
+    lossPrevention,
     quickVerdict,
     finalVerdict,
     overallRisk,

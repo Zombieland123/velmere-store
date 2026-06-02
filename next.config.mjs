@@ -8,7 +8,7 @@ const contentSecurityPolicy = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} https://js.stripe.com`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https://images.unsplash.com",
+  "img-src 'self' data: blob: https:",
   "font-src 'self' data:",
   `connect-src 'self' https://generativelanguage.googleapis.com https://api.stripe.com https://api.printful.com https://*.supabase.co wss://*.supabase.co https://relay.walletconnect.com wss://relay.walletconnect.com https://explorer-api.walletconnect.com${isDev ? ' ws: http://localhost:*' : ''}`,
   "frame-src https://js.stripe.com https://hooks.stripe.com",
@@ -23,11 +23,15 @@ const contentSecurityPolicy = [
 const nextConfig = {
   images: {
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-      }
-    ]
+      { protocol: 'https', hostname: 'images.unsplash.com' },
+      { protocol: 'https', hostname: 'coin-images.coingecko.com' },
+      { protocol: 'https', hostname: 'assets.coingecko.com' },
+      { protocol: 'https', hostname: 'dd.dexscreener.com' },
+      { protocol: 'https', hostname: 's2.coinmarketcap.com' },
+      { protocol: 'https', hostname: 'raw.githubusercontent.com' },
+      { protocol: 'https', hostname: 'tokens.1inch.io' },
+    ],
+    unoptimized: true,
   },
   async headers() {
     return [

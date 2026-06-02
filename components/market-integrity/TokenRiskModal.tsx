@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import Image from "next/image";
 import {
   Activity,
   AlertTriangle,
@@ -209,9 +210,12 @@ function TokenAvatar({ image, symbol }: { image?: string; symbol: string }) {
     );
   }
   return (
-    <img
+    <Image
       src={src}
       alt=""
+      width={44}
+      height={44}
+      unoptimized
       className="mt-1 h-11 w-11 shrink-0 rounded-full bg-white/[0.06] object-cover"
       referrerPolicy="no-referrer"
       onError={() => setFailed(true)}
@@ -4169,7 +4173,18 @@ function VlmAiSequenceOverlay({
   };
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const overlayRef = useRef<HTMLDivElement | null>(null);
   const timersRef = useRef<Array<ReturnType<typeof setTimeout>>>([]);
+  const rotationRef = useRef({
+    x: -0.16,
+    y: 0,
+    vx: 0,
+    vy: 0,
+    dragging: false,
+    pointerId: -1,
+    lastX: 0,
+    lastY: 0,
+  });
   const tokenInfo = result["token"];
   const isAdvanced = mode === "advanced";
   const [selectedNode, setSelectedNode] = useState<VlmReadNode | null>(null);
@@ -4177,12 +4192,14 @@ function VlmAiSequenceOverlay({
   const [motionQuality, setMotionQuality] = useState<MotionQuality>("medium");
   const [phase, setPhase] = useState<ReadoutPhase>("boot");
   const [revealedCount, setRevealedCount] = useState(0);
+  const [autoRotate, setAutoRotate] = useState(true);
+  const [brainZoom, setBrainZoom] = useState(1);
 
   const confidence = Math.round((result.confidence ?? 0.42) * 100);
   const liveBars = useMemo(() => candles.filter((candle) => Number.isFinite(candle.close)), [candles]);
   const latest = liveBars.at(-1)?.close ?? result.metrics.currentPrice;
   const first = liveBars[0]?.open ?? result.metrics.currentPrice;
-  const candleMove = first && latest ? ((latest - first) / first) * 100 : result.metrics.priceChange24h;
+  const candleMove = first && latest ? ((latest - first) / first) * 100 : (result.metrics.priceChange24h ?? 0);
   const signalList = result.signals ?? [];
   const liquidityStress = Math.min(
     100,
@@ -4260,12 +4277,12 @@ function VlmAiSequenceOverlay({
   }, [isAdvanced, riskScore, result, orderbook, liquidityStress, confidence, volatilityScore, holderScore, dominantAgent?.label, signalCount, signalPreview, candleMove, liveBars.length, chartSource, flowRatio]);
 
   const useRailLayout = isCompactViewport || motionQuality === "low";
-  const revealGapMs = isAdvanced ? (motionQuality === "high" ? 210 : 250) : 360;
-  const lineDurationMs = isAdvanced ? 1280 : 1500;
-  const bootMs = motionQuality === "low" ? 480 : 760;
-  const orbMs = motionQuality === "low" ? 640 : isAdvanced ? 2050 : 1900;
-  const brainMs = motionQuality === "low" ? 620 : isAdvanced ? 1650 : 1450;
-  const lineStartMs = bootMs + orbMs + Math.round(brainMs * 0.38);
+  const revealGapMs = isAdvanced ? (motionQuality === "high" ? 360 : 420) : 520;
+  const lineDurationMs = isAdvanced ? 1980 : 2100;
+  const bootMs = motionQuality === "low" ? 520 : 820;
+  const orbMs = motionQuality === "low" ? 980 : isAdvanced ? 3120 : 2540;
+  const brainMs = motionQuality === "low" ? 980 : isAdvanced ? 2460 : 1940;
+  const lineStartMs = bootMs + orbMs + Math.round(brainMs * 0.48);
   const linePathForNode = (node: VlmReadNode, index: number) => {
     const bend = index % 2 === 0 ? 1 : -1;
     const cx1 = 50 + (node.x - 50) * 0.16 + bend * (isAdvanced ? 5.2 : 2.8);
@@ -4273,6 +4290,44 @@ function VlmAiSequenceOverlay({
     const cx2 = 50 + (node.x - 50) * 0.70 - bend * (isAdvanced ? 3.7 : 1.8);
     const cy2 = 50 + (node.y - 50) * 0.78 + bend * (isAdvanced ? 3.2 : 1.3);
     return `M 50 50 C ${cx1.toFixed(2)} ${cy1.toFixed(2)}, ${cx2.toFixed(2)} ${cy2.toFixed(2)}, ${node.x} ${node.y}`;
+  };
+
+  const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    const ref = rotationRef.current;
+    ref.dragging = true;
+    ref.pointerId = event.pointerId;
+    ref.lastX = event.clientX;
+    ref.lastY = event.clientY;
+    overlayRef.current?.setPointerCapture?.(event.pointerId);
+  };
+
+  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    const ref = rotationRef.current;
+    if (!ref.dragging || ref.pointerId !== event.pointerId) return;
+    const dx = event.clientX - ref.lastX;
+    const dy = event.clientY - ref.lastY;
+    ref.lastX = event.clientX;
+    ref.lastY = event.clientY;
+    ref.y += dx * 0.0085;
+    ref.x = Math.max(-0.9, Math.min(0.9, ref.x + dy * 0.0046));
+    ref.vy = dx * 0.00055;
+    ref.vx = dy * 0.00022;
+  };
+
+  const releasePointer = (event?: React.PointerEvent<HTMLDivElement>) => {
+    const ref = rotationRef.current;
+    if (event && ref.pointerId !== event.pointerId) return;
+    ref.dragging = false;
+    ref.pointerId = -1;
+  };
+
+  const resetBrainView = () => {
+    const ref = rotationRef.current;
+    ref.x = -0.16;
+    ref.y = 0;
+    ref.vx = 0;
+    ref.vy = 0;
+    setBrainZoom(1);
   };
 
   useEffect(() => {
@@ -4317,12 +4372,12 @@ function VlmAiSequenceOverlay({
     const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
     const isLow = motionQuality === "low" || reducedMotion;
     const isMedium = motionQuality === "medium";
-    const frameBudget = isLow ? 42 : isMedium ? 24 : 16;
+    const frameBudget = isLow ? 50 : isMedium ? 33 : 17;
     const edge = Math.floor(Math.random() * 8);
-    const flyMs = reducedMotion ? 320 : isAdvanced ? 2850 : 2450;
-    const spawnMs = reducedMotion ? 440 : isAdvanced ? 3400 : 2650;
-    const nodeTarget = reducedMotion ? 8 : isAdvanced ? (isLow ? 22 : isMedium ? 34 : 52) : (isLow ? 10 : isMedium ? 15 : 20);
-    const packetTarget = reducedMotion ? 0 : isAdvanced ? (isLow ? 18 : isMedium ? 46 : 78) : (isLow ? 8 : 18);
+    const flyMs = reducedMotion ? 360 : isAdvanced ? 3350 : 2860;
+    const spawnMs = reducedMotion ? 520 : isAdvanced ? 4100 : 3180;
+    const nodeTarget = reducedMotion ? 7 : isAdvanced ? (isLow ? 14 : isMedium ? 22 : 30) : (isLow ? 8 : isMedium ? 10 : 12);
+    const packetTarget = reducedMotion ? 0 : isAdvanced ? (isLow ? 6 : isMedium ? 12 : 20) : (isLow ? 4 : 8);
     const maxIdleLife = lineStartMs + readNodes.length * revealGapMs + lineDurationMs + 2000;
 
     type BrainPoint = {
@@ -4438,7 +4493,7 @@ function VlmAiSequenceOverlay({
       packets = Array.from({ length: packetTarget }, (_, index) => ({
         edge: 1 + (index % Math.max(1, created.length - 1)),
         progress: Math.random(),
-        speed: (isAdvanced ? 0.0026 : 0.0016) + Math.random() * (isAdvanced ? 0.0038 : 0.0018),
+        speed: (isAdvanced ? 0.00055 : 0.00042) + Math.random() * (isAdvanced ? 0.00088 : 0.00052),
         glow: Math.random(),
         size: isAdvanced ? 0.75 + Math.random() * 0.85 : 1.05 + Math.random() * 0.65,
         phase: Math.random() * Math.PI * 2,
@@ -4447,7 +4502,7 @@ function VlmAiSequenceOverlay({
 
     function resize() {
       const rect = canvas.getBoundingClientRect();
-      dpr = Math.min(window.devicePixelRatio || 1, isLow ? 1 : isMedium ? 1.18 : 1.55);
+      dpr = Math.min(window.devicePixelRatio || 1, isLow ? 1 : isMedium ? 1.12 : 1.35);
       width = Math.max(1, Math.floor(rect.width));
       height = Math.max(1, Math.floor(rect.height));
       canvas.width = Math.floor(width * dpr);
@@ -4461,9 +4516,10 @@ function VlmAiSequenceOverlay({
     }
 
     function project(point: BrainPoint, rotation: number, morph: number, centerX: number, centerY: number, radius: number): ScreenPoint {
-      const rx = -0.16 + Math.sin(rotation * 0.75) * 0.12;
-      const ry = rotation + point.phase * 0.018;
-      const rz = Math.sin(rotation * 0.42) * 0.10;
+      const interaction = rotationRef.current;
+      const rx = interaction.x + Math.sin(rotation * 0.32) * 0.035;
+      const ry = interaction.y + rotation + point.phase * 0.010;
+      const rz = interaction.y * 0.08 + Math.sin(rotation * 0.18) * 0.025;
       const cosY = Math.cos(ry);
       const sinY = Math.sin(ry);
       const cosX = Math.cos(rx);
@@ -4504,7 +4560,7 @@ function VlmAiSequenceOverlay({
       ctx.save();
       ctx.globalAlpha = isAdvanced ? 0.42 : 0.26;
       const step = isAdvanced ? 56 : 76;
-      const drift = (now * 0.010) % step;
+      const drift = (now * 0.0022) % step;
       ctx.strokeStyle = "rgba(255,255,255,0.020)";
       ctx.lineWidth = 1;
       for (let x = -step; x < width + step; x += step) {
@@ -4631,19 +4687,26 @@ function VlmAiSequenceOverlay({
       const spawnProgress = easeOutQuint((elapsed - flyMs * 0.82) / spawnMs);
       const morph = easeOutQuint((elapsed - flyMs * 0.58) / (isAdvanced ? 1450 : 1120));
       const arrival = Math.max(0, Math.sin(Math.max(0, elapsed - flyMs * 0.84) / (flyMs * 0.16) * Math.PI)) * Math.max(0, 1 - flyProgress);
-      const pulse = now * 0.001;
+      const pulse = now * 0.00068;
+      const ref = rotationRef.current;
+      if (!ref.dragging) {
+        ref.y += (autoRotate ? (isAdvanced ? 0.0011 : 0.0007) : 0) + ref.vy;
+        ref.x = Math.max(-0.7, Math.min(0.7, ref.x + ref.vx));
+        ref.vy *= 0.965;
+        ref.vx *= 0.955;
+      }
       const orb = pointOnCurve(flyProgress);
       const centerX = width / 2;
       const centerY = height / 2;
       const coreRadius = isAdvanced ? Math.min(width, height) * 0.085 : Math.min(width, height) * 0.070;
-      const brainRadius = Math.min(width, height) * (isAdvanced ? 0.245 : 0.180);
+      const brainRadius = Math.min(width, height) * (isAdvanced ? 0.245 : 0.180) * brainZoom;
 
       drawBackground(now);
 
       if (!reducedMotion) {
-        const trailCount = isLow ? 3 : isAdvanced ? 9 : 6;
+        const trailCount = isLow ? 2 : isAdvanced ? 5 : 4;
         for (let i = trailCount; i >= 1; i -= 1) {
-          const trailT = Math.max(0, flyProgress - i * 0.020);
+          const trailT = Math.max(0, flyProgress - i * 0.015);
           const pt = pointOnCurve(trailT);
           ctx.save();
           ctx.globalCompositeOperation = "lighter";
@@ -4655,8 +4718,8 @@ function VlmAiSequenceOverlay({
         }
       }
 
-      const projected = brain.map((node) => project(node, pulse * (isAdvanced ? 0.38 : 0.25), morph, centerX, centerY, brainRadius));
-      const graphLive = elapsed > flyMs * 0.78;
+      const projected = brain.map((node) => project(node, pulse * (isAdvanced ? 0.10 : 0.075), morph, centerX, centerY, brainRadius));
+      const graphLive = elapsed > flyMs * 0.86;
       if (graphLive && projected.length) {
         const edges = projected
           .map((node, index) => ({ node, index, parent: node.parent >= 0 ? projected[node.parent] : null }))
@@ -4732,7 +4795,7 @@ function VlmAiSequenceOverlay({
       document.removeEventListener("visibilitychange", onVisibilityChange);
       if (raf) cancelAnimationFrame(raf);
     };
-  }, [isAdvanced, mode, riskScore, tokenInfo.symbol, motionQuality, lineStartMs, lineDurationMs, revealGapMs, readNodes.length]);
+  }, [isAdvanced, mode, riskScore, tokenInfo.symbol, motionQuality, lineStartMs, lineDurationMs, revealGapMs, readNodes.length, autoRotate, brainZoom]);
 
   const visibleNodes = readNodes.slice(0, revealedCount);
   const phaseLabel = phase === "boot"
@@ -4740,13 +4803,13 @@ function VlmAiSequenceOverlay({
     : phase === "orb"
       ? "token core inbound"
       : phase === "brain"
-        ? "360 neural brain forming"
+        ? "interactive 360 neural brain forming"
         : phase === "readout"
           ? "extracting neural data points"
-          : "360 neural read complete";
+          : "interactive 360 neural read complete";
 
   return (
-    <div className={`shield-vlm-sequence-overlay ${isCompactViewport ? "shield-vlm-sequence-compact" : ""}`} role="dialog" aria-modal="true" aria-label="VLM neural token analysis">
+    <div ref={overlayRef} className={`shield-vlm-sequence-overlay ${isCompactViewport ? "shield-vlm-sequence-compact" : ""}`} role="dialog" aria-modal="true" aria-label="VLM neural token analysis" onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={releasePointer} onPointerCancel={releasePointer} onPointerLeave={releasePointer}>
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_44%,rgba(200,169,106,0.11),transparent_34%),linear-gradient(180deg,rgba(0,0,0,0.08),rgba(0,0,0,0.68))]" />
 
@@ -4756,6 +4819,15 @@ function VlmAiSequenceOverlay({
           <p className="mt-2 font-mono text-[9px] uppercase tracking-[0.18em] text-white/[0.34]">
             {tokenInfo.symbol} · {isAdvanced ? "advanced 20-point 3D neural readout" : "basic 10-point 3D signal readout"} · {motionQuality} motion
           </p>
+          <p className="mt-2 font-mono text-[8px] uppercase tracking-[0.16em] text-white/[0.24]">drag the core to rotate the brain 360°</p>
+        </div>
+        <div className="shield-vlm-brain-controls" onPointerDown={(event) => event.stopPropagation()}>
+          <button type="button" onClick={() => setAutoRotate((value) => !value)}>
+            {autoRotate ? "auto on" : "auto off"}
+          </button>
+          <button type="button" onClick={resetBrainView}>reset</button>
+          <button type="button" onClick={() => setBrainZoom((value) => Math.max(0.82, Number((value - 0.08).toFixed(2))))}>−</button>
+          <button type="button" onClick={() => setBrainZoom((value) => Math.min(1.18, Number((value + 0.08).toFixed(2))))}>+</button>
         </div>
         <button
           type="button"
@@ -4784,11 +4856,11 @@ function VlmAiSequenceOverlay({
                   className={`shield-vlm-read-line ${isAdvanced ? "shield-vlm-read-line-advanced" : ""}`}
                   style={{ animationDelay: `${lineDelay}ms`, animationDuration: `${lineDurationMs}ms` }}
                 />
-                {motionQuality !== "low" ? (
+                {!isAdvanced && motionQuality !== "low" ? (
                   <path
                     d={pathD}
                     className={`shield-vlm-read-flow shield-vlm-read-flow-${node.tone ?? "gold"}`}
-                    style={{ animationDelay: `${lineDelay + lineDurationMs * 0.52}ms` }}
+                    style={{ animationDelay: `${lineDelay + lineDurationMs * 0.58}ms` }}
                   />
                 ) : null}
                 <circle
@@ -5000,6 +5072,18 @@ function AdvancedVlmNeuralConsole({
                 <span className="mt-2 block text-left text-[11px] leading-5 text-white/[0.52]">{lane.headline}</span>
               </button>
             ))}
+          </div>
+          <div className="shield-loss-prevention-panel mt-4">
+            <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-velmere-gold">loss prevention</p>
+            <p className="shield-copy-safe mt-2 text-[11px] leading-5 text-white/[0.54]">{investigator.lossPrevention.whyThisMatters}</p>
+            <div className="mt-3 grid gap-2 md:grid-cols-2">
+              <p className="rounded-2xl border border-red-300/[0.14] bg-red-400/[0.045] p-3 text-[11px] leading-5 text-red-50/[0.72]">
+                {investigator.lossPrevention.behavioralTrap.label}: {investigator.lossPrevention.behavioralTrap.risk}
+              </p>
+              <p className="rounded-2xl border border-emerald-300/[0.13] bg-emerald-400/[0.040] p-3 text-[11px] leading-5 text-emerald-50/[0.70]">
+                {investigator.lossPrevention.behavioralTrap.counterMove}
+              </p>
+            </div>
           </div>
         </div>
         <div className="rounded-[1.5rem] border border-velmere-gold/[0.16] bg-velmere-gold/[0.055] p-4">

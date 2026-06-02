@@ -22,6 +22,7 @@ import {
   X,
 } from "lucide-react";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { Link } from "@/navigation";
@@ -295,12 +296,13 @@ function TokenAvatar({ image, symbol }: { image?: string; symbol: string }) {
     );
   }
   return (
-    <img
+    <Image
       src={src}
       alt=""
+      width={36}
+      height={36}
+      unoptimized
       className="h-9 w-9 shrink-0 rounded-full bg-white/[0.05] object-cover shadow-[0_0_22px_rgba(210,176,94,0.08)] ring-1 ring-white/[0.08]"
-      loading="lazy"
-      decoding="async"
       referrerPolicy="no-referrer"
       onError={() => setFailed(true)}
     />

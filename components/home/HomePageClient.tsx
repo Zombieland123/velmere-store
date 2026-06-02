@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUpRight, MessageSquare, PackageCheck, ShieldCheck, Truck, WalletCards } from "lucide-react";
+import { ArrowUpRight, ClipboardCheck, MessageSquare, PackageCheck, Radar, ShieldCheck, Truck, WalletCards } from "lucide-react";
 import { Link } from "@/navigation";
 import Reveal from "@/components/ui/Reveal";
 import NeuralBrainVisual from "@/components/home/NeuralBrainVisual";
@@ -34,6 +34,13 @@ const flow = [
   ["01", "Collection", "Product first: garments, fit, material and delivery clarity."],
   ["02", "Access", "VLM stays as a controlled private layer, separated from checkout."],
   ["03", "Square", "Community signals stay moderated, readable and calm."],
+];
+
+const launchReality = [
+  ["Product shell", "32%", "Homepage, store, VLM and Shield surfaces exist, but the system still needs final hierarchy, copy and conversion QA."],
+  ["VLM Intelligence", "24%", "Investigator protocol and modal readout exist; real source ledger, web OSINT, evidence export and gating remain major work."],
+  ["Shield Map", "22%", "The page explains the system and has a live scanner, but it still needs a flagship command-center redesign and real data depth."],
+  ["Production", "18%", "Vercel fixes are ongoing. Full build loop, rate limits, wallet sessions, monitoring and legal pages are not launch-complete."],
 ];
 
 export default function HomePageClient() {
@@ -75,6 +82,84 @@ export default function HomePageClient() {
 
       <section className="luxury-section pb-12 md:pb-16">
         <LuxuryProductCarousel />
+      </section>
+
+      <section className="luxury-section pb-14 md:pb-20">
+        <Reveal className="overflow-hidden rounded-[2rem] border border-amber-300/[0.14] bg-[radial-gradient(circle_at_16%_12%,rgba(200,169,106,0.14),transparent_36%),linear-gradient(135deg,#101012,#070708)] p-6 shadow-velmere-card md:p-8">
+          <div className="grid gap-7 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,0.58fr)] lg:items-start">
+            <div>
+              <div className="inline-flex items-center gap-2 rounded-full border border-amber-300/[0.18] bg-amber-300/[0.06] px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-velmere-gold">
+                <ClipboardCheck className="h-3.5 w-3.5" />
+                launch reality ledger
+              </div>
+              <h2 className="mt-5 max-w-3xl font-serif text-4xl leading-[0.95] tracking-[-0.045em] text-white md:text-6xl">
+                Not ready yet — and that is the control layer.
+              </h2>
+              <p className="mt-5 max-w-2xl text-sm leading-7 text-velmere-grey-soft">
+                Velmère should not pretend to be finished. Public pages can look premium, but the real product requires data depth, mobile QA, VLM gating, evidence storage, rate limits and legal-safe operations before launch.
+              </p>
+              <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+                <Link href="/market-integrity/shield-map" className="velmere-button-primary">
+                  Open Shield Roadmap <ShieldCheck className="h-4 w-4" />
+                </Link>
+                <Link href="/vlm-token" className="velmere-button-secondary">
+                  VLM Access Layer <WalletCards className="h-4 w-4" />
+                </Link>
+              </div>
+            </div>
+            <div className="grid gap-3">
+              {launchReality.map(([label, value, body]) => (
+                <div key={label} className="rounded-2xl border border-white/[0.09] bg-black/[0.24] p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/[0.50]">{label}</p>
+                    <p className="font-mono text-sm text-velmere-gold">{value}</p>
+                  </div>
+                  <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/[0.06]">
+                    <div className="h-full rounded-full bg-velmere-gold/[0.72]" style={{ width: value }} />
+                  </div>
+                  <p className="mt-3 text-xs leading-6 text-white/[0.50]">{body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Reveal>
+      </section>
+
+      <section className="luxury-section pb-14 md:pb-20">
+        <Reveal className="overflow-hidden rounded-[2rem] border border-cyan-200/[0.12] bg-[radial-gradient(circle_at_18%_8%,rgba(34,211,238,0.10),transparent_34%),linear-gradient(135deg,#101115,#080809)] p-6 shadow-velmere-card md:p-8">
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,0.82fr)_minmax(20rem,0.42fr)] lg:items-center">
+            <div>
+              <p className="velmere-label text-velmere-gold">VLM SHIELD / INVESTIGATOR</p>
+              <h2 className="mt-5 max-w-3xl font-serif text-4xl leading-[0.95] tracking-[-0.045em] text-white md:text-6xl">
+                Market intelligence without hype.
+              </h2>
+              <p className="mt-5 max-w-2xl text-sm leading-7 text-velmere-grey-soft">
+                Shield checks float, unlock pressure, liquidity, holder concentration, contract risk and social manipulation signals. Missing transparency becomes a visible risk lane, not a hidden assumption.
+              </p>
+              <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+                <Link href="/market-integrity" className="velmere-button-primary">
+                  Open Market Shield <Radar className="h-4 w-4" />
+                </Link>
+                <Link href="/market-integrity/shield-map" className="velmere-button-secondary">
+                  Shield Map <ShieldCheck className="h-4 w-4" />
+                </Link>
+              </div>
+            </div>
+            <div className="grid gap-3">
+              {[
+                ["01", "Low float", "Circulating supply is compared with total/max supply before the verdict."],
+                ["02", "Unlocks", "Vesting gaps are red flags until verified from current sources."],
+                ["03", "KOL risk", "Paid hype and undisclosed allocations are routed to OSINT review."],
+              ].map(([number, title, body]) => (
+                <div key={title} className="rounded-2xl border border-white/[0.09] bg-black/[0.24] p-4">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-velmere-gold">{number}</p>
+                  <h3 className="mt-2 text-lg text-white">{title}</h3>
+                  <p className="mt-2 text-xs leading-6 text-white/[0.52]">{body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Reveal>
       </section>
 
       <section className="luxury-section pb-20 md:pb-24">

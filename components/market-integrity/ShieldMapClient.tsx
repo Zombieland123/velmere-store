@@ -5,7 +5,9 @@ import {
   AlertTriangle,
   ArrowLeft,
   Brain,
+  Copy,
   Database,
+  Download,
   FileText,
   GitBranch,
   Loader2,
@@ -109,9 +111,93 @@ type InvestigatorEvidence = {
   body: string;
 };
 
+type InvestigatorCaseFrame = {
+  caseId: string;
+  asset: string;
+  sourceState: string;
+  primaryConcern: string;
+  missingData: string[];
+  operatorMode: "monitor" | "review" | "escalate" | "block_verdict";
+};
+
+type InvestigatorNextAction = {
+  id: string;
+  label: string;
+  priority: "low" | "medium" | "high" | "critical";
+  body: string;
+  command: string;
+};
+
+type InvestigatorAnswerStep = {
+  label: string;
+  body: string;
+};
+
+type InvestigatorBehavioralTrap = {
+  label: string;
+  trigger: string;
+  risk: string;
+  counterMove: string;
+};
+
+type InvestigatorLossPrevention = {
+  thesis: string;
+  caseStudy: string;
+  caseLesson: string;
+  behavioralTrap: InvestigatorBehavioralTrap;
+  stableRiskReminder: string;
+  whyThisMatters: string;
+};
+
+type EvidenceSourceLedgerItem = {
+  id: string;
+  label: string;
+  mode: "live" | "partial" | "fallback" | "blocked" | "required";
+  body: string;
+};
+
+type EvidenceReportSection = {
+  id: string;
+  title: string;
+  status: "confirmed" | "likely" | "unverified" | "red_flag" | "unknown" | "info";
+  body: string;
+  nextStep?: string;
+};
+
+type EvidenceReportDraft = {
+  reportId: string;
+  title: string;
+  subtitle: string;
+  warning: string;
+  blockedBy: string[];
+  sourceLedger: EvidenceSourceLedgerItem[];
+  sections: EvidenceReportSection[];
+  markdown: string;
+};
+
+type SourceSnapshotResult = {
+  mode: "memory" | "supabase";
+  stored: boolean;
+  snapshot: {
+    id: string;
+    reportId: string;
+    symbol: string;
+    timestamp: string;
+    sourceState: string;
+    overallRisk: number;
+    confidence: string;
+    finalVerdict: string;
+    blockedBy: string[];
+  };
+};
+
 type InvestigatorResult = {
   title: string;
   subtitle: string;
+  caseFrame: InvestigatorCaseFrame;
+  answerContract: InvestigatorAnswerStep[];
+  nextActions: InvestigatorNextAction[];
+  lossPrevention: InvestigatorLossPrevention;
   quickVerdict: string;
   finalVerdict: string;
   overallRisk: number;
@@ -128,6 +214,8 @@ type InvestigatorApiResponse =
   | {
       mode: "live";
       investigator: InvestigatorResult;
+      evidenceReport?: EvidenceReportDraft;
+      sourceSnapshot?: SourceSnapshotResult;
       result?: { token?: { symbol?: string; name?: string } };
       generatedAt: string;
     }
@@ -202,6 +290,9 @@ export default function ShieldMapClient({
   const [investigatorLoading, setInvestigatorLoading] = useState(false);
   const [investigatorError, setInvestigatorError] = useState<string | null>(null);
   const [investigatorResult, setInvestigatorResult] = useState<InvestigatorResult | null>(null);
+  const [evidenceReport, setEvidenceReport] = useState<EvidenceReportDraft | null>(null);
+  const [sourceSnapshot, setSourceSnapshot] = useState<SourceSnapshotResult | null>(null);
+  const [copiedEvidence, setCopiedEvidence] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -259,11 +350,28 @@ export default function ShieldMapClient({
         throw new Error(data.mode === "error" ? data.error : "Investigator scan failed");
       }
       setInvestigatorResult(data.investigator);
+      setEvidenceReport(data.evidenceReport ?? null);
+      setSourceSnapshot(data.sourceSnapshot ?? null);
+      setCopiedEvidence(false);
     } catch (scanError) {
       setInvestigatorError(scanError instanceof Error ? scanError.message : "Investigator scan failed");
       setInvestigatorResult(null);
+      setEvidenceReport(null);
+      setSourceSnapshot(null);
+      setCopiedEvidence(false);
     } finally {
       setInvestigatorLoading(false);
+    }
+  }
+
+  async function copyEvidenceMarkdown() {
+    if (!evidenceReport) return;
+    try {
+      await navigator.clipboard.writeText(evidenceReport.markdown);
+      setCopiedEvidence(true);
+      window.setTimeout(() => setCopiedEvidence(false), 1800);
+    } catch {
+      setInvestigatorError("Nie udało się skopiować raportu. Otwórz export Markdown.");
     }
   }
 
@@ -415,6 +523,46 @@ export default function ShieldMapClient({
     "No scam/manipulation accusation without evidence; use red flag / requires review.",
     "Missing vesting, holder or contract transparency increases risk.",
     "Final token verdict must use fresh web OSINT plus current market data.",
+  ];
+  const investorProtectionPrinciples = [
+    {
+      label: "Hype is not proof",
+      body: "A vertical chart can be engineered by low float, buybacks, thin liquidity, KOL incentives or late retail FOMO.",
+    },
+    {
+      label: "Missing data is risk",
+      body: "Unknown vesting, hidden OTC, unclear holders or unverifiable contracts should slow the user down before entry.",
+    },
+    {
+      label: "Stable beats lottery thinking",
+      body: "A slower, risk-capped plan is often healthier than gambling on one token that can either moon or destroy the account.",
+    },
+    {
+      label: "Evidence before conviction",
+      body: "The bot should never sell certainty. It should show what is confirmed, likely, unverified, red flag or unknown.",
+    },
+  ];
+  const aiBotUpgradeLanes = [
+    {
+      label: "Memory discipline",
+      state: "partial",
+      body: "Bot keeps a case frame: token identity, source state, missing data, latest verdict and next operator action.",
+    },
+    {
+      label: "Question router",
+      state: "ready",
+      body: "User prompts are routed into supply, unlock, liquidity, social, contract or evidence lanes before the bot answers.",
+    },
+    {
+      label: "Evidence mode",
+      state: "blocked",
+      body: "Final accusations stay blocked until source ledger, timestamps and export-safe language are attached.",
+    },
+    {
+      label: "OSINT queue",
+      state: "partial",
+      body: "The bot already creates web-search queries; production still needs current-source fetching and source scoring.",
+    },
   ];
   const activeAtlas = atlasNodes.find((node) => node.label === activeAtlasNode) ?? atlasNodes[2];
   const ActiveAtlasIcon = activeAtlas.icon;
@@ -612,25 +760,35 @@ export default function ShieldMapClient({
                   ))}
                 </div>
               </div>
-              <div className="shield-nexus-visual" aria-hidden="true">
-                <div className="shield-nexus-orbit shield-nexus-orbit-one" />
-                <div className="shield-nexus-orbit shield-nexus-orbit-two" />
-                <div className="shield-nexus-orbit shield-nexus-orbit-three" />
-                <div className="shield-nexus-brain">
-                  <span className="shield-nexus-core-label">VLM</span>
-                  <span className="shield-nexus-risk-label">SHIELD CORE</span>
-                  {Array.from({ length: 16 }).map((_, index) => (
-                    <span
-                      key={index}
-                      className="shield-nexus-synapse"
-                      style={{
-                        transform: `rotate(${index * 22.5}deg) translateX(${5.2 + (index % 4) * 0.55}rem)`,
-                        animationDelay: `${index * 90}ms`,
-                      }}
-                    />
-                  ))}
+              <div className="shield-nexus-visual shield-nexus-visual-pro" aria-hidden="true">
+                <div className="shield-holo-grid" />
+                <div className="shield-holo-orbit shield-holo-orbit-a" />
+                <div className="shield-holo-orbit shield-holo-orbit-b" />
+                <div className="shield-holo-orbit shield-holo-orbit-c" />
+                <div className="shield-holo-core">
+                  <span className="shield-holo-token-face">
+                    <span className="shield-holo-token-title">VLM</span>
+                    <span className="shield-holo-token-subtitle">SHIELD</span>
+                  </span>
+                  <span className="shield-holo-token-edge" />
+                  <span className="shield-holo-scan shield-holo-scan-a" />
+                  <span className="shield-holo-scan shield-holo-scan-b" />
                 </div>
-                <div className="shield-nexus-caption">360 neural policy brain · adaptive motion</div>
+                <div className="shield-holo-data-chip shield-holo-chip-a">SUPPLY</div>
+                <div className="shield-holo-data-chip shield-holo-chip-b">UNLOCK</div>
+                <div className="shield-holo-data-chip shield-holo-chip-c">LIQUIDITY</div>
+                <div className="shield-holo-data-chip shield-holo-chip-d">EVIDENCE</div>
+                {Array.from({ length: 10 }).map((_, index) => (
+                  <span
+                    key={index}
+                    className="shield-holo-node"
+                    style={{
+                      transform: `rotate(${index * 36}deg) translateX(${7.6 + (index % 2) * 1.2}rem)`,
+                      animationDelay: `${index * 160}ms`,
+                    }}
+                  />
+                ))}
+                <div className="shield-nexus-caption">holographic VLM intelligence core · evidence-first</div>
               </div>
             </div>
           </div>
@@ -708,6 +866,14 @@ export default function ShieldMapClient({
                     <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-cyan-100">{investigatorResult.title}</p>
                     <h3 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-white">{investigatorResult.finalVerdict}</h3>
                     <p className="shield-copy-safe mt-2 text-xs leading-6 text-white/[0.54]">{investigatorResult.quickVerdict}</p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <span className="rounded-full border border-cyan-200/[0.16] bg-cyan-300/[0.055] px-3 py-1.5 font-mono text-[8px] uppercase tracking-[0.12em] text-cyan-50">
+                        mode · {investigatorResult.caseFrame.operatorMode}
+                      </span>
+                      <span className="rounded-full border border-white/[0.08] bg-white/[0.025] px-3 py-1.5 font-mono text-[8px] uppercase tracking-[0.12em] text-white/[0.42]">
+                        concern · {investigatorResult.caseFrame.primaryConcern}
+                      </span>
+                    </div>
                   </div>
                   <div className="grid shrink-0 grid-cols-2 gap-2 text-center">
                     <span className="rounded-2xl border border-white/[0.10] bg-white/[0.025] px-4 py-3">
@@ -731,6 +897,52 @@ export default function ShieldMapClient({
                     </div>
                   ))}
                 </div>
+                <div className="mt-4 grid gap-3 lg:grid-cols-2">
+                  <div className="shield-investigator-contract-panel">
+                    <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-cyan-100">answer contract</p>
+                    <div className="mt-3 grid gap-2">
+                      {investigatorResult.answerContract.map((step, index) => (
+                        <div key={step.label} className="rounded-2xl border border-white/[0.08] bg-white/[0.024] p-3">
+                          <div className="flex items-center gap-2">
+                            <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-cyan-200/[0.16] bg-cyan-300/[0.055] font-mono text-[8px] text-cyan-50">{index + 1}</span>
+                            <span className="font-mono text-[8px] uppercase tracking-[0.14em] text-white/[0.44]">{step.label}</span>
+                          </div>
+                          <p className="shield-copy-safe mt-2 text-[11px] leading-5 text-white/[0.52]">{step.body}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="shield-investigator-contract-panel">
+                    <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-velmere-gold">operator next actions</p>
+                    <div className="mt-3 grid gap-2">
+                      {investigatorResult.nextActions.slice(0, 4).map((action) => (
+                        <div key={action.id} className={`shield-next-action-card shield-next-action-${action.priority}`}>
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="truncate font-mono text-[8px] uppercase tracking-[0.14em] text-white/[0.48]">{action.label}</span>
+                            <span className="shrink-0 font-mono text-[8px] uppercase tracking-[0.12em] text-velmere-gold">{action.priority}</span>
+                          </div>
+                          <p className="shield-copy-safe mt-2 text-[11px] leading-5 text-white/[0.52]">{action.body}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <div className="shield-loss-prevention-panel mt-4">
+                  <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-velmere-gold">loss-prevention layer</p>
+                  <h4 className="mt-2 text-lg font-semibold tracking-[-0.03em] text-white">{investigatorResult.lossPrevention.caseStudy}</h4>
+                  <p className="shield-copy-safe mt-2 text-xs leading-6 text-white/[0.56]">{investigatorResult.lossPrevention.caseLesson}</p>
+                  <div className="mt-3 grid gap-2 md:grid-cols-2">
+                    <div className="rounded-2xl border border-red-300/[0.14] bg-red-400/[0.045] p-3">
+                      <p className="font-mono text-[8px] uppercase tracking-[0.14em] text-red-100">psychology trap · {investigatorResult.lossPrevention.behavioralTrap.label}</p>
+                      <p className="shield-copy-safe mt-2 text-[11px] leading-5 text-red-50/[0.72]">{investigatorResult.lossPrevention.behavioralTrap.risk}</p>
+                    </div>
+                    <div className="rounded-2xl border border-emerald-300/[0.13] bg-emerald-400/[0.040] p-3">
+                      <p className="font-mono text-[8px] uppercase tracking-[0.14em] text-emerald-100">counter move</p>
+                      <p className="shield-copy-safe mt-2 text-[11px] leading-5 text-emerald-50/[0.70]">{investigatorResult.lossPrevention.behavioralTrap.counterMove}</p>
+                    </div>
+                  </div>
+                  <p className="shield-copy-safe mt-3 rounded-2xl border border-white/[0.08] bg-white/[0.024] p-3 text-[11px] leading-5 text-white/[0.52]">{investigatorResult.lossPrevention.stableRiskReminder}</p>
+                </div>
               </div>
 
               <div className="rounded-[1.6rem] border border-velmere-gold/[0.16] bg-velmere-gold/[0.055] p-4">
@@ -746,6 +958,77 @@ export default function ShieldMapClient({
                   ))}
                 </div>
               </div>
+              {evidenceReport ? (
+                <div className="xl:col-span-2 shield-evidence-report-draft">
+                  <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                    <div className="min-w-0">
+                      <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-cyan-100">evidence report draft · {evidenceReport.reportId}</p>
+                      <h3 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-white">{evidenceReport.title}</h3>
+                      <p className="shield-copy-safe mt-2 text-xs leading-6 text-white/[0.54]">{evidenceReport.warning}</p>
+                      {sourceSnapshot ? (
+                        <div className="mt-3 inline-flex flex-wrap items-center gap-2 rounded-full border border-cyan-200/[0.14] bg-cyan-300/[0.045] px-3 py-2 font-mono text-[8px] uppercase tracking-[0.12em] text-cyan-50/[0.72]">
+                          <span>snapshot · {sourceSnapshot.mode}</span>
+                          <span>{sourceSnapshot.stored ? "stored" : "already stored"}</span>
+                          <span>{sourceSnapshot.snapshot.reportId}</span>
+                        </div>
+                      ) : null}
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={copyEvidenceMarkdown}
+                        className="shield-evidence-export-button"
+                      >
+                        <Copy className="h-3.5 w-3.5" />
+                        {copiedEvidence ? "copied" : "copy md"}
+                      </button>
+                      <a
+                        href={`/api/market-integrity/evidence-export?query=${encodeURIComponent(investigatorQuery)}&format=markdown`}
+                        className="shield-evidence-export-button"
+                      >
+                        <Download className="h-3.5 w-3.5" />
+                        md
+                      </a>
+                      <a
+                        href={`/api/market-integrity/evidence-export?query=${encodeURIComponent(investigatorQuery)}&format=json`}
+                        className="shield-evidence-export-button"
+                      >
+                        <Download className="h-3.5 w-3.5" />
+                        json
+                      </a>
+                      <a
+                        href={`/api/market-integrity/source-snapshots?symbol=${encodeURIComponent(investigatorQuery)}`}
+                        className="shield-evidence-export-button"
+                      >
+                        <Database className="h-3.5 w-3.5" />
+                        snapshots
+                      </a>
+                    </div>
+                  </div>
+                  <div className="mt-4 grid gap-3 lg:grid-cols-[minmax(0,0.60fr)_minmax(0,0.40fr)]">
+                    <div className="grid gap-2">
+                      {evidenceReport.sections.slice(0, 5).map((section) => (
+                        <div key={section.id} className={`shield-evidence-section-card shield-evidence-section-${section.status}`}>
+                          <div className="flex items-center justify-between gap-3">
+                            <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-white/[0.54]">{section.title}</p>
+                            <span className="font-mono text-[8px] uppercase tracking-[0.12em] text-velmere-gold">{section.status}</span>
+                          </div>
+                          <p className="shield-copy-safe mt-2 text-[11px] leading-5 text-white/[0.52]">{section.body}</p>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="grid gap-2">
+                      <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-white/[0.38]">source ledger</p>
+                      {evidenceReport.sourceLedger.slice(0, 6).map((source) => (
+                        <div key={source.id} className={`shield-source-ledger-card shield-source-ledger-${source.mode}`}>
+                          <span className="font-mono text-[8px] uppercase tracking-[0.12em] text-white/[0.44]">{source.label}</span>
+                          <span className="ml-2 font-mono text-[8px] uppercase tracking-[0.12em] text-velmere-gold">{source.mode}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ) : null}
             </div>
           ) : null}
         </div>
@@ -786,6 +1069,75 @@ export default function ShieldMapClient({
             <p className="shield-copy-safe mt-4 rounded-2xl border border-cyan-200/[0.14] bg-cyan-300/[0.045] p-3 text-[11px] leading-6 text-cyan-50/[0.72]">
               Missing transparency is not neutral. In VLM Shield it increases risk until a current source proves otherwise.
             </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="luxury-section-wide py-4 md:py-6">
+        <div className="mx-auto grid max-w-none gap-4 lg:grid-cols-[minmax(0,0.76fr)_minmax(0,0.50fr)]">
+          <div className="rounded-[2rem] border border-cyan-200/[0.13] bg-[radial-gradient(circle_at_18%_12%,rgba(34,211,238,0.10),transparent_34%),rgba(255,255,255,0.024)] p-4 md:p-6">
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-cyan-100">AI bot development lane</p>
+            <h2 className="mt-3 max-w-4xl text-3xl font-semibold tracking-[-0.055em] text-white md:text-5xl">
+              VLM bot ma prowadzić śledztwo jak operator, nie gadać jak chatbot.
+            </h2>
+            <p className="shield-copy-safe mt-4 max-w-3xl text-sm leading-7 text-white/[0.56]">
+              Kolejna warstwa rozwoju to pamięć case&apos;u, router pytań, evidence mode i aktualny OSINT. Bot ma zawsze kończyć jednym następnym krokiem: verify supply, inspect unlocks, check liquidity, review KOL, audit contract albo draft evidence.
+            </p>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              {aiBotUpgradeLanes.map((lane) => (
+                <div key={lane.label} className={`shield-ai-bot-upgrade-card ${statePillClass(lane.state)}`}>
+                  <div className="flex min-w-0 items-center justify-between gap-2">
+                    <p className="truncate font-mono text-[9px] uppercase tracking-[0.14em]">{lane.label}</p>
+                    <span className="shrink-0 font-mono text-[8px] uppercase tracking-[0.12em]">{lane.state}</span>
+                  </div>
+                  <p className="shield-copy-safe mt-2 text-[11px] leading-5 opacity-80">{lane.body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="rounded-[2rem] border border-velmere-gold/[0.16] bg-velmere-gold/[0.055] p-4 md:p-5">
+            <p className="font-mono text-[10px] uppercase tracking-[0.20em] text-velmere-gold">bot answer contract</p>
+            <div className="mt-4 space-y-2">
+              {["Quick verdict", "Key red flags", "Evidence status", "Missing data", "Next action"].map((item, index) => (
+                <div key={item} className="flex items-center gap-3 rounded-2xl border border-white/[0.08] bg-black/[0.20] p-3">
+                  <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-velmere-gold/[0.16] bg-velmere-gold/[0.055] font-mono text-[9px] text-velmere-gold">{index + 1}</span>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-white/[0.58]">{item}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="luxury-section-wide py-4 md:py-6">
+        <div className="mx-auto grid max-w-none gap-4 lg:grid-cols-[minmax(0,0.78fr)_minmax(0,0.48fr)]">
+          <div className="rounded-[2rem] border border-emerald-300/[0.12] bg-[radial-gradient(circle_at_18%_12%,rgba(52,211,153,0.09),transparent_34%),rgba(255,255,255,0.024)] p-4 md:p-6">
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-emerald-100">investor protection psychology</p>
+            <h2 className="mt-3 max-w-4xl text-3xl font-semibold tracking-[-0.055em] text-white md:text-5xl">
+              Shield ma chronić przed decyzją z emocji, nie obiecywać magicznej wygranej.
+            </h2>
+            <p className="shield-copy-safe mt-4 max-w-3xl text-sm leading-7 text-white/[0.56]">
+              Przy tokenach po parabolicznych wzrostach człowiek często widzi tylko szansę. Bot ma pokazać też mechanikę straty: low float, unlocki, brak płynności, KOL hype, niejasny kontrakt i presję wyjścia.
+            </p>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              {investorProtectionPrinciples.map((item) => (
+                <div key={item.label} className="shield-investor-protection-card">
+                  <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-velmere-gold">{item.label}</p>
+                  <p className="shield-copy-safe mt-2 text-[11px] leading-5 text-white/[0.52]">{item.body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="rounded-[2rem] border border-velmere-gold/[0.16] bg-velmere-gold/[0.055] p-4 md:p-5">
+            <p className="font-mono text-[10px] uppercase tracking-[0.20em] text-velmere-gold">why this matters</p>
+            <p className="shield-copy-safe mt-4 text-xs leading-6 text-white/[0.56]">
+              Użytkownik nie potrzebuje kolejnego hype panelu. Potrzebuje systemu, który zatrzyma go przed wejściem w token tylko dlatego, że rośnie. Stabilne, kontrolowane podejście do ryzyka jest zwykle zdrowsze niż totalna gamba: albo szybki zysk, albo duża strata.
+            </p>
+            <div className="mt-4 grid gap-2">
+              {["slow down", "verify supply", "check unlocks", "inspect exits", "avoid all-in"].map((item) => (
+                <span key={item} className="rounded-full border border-white/[0.08] bg-black/[0.20] px-3 py-2 font-mono text-[8px] uppercase tracking-[0.12em] text-white/[0.42]">{item}</span>
+              ))}
+            </div>
           </div>
         </div>
       </section>
