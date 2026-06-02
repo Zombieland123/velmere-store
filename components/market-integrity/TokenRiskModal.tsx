@@ -4161,6 +4161,7 @@ function VlmAiSequenceOverlay({
   type VlmReadTone = "gold" | "cyan" | "green" | "red";
   type MotionQuality = "high" | "medium" | "low";
   type ReadoutPhase = "boot" | "orb" | "brain" | "readout" | "complete";
+  type VlmReadGroup = "all" | "risk" | "liquidity" | "holders" | "signals" | "source" | "access";
   type VlmReadNode = {
     label: string;
     value: string;
@@ -4169,7 +4170,7 @@ function VlmAiSequenceOverlay({
     x: number;
     y: number;
     tone?: VlmReadTone;
-    group: "risk" | "price" | "liquidity" | "holders" | "signals" | "source" | "access";
+    group: Exclude<VlmReadGroup, "all">;
   };
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -4188,6 +4189,8 @@ function VlmAiSequenceOverlay({
   const tokenInfo = result["token"];
   const isAdvanced = mode === "advanced";
   const [selectedNode, setSelectedNode] = useState<VlmReadNode | null>(null);
+  const [tileQuery, setTileQuery] = useState("");
+  const [activeTileGroup, setActiveTileGroup] = useState<VlmReadGroup>("all");
   const [isCompactViewport, setIsCompactViewport] = useState(false);
   const [motionQuality, setMotionQuality] = useState<MotionQuality>("medium");
   const [phase, setPhase] = useState<ReadoutPhase>("boot");
@@ -4212,6 +4215,9 @@ function VlmAiSequenceOverlay({
         selectedPoint: "Wybrany kafelek",
         close: "Zamknij",
         modeAdvanced: "advanced",
+        searchPlaceholder: "Szukaj kafelka",
+        allTiles: "Wszystkie",
+        filtered: "filtr",
       };
     }
     if (locale === "de") {
@@ -4230,6 +4236,9 @@ function VlmAiSequenceOverlay({
         selectedPoint: "Ausgewählte Kachel",
         close: "Schließen",
         modeAdvanced: "advanced",
+        searchPlaceholder: "Kachel suchen",
+        allTiles: "Alle",
+        filtered: "Filter",
       };
     }
     return {
@@ -4247,8 +4256,23 @@ function VlmAiSequenceOverlay({
       selectedPoint: "Selected tile",
       close: "Close",
       modeAdvanced: "advanced",
+      searchPlaceholder: "Search tile",
+      allTiles: "All",
+      filtered: "filter",
     };
   }, [locale]);
+
+  const groupLabels = useMemo<Record<VlmReadGroup, string>>(() => {
+    if (locale === "pl") {
+      return { all: ui.allTiles, risk: "Ryzyko", liquidity: "Płynność", holders: "Holderzy", signals: "Sygnały", source: "Źródła", access: "Dostęp" };
+    }
+    if (locale === "de") {
+      return { all: ui.allTiles, risk: "Risiko", liquidity: "Liquidität", holders: "Holder", signals: "Signale", source: "Quellen", access: "Zugang" };
+    }
+    return { all: ui.allTiles, risk: "Risk", liquidity: "Liquidity", holders: "Holders", signals: "Signals", source: "Sources", access: "Access" };
+  }, [locale, ui.allTiles]);
+
+  const tileGroups: VlmReadGroup[] = ["all", "risk", "liquidity", "holders", "signals", "source", "access"];
 
   const confidence = Math.round((result.confidence ?? 0.42) * 100);
   const liveBars = useMemo(() => candles.filter((candle) => Number.isFinite(candle.close)), [candles]);
@@ -4302,7 +4326,8 @@ function VlmAiSequenceOverlay({
     const kolState = signalPreview.includes("volume") || signalPreview.includes("pump") ? "hype review" : "source review";
     const contractState = tokenInfo.tokenAddress ? "verify owner" : "address needed";
     const evidenceState = result.dataQuality === "live" ? "source attached" : "partial data";
-    const missingData = result.limitations?.length ? `${Math.min(result.limitations.length, 9)} blockers` : "no blocker";
+    const missingLimitations = result.metaModel?.limitations ?? [];
+    const missingData = missingLimitations.length ? `${Math.min(missingLimitations.length, 9)} blockers` : "no blocker";
 
     const basicReadNodes: VlmReadNode[] = [
       { label: "01 risk core", value: `${riskScore}/100`, hint: levelFromScore(riskScore).toUpperCase(), detail: "Top public risk tile. It summarizes warnings without pretending to be financial advice.", x: 16, y: 22, tone: "gold", group: "risk" },
@@ -4438,8 +4463,8 @@ function VlmAiSequenceOverlay({
     const edge = Math.floor(Math.random() * 8);
     const flyMs = reducedMotion ? 360 : isAdvanced ? 3350 : 2860;
     const spawnMs = reducedMotion ? 520 : isAdvanced ? 4100 : 3180;
-    const nodeTarget = reducedMotion ? 7 : isAdvanced ? (isLow ? 14 : isMedium ? 22 : 30) : (isLow ? 8 : isMedium ? 10 : 12);
-    const packetTarget = reducedMotion ? 0 : isAdvanced ? (isLow ? 6 : isMedium ? 12 : 20) : (isLow ? 4 : 8);
+    const nodeTarget = reducedMotion ? 5 : isAdvanced ? (isLow ? 6 : isMedium ? 9 : 12) : (isLow ? 6 : isMedium ? 8 : 9);
+    const packetTarget = reducedMotion ? 0 : isAdvanced ? (isLow ? 1 : isMedium ? 3 : 5) : (isLow ? 1 : 4);
     const maxIdleLife = lineStartMs + readNodes.length * revealGapMs + lineDurationMs + 2000;
 
     type BrainPoint = {
@@ -4564,7 +4589,7 @@ function VlmAiSequenceOverlay({
 
     function resize() {
       const rect = canvas.getBoundingClientRect();
-      dpr = Math.min(window.devicePixelRatio || 1, isLow ? 1 : isMedium ? 1.12 : 1.35);
+      dpr = Math.min(window.devicePixelRatio || 1, isLow ? 1 : isMedium ? 1.0 : 1.16);
       width = Math.max(1, Math.floor(rect.width));
       height = Math.max(1, Math.floor(rect.height));
       canvas.width = Math.floor(width * dpr);
@@ -4860,6 +4885,21 @@ function VlmAiSequenceOverlay({
   }, [isAdvanced, mode, riskScore, tokenInfo.symbol, motionQuality, lineStartMs, lineDurationMs, revealGapMs, readNodes.length, autoRotate, brainZoom]);
 
   const visibleNodes = readNodes.slice(0, revealedCount);
+  const filteredVisibleNodes = useMemo(() => {
+    if (!isAdvanced) return visibleNodes;
+    const query = tileQuery.trim().toLowerCase();
+    return visibleNodes.filter((node) => {
+      const groupMatch = activeTileGroup === "all" || node.group === activeTileGroup;
+      const queryMatch =
+        !query ||
+        node.label.toLowerCase().includes(query) ||
+        node.value.toLowerCase().includes(query) ||
+        node.hint.toLowerCase().includes(query) ||
+        node.detail.toLowerCase().includes(query);
+      return groupMatch && queryMatch;
+    });
+  }, [activeTileGroup, isAdvanced, tileQuery, visibleNodes]);
+
   const phaseLabel = phase === "boot"
     ? ui.boot
     : phase === "orb"
@@ -4898,12 +4938,32 @@ function VlmAiSequenceOverlay({
         </button>
       </div>
 
-      <div className="pointer-events-none absolute left-1/2 top-[50%] z-10 -translate-x-1/2 translate-y-[4.4rem] text-center">
-        <p className="font-mono text-[9px] uppercase tracking-[0.26em] text-white/[0.36]">{locale === "pl" ? "odczyt ryzyka" : locale === "de" ? "Risikolesung" : "risk extraction"}</p>
-        <p className={`mt-1 font-mono text-[15px] font-black tracking-[0.18em] ${isAdvanced ? "text-cyan-100" : "text-velmere-gold"}`}>RISK {riskScore}%</p>
-      </div>
+      {isAdvanced ? (
+        <div className="shield-vlm-tile-cockpit z-30" data-vlm-no-drag="true" onPointerDown={(event) => event.stopPropagation()}>
+          <label className="shield-vlm-tile-search">
+            <span>{ui.filtered}</span>
+            <input
+              value={tileQuery}
+              onChange={(event) => setTileQuery(event.target.value)}
+              placeholder={ui.searchPlaceholder}
+            />
+          </label>
+          <div className="shield-vlm-tile-groups">
+            {tileGroups.map((group) => (
+              <button
+                key={group}
+                type="button"
+                onClick={() => setActiveTileGroup(group)}
+                className={activeTileGroup === group ? "shield-vlm-tile-group-active" : ""}
+              >
+                {groupLabels[group]}
+              </button>
+            ))}
+          </div>
+        </div>
+      ) : null}
 
-      {!useRailLayout ? (
+      {!useRailLayout && !isAdvanced ? (
         <svg className="pointer-events-none absolute inset-0 z-10 h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
           {readNodes.map((node, index) => {
             const pathD = linePathForNode(node, index);
@@ -4943,7 +5003,7 @@ function VlmAiSequenceOverlay({
             <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-white/[0.34]">{ui.tapPoint}</p>
           </div>
           <div className="grid gap-2">
-            {visibleNodes.map((node) => (
+            {filteredVisibleNodes.map((node) => (
               <button
                 key={`vlm-rail-${node.label}`}
                 type="button"
@@ -4964,7 +5024,8 @@ function VlmAiSequenceOverlay({
         </div>
       ) : (
         <div className={`pointer-events-none absolute inset-0 z-20 ${isAdvanced ? "shield-vlm-tile-deck" : ""}`}>
-          {visibleNodes.map((node) => {
+          {filteredVisibleNodes.map((node, index) => {
+            const safeTileIndex = index;
             const horizontal = node.x < 16 ? "translate(0%, -50%)" : node.x > 84 ? "translate(-100%, -50%)" : "translate(-50%, -50%)";
             return (
               <div
@@ -4974,13 +5035,17 @@ function VlmAiSequenceOverlay({
                     left: `${node.x}%`,
                     top: `${node.y}%`,
                     transform: isAdvanced
-                      ? `${horizontal} rotateX(${((index % 5) - 2) * 2.4}deg) rotateY(${node.x < 50 ? 7 : -7}deg) translateZ(${(index % 4) * 7}px)`
+                      ? `${horizontal} rotateX(${((safeTileIndex % 5) - 2) * 2.4}deg) rotateY(${node.x < 50 ? 7 : -7}deg) translateZ(${(safeTileIndex % 4) * 7}px)`
                       : horizontal,
                   }}
               >
                 <button
                   type="button"
-                  onClick={() => setSelectedNode(node)}
+                  data-vlm-no-drag="true"
+                  onPointerDown={(event) => event.stopPropagation()}
+                  onClick={() => {
+                    if (isAdvanced) setSelectedNode(node);
+                  }}
                   className={`pointer-events-auto shield-vlm-read-card shield-vlm-read-card-${node.tone ?? "gold"} ${isAdvanced ? "shield-vlm-read-card-advanced" : ""} ${selectedNode?.label === node.label ? "shield-vlm-read-card-active" : ""}`}
                 >
                   <div className="shield-vlm-read-card-scan" />
@@ -5001,7 +5066,7 @@ function VlmAiSequenceOverlay({
               <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-velmere-gold">{ui.selectedPoint} · {selectedNode.group}</p>
               <h3 className="mt-2 truncate font-mono text-sm uppercase tracking-[0.10em] text-white">{selectedNode.label}</h3>
             </div>
-            <button type="button" onClick={() => setSelectedNode(null)} className="rounded-full border border-white/[0.10] px-2 py-1 font-mono text-[9px] uppercase tracking-[0.12em] text-white/[0.50] hover:text-white">{ui.close}</button>
+            <button type="button" data-vlm-no-drag="true" onPointerDown={(event) => event.stopPropagation()} onClick={() => setSelectedNode(null)} className="rounded-full border border-white/[0.10] px-2 py-1 font-mono text-[9px] uppercase tracking-[0.12em] text-white/[0.50] hover:text-white">{ui.close}</button>
           </div>
           <p className="mt-3 font-mono text-2xl text-white tabular-nums">{selectedNode.value}</p>
           <p className="mt-2 text-xs leading-6 text-white/[0.56]">{selectedNode.detail}</p>

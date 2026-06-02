@@ -19,6 +19,7 @@ import {
   Workflow,
 } from "lucide-react";
 import { Link } from "@/navigation";
+import { useLocale } from "next-intl";
 
 type ShieldCaseTimelineEvent = {
   id: string;
@@ -81,6 +82,13 @@ type ShieldRulesSummary = {
   watchlistHits: number;
   risingFast: number;
   watchlist: string[];
+};
+
+type InvestigatorSuggestion = {
+  symbol: string;
+  name: string;
+  reason: string;
+  score?: number;
 };
 
 type SentinelApiResponse =
@@ -285,8 +293,10 @@ export default function ShieldMapClient({
   const [inbox, setInbox] = useState<SentinelAlert[]>([]);
   const [ruleHits, setRuleHits] = useState<ShieldRuleHit[]>([]);
   const [summary, setSummary] = useState<ShieldRulesSummary | null>(null);
+  const locale = useLocale();
   const [activeAtlasNode, setActiveAtlasNode] = useState("Agent fusion");
   const [investigatorQuery, setInvestigatorQuery] = useState("SOL");
+  const [suggestionsOpen, setSuggestionsOpen] = useState(false);
   const [investigatorLoading, setInvestigatorLoading] = useState(false);
   const [investigatorError, setInvestigatorError] = useState<string | null>(null);
   const [investigatorResult, setInvestigatorResult] = useState<InvestigatorResult | null>(null);
@@ -330,6 +340,190 @@ export default function ShieldMapClient({
       active = false;
     };
   }, []);
+
+  const shieldUi = useMemo(() => {
+    if (locale === "pl") {
+      return {
+        liveConsole: "konsola śledcza live",
+        liveTitle: "Wpisz token — Shield odpala protokół śledczy, nie hype.",
+        liveBody: "Panel używa endpointu market-integrity, buduje score supply/unlock/liquidity/KOL/contract i tworzy kolejkę OSINT do świeżego researchu. Brak danych zwiększa ryzyko.",
+        placeholder: "SOL, BTC, OM albo adres kontraktu",
+        scan: "Skanuj",
+        operatorRule: "zasada operatora",
+        operatorRuleBody: "Werdykt z rynku bez web OSINT jest tylko pre-screenem. Finalna analiza musi sprawdzić supply, vesting, KOL, unlocki i kontrakt w aktualnych źródłach.",
+        suggestionLabel: "propozycje tokenów",
+        noSuggestion: "Brak propozycji — wpisz symbol lub adres kontraktu.",
+        open: "Otwórz",
+        score: "ryzyko",
+        investorProtection: "psychologia ochrony inwestora",
+        investorTitle: "Shield ma chronić przed decyzją z emocji, nie obiecywać magicznej wygranej.",
+        investorBody: "Przy tokenach po parabolicznych wzrostach człowiek często widzi tylko szansę. Bot ma pokazać też mechanikę straty: low float, unlocki, brak płynności, KOL hype, niejasny kontrakt i presję wyjścia.",
+        whyMatters: "dlaczego to ważne",
+        whyMattersBody: "Użytkownik nie potrzebuje kolejnego hype panelu. Potrzebuje systemu, który zatrzyma go przed wejściem w token tylko dlatego, że rośnie. Stabilne, kontrolowane podejście do ryzyka jest zwykle zdrowsze niż totalna gamba.",
+        trustPsychology: "psychologia zaufania",
+        trustTitle: "Premium bezpieczeństwo to spokojna kontrola, nie panika.",
+        trustBody: "Shield prowadzi użytkownika przez niepewność: pokazuje co wiadomo, czego brakuje i jaki jest następny bezpieczny krok.",
+      };
+    }
+    if (locale === "de") {
+      return {
+        liveConsole: "Live-Ermittlungskonsole",
+        liveTitle: "Token eingeben — Shield startet Untersuchung, keinen Hype.",
+        liveBody: "Das Panel nutzt den market-integrity Endpoint, bewertet Supply/Unlock/Liquidity/KOL/Contract und erstellt eine OSINT-Warteschlange für aktuelle Recherche. Fehlende Daten erhöhen das Risiko.",
+        placeholder: "SOL, BTC, OM oder Contract-Adresse",
+        scan: "Scannen",
+        operatorRule: "Operator-Regel",
+        operatorRuleBody: "Ein Markt-Verdikt ohne Web-OSINT ist nur ein Pre-Screen. Die finale Analyse muss Supply, Vesting, KOL, Unlocks und Contract in aktuellen Quellen prüfen.",
+        suggestionLabel: "Token-Vorschläge",
+        noSuggestion: "Keine Vorschläge — Symbol oder Contract-Adresse eingeben.",
+        open: "Öffnen",
+        score: "Risiko",
+        investorProtection: "Psychologie des Anlegerschutzes",
+        investorTitle: "Shield soll emotionale Entscheidungen bremsen, nicht Gewinne versprechen.",
+        investorBody: "Bei parabolischen Token sieht man oft nur die Chance. Der Bot zeigt auch Verlustmechanik: Low Float, Unlocks, dünne Liquidität, KOL-Hype, unklarer Contract und Exit-Druck.",
+        whyMatters: "warum das wichtig ist",
+        whyMattersBody: "Nutzer brauchen kein weiteres Hype-Panel. Sie brauchen ein System, das vor einem Einstieg nur wegen steigender Kurse bremst. Kontrolliertes Risiko ist gesünder als Glücksspiel.",
+        trustPsychology: "Vertrauenspsychologie",
+        trustTitle: "Premium-Sicherheit ist ruhige Kontrolle, keine Panik.",
+        trustBody: "Shield führt durch Unsicherheit: was bekannt ist, was fehlt und welcher nächste sichere Schritt sinnvoll ist.",
+      };
+    }
+    return {
+      liveConsole: "live investigator console",
+      liveTitle: "Enter a token — Shield starts an investigation, not hype.",
+      liveBody: "The panel uses the market-integrity endpoint, scores supply/unlock/liquidity/KOL/contract and creates an OSINT queue for fresh research. Missing data increases risk.",
+      placeholder: "SOL, BTC, OM or contract address",
+      scan: "Scan",
+      operatorRule: "operator rule",
+      operatorRuleBody: "A market verdict without web OSINT is only a pre-screen. Final analysis must verify supply, vesting, KOLs, unlocks and contract in current sources.",
+      suggestionLabel: "token suggestions",
+      noSuggestion: "No suggestions — enter symbol or contract address.",
+      open: "Open",
+      score: "risk",
+      investorProtection: "investor protection psychology",
+      investorTitle: "Shield protects against emotional decisions, not promises a win.",
+      investorBody: "After parabolic moves, users often see only the opportunity. The bot must also show loss mechanics: low float, unlocks, thin liquidity, KOL hype, unclear contract and exit pressure.",
+      whyMatters: "why this matters",
+      whyMattersBody: "Users do not need another hype panel. They need a system that slows them down before entering a token only because it is rising. Controlled risk is healthier than gambling.",
+      trustPsychology: "trust psychology",
+      trustTitle: "Premium safety is calm control, not panic.",
+      trustBody: "Shield guides users through uncertainty: what is known, what is missing and what the next safer step is.",
+    };
+  }, [locale]);
+
+  const localizedInvestigatorGuardrails = useMemo(() => {
+    if (locale === "pl") {
+      return [
+        "Bez hype’u, bez sygnałów kup/sprzedaj i bez języka gwarantującego bezpieczeństwo.",
+        "Bez oskarżeń o scam/manipulację bez dowodów; używaj: czerwona flaga / wymaga review.",
+        "Brak przejrzystości vestingu, holderów albo kontraktu zwiększa ryzyko.",
+        "Finalny werdykt tokena musi używać świeżego OSINT i aktualnych danych rynkowych.",
+      ];
+    }
+    if (locale === "de") {
+      return [
+        "Kein Hype, keine Buy/Sell Calls und keine Sicherheitsversprechen.",
+        "Keine Scam-/Manipulationsvorwürfe ohne Belege; nutze Red Flag / Review erforderlich.",
+        "Fehlende Vesting-, Holder- oder Contract-Transparenz erhöht das Risiko.",
+        "Finale Token-Bewertung braucht aktuelle Web-OSINT und aktuelle Marktdaten.",
+      ];
+    }
+    return [
+      "No hype, no buy/sell calls and no safe-investment language.",
+      "No scam/manipulation accusation without evidence; use red flag / requires review.",
+      "Missing vesting, holder or contract transparency increases risk.",
+      "Final token verdict must use fresh web OSINT plus current market data.",
+    ];
+  }, [locale]);
+
+  const localizedInvestorProtectionPrinciples = useMemo(() => {
+    if (locale === "pl") {
+      return [
+        { label: "Hype nie jest dowodem", body: "Pionowy wykres może być zrobiony przez low float, buybacki, cienką płynność, premie dla KOL albo spóźnione FOMO retailu." },
+        { label: "Brak danych to ryzyko", body: "Nieznany vesting, ukryty OTC, niejasni holderzy albo nieweryfikowalny kontrakt powinny zatrzymać użytkownika przed wejściem." },
+        { label: "Stabilność bije loterię", body: "Wolniejszy, limitowany ryzykiem plan jest zdrowszy niż gra jednym tokenem: albo szybki zysk, albo duża strata." },
+        { label: "Dowód przed pewnością", body: "Bot nie ma sprzedawać pewności. Ma pokazać, co jest confirmed, likely, unverified, red flag albo unknown." },
+      ];
+    }
+    if (locale === "de") {
+      return [
+        { label: "Hype ist kein Beweis", body: "Ein vertikaler Chart kann durch Low Float, Buybacks, dünne Liquidität, KOL-Anreize oder spätes Retail-FOMO entstehen." },
+        { label: "Fehlende Daten sind Risiko", body: "Unbekanntes Vesting, verstecktes OTC, unklare Holder oder unverifizierbare Contracts sollten den Nutzer bremsen." },
+        { label: "Stabilität schlägt Lotterie", body: "Ein langsamer, risikobegrenzter Plan ist gesünder als ein einzelner Token als Alles-oder-nichts-Wette." },
+        { label: "Beleg vor Überzeugung", body: "Der Bot verkauft keine Sicherheit. Er zeigt confirmed, likely, unverified, red flag oder unknown." },
+      ];
+    }
+    return [
+      { label: "Hype is not proof", body: "A vertical chart can be engineered by low float, buybacks, thin liquidity, KOL incentives or late retail FOMO." },
+      { label: "Missing data is risk", body: "Unknown vesting, hidden OTC, unclear holders or unverifiable contracts should slow the user down before entry." },
+      { label: "Stable beats lottery thinking", body: "A slower, risk-capped plan is often healthier than gambling on one token that can either moon or destroy the account." },
+      { label: "Evidence before conviction", body: "The bot should never sell certainty. It should show what is confirmed, likely, unverified, red flag or unknown." },
+    ];
+  }, [locale]);
+
+  const localizedTrustPsychologyRails = useMemo(() => {
+    if (locale === "pl") {
+      return [
+        { label: "Spokojne zagrożenie", body: "Używaj języka anomalia/review. Czerwień oznacza priorytet, nie dramę. To zmniejsza panikę i zwiększa zaufanie." },
+        { label: "Pokaż niepewność", body: "Gdy brakuje danych, pokaż brakujące źródło. Użytkownik bardziej ufa systemowi, który przyznaje, że dowody są niepełne." },
+        { label: "Jeden następny krok", body: "Każdy złożony sygnał ma kończyć się jednym ruchem operatora: depth, holderzy, kontrakt albo czekanie." },
+        { label: "Prywatny rdzeń", body: "Tłumacz workflow, nie sekretne wagi. Produkt jest transparentny bez ujawniania systemu." },
+      ];
+    }
+    if (locale === "de") {
+      return [
+        { label: "Ruhige Gefahr", body: "Nutze Anomalie-/Review-Sprache. Rot bedeutet Priorität, nicht Drama. Das senkt Panik und stärkt Vertrauen." },
+        { label: "Unsicherheit zeigen", body: "Wenn Daten fehlen, zeige die fehlende Quelle. Nutzer vertrauen einem System, das unvollständige Belege zugibt." },
+        { label: "Ein nächster Schritt", body: "Jedes komplexe Signal endet mit einem Operator-Schritt: Depth prüfen, Holder verifizieren, Contract auditieren oder warten." },
+        { label: "Privater Kern", body: "Erkläre Workflow, nicht geheime Gewichte. Das Produkt wirkt transparent, ohne den Kern offenzulegen." },
+      ];
+    }
+    return [
+      { label: "Calm danger", body: "Use anomaly/review language. Red highlights are for priority, not drama. This lowers panic and increases trust." },
+      { label: "Show uncertainty", body: "When data is missing, show the missing source. Users trust a system that admits incomplete evidence." },
+      { label: "One next action", body: "Every complex signal should end with one clear operator move: inspect depth, verify holders, audit contract, or wait." },
+      { label: "Private core", body: "Explain the workflow, not the secret weights. The product feels transparent without exposing the system." },
+    ];
+  }, [locale]);
+
+  const investigatorSuggestions = useMemo<InvestigatorSuggestion[]>(() => {
+    const common: InvestigatorSuggestion[] = [
+      { symbol: "BTC", name: "Bitcoin", reason: "market core" },
+      { symbol: "ETH", name: "Ethereum", reason: "market core" },
+      { symbol: "SOL", name: "Solana", reason: "default review" },
+      { symbol: "OM", name: "Mantra", reason: "case study" },
+      { symbol: "LAB", name: "LAB", reason: "critical sweep" },
+      { symbol: "H", name: "Humanity", reason: "high risk sweep" },
+      { symbol: "HOME", name: "HOME", reason: "high risk sweep" },
+      { symbol: "PUMP", name: "Pump.fun", reason: "social/liquidity review" },
+      { symbol: "DOGE", name: "Dogecoin", reason: "meme/liquidity review" },
+      { symbol: "PEPE", name: "Pepe", reason: "meme/liquidity review" },
+    ];
+
+    const dynamic = [
+      ...inbox.map((item) => ({ symbol: item.symbol, name: item.name, reason: item.level, score: item.score })),
+      ...ruleHits.map((item) => ({ symbol: item.symbol, name: item.name, reason: item.severity, score: item.score })),
+      ...(summary?.watchlist ?? defaultWatchlist.split(",")).map((symbol) => ({ symbol, name: symbol, reason: "watchlist" })),
+      ...common,
+    ];
+
+    const seen = new Set<string>();
+    const normalized = dynamic
+      .filter((item) => item.symbol)
+      .map((item) => ({ ...item, symbol: item.symbol.toUpperCase().trim(), name: item.name || item.symbol }))
+      .filter((item) => {
+        if (seen.has(item.symbol)) return false;
+        seen.add(item.symbol);
+        return true;
+      });
+
+    const query = investigatorQuery.trim().toLowerCase();
+    if (!query) return normalized.slice(0, 6);
+
+    return normalized
+      .filter((item) => item.symbol.toLowerCase().startsWith(query) || item.name.toLowerCase().includes(query))
+      .slice(0, 6);
+  }, [inbox, investigatorQuery, ruleHits, summary?.watchlist]);
 
   async function runInvestigatorScan(event?: FormEvent<HTMLFormElement>) {
     event?.preventDefault();
@@ -683,6 +877,64 @@ export default function ShieldMapClient({
     { label: "Launch safety", value: "38%", body: "Legal-safe copy exists, but audit storage, rate limits and evidence renderer remain blockers." },
   ];
 
+  const primeCryptoResearchCards = useMemo(() => {
+    if (locale === "pl") {
+      return [
+        {
+          label: "Bajak Protocol",
+          value: "numerical audit",
+          body: "Research Lab może pokazywać badania liczb pierwszych jako audyt numeryczny: redukcja błędu R(x), testy falsyfikacyjne i zeta-zero alignment — bez mówienia, że to dowód RH.",
+        },
+        {
+          label: "Kryptografia",
+          value: "safe boundary",
+          body: "Sekcja może tłumaczyć, dlaczego liczby pierwsze są ważne w kryptografii, ale nie może sugerować łamania portfeli, kluczy prywatnych ani Bitcoina.",
+        },
+        {
+          label: "Odwrócony wzór",
+          value: "research mode",
+          body: "Wątek odwróconego wzoru pokazujemy jako hipotezę/research pipeline: dataset, benchmark, negatywne kontrole, replikacja i peer review.",
+        },
+      ];
+    }
+    if (locale === "de") {
+      return [
+        {
+          label: "Bajak Protocol",
+          value: "numerisches Audit",
+          body: "Research Lab kann Primzahl-Forschung als numerisches Audit zeigen: R(x)-Fehlerreduktion, Falsifikationstests und Zeta-Zero Alignment — ohne RH-Beweis zu behaupten.",
+        },
+        {
+          label: "Kryptografie",
+          value: "sichere Grenze",
+          body: "Die Sektion erklärt, warum Primzahlen für Kryptografie wichtig sind, ohne Wallets, Private Keys oder Bitcoin-Angriffe zu suggerieren.",
+        },
+        {
+          label: "Inverse Formel",
+          value: "Research Mode",
+          body: "Die inverse Formel wird als Hypothese/Pipeline dargestellt: Dataset, Benchmark, Negativkontrollen, Replikation und Peer Review.",
+        },
+      ];
+    }
+    return [
+      {
+        label: "Bajak Protocol",
+        value: "numerical audit",
+        body: "Research Lab can present prime-number work as a numerical audit: R(x) error reduction, falsification tests and zeta-zero alignment — without claiming an RH proof.",
+      },
+      {
+        label: "Cryptography",
+        value: "safe boundary",
+        body: "The section explains why primes matter in cryptography, without suggesting wallet, private-key or Bitcoin-breaking capabilities.",
+      },
+      {
+        label: "Inverse formula",
+        value: "research mode",
+        body: "The inverse-formula thread is framed as a hypothesis/pipeline: dataset, benchmark, negative controls, replication and peer review.",
+      },
+    ];
+  }, [locale]);
+
   const statePillClass = (state: string) =>
     state === "ready"
       ? "border-emerald-300/[0.18] bg-emerald-400/[0.055] text-emerald-100"
@@ -814,30 +1066,66 @@ export default function ShieldMapClient({
         <div className="shield-investigator-live-console mx-auto max-w-none rounded-[2rem] border border-cyan-300/[0.14] bg-[radial-gradient(circle_at_18%_12%,rgba(34,211,238,0.10),transparent_34%),rgba(255,255,255,0.024)] p-4 md:p-6">
           <div className="grid gap-5 xl:grid-cols-[minmax(0,0.78fr)_minmax(22rem,0.42fr)] xl:items-start">
             <div className="min-w-0">
-              <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-cyan-100">live investigator console</p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-cyan-100">{shieldUi.liveConsole}</p>
               <h2 className="mt-3 max-w-4xl text-3xl font-semibold tracking-[-0.055em] text-white md:text-5xl">
-                Wpisz token — Shield odpala protokół śledczy, nie hype.
+                {shieldUi.liveTitle}
               </h2>
               <p className="shield-copy-safe mt-4 max-w-3xl text-sm leading-7 text-white/[0.56]">
-                Ten panel używa aktualnego endpointu market-integrity, buduje score supply/unlock/liquidity/KOL/contract i generuje zapytania OSINT do świeżego web researchu. Brak danych zwiększa ryzyko.
+                {shieldUi.liveBody}
               </p>
-              <form onSubmit={runInvestigatorScan} className="mt-5 grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
-                <label className="group flex min-h-14 items-center gap-3 rounded-full border border-white/[0.10] bg-black/[0.28] px-4 transition focus-within:border-cyan-200/[0.35]">
-                  <Search className="h-4 w-4 shrink-0 text-cyan-100/[0.62]" />
-                  <input
-                    value={investigatorQuery}
-                    onChange={(event) => setInvestigatorQuery(event.target.value)}
-                    placeholder="SOL, BTC, OM albo contract address"
-                    className="min-w-0 flex-1 bg-transparent font-mono text-[13px] uppercase tracking-[0.12em] text-white outline-none placeholder:text-white/[0.25]"
-                  />
-                </label>
+              <form onSubmit={runInvestigatorScan} className="relative mt-5 grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
+                <div className="relative min-w-0">
+                  <label className="group flex min-h-14 items-center gap-3 rounded-full border border-white/[0.10] bg-black/[0.28] px-4 transition focus-within:border-cyan-200/[0.35]">
+                    <Search className="h-4 w-4 shrink-0 text-cyan-100/[0.62]" />
+                    <input
+                      value={investigatorQuery}
+                      onChange={(event) => {
+                        setInvestigatorQuery(event.target.value);
+                        setSuggestionsOpen(true);
+                      }}
+                      onFocus={() => setSuggestionsOpen(true)}
+                      onBlur={() => window.setTimeout(() => setSuggestionsOpen(false), 140)}
+                      placeholder={shieldUi.placeholder}
+                      className="min-w-0 flex-1 bg-transparent font-mono text-[13px] uppercase tracking-[0.12em] text-white outline-none placeholder:text-white/[0.25]"
+                    />
+                  </label>
+                  {suggestionsOpen ? (
+                    <div className="shield-investigator-suggest-panel">
+                      <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-cyan-100/[0.58]">{shieldUi.suggestionLabel}</p>
+                      <div className="mt-2 grid gap-1.5">
+                        {investigatorSuggestions.length ? investigatorSuggestions.map((item) => (
+                          <button
+                            key={`${item.symbol}-${item.reason}`}
+                            type="button"
+                            onMouseDown={(event) => event.preventDefault()}
+                            onClick={() => {
+                              setInvestigatorQuery(item.symbol);
+                              setSuggestionsOpen(false);
+                            }}
+                            className="shield-investigator-suggest-item"
+                          >
+                            <span className="min-w-0">
+                              <span className="block truncate font-mono text-[11px] uppercase tracking-[0.12em] text-white">{item.symbol}</span>
+                              <span className="block truncate text-[11px] text-white/[0.44]">{item.name}</span>
+                            </span>
+                            <span className="shrink-0 rounded-full border border-white/[0.08] bg-white/[0.035] px-2 py-1 font-mono text-[8px] uppercase tracking-[0.10em] text-white/[0.42]">
+                              {item.score !== undefined ? `${item.score}/100` : item.reason}
+                            </span>
+                          </button>
+                        )) : (
+                          <p className="shield-copy-safe rounded-2xl border border-white/[0.08] bg-white/[0.025] p-3 text-xs text-white/[0.48]">{shieldUi.noSuggestion}</p>
+                        )}
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
                 <button
                   type="submit"
                   disabled={investigatorLoading}
                   className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full border border-cyan-200/[0.22] bg-cyan-300/[0.075] px-6 font-mono text-[10px] uppercase tracking-[0.16em] text-cyan-50 transition hover:bg-cyan-300/[0.12] disabled:cursor-wait disabled:opacity-60"
                 >
                   {investigatorLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Radar className="h-4 w-4" />}
-                  scan
+                  {shieldUi.scan}
                 </button>
               </form>
               {investigatorError ? (
@@ -846,9 +1134,9 @@ export default function ShieldMapClient({
             </div>
 
             <div className="rounded-[1.5rem] border border-white/[0.09] bg-black/[0.28] p-4">
-              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-velmere-gold">operator rule</p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-velmere-gold">{shieldUi.operatorRule}</p>
               <p className="shield-copy-safe mt-3 text-xs leading-6 text-white/[0.54]">
-                Verdict z rynku bez web OSINT jest tylko pre-screenem. Finalna analiza musi sprawdzić supply, vesting, KOL, unlocki i kontrakt w aktualnych źródłach.
+                {shieldUi.operatorRuleBody}
               </p>
               <div className="mt-4 grid grid-cols-2 gap-2">
                 {["float", "unlock", "liquidity", "KOL"].map((item) => (
@@ -1112,15 +1400,15 @@ export default function ShieldMapClient({
       <section className="luxury-section-wide py-4 md:py-6">
         <div className="mx-auto grid max-w-none gap-4 lg:grid-cols-[minmax(0,0.78fr)_minmax(0,0.48fr)]">
           <div className="rounded-[2rem] border border-emerald-300/[0.12] bg-[radial-gradient(circle_at_18%_12%,rgba(52,211,153,0.09),transparent_34%),rgba(255,255,255,0.024)] p-4 md:p-6">
-            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-emerald-100">investor protection psychology</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-emerald-100">{shieldUi.investorProtection}</p>
             <h2 className="mt-3 max-w-4xl text-3xl font-semibold tracking-[-0.055em] text-white md:text-5xl">
-              Shield ma chronić przed decyzją z emocji, nie obiecywać magicznej wygranej.
+              {shieldUi.investorTitle}
             </h2>
             <p className="shield-copy-safe mt-4 max-w-3xl text-sm leading-7 text-white/[0.56]">
-              Przy tokenach po parabolicznych wzrostach człowiek często widzi tylko szansę. Bot ma pokazać też mechanikę straty: low float, unlocki, brak płynności, KOL hype, niejasny kontrakt i presję wyjścia.
+              {shieldUi.investorBody}
             </p>
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              {investorProtectionPrinciples.map((item) => (
+              {localizedInvestorProtectionPrinciples.map((item) => (
                 <div key={item.label} className="shield-investor-protection-card">
                   <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-velmere-gold">{item.label}</p>
                   <p className="shield-copy-safe mt-2 text-[11px] leading-5 text-white/[0.52]">{item.body}</p>
@@ -1129,9 +1417,9 @@ export default function ShieldMapClient({
             </div>
           </div>
           <div className="rounded-[2rem] border border-velmere-gold/[0.16] bg-velmere-gold/[0.055] p-4 md:p-5">
-            <p className="font-mono text-[10px] uppercase tracking-[0.20em] text-velmere-gold">why this matters</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.20em] text-velmere-gold">{shieldUi.whyMatters}</p>
             <p className="shield-copy-safe mt-4 text-xs leading-6 text-white/[0.56]">
-              Użytkownik nie potrzebuje kolejnego hype panelu. Potrzebuje systemu, który zatrzyma go przed wejściem w token tylko dlatego, że rośnie. Stabilne, kontrolowane podejście do ryzyka jest zwykle zdrowsze niż totalna gamba: albo szybki zysk, albo duża strata.
+              {shieldUi.whyMattersBody}
             </p>
             <div className="mt-4 grid gap-2">
               {["slow down", "verify supply", "check unlocks", "inspect exits", "avoid all-in"].map((item) => (
@@ -1358,6 +1646,35 @@ export default function ShieldMapClient({
             <p className="shield-copy-safe mt-5 rounded-2xl border border-amber-300/[0.16] bg-amber-300/[0.055] p-3 text-[11px] leading-6 text-amber-100/[0.84]">
               Evidence export is an internal review aid: Not financial advice. Algorithmic risk flag only. Manual review required.
             </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="prime-crypto-research-lab" className="luxury-section-wide border-t border-white/[0.06] py-10 md:py-14">
+        <div className="mx-auto max-w-none">
+          <div className="rounded-[2rem] border border-velmere-gold/[0.12] bg-gradient-to-br from-velmere-gold/[0.07] via-white/[0.025] to-cyan-300/[0.05] p-6 md:p-8">
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-velmere-gold">
+              {locale === "pl" ? "research lab · liczby pierwsze / kryptografia" : locale === "de" ? "research lab · primzahlen / kryptografie" : "research lab · primes / cryptography"}
+            </p>
+            <h2 className="mt-3 max-w-5xl text-3xl font-semibold tracking-[-0.055em] text-white md:text-5xl">
+              {locale === "pl" ? "Velmère może mieć własny dział badań, ale komunikacja musi być rygorystyczna." : locale === "de" ? "Velmère kann ein eigenes Forschungslabor zeigen, aber die Sprache muss streng bleiben." : "Velmère can show a research lab, but the language must stay rigorous."}
+            </h2>
+            <p className="shield-copy-safe mt-4 max-w-4xl text-sm leading-7 text-white/[0.58]">
+              {locale === "pl"
+                ? "Wątki liczb pierwszych, zeta-zero, Bajak Protocol i odwrócony wzór są mocne marketingowo, ale muszą być pokazane jako audyt numeryczny i research pipeline. Zero obietnic łamania kryptografii, zero claimów o dowodzie RH, zero hype'u bez replikacji."
+                : locale === "de"
+                  ? "Primzahlen, Zeta-Zeros, Bajak Protocol und inverse Formel sind stark für Storytelling, müssen aber als numerisches Audit und Research-Pipeline gezeigt werden. Keine Versprechen zum Brechen von Kryptografie, kein RH-Beweis-Claim, kein Hype ohne Replikation."
+                  : "Prime numbers, zeta zeros, the Bajak Protocol and the inverse formula are powerful for storytelling, but they must be presented as a numerical audit and research pipeline. No crypto-breaking promises, no RH-proof claim, no hype without replication."}
+            </p>
+            <div className="mt-6 grid gap-4 md:grid-cols-3">
+              {primeCryptoResearchCards.map((item) => (
+                <article key={item.label} className="rounded-[1.5rem] border border-white/[0.08] bg-black/[0.24] p-5">
+                  <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/[0.36]">{item.label}</p>
+                  <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.14em] text-velmere-gold">{item.value}</p>
+                  <p className="shield-copy-safe mt-3 text-xs leading-6 text-white/[0.54]">{item.body}</p>
+                </article>
+              ))}
+            </div>
           </div>
         </div>
       </section>

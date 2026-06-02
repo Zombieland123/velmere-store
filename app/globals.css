@@ -2868,3 +2868,175 @@
     transition: none !important;
   }
 }
+
+
+@layer components {
+  .shield-vlm-tile-cockpit {
+    position: absolute;
+    left: 50%;
+    top: 4.9rem;
+    display: grid;
+    width: min(58rem, calc(100vw - 2rem));
+    transform: translateX(-50%);
+    grid-template-columns: minmax(12rem, 18rem) minmax(0, 1fr);
+    gap: 0.65rem;
+    pointer-events: auto;
+  }
+
+  .shield-vlm-tile-search {
+    display: flex;
+    min-height: 2.45rem;
+    align-items: center;
+    gap: 0.7rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(255,255,255,0.10);
+    background: rgba(0,0,0,0.34);
+    padding: 0.35rem 0.78rem;
+    backdrop-filter: blur(16px);
+  }
+
+  .shield-vlm-tile-search span {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.48rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(200,169,106,0.80);
+  }
+
+  .shield-vlm-tile-search input {
+    min-width: 0;
+    flex: 1;
+    border: 0;
+    background: transparent;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: rgba(245,240,232,0.88);
+    outline: none;
+  }
+
+  .shield-vlm-tile-search input::placeholder {
+    color: rgba(245,240,232,0.28);
+  }
+
+  .shield-vlm-tile-groups {
+    display: flex;
+    min-width: 0;
+    gap: 0.4rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+
+  .shield-vlm-tile-groups::-webkit-scrollbar {
+    display: none;
+  }
+
+  .shield-vlm-tile-groups button {
+    min-height: 2.45rem;
+    flex: 0 0 auto;
+    border-radius: 9999px;
+    border: 1px solid rgba(255,255,255,0.09);
+    background: rgba(255,255,255,0.035);
+    padding: 0.48rem 0.82rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(245,240,232,0.46);
+    backdrop-filter: blur(14px);
+    transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
+  }
+
+  .shield-vlm-tile-groups button:hover,
+  .shield-vlm-tile-groups .shield-vlm-tile-group-active {
+    border-color: rgba(34,211,238,0.25);
+    background: rgba(34,211,238,0.075);
+    color: rgba(207,250,254,0.92);
+  }
+
+  .shield-vlm-read-card-advanced {
+    min-width: 11.2rem;
+    max-width: 13.4rem;
+  }
+
+  .shield-vlm-read-card-active {
+    border-color: rgba(34,211,238,0.42) !important;
+    background: rgba(34,211,238,0.075) !important;
+    box-shadow:
+      0 20px 76px rgba(0,0,0,0.38),
+      0 0 44px rgba(34,211,238,0.12) !important;
+  }
+}
+
+@media (max-width: 980px) {
+  .shield-vlm-tile-cockpit {
+    top: 5.2rem;
+    grid-template-columns: 1fr;
+    width: min(34rem, calc(100vw - 1.25rem));
+  }
+}
+
+@media (max-width: 680px) {
+  .shield-vlm-tile-cockpit {
+    top: 6.2rem;
+  }
+
+  .shield-vlm-tile-search,
+  .shield-vlm-tile-groups button {
+    min-height: 2.65rem;
+  }
+
+  .shield-vlm-tile-search input {
+    font-size: 1rem;
+  }
+}
+
+
+@layer components {
+  .shield-investigator-suggest-panel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + 0.55rem);
+    z-index: 55;
+    max-height: 22rem;
+    overflow-y: auto;
+    border-radius: 1.35rem;
+    border: 1px solid rgba(34,211,238,0.16);
+    background:
+      radial-gradient(circle at 18% 10%, rgba(34,211,238,0.09), transparent 38%),
+      rgba(2,8,12,0.94);
+    padding: 0.85rem;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.42);
+    backdrop-filter: blur(18px);
+  }
+
+  .shield-investigator-suggest-item {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.85rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(255,255,255,0.07);
+    background: rgba(255,255,255,0.026);
+    padding: 0.7rem 0.78rem;
+    text-align: left;
+    transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+  }
+
+  .shield-investigator-suggest-item:hover {
+    transform: translateY(-1px);
+    border-color: rgba(34,211,238,0.22);
+    background: rgba(34,211,238,0.065);
+  }
+}
+
+@media (max-width: 700px) {
+  .shield-investigator-suggest-panel {
+    max-height: 18rem;
+    border-radius: 1.15rem;
+  }
+}
