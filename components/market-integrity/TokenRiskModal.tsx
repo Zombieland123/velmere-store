@@ -4192,8 +4192,63 @@ function VlmAiSequenceOverlay({
   const [motionQuality, setMotionQuality] = useState<MotionQuality>("medium");
   const [phase, setPhase] = useState<ReadoutPhase>("boot");
   const [revealedCount, setRevealedCount] = useState(0);
-  const [autoRotate, setAutoRotate] = useState(true);
-  const [brainZoom, setBrainZoom] = useState(1);
+  const [autoRotate] = useState(true);
+  const [brainZoom] = useState(1);
+  const locale = useLocale();
+  const ui = useMemo(() => {
+    if (locale === "pl") {
+      return {
+        boot: "Start rdzenia VLM",
+        orb: "Rdzeń tokena wchodzi do analizy",
+        brain: "Formowanie mózgu 360",
+        readout: "Odczyt kafelków ryzyka",
+        complete: "Odczyt neuronowy zakończony",
+        motion: "tryb ruchu",
+        rotateHint: "Przeciągnij rdzeń, żeby obrócić mózg 360°",
+        back: "Wróć do wykresu",
+        pointsAdvanced: "20 kafelków śledczych",
+        pointsBasic: "10 kafelków śledczych",
+        tapPoint: "Kliknij kafelek po szczegóły",
+        selectedPoint: "Wybrany kafelek",
+        close: "Zamknij",
+        modeAdvanced: "advanced",
+      };
+    }
+    if (locale === "de") {
+      return {
+        boot: "VLM-Kern startet",
+        orb: "Token-Kern fliegt in die Analyse",
+        brain: "360-Gehirn wird gebildet",
+        readout: "Risikokacheln werden gelesen",
+        complete: "Neuronaler Read abgeschlossen",
+        motion: "Bewegungsmodus",
+        rotateHint: "Ziehe den Kern, um das Gehirn 360° zu drehen",
+        back: "Zurück zum Chart",
+        pointsAdvanced: "20 Ermittlungs-Kacheln",
+        pointsBasic: "10 Ermittlungs-Kacheln",
+        tapPoint: "Kachel antippen für Details",
+        selectedPoint: "Ausgewählte Kachel",
+        close: "Schließen",
+        modeAdvanced: "advanced",
+      };
+    }
+    return {
+      boot: "VLM core boot",
+      orb: "token core inbound",
+      brain: "360 neural brain forming",
+      readout: "extracting risk tiles",
+      complete: "neural read complete",
+      motion: "motion",
+      rotateHint: "Drag the core to rotate the 360° brain",
+      back: "Back to chart",
+      pointsAdvanced: "20 investigator tiles",
+      pointsBasic: "10 investigator tiles",
+      tapPoint: "Tap a tile for detail",
+      selectedPoint: "Selected tile",
+      close: "Close",
+      modeAdvanced: "advanced",
+    };
+  }, [locale]);
 
   const confidence = Math.round((result.confidence ?? 0.42) * 100);
   const liveBars = useMemo(() => candles.filter((candle) => Number.isFinite(candle.close)), [candles]);
@@ -4238,47 +4293,57 @@ function VlmAiSequenceOverlay({
   }, []);
 
   const readNodes = useMemo<VlmReadNode[]>(() => {
+    const supplyRatio = result.metrics.circulatingSupply && (result.metrics.totalSupply || result.metrics.maxSupply)
+      ? `${((result.metrics.circulatingSupply / ((result.metrics.totalSupply ?? result.metrics.maxSupply) || 1)) * 100).toFixed(1)}%`
+      : "unknown";
+    const liquidityValue = orderbook ? `${liquidityStress}/100` : result.metrics.liquidityToMarketCapPercent !== undefined ? `${result.metrics.liquidityToMarketCapPercent.toFixed(1)}%` : "partial";
+    const volumeStress = flowRatio > 0.5 ? "high turnover" : flowRatio > 0.15 ? "active flow" : "normal flow";
+    const unlockState = result.metrics.fdvToMarketCapRatio && result.metrics.fdvToMarketCapRatio > 4 ? "overhang risk" : "needs OSINT";
+    const kolState = signalPreview.includes("volume") || signalPreview.includes("pump") ? "hype review" : "source review";
+    const contractState = tokenInfo.tokenAddress ? "verify owner" : "address needed";
+    const evidenceState = result.dataQuality === "live" ? "source attached" : "partial data";
+    const missingData = result.limitations?.length ? `${Math.min(result.limitations.length, 9)} blockers` : "no blocker";
+
     const basicReadNodes: VlmReadNode[] = [
-      { label: "01 risk core", value: `${riskScore}/100`, hint: levelFromScore(riskScore).toUpperCase(), detail: "Main public risk score from price, liquidity, source confidence and active warning signals.", x: 18, y: 20, tone: "gold", group: "risk" },
-      { label: "02 live price", value: formatUsd(result.metrics.currentPrice), hint: "top value", detail: "Current visible price. The chart label is intentionally removed so price is only shown once in the interface.", x: 82, y: 20, tone: "gold", group: "price" },
-      { label: "03 24h momentum", value: formatPercent(result.metrics.priceChange24h), hint: "public range", detail: "Short-term move used only as context; it is not a buy or sell signal.", x: 16, y: 36, tone: Number(result.metrics.priceChange24h ?? 0) < 0 ? "red" : "green", group: "price" },
-      { label: "04 liquidity", value: orderbook ? `${liquidityStress}/100` : result.dataQuality, hint: "exit depth", detail: "Combines order-book pressure where available with volume/market-cap pressure and missing-data uncertainty.", x: 84, y: 36, tone: "cyan", group: "liquidity" },
-      { label: "05 confidence", value: `${confidence}%`, hint: result.dataQuality, detail: "Confidence is lower when live sources, order book or holder context are incomplete.", x: 16, y: 53, tone: "green", group: "source" },
-      { label: "06 volume", value: formatUsd(result.metrics.volume24h), hint: "24h flow", detail: "Public 24h flow used to compare activity against market cap and candle movement.", x: 84, y: 53, tone: "gold", group: "liquidity" },
-      { label: "07 volatility", value: `${volatilityScore}/100`, hint: "candle stress", detail: "Candle movement and 24h velocity compressed into a simple volatility readout.", x: 18, y: 70, tone: "cyan", group: "risk" },
-      { label: "08 holder layer", value: holderScore, hint: dominantAgent?.label ?? "basic lane", detail: "Basic mode keeps holder intelligence short. Full holder clustering belongs to gated VLM/Shield layers.", x: 82, y: 70, tone: "cyan", group: "holders" },
-      { label: "09 signal count", value: signalCount ? `${signalCount} active` : "clear", hint: "first pass", detail: "Number of active warning flags detected in the public first-pass model.", x: 34, y: 87, tone: signalCount ? "gold" : "green", group: "signals" },
-      { label: "10 verdict", value: combinedSafeVerdict(riskScore), hint: "public read", detail: "Short public conclusion written as anomaly review, not financial advice or accusation.", x: 66, y: 87, tone: riskScore >= 55 ? "red" : "green", group: "signals" },
+      { label: "01 risk core", value: `${riskScore}/100`, hint: levelFromScore(riskScore).toUpperCase(), detail: "Top public risk tile. It summarizes warnings without pretending to be financial advice.", x: 16, y: 22, tone: "gold", group: "risk" },
+      { label: "02 supply float", value: supplyRatio, hint: "float check", detail: "Shows whether circulating supply is known. Unknown float is a risk because price can be easier to move.", x: 78, y: 18, tone: "cyan", group: "risk" },
+      { label: "03 unlock map", value: unlockState, hint: "vesting OSINT", detail: "Token unlocks, team allocations, OTC and investor cliffs need external verification before trust.", x: 19, y: 43, tone: "gold", group: "signals" },
+      { label: "04 exit liquidity", value: liquidityValue, hint: "exit depth", detail: "Exit depth matters more than hype. Thin liquidity can make users exit into heavy slippage.", x: 83, y: 39, tone: "cyan", group: "liquidity" },
+      { label: "05 holder layer", value: holderScore, hint: dominantAgent?.label ?? "wallet check", detail: "Holder concentration and wallet labels decide whether distribution looks healthy or insider-heavy.", x: 29, y: 63, tone: "cyan", group: "holders" },
+      { label: "06 KOL/social", value: kolState, hint: "hype filter", detail: "Basic mode checks whether social momentum could be coordinated promotion or late retail FOMO.", x: 75, y: 60, tone: "gold", group: "signals" },
+      { label: "07 contract risk", value: contractState, hint: "permissions", detail: "Owner, proxy, mint, pause, blacklist and tax settings must be checked before any strong verdict.", x: 22, y: 76, tone: "red", group: "source" },
+      { label: "08 volatility", value: `${volatilityScore}/100`, hint: "candle stress", detail: "Volatility is used as risk context, not as a buy/sell signal.", x: 80, y: 79, tone: "cyan", group: "risk" },
+      { label: "09 evidence", value: evidenceState, hint: "source state", detail: "Evidence status prevents missing data from being mistaken for safety.", x: 43, y: 88, tone: "green", group: "source" },
+      { label: "10 verdict", value: combinedSafeVerdict(riskScore), hint: "public read", detail: "Short public conclusion written as review language, not investment advice.", x: 62, y: 90, tone: riskScore >= 55 ? "red" : "green", group: "signals" },
     ];
 
     const advancedReadNodes: VlmReadNode[] = [
-      { label: "01 risk core", value: `${riskScore}/100`, hint: levelFromScore(riskScore).toUpperCase(), detail: "Advanced score combines base model, source trust, microstructure stress and active model layers.", x: 8, y: 18, tone: "gold", group: "risk" },
-      { label: "02 24h momentum", value: formatPercent(result.metrics.priceChange24h), hint: "velocity lane", detail: "Intraday velocity compared with broader structure to avoid judging one candle in isolation.", x: 8, y: 31, tone: Number(result.metrics.priceChange24h ?? 0) < 0 ? "red" : "green", group: "price" },
-      { label: "03 selected range", value: formatPercent(candleMove), hint: `${liveBars.length} candles`, detail: "Range-specific movement from the loaded candles, separate from the headline 24h move.", x: 8, y: 44, tone: "cyan", group: "price" },
-      { label: "04 orderbook", value: orderbook ? `${orderbook.riskPoints}/100` : "offline", hint: "depth pressure", detail: "Order-book pressure only when a depth feed exists; otherwise the source remains flagged as partial.", x: 8, y: 57, tone: orderbook ? "cyan" : "gold", group: "liquidity" },
-      { label: "05 market cap", value: formatUsd(result.metrics.marketCap), hint: "scale filter", detail: "Scale filter helps separate tiny-liquidity assets from larger markets.", x: 8, y: 70, tone: "gold", group: "price" },
-      { label: "06 confidence", value: `${confidence}%`, hint: result.dataQuality, detail: "Source completeness, model coverage and fallback usage summarized into a confidence layer.", x: 8, y: 83, tone: "green", group: "source" },
-      { label: "07 live price", value: formatUsd(result.metrics.currentPrice), hint: "current top", detail: "Single source-of-truth price display; the candle chart does not duplicate the label.", x: 92, y: 18, tone: "gold", group: "price" },
-      { label: "08 7d structure", value: formatPercent(result.metrics.priceChange7d), hint: "macro read", detail: "Weekly structure prevents overreacting to a single intraday move.", x: 92, y: 31, tone: Number(result.metrics.priceChange7d ?? 0) < 0 ? "red" : "green", group: "price" },
-      { label: "09 liquidity stress", value: orderbook ? `${liquidityStress}/100` : "partial", hint: chartSource, detail: "Liquidity stress includes depth, slippage and volume-to-market-cap pressure when sources allow it.", x: 92, y: 44, tone: "cyan", group: "liquidity" },
-      { label: "10 volume", value: formatUsd(result.metrics.volume24h), hint: "24h flow", detail: "Raw flow layer used against market cap, volatility and anomaly count.", x: 92, y: 57, tone: "gold", group: "liquidity" },
-      { label: "11 flow ratio", value: `${(flowRatio * 100).toFixed(2)}%`, hint: "vol/mcap", detail: "Volume-to-market-cap ratio: high values may indicate unusual turnover or short-term attention.", x: 92, y: 70, tone: "cyan", group: "liquidity" },
-      { label: "12 holder graph", value: holderScore, hint: dominantAgent?.label ?? "wallet lane", detail: "Holder and wallet-layer interpretation stays gated until deeper chain data is available.", x: 92, y: 83, tone: "cyan", group: "holders" },
-      { label: "13 anomaly count", value: signalCount ? `${signalCount} signals` : "clear", hint: "review only", detail: "Count of active anomaly flags. Flags are treated as review prompts, not accusations.", x: 24, y: 10, tone: signalCount ? "gold" : "green", group: "signals" },
-      { label: "14 top signal", value: signalPreview, hint: "dominant flag", detail: "Highest visible signal from the current model output.", x: 37, y: 10, tone: "gold", group: "signals" },
-      { label: "15 drawdown", value: formatPercent(Math.min(0, result.metrics.priceChange24h ?? 0)), hint: "red stress", detail: "Downside stress layer derived from visible 24h movement.", x: 50, y: 10, tone: "red", group: "risk" },
-      { label: "16 volatility", value: `${volatilityScore}/100`, hint: "candle noise", detail: "Noise and movement pressure generated from the candle window and headline velocity.", x: 63, y: 10, tone: "cyan", group: "risk" },
-      { label: "17 data quality", value: result.dataQuality, hint: "source truth", detail: "Source state stays visible so missing data cannot be mistaken for safety.", x: 76, y: 10, tone: "green", group: "source" },
-      { label: "18 source", value: chartSource, hint: "chart feed", detail: "The feed used for this candle/readout session.", x: 30, y: 93, tone: "cyan", group: "source" },
-      { label: "19 access", value: "VLM gated", hint: "full dataset", detail: "Full advanced analytics should unlock through the VLM member/pro access layer.", x: 50, y: 93, tone: "gold", group: "access" },
-      { label: "20 verdict", value: combinedSafeVerdict(riskScore), hint: "operator read", detail: "Advanced readout concludes with a controlled review verdict and next evidence path.", x: 70, y: 93, tone: riskScore >= 55 ? "red" : "green", group: "signals" },
+      { label: "01 risk core", value: `${riskScore}/100`, hint: levelFromScore(riskScore).toUpperCase(), detail: "Advanced risk tile: model pressure, source confidence and microstructure stress.", x: 10, y: 21, tone: "gold", group: "risk" },
+      { label: "02 float transparency", value: supplyRatio, hint: "supply proof", detail: "Checks circulating supply against total/max supply. Low or unknown float can enable price engineering.", x: 22, y: 33, tone: "cyan", group: "risk" },
+      { label: "03 unlock pressure", value: unlockState, hint: "vesting/OTC", detail: "Investigates team, investor, advisor, ecosystem, OTC and hidden whale unlock risk.", x: 12, y: 48, tone: "gold", group: "signals" },
+      { label: "04 liquidity exit", value: liquidityValue, hint: "slippage lane", detail: "Checks whether visible liquidity and order book depth can absorb exits.", x: 20, y: 63, tone: "cyan", group: "liquidity" },
+      { label: "05 holder graph", value: holderScore, hint: "cluster check", detail: "Separates possible CEX, team, LP, treasury, whales, retail and unknown wallets.", x: 12, y: 78, tone: "cyan", group: "holders" },
+      { label: "06 missing data", value: missingData, hint: "blockers", detail: "Missing data is not neutral. It blocks confidence until verified sources exist.", x: 27, y: 88, tone: "red", group: "source" },
+      { label: "07 source quality", value: result.dataQuality, hint: "truth layer", detail: "Shows if analysis is live, partial or fallback. Final verdict needs current sources.", x: 82, y: 18, tone: "green", group: "source" },
+      { label: "08 KOL disclosure", value: kolState, hint: "social OSINT", detail: "Looks for paid promotion, undisclosed allocations and coordinated hype patterns.", x: 90, y: 31, tone: "gold", group: "signals" },
+      { label: "09 contract owner", value: contractState, hint: "admin power", detail: "Owner, proxy, mint, pause, blacklist and tax permissions can change real risk.", x: 78, y: 46, tone: "red", group: "source" },
+      { label: "10 volume quality", value: volumeStress, hint: "wash filter", detail: "High turnover can be organic, engineered or wash-like. It needs source review.", x: 88, y: 59, tone: "cyan", group: "liquidity" },
+      { label: "11 flow ratio", value: `${(flowRatio * 100).toFixed(2)}%`, hint: "vol/mcap", detail: "Unusual volume-to-market-cap can signal attention, churn or manipulation risk.", x: 75, y: 74, tone: "cyan", group: "liquidity" },
+      { label: "12 orderbook", value: orderbook ? `${orderbook.riskPoints}/100` : "offline", hint: "depth pressure", detail: "Order book pressure helps estimate whether a pump can survive real exits.", x: 88, y: 88, tone: orderbook ? "cyan" : "gold", group: "liquidity" },
+      { label: "13 anomaly count", value: signalCount ? `${signalCount} signals` : "clear", hint: "review only", detail: "Active anomaly flags are review prompts, not accusations.", x: 31, y: 12, tone: signalCount ? "gold" : "green", group: "signals" },
+      { label: "14 top signal", value: signalPreview, hint: "dominant flag", detail: "Highest visible signal from current model output.", x: 44, y: 8, tone: "gold", group: "signals" },
+      { label: "15 drawdown", value: formatPercent(Math.min(0, result.metrics.priceChange24h ?? 0)), hint: "red stress", detail: "Downside stress from visible movement. Used for caution, not trading calls.", x: 58, y: 13, tone: "red", group: "risk" },
+      { label: "16 volatility", value: `${volatilityScore}/100`, hint: "candle noise", detail: "Noise and movement pressure from candle window and headline velocity.", x: 68, y: 22, tone: "cyan", group: "risk" },
+      { label: "17 evidence chain", value: evidenceState, hint: "source ledger", detail: "Evidence chain shows whether a source can support a claim or only a draft.", x: 73, y: 9, tone: "green", group: "source" },
+      { label: "18 loss prevention", value: "anti-FOMO", hint: "psychology", detail: "This tile reminds the user that hype is not proof and parabolic charts can turn into exit liquidity.", x: 38, y: 92, tone: "gold", group: "risk" },
+      { label: "19 VLM access", value: "gated", hint: "full dataset", detail: "Full advanced analytics should unlock through VLM member/pro access.", x: 54, y: 83, tone: "gold", group: "access" },
+      { label: "20 verdict", value: combinedSafeVerdict(riskScore), hint: "operator read", detail: "Advanced readout concludes with controlled review language and next evidence path.", x: 66, y: 92, tone: riskScore >= 55 ? "red" : "green", group: "signals" },
     ];
     return isAdvanced ? advancedReadNodes : basicReadNodes;
-  }, [isAdvanced, riskScore, result, orderbook, liquidityStress, confidence, volatilityScore, holderScore, dominantAgent?.label, signalCount, signalPreview, candleMove, liveBars.length, chartSource, flowRatio]);
-
+  }, [isAdvanced, riskScore, result, orderbook, liquidityStress, volatilityScore, holderScore, dominantAgent?.label, signalCount, signalPreview, flowRatio, tokenInfo.tokenAddress]);
   const useRailLayout = isCompactViewport || motionQuality === "low";
-  const revealGapMs = isAdvanced ? (motionQuality === "high" ? 360 : 420) : 520;
-  const lineDurationMs = isAdvanced ? 1980 : 2100;
+  const revealGapMs = isAdvanced ? (motionQuality === "high" ? 420 : 520) : 620;
+  const lineDurationMs = isAdvanced ? 2300 : 2400;
   const bootMs = motionQuality === "low" ? 520 : 820;
   const orbMs = motionQuality === "low" ? 980 : isAdvanced ? 3120 : 2540;
   const brainMs = motionQuality === "low" ? 980 : isAdvanced ? 2460 : 1940;
@@ -4293,6 +4358,9 @@ function VlmAiSequenceOverlay({
   };
 
   const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    const target = event.target as HTMLElement | null;
+    if (target?.closest("[data-vlm-no-drag='true']")) return;
+
     const ref = rotationRef.current;
     ref.dragging = true;
     ref.pointerId = event.pointerId;
@@ -4321,14 +4389,6 @@ function VlmAiSequenceOverlay({
     ref.pointerId = -1;
   };
 
-  const resetBrainView = () => {
-    const ref = rotationRef.current;
-    ref.x = -0.16;
-    ref.y = 0;
-    ref.vx = 0;
-    ref.vy = 0;
-    setBrainZoom(1);
-  };
 
   useEffect(() => {
     setSelectedNode(null);
@@ -4801,47 +4861,45 @@ function VlmAiSequenceOverlay({
 
   const visibleNodes = readNodes.slice(0, revealedCount);
   const phaseLabel = phase === "boot"
-    ? "VLM core boot"
+    ? ui.boot
     : phase === "orb"
-      ? "token core inbound"
+      ? ui.orb
       : phase === "brain"
-        ? "interactive 360 neural brain forming"
+        ? ui.brain
         : phase === "readout"
-          ? "extracting neural data points"
-          : "interactive 360 neural read complete";
+          ? ui.readout
+          : ui.complete;
 
   return (
     <div ref={overlayRef} className={`shield-vlm-sequence-overlay ${isCompactViewport ? "shield-vlm-sequence-compact" : ""}`} role="dialog" aria-modal="true" aria-label="VLM neural token analysis" onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={releasePointer} onPointerCancel={releasePointer} onPointerLeave={releasePointer}>
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_44%,rgba(200,169,106,0.11),transparent_34%),linear-gradient(180deg,rgba(0,0,0,0.08),rgba(0,0,0,0.68))]" />
 
-      <div className="shield-vlm-topbar z-30">
+      <div className="shield-vlm-topbar z-30" data-vlm-no-drag="true">
         <div className="min-w-0">
           <p className="shield-vlm-phase-pill">{phaseLabel}</p>
           <p className="mt-2 font-mono text-[9px] uppercase tracking-[0.18em] text-white/[0.34]">
-            {tokenInfo.symbol} · {isAdvanced ? "advanced 20-point 3D neural readout" : "basic 10-point 3D signal readout"} · {motionQuality} motion
+            {tokenInfo.symbol} · {isAdvanced ? ui.pointsAdvanced : ui.pointsBasic} · {motionQuality} {ui.motion}
           </p>
-          <p className="mt-2 font-mono text-[8px] uppercase tracking-[0.16em] text-white/[0.24]">drag the core to rotate the brain 360°</p>
+          <p className="mt-2 font-mono text-[8px] uppercase tracking-[0.16em] text-white/[0.24]">{ui.rotateHint}</p>
         </div>
-        <div className="shield-vlm-brain-controls" onPointerDown={(event) => event.stopPropagation()}>
-          <button type="button" onClick={() => setAutoRotate((value) => !value)}>
-            {autoRotate ? "auto on" : "auto off"}
-          </button>
-          <button type="button" onClick={resetBrainView}>reset</button>
-          <button type="button" onClick={() => setBrainZoom((value) => Math.max(0.82, Number((value - 0.08).toFixed(2))))}>−</button>
-          <button type="button" onClick={() => setBrainZoom((value) => Math.min(1.18, Number((value + 0.08).toFixed(2))))}>+</button>
-        </div>
+
         <button
           type="button"
-          onClick={onClose}
+          data-vlm-no-drag="true"
+          onPointerDown={(event) => event.stopPropagation()}
+          onClick={(event) => {
+            event.stopPropagation();
+            onClose();
+          }}
           className="rounded-full border border-white/[0.12] bg-white/[0.06] px-4 py-2 font-mono text-[10px] uppercase tracking-[0.14em] text-white/[0.62] backdrop-blur-xl transition hover:border-velmere-gold/[0.35] hover:text-velmere-gold"
         >
-          back to chart
+          {ui.back}
         </button>
       </div>
 
       <div className="pointer-events-none absolute left-1/2 top-[50%] z-10 -translate-x-1/2 translate-y-[4.4rem] text-center">
-        <p className="font-mono text-[9px] uppercase tracking-[0.26em] text-white/[0.36]">risk extraction</p>
+        <p className="font-mono text-[9px] uppercase tracking-[0.26em] text-white/[0.36]">{locale === "pl" ? "odczyt ryzyka" : locale === "de" ? "Risikolesung" : "risk extraction"}</p>
         <p className={`mt-1 font-mono text-[15px] font-black tracking-[0.18em] ${isAdvanced ? "text-cyan-100" : "text-velmere-gold"}`}>RISK {riskScore}%</p>
       </div>
 
@@ -4858,13 +4916,6 @@ function VlmAiSequenceOverlay({
                   className={`shield-vlm-read-line ${isAdvanced ? "shield-vlm-read-line-advanced" : ""}`}
                   style={{ animationDelay: `${lineDelay}ms`, animationDuration: `${lineDurationMs}ms` }}
                 />
-                {!isAdvanced && motionQuality !== "low" ? (
-                  <path
-                    d={pathD}
-                    className={`shield-vlm-read-flow shield-vlm-read-flow-${node.tone ?? "gold"}`}
-                    style={{ animationDelay: `${lineDelay + lineDurationMs * 0.58}ms` }}
-                  />
-                ) : null}
                 <circle
                   cx={node.x}
                   cy={node.y}
@@ -4888,15 +4939,19 @@ function VlmAiSequenceOverlay({
       {useRailLayout ? (
         <div className="shield-vlm-compact-rail z-20">
           <div className="mb-3 flex items-center justify-between gap-3 px-1">
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-velmere-gold">{isAdvanced ? "20 neural points" : "10 neural points"}</p>
-            <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-white/[0.34]">tap a point for detail</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-velmere-gold">{isAdvanced ? ui.pointsAdvanced : ui.pointsBasic}</p>
+            <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-white/[0.34]">{ui.tapPoint}</p>
           </div>
           <div className="grid gap-2">
             {visibleNodes.map((node) => (
               <button
                 key={`vlm-rail-${node.label}`}
                 type="button"
-                onClick={() => setSelectedNode(node)}
+                data-vlm-no-drag="true"
+                onPointerDown={(event) => event.stopPropagation()}
+                onClick={() => {
+                  if (isAdvanced) setSelectedNode(node);
+                }}
                 className={`shield-vlm-read-card shield-vlm-read-card-${node.tone ?? "gold"} ${selectedNode?.label === node.label ? "shield-vlm-read-card-active" : ""}`}
               >
                 <div className="shield-vlm-read-card-scan" />
@@ -4908,14 +4963,20 @@ function VlmAiSequenceOverlay({
           </div>
         </div>
       ) : (
-        <div className="pointer-events-none absolute inset-0 z-20">
+        <div className={`pointer-events-none absolute inset-0 z-20 ${isAdvanced ? "shield-vlm-tile-deck" : ""}`}>
           {visibleNodes.map((node) => {
             const horizontal = node.x < 16 ? "translate(0%, -50%)" : node.x > 84 ? "translate(-100%, -50%)" : "translate(-50%, -50%)";
             return (
               <div
                 key={`vlm-read-${node.label}`}
                 className="absolute"
-                style={{ left: `${node.x}%`, top: `${node.y}%`, transform: horizontal }}
+                style={{
+                    left: `${node.x}%`,
+                    top: `${node.y}%`,
+                    transform: isAdvanced
+                      ? `${horizontal} rotateX(${((index % 5) - 2) * 2.4}deg) rotateY(${node.x < 50 ? 7 : -7}deg) translateZ(${(index % 4) * 7}px)`
+                      : horizontal,
+                  }}
               >
                 <button
                   type="button"
@@ -4934,13 +4995,13 @@ function VlmAiSequenceOverlay({
       )}
 
       {selectedNode ? (
-        <div className="shield-vlm-detail-panel z-30">
+        <div className="shield-vlm-detail-panel z-30" data-vlm-no-drag="true" onPointerDown={(event) => event.stopPropagation()}>
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-velmere-gold">selected neural point · {selectedNode.group}</p>
+              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-velmere-gold">{ui.selectedPoint} · {selectedNode.group}</p>
               <h3 className="mt-2 truncate font-mono text-sm uppercase tracking-[0.10em] text-white">{selectedNode.label}</h3>
             </div>
-            <button type="button" onClick={() => setSelectedNode(null)} className="rounded-full border border-white/[0.10] px-2 py-1 font-mono text-[9px] uppercase tracking-[0.12em] text-white/[0.50] hover:text-white">close</button>
+            <button type="button" onClick={() => setSelectedNode(null)} className="rounded-full border border-white/[0.10] px-2 py-1 font-mono text-[9px] uppercase tracking-[0.12em] text-white/[0.50] hover:text-white">{ui.close}</button>
           </div>
           <p className="mt-3 font-mono text-2xl text-white tabular-nums">{selectedNode.value}</p>
           <p className="mt-2 text-xs leading-6 text-white/[0.56]">{selectedNode.detail}</p>
@@ -4948,7 +5009,7 @@ function VlmAiSequenceOverlay({
             <div className="mt-3 grid gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.025] p-3 font-mono text-[9px] uppercase tracking-[0.12em] text-white/[0.40] sm:grid-cols-3">
               <span>source · {chartSource}</span>
               <span>confidence · {confidence}%</span>
-              <span>mode · advanced</span>
+              <span>mode · {ui.modeAdvanced}</span>
             </div>
           ) : null}
         </div>
