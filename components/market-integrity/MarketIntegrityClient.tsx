@@ -81,6 +81,7 @@ type Suggestion = {
   name: string;
   image?: string;
   rank?: number | null;
+  sourceMode?: "local" | "live" | "merged";
 };
 type SuggestionsApiResponse =
   | { mode: "live"; suggestions: Suggestion[] }
@@ -288,24 +289,27 @@ function proxiedIcon(image?: string) {
 function TokenAvatar({ image, symbol }: { image?: string; symbol: string }) {
   const [failed, setFailed] = useState(false);
   const src = proxiedIcon(image);
+  const symbolLabel = symbol.slice(0, 2).toUpperCase();
   if (!src || failed) {
     return (
-      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/[0.10] bg-white/[0.06] font-mono text-[10px] text-white/[0.62] shadow-[0_0_22px_rgba(210,176,94,0.08)] ring-1 ring-white/[0.08] tabular-nums">
-        {symbol.slice(0, 2).toUpperCase()}
+      <span className="shield-suggestion-token-avatar flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-velmere-gold/[0.20] bg-[radial-gradient(circle_at_35%_20%,rgba(200,169,106,0.34),rgba(34,211,238,0.07)_48%,rgba(0,0,0,0.52))] font-mono text-[10px] font-black text-white shadow-[0_0_22px_rgba(210,176,94,0.12)] ring-1 ring-white/[0.08] tabular-nums">
+        {symbolLabel}
       </span>
     );
   }
   return (
-    <Image
-      src={src}
-      alt=""
-      width={36}
-      height={36}
-      unoptimized
-      className="h-9 w-9 shrink-0 rounded-full bg-white/[0.05] object-cover shadow-[0_0_22px_rgba(210,176,94,0.08)] ring-1 ring-white/[0.08]"
-      referrerPolicy="no-referrer"
-      onError={() => setFailed(true)}
-    />
+    <span className="shield-suggestion-token-avatar relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/[0.10] bg-black/[0.36] shadow-[0_0_22px_rgba(210,176,94,0.12)] ring-1 ring-white/[0.08]">
+      <Image
+        src={src}
+        alt=""
+        width={36}
+        height={36}
+        unoptimized
+        className="h-full w-full rounded-full object-cover"
+        referrerPolicy="no-referrer"
+        onError={() => setFailed(true)}
+      />
+    </span>
   );
 }
 
@@ -550,16 +554,24 @@ export default function MarketIntegrityClient({
 
   useEffect(() => {
     const clean = query.trim();
-    if (clean.length < 2) {
+    if (clean.length < 1) {
       setSuggestions([]);
       setSuggestionsOpen(false);
       return;
     }
-    if (sourceCooldownActive) {
-      setSuggestions([]);
-      setSuggestionsOpen(false);
+
+    const localItems = findLocalSuggestions(clean);
+    if (localItems.length) {
+      setSuggestions(localItems.map((item) => ({ ...item, sourceMode: item.sourceMode ?? "local" })));
+      setSuggestionsOpen(true);
+    }
+
+    if (clean.length < 2 || sourceCooldownActive) {
+      setSuggestionLoading(false);
+      if (!localItems.length) setSuggestionsOpen(false);
       return;
     }
+
     let active = true;
     const timer = window.setTimeout(async () => {
       setSuggestionLoading(true);
@@ -571,27 +583,30 @@ export default function MarketIntegrityClient({
         if (response.status === 429) {
           if (active) {
             setSourceCooldownUntil(Date.now() + 45_000);
-            setSuggestions([]);
-            setSuggestionsOpen(false);
+            if (!localItems.length) {
+              setSuggestions([]);
+              setSuggestionsOpen(false);
+            }
           }
           return;
         }
         const data = (await response.json()) as SuggestionsApiResponse;
         if (active && response.ok && data.mode === "live") {
-          setSuggestions(data.suggestions.slice(0, 3));
-          setSuggestionsOpen(true);
+          const merged = mergeSuggestions(localItems, data.suggestions);
+          setSuggestions(merged);
+          setSuggestionsOpen(Boolean(merged.length));
         }
       } catch {
-        if (active) setSuggestions([]);
+        if (active && !localItems.length) setSuggestions([]);
       } finally {
         if (active) setSuggestionLoading(false);
       }
-    }, 220);
+    }, 180);
     return () => {
       active = false;
       window.clearTimeout(timer);
     };
-  }, [query, sourceCooldownActive]);
+  }, [marketRows, query, sourceCooldownActive]);
 
   useEffect(() => {
     function handleOutsidePointer(event: PointerEvent) {
@@ -678,6 +693,17 @@ export default function MarketIntegrityClient({
     ? `${result["token"].symbol} · ${t(`badges.${result.badge}`)} · ${result.score}/100`
     : "";
 
+  function toSuggestion(row: MarketIntegrityRow): Suggestion {
+    return {
+      id: row.id,
+      symbol: row.symbol,
+      name: row.name,
+      image: row.image,
+      rank: row.rank,
+      sourceMode: "local",
+    };
+  }
+
   function findLocalMarketMatch(value: string) {
     const clean = value.trim().toLowerCase();
     if (!clean) return undefined;
@@ -687,6 +713,63 @@ export default function MarketIntegrityClient({
         row.symbol.toLowerCase() === clean ||
         row.name.toLowerCase() === clean,
     );
+  }
+
+  function findLocalSuggestions(value: string) {
+    const clean = value.trim().toLowerCase();
+    if (!clean) return [];
+    return marketRows
+      .filter((row) => {
+        const symbol = row.symbol.toLowerCase();
+        const name = row.name.toLowerCase();
+        const id = row.id.toLowerCase();
+        return (
+          symbol.startsWith(clean) ||
+          id.startsWith(clean) ||
+          name.startsWith(clean) ||
+          symbol.includes(clean) ||
+          name.includes(clean)
+        );
+      })
+      .sort((a, b) => {
+        const aSymbol = a.symbol.toLowerCase();
+        const bSymbol = b.symbol.toLowerCase();
+        const aStarts = aSymbol.startsWith(clean) ? 0 : 1;
+        const bStarts = bSymbol.startsWith(clean) ? 0 : 1;
+        return aStarts - bStarts || (a.rank ?? 99999) - (b.rank ?? 99999);
+      })
+      .slice(0, 6)
+      .map(toSuggestion);
+  }
+
+  function mergeSuggestions(localItems: Suggestion[], remoteItems: Suggestion[]) {
+    const seen = new Set<string>();
+    const merged: Suggestion[] = [];
+    const localLookup = new Map<string, Suggestion>();
+    for (const item of localItems) {
+      localLookup.set(item.id.toLowerCase(), item);
+      localLookup.set(item.symbol.toLowerCase(), item);
+      localLookup.set(item.name.toLowerCase(), item);
+    }
+    for (const item of [...localItems, ...remoteItems]) {
+      const localMeta =
+        localLookup.get(item.id.toLowerCase()) ??
+        localLookup.get(item.symbol.toLowerCase()) ??
+        localLookup.get(item.name.toLowerCase());
+      const mergedItem: Suggestion = {
+        ...item,
+        image: item.image ?? localMeta?.image,
+        rank: item.rank ?? localMeta?.rank,
+        name: item.name || localMeta?.name || item.symbol,
+        sourceMode: localMeta ? "merged" : item.sourceMode ?? "live",
+      };
+      const key = mergedItem.id.toLowerCase();
+      if (seen.has(key)) continue;
+      seen.add(key);
+      merged.push(mergedItem);
+      if (merged.length >= 6) break;
+    }
+    return merged;
   }
 
   async function fetchSuggestionHit(value: string) {
@@ -1139,8 +1222,11 @@ export default function MarketIntegrityClient({
                 </div>
 
                 {suggestionsOpen && suggestions.length ? (
-                  <div className="absolute left-1/2 top-[calc(100%+0.55rem)] z-40 w-[min(29rem,calc(100vw-2rem))] -translate-x-1/2 overflow-hidden rounded-[1.1rem] border border-white/[0.12] bg-[#101013]/[0.98] text-left shadow-[0_30px_90px_rgba(0,0,0,0.55)] backdrop-blur-xl">
-                    {suggestions.slice(0, 3).map((item) => (
+                  <div className="shield-token-search-suggest-panel absolute left-1/2 top-[calc(100%+0.55rem)] z-[10000] w-[min(32rem,calc(100vw-2rem))] -translate-x-1/2 overflow-hidden rounded-[1.25rem] border border-cyan-200/[0.18] bg-[#080d0f]/[0.985] text-left shadow-[0_34px_100px_rgba(0,0,0,0.62)] backdrop-blur-2xl">
+                    <div className="border-b border-white/[0.07] px-4 py-2 font-mono text-[9px] uppercase tracking-[0.16em] text-velmere-gold/[0.72]">
+                      {query.trim().length < 2 ? "local token matches" : "token suggestions · logo aware"}
+                    </div>
+                    {suggestions.slice(0, 7).map((item) => (
                       <button
                         key={item.id}
                         type="button"
@@ -1149,17 +1235,27 @@ export default function MarketIntegrityClient({
                           setSuggestionsOpen(false);
                           void scanToken(item.id);
                         }}
-                        className="flex w-full items-center gap-3 border-b border-white/[0.06] px-4 py-2.5 text-left transition last:border-b-0 hover:bg-white/[0.055]"
+                        className="shield-token-search-suggest-row flex w-full items-center gap-3 border-b border-white/[0.06] px-4 py-3 text-left transition last:border-b-0 hover:bg-cyan-300/[0.055]"
                       >
                         <TokenAvatar image={item.image} symbol={item.symbol} />
                         <span className="min-w-0 flex-1">
-                          <span className="block truncate text-sm font-semibold text-white">
+                          <span className="flex min-w-0 items-center gap-2">
+                            <span className="block truncate text-sm font-semibold text-white">
+                              {item.symbol}
+                            </span>
+                            <span className="rounded-full border border-white/[0.08] bg-white/[0.035] px-2 py-0.5 font-mono text-[8px] uppercase tracking-[0.12em] text-white/[0.42]">
+                              {item.sourceMode === "local" ? "table" : item.sourceMode === "merged" ? "live + table" : "live"}
+                            </span>
+                          </span>
+                          <span className="block truncate text-[11px] leading-5 text-white/[0.56]">
                             {item.name}
                           </span>
-                          <span className="block font-mono text-[10px] uppercase tracking-[0.14em] text-white/[0.42]">
-                            {item.symbol}
-                            {item.rank ? ` · #${item.rank}` : ""}
+                          <span className="block font-mono text-[9px] uppercase tracking-[0.14em] text-white/[0.34]">
+                            {item.rank ? `rank #${item.rank}` : "market match"} · click to open Shield readout
                           </span>
+                        </span>
+                        <span className="shrink-0 rounded-full border border-velmere-gold/[0.16] bg-velmere-gold/[0.055] px-2 py-1 font-mono text-[8px] uppercase tracking-[0.12em] text-velmere-gold/[0.76]">
+                          scan
                         </span>
                       </button>
                     ))}

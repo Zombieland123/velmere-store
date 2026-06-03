@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import ProductDetailClient from "@/components/shop/ProductDetailClient";
+import CommerceLaunchControl from "@/components/launch/CommerceLaunchControl";
+import ProviderTruthLedgerPanel from "@/components/launch/ProviderTruthLedgerPanel";
+import ShippingReturnsTruthPanel from "@/components/launch/ShippingReturnsTruthPanel";
 import { buildVelmereMetadata, absoluteUrl } from "@/lib/seo/metadata";
 import { safeJsonLd } from "@/lib/seo/json-ld";
 import { getLocalizedString, getProductBySlugOrId, isProductCustomerPurchasable } from "@/lib/products/catalog";
@@ -19,6 +22,7 @@ export default function ProductPage({ params }: { params: { locale: string; id: 
   const description = product ? getLocalizedString(product.shortDescription, params.locale) : "Velmère product detail page.";
   const productUrl = absoluteUrl(`/${params.locale}/shop/${params.id}`);
   const inStock = product ? isProductCustomerPurchasable(product) : false;
+  const truth = product?.truth;
   const jsonLd = product
     ? {
         "@context": "https://schema.org",
@@ -28,6 +32,15 @@ export default function ProductPage({ params }: { params: { locale: string; id: 
         image: product.images.map((image) => image.url),
         sku: product.id,
         brand: { "@type": "Brand", name: "Velmère" },
+        material: truth ? getLocalizedString(truth.composition, params.locale) : undefined,
+        size: product.variants.map((variant) => variant.size ?? variant.title).join(", "),
+        additionalProperty: truth
+          ? [
+              { "@type": "PropertyValue", name: "Fit", value: getLocalizedString(truth.fit, params.locale) },
+              { "@type": "PropertyValue", name: "Care", value: truth.care.map((item) => getLocalizedString(item, params.locale)).join(" / ") },
+              { "@type": "PropertyValue", name: "Launch note", value: truth.launchNote ? getLocalizedString(truth.launchNote, params.locale) : "Preview mode" },
+            ]
+          : undefined,
         offers: {
           "@type": "Offer",
           priceCurrency: product.price.currency,
@@ -64,6 +77,9 @@ export default function ProductPage({ params }: { params: { locale: string; id: 
         />
       ) : null}
       <ProductDetailClient params={params} />
+      <CommerceLaunchControl locale={params.locale} surface="product" />
+      <ProviderTruthLedgerPanel locale={params.locale} surface="product" />
+      <ShippingReturnsTruthPanel locale={params.locale} surface="product" />
     </>
   );
 }

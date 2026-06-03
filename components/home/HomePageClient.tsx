@@ -1,77 +1,226 @@
 "use client";
 
 import { ArrowUpRight, ClipboardCheck, MessageSquare, PackageCheck, Radar, ShieldCheck, Truck, WalletCards } from "lucide-react";
+import { useLocale } from "next-intl";
 import { Link } from "@/navigation";
 import Reveal from "@/components/ui/Reveal";
 import NeuralBrainVisual from "@/components/home/NeuralBrainVisual";
 import LuxuryProductCarousel from "@/components/home/LuxuryProductCarousel";
 import EditorialFeatureSwitcher from "@/components/home/EditorialFeatureSwitcher";
 
-const pillars = [
-  {
-    kicker: "What is Velmère?",
-    title: "A quiet uniform system.",
-    body: "Limited streetwear silhouettes built around weight, proportion and restraint. The digital layer supports the brand; it does not replace the product.",
-  },
-  {
-    kicker: "The VLM Layer",
-    title: "Access, not promises.",
-    body: "VLM is planned as a private access concept for drops, Square signals and archive privileges. It is not a profit claim, financial product or checkout requirement.",
-  },
-  {
-    kicker: "Private Drops",
-    title: "Scarcity without noise.",
-    body: "Drops should feel controlled: clear availability, sizing, care, delivery and return information before checkout.",
-  },
-  {
-    kicker: "Velmère Square",
-    title: "A member signal board.",
-    body: "Square is the community layer for drop notes, archive requests and moderated signals. Guests can read. Members can participate.",
-  },
-];
+function homeCopy(locale: string) {
+  if (locale === "pl") {
+    return {
+      heroKicker: "PRIVATE FASHION HOUSE / WARSTWA CYFROWA",
+      heroTitle: "Wejdź cicho. Zajmij miejsce.",
+      heroBody: "Luxury streetwear z prywatną warstwą cyfrową. Ubrania zostają centrum; VLM, Square i dostęp do archiwum krążą wokół produktu.",
+      exploreCollection: "Zobacz kolekcję",
+      enterVlm: "Wejdź do VLM",
+      accessCore: "Rdzeń dostępu",
+      readOnlyPreview: "Podgląd read-only",
+      clothingKicker: "UBRANIA NAJPIERW",
+      clothingTitle: "Ubranie zostaje kotwicą.",
+      clothingBody: "VLM, Shield i Square wzmacniają markę, ale klient najpierw musi rozumieć krój, materiał, dostawę i prawa zwrotu.",
+      launchKicker: "{copy.launchKicker}",
+      launchTitle: "Jeszcze nie gotowe — i to jest warstwa kontroli.",
+      launchBody: "Velmère nie ma udawać gotowego produktu. Publiczne strony mogą wyglądać premium, ale realny start wymaga głębi danych, QA mobile, VLM gating, evidence storage, rate-limitów i bezpiecznych prawnie operacji.",
+      openShieldRoadmap: "Otwórz roadmapę Shield",
+      vlmAccessLayer: "Warstwa dostępu VLM",
+      shieldKicker: "{copy.shieldKicker}",
+      shieldTitle: "Market intelligence bez hype’u.",
+      shieldBody: "Shield sprawdza float, unlock pressure, płynność, holderów, ryzyko kontraktu i sygnały manipulacji społecznej. Brak transparentności staje się widoczną warstwą ryzyka, nie ukrytym założeniem.",
+      openMarketShield: "Otwórz Market Shield",
+      shieldMap: "Mapa Shield",
+      dropKicker: "ARCHITEKTURA DROPU",
+      dropTitle: "Cicho z definicji.",
+      dropBody: "Sklep ma działać jak prywatny showroom: mało wyborów, jasne ścieżki, zero migających sygnałów. Produkt, membership i community mają osobne role.",
+      pillars: [
+        {
+          kicker: "Czym jest Velmère?",
+          title: "Cichy system uniformu.",
+          body: "Limitowane streetwearowe sylwetki budowane wokół gramatury, proporcji i kontroli. Warstwa cyfrowa wspiera markę; nie zastępuje produktu.",
+        },
+        {
+          kicker: "Warstwa VLM",
+          title: "Dostęp, nie obietnice.",
+          body: "VLM jest planowany jako prywatna warstwa dostępu do dropów, sygnałów Square i przywilejów archiwum. To nie jest obietnica zysku, produkt finansowy ani wymóg checkoutu.",
+        },
+        {
+          kicker: "Prywatne dropy",
+          title: "Rzadkość bez hałasu.",
+          body: "Drop ma być kontrolowany: jasna dostępność, rozmiary, care, dostawa i zwroty przed checkoutem.",
+        },
+        {
+          kicker: "Velmère Square",
+          title: "Tablica sygnałów memberów.",
+          body: "Square jest warstwą community dla notatek dropów, próśb archiwalnych i moderowanych sygnałów. Goście czytają. Memberzy uczestniczą.",
+        },
+      ],
+      flow: [
+        ["01", "Kolekcja", "Produkt pierwszy: ubrania, fit, materiał i jasna dostawa."],
+        ["02", "Dostęp", "VLM zostaje kontrolowaną warstwą prywatną, oddzieloną od checkoutu."],
+        ["03", "Square", "Community signals pozostają moderowane, czytelne i spokojne."],
+      ],
+      clothingFirstAtelier: [
+        ["01", "Krój", "Sylwetka, linia ramion, długość i gramatura prowadzą stronę przed warstwą cyfrową."],
+        ["02", "Materiał", "Każdy drop potrzebuje jasnej gramatury, odczucia, care i statusu fulfillmentu."],
+        ["03", "Zaufanie", "Dostawa, zwroty i prawa konsumenta zostają widoczne przed checkoutem."],
+      ],
+      launchReality: [
+        ["Product shell", "42%", "Homepage, sklep, VLM i Shield istnieją; hierarchia clothing i trust są jaśniejsze, ale finalne dane produktów i fulfillment QA dalej czekają."],
+        ["VLM Intelligence", "25%", "Investigator protocol i modal readout istnieją; real source ledger, web OSINT, evidence export i gating dalej są dużą pracą."],
+        ["{copy.shieldMap}", "38%", "Strona tłumaczy system i access lanes; dalej wymaga cleanupu legacy copy i głębszych danych produkcyjnych."],
+        ["Production", "24%", "Guardy Vercel i walidacje są mocniejsze; rate-limity, wallet sessions, monitoring i evidence storage dalej blokują launch."],
+      ],
+      shieldRails: [
+        ["01", "Low float", "Circulating supply jest porównywany z total/max supply przed werdyktem."],
+        ["02", "Unlocki", "Luki w vestingu są red flagą, dopóki nie ma aktualnego źródła."],
+        ["03", "KOL risk", "Paid hype i ukryte alokacje idą do OSINT review."],
+      ],
+    };
+  }
 
-const flow = [
-  ["01", "Collection", "Product first: garments, fit, material and delivery clarity."],
-  ["02", "Access", "VLM stays as a controlled private layer, separated from checkout."],
-  ["03", "Square", "Community signals stay moderated, readable and calm."],
-];
+  if (locale === "de") {
+    return {
+      heroKicker: "PRIVATE FASHION HOUSE / DIGITALE EBENE",
+      heroTitle: "Leise eintreten. Den Raum besitzen.",
+      heroBody: "Luxury Streetwear mit privater digitaler Ebene. Kleidung bleibt im Zentrum; VLM, Square und Archivzugang kreisen um das Produkt.",
+      exploreCollection: "Kollektion ansehen",
+      enterVlm: "VLM öffnen",
+      accessCore: "Access Core",
+      readOnlyPreview: "Read-only Vorschau",
+      clothingKicker: "KLEIDUNG ZUERST",
+      clothingTitle: "Das Garment bleibt der Anker.",
+      clothingBody: "VLM, Shield und Square stärken die Marke, aber zuerst müssen Fit, Material, Lieferung und Rückgaberechte klar sein.",
+      launchKicker: "Launch Reality Ledger",
+      launchTitle: "Noch nicht bereit — genau das ist Kontrolle.",
+      launchBody: "Velmère soll Fertigkeit nicht vortäuschen. Öffentliche Seiten können premium wirken, aber echter Launch braucht Datentiefe, Mobile-QA, VLM-Gating, Evidence Storage, Rate-Limits und rechtssichere Abläufe.",
+      openShieldRoadmap: "Shield Roadmap öffnen",
+      vlmAccessLayer: "{copy.vlmAccessLayer}",
+      shieldKicker: "{copy.shieldKicker}",
+      shieldTitle: "Market Intelligence ohne Hype.",
+      shieldBody: "Shield prüft Float, Unlock Pressure, Liquidität, Holder, Contract Risk und Social-Manipulation-Signale. Fehlende Transparenz wird als sichtbare Risikoschicht gezeigt.",
+      openMarketShield: "Market Shield öffnen",
+      shieldMap: "{copy.shieldMap}",
+      dropKicker: "DROP ARCHITEKTUR",
+      dropTitle: "Leise by design.",
+      dropBody: "Der Shop soll wie ein privater Showroom funktionieren: wenige Optionen, klare Wege, keine blinkenden Signale. Produkt, Membership und Community haben getrennte Rollen.",
+      pillars: [
+        { kicker: "Was ist Velmère?", title: "Ein ruhiges Uniform-System.", body: "Limitierte Streetwear-Silhouetten rund um Gewicht, Proportion und Zurückhaltung. Die digitale Ebene unterstützt die Marke; sie ersetzt nicht das Produkt." },
+        { kicker: "Die VLM Ebene", title: "Zugang, keine Versprechen.", body: "VLM ist als private Access-Ebene für Drops, Square-Signale und Archivvorteile geplant. Kein Gewinnversprechen, kein Finanzprodukt, keine Checkout-Pflicht." },
+        { kicker: "Private Drops", title: "Knappheit ohne Lärm.", body: "Drops sollen kontrolliert wirken: klare Verfügbarkeit, Größen, Pflege, Lieferung und Rückgabe vor dem Checkout." },
+        { kicker: "Velmère Square", title: "Signalboard für Member.", body: "Square ist die Community-Ebene für Drop Notes, Archivwünsche und moderierte Signale. Gäste lesen. Member nehmen teil." },
+      ],
+      flow: [
+        ["01", "Kollektion", "Produkt zuerst: Garments, Fit, Material und klare Lieferung."],
+        ["02", "Access", "VLM bleibt eine kontrollierte private Ebene, getrennt vom Checkout."],
+        ["03", "Square", "Community-Signale bleiben moderiert, lesbar und ruhig."],
+      ],
+      clothingFirstAtelier: [
+        ["01", "Schnitt", "Silhouette, Schulterlinie, Länge und Gewicht führen die Seite vor jeder digitalen Ebene."],
+        ["02", "Material", "Jeder Drop braucht klares Gewicht, Handfeel, Care und Fulfillment-Status."],
+        ["03", "Vertrauen", "Lieferung, Rückgabe und Verbraucherrechte bleiben vor Checkout sichtbar."],
+      ],
+      launchReality: [
+        ["Product shell", "42%", "Homepage, Shop, VLM und Shield existieren; Clothing-Hierarchie und Trust sind klarer, aber finale Produktdaten und Fulfillment-QA fehlen."],
+        ["VLM Intelligence", "25%", "Investigator Protocol und Modal Readout existieren; Source Ledger, Web OSINT, Evidence Export und Gating bleiben große Arbeit."],
+        ["{copy.shieldMap}", "38%", "Die Seite erklärt System und Access Lanes; Legacy Copy und Produktionsdaten brauchen weiteren Cleanup."],
+        ["Production", "24%", "Vercel Guards und Validation Scripts sind stärker; Rate-Limits, Wallet Sessions, Monitoring und Evidence Storage blockieren den Launch."],
+      ],
+      shieldRails: [
+        ["01", "Low Float", "Circulating Supply wird vor dem Verdict mit Total/Max Supply verglichen."],
+        ["02", "Unlocks", "Vesting-Lücken bleiben Red Flags, bis aktuelle Quellen vorliegen."],
+        ["03", "KOL Risk", "Paid Hype und undisclosed Allocations werden zu OSINT Review geroutet."],
+      ],
+    };
+  }
 
-const launchReality = [
-  ["Product shell", "32%", "Homepage, store, VLM and Shield surfaces exist, but the system still needs final hierarchy, copy and conversion QA."],
-  ["VLM Intelligence", "24%", "Investigator protocol and modal readout exist; real source ledger, web OSINT, evidence export and gating remain major work."],
-  ["Shield Map", "22%", "The page explains the system and has a live scanner, but it still needs a flagship command-center redesign and real data depth."],
-  ["Production", "18%", "Vercel fixes are ongoing. Full build loop, rate limits, wallet sessions, monitoring and legal pages are not launch-complete."],
-];
+  return {
+    heroKicker: "{copy.heroKicker}",
+    heroTitle: "{copy.heroTitle}",
+    heroBody: "{copy.heroBody}",
+    exploreCollection: "{copy.exploreCollection}",
+    enterVlm: "{copy.enterVlm}",
+    accessCore: "{copy.accessCore}",
+    readOnlyPreview: "{copy.readOnlyPreview}",
+    clothingKicker: "{copy.clothingKicker}",
+    clothingTitle: "{copy.clothingTitle}",
+    clothingBody: "{copy.clothingBody}",
+    launchKicker: "{copy.launchKicker}",
+    launchTitle: "{copy.launchTitle}",
+    launchBody: "{copy.launchBody}",
+    openShieldRoadmap: "{copy.openShieldRoadmap}",
+    vlmAccessLayer: "{copy.vlmAccessLayer}",
+    shieldKicker: "{copy.shieldKicker}",
+    shieldTitle: "{copy.shieldTitle}",
+    shieldBody: "{copy.shieldBody}",
+    openMarketShield: "{copy.openMarketShield}",
+    shieldMap: "{copy.shieldMap}",
+    dropKicker: "{copy.dropKicker}",
+    dropTitle: "{copy.dropTitle}",
+    dropBody: "{copy.dropBody}",
+    pillars: [
+      { kicker: "What is Velmère?", title: "A quiet uniform system.", body: "Limited streetwear silhouettes built around weight, proportion and restraint. The digital layer supports the brand; it does not replace the product." },
+      { kicker: "The VLM Layer", title: "Access, not promises.", body: "VLM is planned as a private access concept for drops, Square signals and archive privileges. It is not a profit claim, financial product or checkout requirement." },
+      { kicker: "Private Drops", title: "Scarcity without noise.", body: "Drops should feel controlled: clear availability, sizing, care, delivery and return information before checkout." },
+      { kicker: "Velmère Square", title: "A member signal board.", body: "Square is the community layer for drop notes, archive requests and moderated signals. Guests can read. Members can participate." },
+    ],
+    flow: [
+      ["01", "Collection", "Product first: garments, fit, material and delivery clarity."],
+      ["02", "Access", "VLM stays as a controlled private layer, separated from checkout."],
+      ["03", "Square", "Community signals stay moderated, readable and calm."],
+    ],
+    clothingFirstAtelier: [
+      ["01", "Cut", "Silhouette, shoulder line, length and weight lead the page before any digital layer."],
+      ["02", "Material", "Every drop needs clear fabric weight, care, handfeel and fulfilment status."],
+      ["03", "Trust", "Delivery, returns and consumer rights stay visible before checkout."],
+    ],
+    launchReality: [
+      ["Product shell", "42%", "Homepage, store, VLM and Shield surfaces exist; clothing hierarchy and conversion trust are now clearer, but final product data and fulfillment QA remain."],
+      ["VLM Intelligence", "25%", "Investigator protocol and modal readout exist; real source ledger, web OSINT, evidence export and gating remain major work."],
+      ["{copy.shieldMap}", "38%", "The page explains the system and access lanes; it still needs legacy copy cleanup and deeper production data."],
+      ["Production", "24%", "Vercel guards and validation scripts are stronger; rate limits, wallet sessions, monitoring and evidence storage remain blockers."],
+    ],
+    shieldRails: [
+      ["01", "Low float", "Circulating supply is compared with total/max supply before the verdict."],
+      ["02", "Unlocks", "Vesting gaps are red flags until verified from current sources."],
+      ["03", "KOL risk", "Paid hype and undisclosed allocations are routed to OSINT review."],
+    ],
+  };
+}
 
 export default function HomePageClient() {
+  const copy = homeCopy(useLocale());
+  const { pillars, flow, clothingFirstAtelier, launchReality, shieldRails } = copy;
+
   return (
     <main className="bg-velmere-black text-velmere-ivory">
       <section className="luxury-section min-h-[calc(100dvh-4.5rem)] pt-28 md:pt-32">
         <div className="grid gap-8 pb-16 lg:grid-cols-[minmax(0,0.92fr)_minmax(24rem,0.88fr)] lg:items-stretch">
           <Reveal className="flex flex-col justify-between rounded-[2rem] border border-white/[0.10] bg-[#0B0B0D] p-6 shadow-velmere-card md:p-10 lg:min-h-[35rem]">
             <div>
-              <p className="velmere-label text-velmere-gold">PRIVATE FASHION HOUSE / DIGITAL LAYER</p>
+              <p className="velmere-label text-velmere-gold">{copy.heroKicker}</p>
               <h1 className="mt-7 max-w-[12ch] font-serif text-[clamp(3.4rem,7.4vw,7.2rem)] leading-[0.88] tracking-[-0.055em] text-velmere-ivory">
-                Enter quietly. Own the room.
+                {copy.heroTitle}
               </h1>
               <p className="mt-7 max-w-2xl text-base leading-8 text-velmere-grey-soft md:text-lg">
-                Luxury streetwear with a private digital layer. Garments remain the centre; VLM, Square and archive access orbit around them.
+                {copy.heroBody}
               </p>
             </div>
             <div className="mt-10 flex flex-col gap-3 sm:flex-row">
               <Link href="/shop" className="velmere-button-primary">
-                Explore Collection <ArrowUpRight className="h-4 w-4" />
+                {copy.exploreCollection} <ArrowUpRight className="h-4 w-4" />
               </Link>
               <Link href="/vlm-token" className="velmere-button-secondary">
-                Enter VLM <WalletCards className="h-4 w-4" />
+                {copy.enterVlm} <WalletCards className="h-4 w-4" />
               </Link>
             </div>
           </Reveal>
 
           <Reveal delay={0.08} className="flex flex-col justify-between rounded-[2rem] border border-white/[0.10] bg-[linear-gradient(145deg,#111113,#080809_58%,#17181B)] p-4 shadow-velmere-card md:p-6">
             <div className="mb-4 flex items-center justify-between gap-4 px-1">
-              <p className="velmere-label text-velmere-gold">Access core</p>
-              <span className="rounded-full border border-white/[0.10] px-3 py-1 font-mono text-[9px] uppercase tracking-[0.18em] text-white/[0.42]">Read-only preview</span>
+              <p className="velmere-label text-velmere-gold">{copy.accessCore}</p>
+              <span className="rounded-full border border-white/[0.10] px-3 py-1 font-mono text-[9px] uppercase tracking-[0.18em] text-white/[0.42]">{copy.readOnlyPreview}</span>
             </div>
             <div className="flex flex-1 items-center justify-center">
               <NeuralBrainVisual />
@@ -79,6 +228,30 @@ export default function HomePageClient() {
           </Reveal>
         </div>
       </section>
+
+      <section className="luxury-section py-14 md:py-20">
+        <Reveal className="rounded-[2rem] border border-velmere-gold/[0.13] bg-[linear-gradient(145deg,rgba(212,175,55,0.07),rgba(255,255,255,0.025)_45%,rgba(0,0,0,0.18))] p-6 md:p-9">
+          <div className="grid gap-8 lg:grid-cols-[0.65fr_1.35fr] lg:items-end">
+            <div>
+              <p className="velmere-label text-velmere-gold">{copy.clothingKicker}</p>
+              <h2 className="mt-5 font-serif text-4xl leading-none text-white md:text-6xl">{copy.clothingTitle}</h2>
+              <p className="mt-5 text-sm leading-7 text-velmere-grey-soft">
+                {copy.clothingBody}
+              </p>
+            </div>
+            <div className="grid gap-3 md:grid-cols-3">
+              {clothingFirstAtelier.map(([step, label, body]) => (
+                <div key={label} className="rounded-[1.35rem] border border-white/[0.08] bg-black/[0.22] p-5">
+                  <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-white/[0.32]">{step}</p>
+                  <h3 className="mt-4 text-xl text-white">{label}</h3>
+                  <p className="mt-3 text-xs leading-6 text-velmere-muted">{body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Reveal>
+      </section>
+
 
       <section className="luxury-section pb-12 md:pb-16">
         <LuxuryProductCarousel />
@@ -90,20 +263,20 @@ export default function HomePageClient() {
             <div>
               <div className="inline-flex items-center gap-2 rounded-full border border-amber-300/[0.18] bg-amber-300/[0.06] px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-velmere-gold">
                 <ClipboardCheck className="h-3.5 w-3.5" />
-                launch reality ledger
+                {copy.launchKicker}
               </div>
               <h2 className="mt-5 max-w-3xl font-serif text-4xl leading-[0.95] tracking-[-0.045em] text-white md:text-6xl">
-                Not ready yet — and that is the control layer.
+                {copy.launchTitle}
               </h2>
               <p className="mt-5 max-w-2xl text-sm leading-7 text-velmere-grey-soft">
-                Velmère should not pretend to be finished. Public pages can look premium, but the real product requires data depth, mobile QA, VLM gating, evidence storage, rate limits and legal-safe operations before launch.
+                {copy.launchBody}
               </p>
               <div className="mt-7 flex flex-col gap-3 sm:flex-row">
                 <Link href="/market-integrity/shield-map" className="velmere-button-primary">
-                  Open Shield Roadmap <ShieldCheck className="h-4 w-4" />
+                  {copy.openShieldRoadmap} <ShieldCheck className="h-4 w-4" />
                 </Link>
                 <Link href="/vlm-token" className="velmere-button-secondary">
-                  VLM Access Layer <WalletCards className="h-4 w-4" />
+                  {copy.vlmAccessLayer} <WalletCards className="h-4 w-4" />
                 </Link>
               </div>
             </div>
@@ -129,28 +302,24 @@ export default function HomePageClient() {
         <Reveal className="overflow-hidden rounded-[2rem] border border-cyan-200/[0.12] bg-[radial-gradient(circle_at_18%_8%,rgba(34,211,238,0.10),transparent_34%),linear-gradient(135deg,#101115,#080809)] p-6 shadow-velmere-card md:p-8">
           <div className="grid gap-8 lg:grid-cols-[minmax(0,0.82fr)_minmax(20rem,0.42fr)] lg:items-center">
             <div>
-              <p className="velmere-label text-velmere-gold">VLM SHIELD / INVESTIGATOR</p>
+              <p className="velmere-label text-velmere-gold">{copy.shieldKicker}</p>
               <h2 className="mt-5 max-w-3xl font-serif text-4xl leading-[0.95] tracking-[-0.045em] text-white md:text-6xl">
-                Market intelligence without hype.
+                {copy.shieldTitle}
               </h2>
               <p className="mt-5 max-w-2xl text-sm leading-7 text-velmere-grey-soft">
-                Shield checks float, unlock pressure, liquidity, holder concentration, contract risk and social manipulation signals. Missing transparency becomes a visible risk lane, not a hidden assumption.
+                {copy.shieldBody}
               </p>
               <div className="mt-7 flex flex-col gap-3 sm:flex-row">
                 <Link href="/market-integrity" className="velmere-button-primary">
-                  Open Market Shield <Radar className="h-4 w-4" />
+                  {copy.openMarketShield} <Radar className="h-4 w-4" />
                 </Link>
                 <Link href="/market-integrity/shield-map" className="velmere-button-secondary">
-                  Shield Map <ShieldCheck className="h-4 w-4" />
+                  {copy.shieldMap} <ShieldCheck className="h-4 w-4" />
                 </Link>
               </div>
             </div>
             <div className="grid gap-3">
-              {[
-                ["01", "Low float", "Circulating supply is compared with total/max supply before the verdict."],
-                ["02", "Unlocks", "Vesting gaps are red flags until verified from current sources."],
-                ["03", "KOL risk", "Paid hype and undisclosed allocations are routed to OSINT review."],
-              ].map(([number, title, body]) => (
+              {shieldRails.map(([number, title, body]) => (
                 <div key={title} className="rounded-2xl border border-white/[0.09] bg-black/[0.24] p-4">
                   <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-velmere-gold">{number}</p>
                   <h3 className="mt-2 text-lg text-white">{title}</h3>
@@ -182,10 +351,10 @@ export default function HomePageClient() {
         <Reveal className="overflow-hidden rounded-[2rem] border border-white/[0.10] bg-[#111113] shadow-velmere-card">
           <div className="grid gap-0 lg:grid-cols-[0.85fr_1.15fr]">
             <div className="p-6 md:p-10">
-              <p className="velmere-label text-velmere-gold">DROP ARCHITECTURE</p>
-              <h2 className="mt-5 font-serif text-5xl leading-[0.92] tracking-[-0.05em] md:text-7xl">Quiet by design.</h2>
+              <p className="velmere-label text-velmere-gold">{copy.dropKicker}</p>
+              <h2 className="mt-5 font-serif text-5xl leading-[0.92] tracking-[-0.05em] md:text-7xl">{copy.dropTitle}</h2>
               <p className="mt-6 max-w-xl text-sm leading-7 text-velmere-grey-soft">
-                The store should move like a private showroom: few choices, clear paths, no flashing signals. Product, membership and community each have their own role.
+                {copy.dropBody}
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link href="/square" className="velmere-button-secondary">

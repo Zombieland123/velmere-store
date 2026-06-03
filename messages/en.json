@@ -87,7 +87,12 @@
     "newDrop": "New drop",
     "square": "Velmère Square",
     "riskMicro": "VLM is an access layer, not an investment.",
-    "newsletterOffline": "Join the waitlist through Contact until the production mail provider is connected."
+    "newsletterOffline": "Join the waitlist through Contact until the production mail provider is connected.",
+    "trustNotes": "Trust notes",
+    "vlmUtility": "VLM is an access layer, not an investment.",
+    "seedPhrase": "Never enter your seed phrase.",
+    "checkoutRights": "Prices, taxes, delivery costs and return rights are shown before checkout.",
+    "consumerRights": "Consumer rights remain unaffected."
   },
   "Home": {
     "heroImageAlt": "Advanced three-dimensional Velmère neural access visual with ivory nodes and champagne signal flow",
@@ -186,10 +191,10 @@
     "selectSizeFirst": "Select a size",
     "details": "Details",
     "shippingReturns": "Shipping and returns",
-    "shippingReturnsBody": "Shipping and returns will be finalized before commercial launch.",
+    "shippingReturnsBody": "Shipping costs, tax visibility, delivery estimate and return rights must be shown before payment. Final provider and fulfilment data will be locked before public launch.",
     "materialCare": "Material and care",
-    "materialCareBody": "Care instructions will be completed after final production data is confirmed.",
-    "checkoutDisabledBody": "This piece is in preparation. Checkout will open after product, payment, shipping, returns, contact, and fulfilment configuration is complete.",
+    "materialCareBody": "Heavy cotton pieces should be washed cold, inside out and air dried. Final material composition and care label must match production data.",
+    "checkoutDisabledBody": "This piece is in preparation. Checkout opens only after product, payment, shipping, returns, contact and fulfilment configuration is complete.",
     "measurementTable": "Measurement table",
     "sizeGuideTitle": "Size guide",
     "closeSizeGuide": "Close size guide",

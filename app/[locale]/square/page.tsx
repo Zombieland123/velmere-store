@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import VelmereSquareClient from "@/components/square/VelmereSquareClient";
+import SquareVlmLaunchControl from "@/components/launch/SquareVlmLaunchControl";
 import { buildVelmereMetadata } from "@/lib/seo/metadata";
 
 export function generateMetadata({ params: { locale } }: { params: { locale: string } }): Metadata {
@@ -11,6 +12,11 @@ export function generateMetadata({ params: { locale } }: { params: { locale: str
   });
 }
 
-export default function SquarePage() {
-  return <VelmereSquareClient />;
+export default function SquarePage({ params: { locale } }: { params: { locale: string } }) {
+  return (
+    <>
+      <VelmereSquareClient />
+      <SquareVlmLaunchControl locale={locale} surface="square" />
+    </>
+  );
 }

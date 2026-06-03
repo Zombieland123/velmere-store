@@ -22,6 +22,7 @@ import {
   getProductBySlugOrId,
   isProductCustomerPurchasable,
 } from "@/lib/products/catalog";
+import { buildProductProviderTruthSnapshot } from "@/lib/launch/provider-truth-ledger";
 
 const MEASUREMENTS = [
   { size: "S", chest: "112 cm", length: "66 cm", shoulders: "58 cm" },
@@ -30,12 +31,78 @@ const MEASUREMENTS = [
   { size: "XL", chest: "130 cm", length: "72 cm", shoulders: "64 cm" },
 ];
 
-const SPECS = [
-  ["MATERIAL", "100% HEAVYWEIGHT COTTON"],
-  ["WEIGHT", "450 GSM"],
-  ["FIT", "BOXY / OVERSIZED"],
-  ["CARE", "COLD WASH / INSIDE OUT / AIR DRY"],
-] as const;
+function productDetailCopy(locale: string) {
+  if (locale === "pl") {
+    return {
+      constructionTitle: "Materiał / Konstrukcja",
+      launchNoteTitle: "Notatka launch-control",
+      providerSnapshotTitle: "Provider / SKU truth",
+      providerSnapshotBody: "Checkout zostaje zablokowany, dopóki provider, SKU, warianty, dostawa i zwrot nie mają potwierdzonego źródła.",
+      providerMissing: "Braki",
+      providerSource: "Source mode",
+      launchKicker: "kontrola przed zakupem",
+      launchTitle: "Najpierw rozmiar, materiał, dostawa i zwrot.",
+      launchBody: "Zakup odzieży zostaje oddzielony od VLM. Przed płatnością użytkownik musi widzieć cenę, wariant, dostawę, koszty, zwrot i prawa konsumenta.",
+      rails: [
+        { label: "Rozmiar", body: "Tabela mierzy produkt, nie ciało. Porównaj z bluzą, którą już nosisz." },
+        { label: "Care", body: "Pierz na zimno, na lewej stronie. Suszenie na powietrzu chroni nadruk i formę." },
+        { label: "Fulfillment", body: "Dostawa, podatki, provider i status produkcji muszą być jasne przed checkoutem." },
+      ],
+      specs: [
+        ["Materiał", "100% heavyweight cotton"],
+        ["Gramatura", "450 GSM"],
+        ["Krój", "Boxy / oversize"],
+        ["Pielęgnacja", "Zimne pranie / na lewej stronie / suszyć na powietrzu"],
+      ],
+    };
+  }
+  if (locale === "de") {
+    return {
+      constructionTitle: "Material / Konstruktion",
+      launchNoteTitle: "Launch-Control Notiz",
+      providerSnapshotTitle: "Provider / SKU Truth",
+      providerSnapshotBody: "Checkout bleibt gesperrt, bis Provider, SKU, Varianten, Versand und Rückgabe durch Quellen bestätigt sind.",
+      providerMissing: "Fehlend",
+      providerSource: "Source Mode",
+      launchKicker: "Kontrolle vor Kauf",
+      launchTitle: "Erst Größe, Material, Lieferung und Rückgabe.",
+      launchBody: "Clothing Checkout bleibt von VLM getrennt. Vor Zahlung müssen Preis, Variante, Lieferung, Kosten, Rückgabe und Verbraucherrechte sichtbar sein.",
+      rails: [
+        { label: "Größe", body: "Die Tabelle misst das Produkt, nicht den Körper. Vergleiche mit einem Hoodie, den du bereits trägst." },
+        { label: "Pflege", body: "Kalt und auf links waschen. Lufttrocknung schützt Druck und Form." },
+        { label: "Fulfillment", body: "Lieferung, Steuern, Provider und Produktionsstatus müssen vor Checkout klar sein." },
+      ],
+      specs: [
+        ["Material", "100% Heavyweight Cotton"],
+        ["Gewicht", "450 GSM"],
+        ["Passform", "Boxy / Oversized"],
+        ["Pflege", "Kalt waschen / auf links / lufttrocknen"],
+      ],
+    };
+  }
+  return {
+    constructionTitle: "Material / Construction",
+    launchNoteTitle: "Launch-control note",
+    providerSnapshotTitle: "Provider / SKU truth",
+    providerSnapshotBody: "Checkout stays blocked until provider, SKU, variants, delivery and returns are source-confirmed.",
+    providerMissing: "Missing",
+    providerSource: "Source mode",
+    launchKicker: "pre-purchase control",
+    launchTitle: "Size, material, delivery and returns first.",
+    launchBody: "Clothing checkout stays separated from VLM. Before payment, the user must see price, variant, delivery, costs, returns and consumer rights.",
+    rails: [
+      { label: "Size", body: "The table measures the garment, not the body. Compare it with a hoodie you already wear." },
+      { label: "Care", body: "Wash cold and inside out. Air drying protects print and shape." },
+      { label: "Fulfillment", body: "Delivery, taxes, provider and production status must be clear before checkout." },
+    ],
+    specs: [
+      ["Material", "100% heavyweight cotton"],
+      ["Weight", "450 GSM"],
+      ["Fit", "Boxy / oversized"],
+      ["Care", "Cold wash / inside out / air dry"],
+    ],
+  };
+}
 
 function ProductAccordion({
   title,
@@ -151,12 +218,25 @@ export default function ProductDetailPage({
       (variant) => variant.id === selectedVariantId,
     ) ?? null;
   const purchasable = isProductCustomerPurchasable(selectedProduct);
+  const providerSnapshot = buildProductProviderTruthSnapshot(selectedProduct);
   const title = getLocalizedString(selectedProduct.title, locale);
   const externalOnly =
     selectedProduct.fulfilmentMode === "external_link" &&
     selectedProduct.externalUrl;
   const category =
     selectedProduct.collection ?? selectedProduct.tags[0] ?? "GARMENT";
+  const detailCopy = productDetailCopy(locale);
+  const truth = selectedProduct.truth;
+  const careLines = truth?.care.map((item) => getLocalizedString(item, locale)) ?? [];
+  const productMeasurements = truth?.sizeGuide.measurements.length ? truth.sizeGuide.measurements : MEASUREMENTS;
+  const productSpecs = truth
+    ? [
+        [detailCopy.specs[0]?.[0] ?? "Material", getLocalizedString(truth.material, locale)],
+        [detailCopy.specs[1]?.[0] ?? "Weight", truth.weight ?? "TBC"],
+        [detailCopy.specs[2]?.[0] ?? "Fit", getLocalizedString(truth.fit, locale)],
+        [detailCopy.specs[3]?.[0] ?? "Care", careLines.join(" / ")],
+      ]
+    : detailCopy.specs;
   const humanBreadcrumb =
     locale === "pl"
       ? `Velmère / Sklep / ${title}`
@@ -255,13 +335,9 @@ export default function ProductDetailPage({
 
               <div className="mt-8 overflow-hidden rounded-xl border border-white/[0.10] bg-[#111113]">
                 <p className="border-b border-white/[0.10] px-4 py-3 font-mono text-[10px] uppercase tracking-[0.22em] text-velmere-gold">
-                  {locale === "pl"
-                    ? "Materiał / Konstrukcja"
-                    : locale === "de"
-                      ? "Material / Konstruktion"
-                      : "Material / Construction"}
+                  {detailCopy.constructionTitle}
                 </p>
-                {SPECS.map(([key, value]) => (
+                {productSpecs.map(([key, value]) => (
                   <div
                     key={key}
                     className="grid grid-cols-[7.5rem_minmax(0,1fr)] border-b border-white/[0.05] px-4 py-3 font-mono text-[10px] uppercase tracking-[0.14em] last:border-b-0"
@@ -290,6 +366,53 @@ export default function ProductDetailPage({
                   <span>{t("deliveryEstimate")}</span>
                   <span>{t("returnSummary")}</span>
                 </div>
+              </div>
+
+              <div className="mt-4 rounded-xl border border-cyan-200/[0.12] bg-cyan-300/[0.04] p-4">
+                <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-cyan-100/[0.78]">{detailCopy.launchKicker}</p>
+                <h2 className="mt-3 text-xl font-semibold tracking-[-0.04em] text-white">{detailCopy.launchTitle}</h2>
+                <p className="mt-3 text-sm leading-7 text-white/[0.58]">{detailCopy.launchBody}</p>
+                <div className="mt-4 grid gap-3">
+                  {detailCopy.rails.map((rail) => (
+                    <div key={rail.label} className="rounded-lg border border-white/[0.08] bg-black/[0.18] p-3">
+                      <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-cyan-100/[0.70]">{rail.label}</p>
+                      <p className="mt-2 text-xs leading-6 text-white/[0.52]">{rail.body}</p>
+                    </div>
+                  ))}
+                  {truth?.launchNote ? (
+                    <div className="rounded-lg border border-velmere-gold/[0.16] bg-velmere-gold/[0.06] p-3">
+                      <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-velmere-gold/[0.78]">{detailCopy.launchNoteTitle}</p>
+                      <p className="mt-2 text-xs leading-6 text-white/[0.56]">{getLocalizedString(truth.launchNote, locale)}</p>
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+
+              <div className="mt-4 rounded-xl border border-velmere-gold/[0.16] bg-velmere-gold/[0.055] p-4">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-velmere-gold/[0.82]">{detailCopy.providerSnapshotTitle}</p>
+                    <p className="mt-3 text-sm leading-7 text-white/[0.58]">{detailCopy.providerSnapshotBody}</p>
+                  </div>
+                  <span className="shrink-0 rounded-full border border-white/[0.10] bg-black/[0.18] px-3 py-1 font-mono text-[9px] uppercase tracking-[0.14em] text-white/[0.50]">
+                    {providerSnapshot.score}/100
+                  </span>
+                </div>
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-lg border border-white/[0.08] bg-black/[0.18] p-3">
+                    <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-white/[0.34]">provider</p>
+                    <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.12em] text-white/[0.66]">{selectedProduct.provider} · {providerSnapshot.providerMode}</p>
+                  </div>
+                  <div className="rounded-lg border border-white/[0.08] bg-black/[0.18] p-3">
+                    <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-white/[0.34]">{detailCopy.providerSource}</p>
+                    <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.12em] text-white/[0.66]">{providerSnapshot.sourceMode} · {providerSnapshot.status.replaceAll("_", " ")}</p>
+                  </div>
+                </div>
+                {providerSnapshot.missing.length ? (
+                  <p className="mt-3 rounded-lg border border-white/[0.08] bg-black/[0.18] p-3 font-mono text-[9px] uppercase tracking-[0.12em] text-white/[0.42]">
+                    {detailCopy.providerMissing}: {providerSnapshot.missing.join(" · ")}
+                  </p>
+                ) : null}
               </div>
 
               <div className="mt-8">
@@ -357,10 +480,10 @@ export default function ProductDetailPage({
                   {getLocalizedString(selectedProduct.shortDescription, locale)}
                 </ProductAccordion>
                 <ProductAccordion title={t("shippingReturns")}>
-                  {t("shippingReturnsBody")}
+                  {truth ? `${getLocalizedString(truth.deliveryNote, locale)} ${getLocalizedString(truth.returnNote, locale)}` : t("shippingReturnsBody")}
                 </ProductAccordion>
                 <ProductAccordion title={t("materialCare")}>
-                  {t("materialCareBody")}
+                  {truth ? `${getLocalizedString(truth.composition, locale)} ${careLines.join(" ")}` : t("materialCareBody")}
                 </ProductAccordion>
               </div>
             </div>
@@ -415,7 +538,7 @@ export default function ProductDetailPage({
                     </tr>
                   </thead>
                   <tbody>
-                    {MEASUREMENTS.map((row) => (
+                    {productMeasurements.map((row) => (
                       <tr
                         key={row.size}
                         className="border-b border-white/[0.10] text-[11px] text-white/[0.70]"
@@ -423,14 +546,17 @@ export default function ProductDetailPage({
                         <td className="px-2 py-2 font-semibold text-white">
                           {row.size}
                         </td>
-                        <td className="px-2 py-2">{row.chest}</td>
+                        <td className="px-2 py-2">{row.chest ?? row.waist ?? "—"}</td>
                         <td className="px-2 py-2">{row.length}</td>
-                        <td className="px-2 py-2">{row.shoulders}</td>
+                        <td className="px-2 py-2">{row.shoulders ?? row.inseam ?? "—"}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
+              {truth?.sizeGuide.note ? (
+                <p className="mt-4 text-xs leading-6 text-white/[0.54]">{getLocalizedString(truth.sizeGuide.note, locale)}</p>
+              ) : null}
             </motion.div>
           </>
         )}

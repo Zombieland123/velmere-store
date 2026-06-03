@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import ShopPageClient from "@/components/shop/ShopPageClient";
+import CommerceLaunchControl from "@/components/launch/CommerceLaunchControl";
+import ProviderTruthLedgerPanel from "@/components/launch/ProviderTruthLedgerPanel";
+import ShippingReturnsTruthPanel from "@/components/launch/ShippingReturnsTruthPanel";
 import { buildVelmereMetadata } from "@/lib/seo/metadata";
 
 export function generateMetadata({ params: { locale } }: { params: { locale: string } }): Metadata {
@@ -12,6 +15,13 @@ export function generateMetadata({ params: { locale } }: { params: { locale: str
   return buildVelmereMetadata({ locale, path: "/shop", title, description });
 }
 
-export default function ShopPage() {
-  return <ShopPageClient />;
+export default function ShopPage({ params: { locale } }: { params: { locale: string } }) {
+  return (
+    <>
+      <ShopPageClient />
+      <CommerceLaunchControl locale={locale} surface="shop" />
+      <ProviderTruthLedgerPanel locale={locale} surface="shop" />
+      <ShippingReturnsTruthPanel locale={locale} surface="shop" />
+    </>
+  );
 }

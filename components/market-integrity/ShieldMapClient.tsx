@@ -1,6 +1,6 @@
 "use client";
 
-import { type FormEvent, useEffect, useMemo, useState } from "react";
+import { type FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import {
   AlertTriangle,
   ArrowLeft,
@@ -294,9 +294,74 @@ export default function ShieldMapClient({
   const [ruleHits, setRuleHits] = useState<ShieldRuleHit[]>([]);
   const [summary, setSummary] = useState<ShieldRulesSummary | null>(null);
   const locale = useLocale();
+  const pageCopy = useMemo(() => {
+    if (locale === "pl") {
+      return {
+        commandRoom: "centrum komend Shield Map",
+        commandTitle: "Mapa ma tłumaczyć produkt, nie wyglądać jak zwykły opis.",
+        commandBody: "Tu użytkownik widzi, które części terminala są live, partial/fallback i gdzie operator musi zrobić review. Prywatne wagi scoringu zostają ukryte, ale workflow jest jasny.",
+        openTerminal: "otwórz terminal",
+        activePreview: "podgląd aktywnej warstwy",
+        launchBridge: "most do launchu · PASS71",
+        launchTitle: "Co musi być gotowe zanim Shield będzie produkcyjnym terminalem.",
+        launchBody: "To jest most z obecnego premium UI do realnego produktu: live data contracts, audit logs, rate limits, VLM utility access i evidence export. Czerwone pola zostają blokadami, nie udajemy gotowości.",
+        buildSpine: "ścieżka build-to-100",
+        sourceLedger: "rejestr źródeł",
+        investigatorTitle: "Bot ma działać jak śledczy OSINT, nie jak hype machine.",
+        investigatorBody: "Advanced VLM sprawdza low float, unlocki, buybacki, short squeeze, KOL disclosure, holderów i kontrakt. Każdy wniosek ma status dowodu: confirmed, likely, unverified, red flag albo unknown.",
+        investigatorRules: "zasady śledczego",
+        brainImportKicker: "AI brain import lane · PASS120",
+        brainImportTitle: "Codex ma mielić tylko mózg ryzyka, nie całe repo.",
+        brainImportBody: "Ta ścieżka separuje pracę nad risk-engine od UI, animacji, tłumaczeń i deploya. Dzięki temu można przyjąć głęboki pass AI bez rozwalenia Vercela.",
+        brainImportBadge: "one-file contract",
+      };
+    }
+    if (locale === "de") {
+      return {
+        commandRoom: "Shield Map Command Room",
+        commandTitle: "Die Map erklärt das Produkt, statt wie eine statische Beschreibung zu wirken.",
+        commandBody: "Nutzer sehen, welche Terminalteile live, partial oder fallback sind und wo Operator Review nötig ist. Private Scoring-Gewichte bleiben verborgen, der Workflow bleibt klar.",
+        openTerminal: "Terminal öffnen",
+        activePreview: "aktive Layer-Vorschau",
+        launchBridge: "Launch Bridge · PASS71",
+        launchTitle: "Was fertig sein muss, bevor Shield ein Production Terminal wird.",
+        launchBody: "Das ist die Brücke vom aktuellen Premium UI zum realen Produkt: Live Data Contracts, Audit Logs, Rate Limits, VLM Utility Access und Evidence Export. Rote Felder bleiben Blocker.",
+        buildSpine: "Build-to-100 Spine",
+        sourceLedger: "Source Ledger",
+        investigatorTitle: "Der Bot arbeitet wie ein OSINT-Ermittler, nicht wie eine Hype Machine.",
+        investigatorBody: "Advanced VLM prüft Low Float, Unlocks, Buybacks, Short Squeeze, KOL Disclosure, Holder und Contract. Jede Aussage bekommt Evidence Status: confirmed, likely, unverified, red flag oder unknown.",
+        investigatorRules: "Investigator Rules",
+        brainImportKicker: "AI Brain Import Lane · PASS120",
+        brainImportTitle: "Codex soll nur den Risk Brain bearbeiten, nicht das ganze Repo.",
+        brainImportBody: "Diese Lane trennt Risk-Engine-Arbeit von UI, Animationen, Übersetzungen und Deploy. So kann ein tiefer AI-Pass übernommen werden, ohne Vercel zu brechen.",
+        brainImportBadge: "One-File Contract",
+      };
+    }
+    return {
+      commandRoom: "Shield Map command room",
+      commandTitle: "The map explains the product instead of acting like a static description.",
+      commandBody: "The user sees which terminal parts are live, partial/fallback and where the operator must review. Private scoring weights stay hidden, but the workflow is clear.",
+      openTerminal: "open terminal",
+      activePreview: "active layer preview",
+      launchBridge: "Launch bridge · PASS71",
+      launchTitle: "What must be ready before Shield becomes a production terminal.",
+      launchBody: "This is the bridge from current premium UI to the real product: live data contracts, audit logs, rate limits, VLM utility access and evidence export. Red fields remain blockers.",
+      buildSpine: "build-to-100 spine",
+      sourceLedger: "source ledger",
+      investigatorTitle: "The bot must work like an OSINT investigator, not a hype machine.",
+      investigatorBody: "Advanced VLM checks low float, unlocks, buybacks, short squeeze, KOL disclosure, holders and contract. Every conclusion gets evidence status: confirmed, likely, unverified, red flag or unknown.",
+      investigatorRules: "investigator rules",
+      brainImportKicker: "AI brain import lane · PASS120",
+      brainImportTitle: "Codex should work only on the risk brain, not the full repo.",
+      brainImportBody: "This lane separates risk-engine work from UI, animation, translations and deployment. It lets the project accept a deep AI pass without breaking Vercel.",
+      brainImportBadge: "one-file contract",
+    };
+  }, [locale]);
+
   const [activeAtlasNode, setActiveAtlasNode] = useState("Agent fusion");
   const [investigatorQuery, setInvestigatorQuery] = useState("SOL");
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
+  const investigatorSuggestRef = useRef<HTMLDivElement | null>(null);
   const [investigatorLoading, setInvestigatorLoading] = useState(false);
   const [investigatorError, setInvestigatorError] = useState<string | null>(null);
   const [investigatorResult, setInvestigatorResult] = useState<InvestigatorResult | null>(null);
@@ -525,6 +590,20 @@ export default function ShieldMapClient({
       .slice(0, 6);
   }, [inbox, investigatorQuery, ruleHits, summary?.watchlist]);
 
+  useEffect(() => {
+    if (!suggestionsOpen) return;
+
+    function closeOnOutsidePointer(event: PointerEvent) {
+      const target = event.target;
+      if (!(target instanceof Node)) return;
+      if (investigatorSuggestRef.current?.contains(target)) return;
+      setSuggestionsOpen(false);
+    }
+
+    document.addEventListener("pointerdown", closeOnOutsidePointer, true);
+    return () => document.removeEventListener("pointerdown", closeOnOutsidePointer, true);
+  }, [suggestionsOpen]);
+
   async function runInvestigatorScan(event?: FormEvent<HTMLFormElement>) {
     event?.preventDefault();
     const query = investigatorQuery.trim();
@@ -603,50 +682,60 @@ export default function ShieldMapClient({
   const criticalCount =
     summary?.critical ?? reviewRows.filter((row) => row.score >= 85).length;
   const watchCount = (summary?.warning ?? 0) + (summary?.watch ?? 0);
-  const atlasNodes = [
-    {
-      label: "Intake",
-      body: "Ticker, contract, logo, OHLCV and market identity are resolved before the terminal opens.",
-      icon: Database,
-      status: "source state",
-    },
-    {
-      label: "Normalize",
-      body: "Live, partial, fallback and missing inputs are separated so the UI does not fake certainty.",
-      icon: GitBranch,
-      status: "uncertainty visible",
-    },
-    {
-      label: "Agent fusion",
-      body: "Velocity, liquidity, holders, contract, order book and data quality are routed as separate lenses.",
-      icon: Brain,
-      status: "multi-agent",
-    },
-    {
-      label: "SOC routing",
-      body: "Shield converts anomaly signals into operator commands instead of dramatic accusations.",
-      icon: Workflow,
-      status: "review path",
-    },
-    {
-      label: "Evidence",
-      body: "A case draft must carry sources, timestamps, missing data and legal disclaimers.",
-      icon: FileText,
-      status: "guarded export",
-    },
-    {
-      label: "Release rails",
-      body: "Public launch remains blocked until rate limits, audit logs and data-source policy are connected.",
-      icon: ShieldCheck,
-      status: "launch control",
-    },
-  ];
-  const sourceRails = [
-    { label: "Candles", state: "live / fallback", body: "OHLCV, VWAP and replay timeline." },
-    { label: "Liquidity", state: "partial", body: "Depth, slippage and danger zones require live feeds." },
-    { label: "Holders", state: "proxy", body: "Cluster labels need chain API and CEX exclusion." },
-    { label: "Contract", state: "pending", body: "Owner flags, taxes, mint/pause and blacklist checks." },
-  ];
+  const atlasNodes = useMemo(() => {
+    if (locale === "pl") {
+      return [
+        { label: "Intake", body: "Ticker, kontrakt, logo, OHLCV i market identity są rozwiązywane przed otwarciem terminala.", icon: Database, status: "stan źródła" },
+        { label: "Normalize", body: "Live, partial, fallback i missing inputs są rozdzielone, żeby UI nie udawał pewności.", icon: GitBranch, status: "niepewność widoczna" },
+        { label: "Agent fusion", body: "Velocity, liquidity, holders, contract, order book i data quality działają jako osobne soczewki.", icon: Brain, status: "multi-agent" },
+        { label: "SOC routing", body: "Shield zamienia anomalie w komendy operatora zamiast dramatycznych oskarżeń.", icon: Workflow, status: "ścieżka review" },
+        { label: "Evidence", body: "Draft case musi mieć źródła, timestampy, missing data i legal disclaimers.", icon: FileText, status: "guarded export" },
+        { label: "Release rails", body: "Publiczny launch zostaje zablokowany, dopóki rate-limity, audit logi i polityka źródeł nie są podłączone.", icon: ShieldCheck, status: "kontrola launchu" },
+      ];
+    }
+    if (locale === "de") {
+      return [
+        { label: "Intake", body: "Ticker, Contract, Logo, OHLCV und Market Identity werden vor dem Terminalstart aufgelöst.", icon: Database, status: "Quellenstatus" },
+        { label: "Normalize", body: "Live, Partial, Fallback und Missing Inputs werden getrennt, damit das UI keine Sicherheit vortäuscht.", icon: GitBranch, status: "Unsicherheit sichtbar" },
+        { label: "Agent Fusion", body: "Velocity, Liquidity, Holders, Contract, Order Book und Data Quality laufen als getrennte Linsen.", icon: Brain, status: "Multi-Agent" },
+        { label: "SOC Routing", body: "Shield wandelt Anomalien in Operator-Kommandos statt dramatische Anschuldigungen um.", icon: Workflow, status: "Review-Pfad" },
+        { label: "Evidence", body: "Ein Case Draft braucht Quellen, Timestamps, Missing Data und Legal Disclaimers.", icon: FileText, status: "Guarded Export" },
+        { label: "Release Rails", body: "Public Launch bleibt blockiert, bis Rate-Limits, Audit Logs und Data-Source Policy verbunden sind.", icon: ShieldCheck, status: "Launch Control" },
+      ];
+    }
+    return [
+      { label: "Intake", body: "Ticker, contract, logo, OHLCV and market identity are resolved before the terminal opens.", icon: Database, status: "source state" },
+      { label: "Normalize", body: "Live, partial, fallback and missing inputs are separated so the UI does not fake certainty.", icon: GitBranch, status: "uncertainty visible" },
+      { label: "Agent fusion", body: "Velocity, liquidity, holders, contract, order book and data quality are routed as separate lenses.", icon: Brain, status: "multi-agent" },
+      { label: "SOC routing", body: "Shield converts anomaly signals into operator commands instead of dramatic accusations.", icon: Workflow, status: "review path" },
+      { label: "Evidence", body: "A case draft must carry sources, timestamps, missing data and legal disclaimers.", icon: FileText, status: "guarded export" },
+      { label: "Release rails", body: "Public launch remains blocked until rate limits, audit logs and data-source policy are connected.", icon: ShieldCheck, status: "launch control" },
+    ];
+  }, [locale]);
+  const sourceRails = useMemo(() => {
+    if (locale === "pl") {
+      return [
+        { label: "Świece", state: "live / fallback", body: "OHLCV, VWAP i replay timeline." },
+        { label: "Płynność", state: "partial", body: "Depth, slippage i danger zones wymagają live feedów." },
+        { label: "Holderzy", state: "proxy", body: "Cluster labels wymagają chain API i wyłączenia CEX." },
+        { label: "Kontrakt", state: "pending", body: "Owner flags, podatki, mint/pause i blacklist checks." },
+      ];
+    }
+    if (locale === "de") {
+      return [
+        { label: "Candles", state: "live / fallback", body: "OHLCV, VWAP und Replay Timeline." },
+        { label: "Liquidität", state: "partial", body: "Depth, Slippage und Danger Zones brauchen Live Feeds." },
+        { label: "Holder", state: "proxy", body: "Cluster Labels brauchen Chain API und CEX-Ausschluss." },
+        { label: "Contract", state: "pending", body: "Owner Flags, Taxes, Mint/Pause und Blacklist Checks." },
+      ];
+    }
+    return [
+      { label: "Candles", state: "live / fallback", body: "OHLCV, VWAP and replay timeline." },
+      { label: "Liquidity", state: "partial", body: "Depth, slippage and danger zones require live feeds." },
+      { label: "Holders", state: "proxy", body: "Cluster labels need chain API and CEX exclusion." },
+      { label: "Contract", state: "pending", body: "Owner flags, taxes, mint/pause and blacklist checks." },
+    ];
+  }, [locale]);
   const systemBoundaryCards = [
     {
       label: "Public explanation",
@@ -680,38 +769,36 @@ export default function ShieldMapClient({
     { label: "Next", body: "Live chain-level holder labels, order-book depth and operator audit logs." },
     { label: "Launch", body: "Rate limits, policy pages, export manifest and VLM session gating." },
   ];
-  const investigatorProtocol = [
-    {
-      label: "Supply / float",
-      score: "0–100",
-      body: "Circulating supply is compared with total/max supply and FDV. Low float is never treated as neutral.",
-    },
-    {
-      label: "Unlock / vesting",
-      score: "red flag first",
-      body: "Team, investor, advisor, OTC and whale unlocks must be verified before any clean verdict.",
-    },
-    {
-      label: "Buy pressure",
-      score: "engineered demand",
-      body: "Buybacks, market-maker support, short squeezes and volume spikes are separated from organic demand.",
-    },
-    {
-      label: "KOL / social",
-      score: "disclosure risk",
-      body: "Paid shill patterns, undisclosed allocations and coordinated hype are routed to OSINT review.",
-    },
-    {
-      label: "Contract control",
-      score: "admin risk",
-      body: "Owner, proxy, mint, blacklist, pause, tax and audit status are treated as contract transparency gates.",
-    },
-    {
-      label: "Evidence standard",
-      score: "proof level",
-      body: "Every claim is marked confirmed, likely, unverified, red flag or unknown before the bot speaks.",
-    },
-  ];
+  const investigatorProtocol = useMemo(() => {
+    if (locale === "pl") {
+      return [
+        { label: "Supply / float", score: "0–100", body: "Circulating supply jest porównywany z total/max supply i FDV. Low float nigdy nie jest neutralny." },
+        { label: "Unlock / vesting", score: "red flag first", body: "Team, investor, advisor, OTC i whale unlocks muszą być zweryfikowane przed clean verdict." },
+        { label: "Buy pressure", score: "engineered demand", body: "Buybacki, market-maker support, short squeeze i volume spikes są oddzielone od organic demand." },
+        { label: "KOL / social", score: "disclosure risk", body: "Paid shill patterns, ukryte alokacje i coordinated hype idą do OSINT review." },
+        { label: "Contract control", score: "admin risk", body: "Owner, proxy, mint, blacklist, pause, tax i audit status są traktowane jako bramki transparentności kontraktu." },
+        { label: "Evidence standard", score: "proof level", body: "Każdy claim dostaje status confirmed, likely, unverified, red flag albo unknown zanim bot odpowie." },
+      ];
+    }
+    if (locale === "de") {
+      return [
+        { label: "Supply / Float", score: "0–100", body: "Circulating Supply wird mit Total/Max Supply und FDV verglichen. Low Float ist nie neutral." },
+        { label: "Unlock / Vesting", score: "Red Flag zuerst", body: "Team-, Investor-, Advisor-, OTC- und Whale-Unlocks müssen vor einem sauberen Verdict verifiziert werden." },
+        { label: "Buy Pressure", score: "Engineered Demand", body: "Buybacks, Market-Maker Support, Short Squeezes und Volume Spikes werden von organischer Nachfrage getrennt." },
+        { label: "KOL / Social", score: "Disclosure Risk", body: "Paid Shill Patterns, undisclosed Allocations und koordinierter Hype werden zu OSINT Review geroutet." },
+        { label: "Contract Control", score: "Admin Risk", body: "Owner, Proxy, Mint, Blacklist, Pause, Tax und Audit Status sind Transparenz-Gates." },
+        { label: "Evidence Standard", score: "Proof Level", body: "Jede Aussage wird als confirmed, likely, unverified, red flag oder unknown markiert, bevor der Bot spricht." },
+      ];
+    }
+    return [
+      { label: "Supply / float", score: "0–100", body: "Circulating supply is compared with total/max supply and FDV. Low float is never treated as neutral." },
+      { label: "Unlock / vesting", score: "red flag first", body: "Team, investor, advisor, OTC and whale unlocks must be verified before any clean verdict." },
+      { label: "Buy pressure", score: "engineered demand", body: "Buybacks, market-maker support, short squeezes and volume spikes are separated from organic demand." },
+      { label: "KOL / social", score: "disclosure risk", body: "Paid shill patterns, undisclosed allocations and coordinated hype are routed to OSINT review." },
+      { label: "Contract control", score: "admin risk", body: "Owner, proxy, mint, blacklist, pause, tax and audit status are treated as contract transparency gates." },
+      { label: "Evidence standard", score: "proof level", body: "Every claim is marked confirmed, likely, unverified, red flag or unknown before the bot speaks." },
+    ];
+  }, [locale]);
   const investigatorGuardrails = [
     "No hype, no buy/sell calls and no safe-investment language.",
     "No scam/manipulation accusation without evidence; use red flag / requires review.",
@@ -760,20 +847,91 @@ export default function ShieldMapClient({
   ];
   const activeAtlas = atlasNodes.find((node) => node.label === activeAtlasNode) ?? atlasNodes[2];
   const ActiveAtlasIcon = activeAtlas.icon;
-  const commandRoomCards = [
-    { label: "queue", value: String(reviewRows.length), body: "open review lanes from current market sweep" },
-    { label: "critical", value: String(criticalCount), body: "high-priority anomalies, still not proof" },
-    { label: "watch", value: String(watchCount), body: "requires manual review before escalation" },
-    { label: "policy", value: "locked", body: "no accusation, no advice, VLM utility only" },
-  ];
-  const launchBridgeContracts = [
-    { label: "search intake", state: "ready", body: "Empty premium search, icon submit, outside-click dismiss and guarded resolver path." },
-    { label: "modal runtime", state: "ready", body: "Terminal opens in a client-only chunk with boot skeleton and safe-mode boundary." },
-    { label: "live data spine", state: "partial", body: "Candles are live/fallback aware; holder and order-book feeds still need production APIs." },
-    { label: "audit storage", state: "blocked", body: "Operator commands, AI prompts and export manifests need persistent storage." },
-    { label: "VLM access", state: "blocked", body: "Utility-only session gating still needs wallet/signature and membership limits." },
-    { label: "export evidence", state: "blocked", body: "Case export needs source ledger, missing-data appendix and legal-safe renderer." },
-  ];
+  const commandRoomCards = useMemo(() => {
+    if (locale === "pl") {
+      return [
+        { label: "queue", value: String(reviewRows.length), body: "otwarte ścieżki review z aktualnego market sweep" },
+        { label: "critical", value: String(criticalCount), body: "anomalie wysokiego priorytetu, nadal nie dowód" },
+        { label: "watch", value: String(watchCount), body: "wymaga manual review przed eskalacją" },
+        { label: "policy", value: "locked", body: "bez oskarżeń, bez porad, VLM tylko utility" },
+      ];
+    }
+    if (locale === "de") {
+      return [
+        { label: "queue", value: String(reviewRows.length), body: "offene Review Lanes aus aktuellem Market Sweep" },
+        { label: "critical", value: String(criticalCount), body: "High-Priority Anomalien, noch kein Beweis" },
+        { label: "watch", value: String(watchCount), body: "manueller Review vor Eskalation nötig" },
+        { label: "policy", value: "locked", body: "keine Anschuldigung, keine Beratung, VLM nur Utility" },
+      ];
+    }
+    return [
+      { label: "queue", value: String(reviewRows.length), body: "open review lanes from current market sweep" },
+      { label: "critical", value: String(criticalCount), body: "high-priority anomalies, still not proof" },
+      { label: "watch", value: String(watchCount), body: "requires manual review before escalation" },
+      { label: "policy", value: "locked", body: "no accusation, no advice, VLM utility only" },
+    ];
+  }, [criticalCount, locale, reviewRows.length, watchCount]);
+  const launchBridgeContracts = useMemo(() => {
+    if (locale === "pl") {
+      return [
+        { label: "search intake", state: "ready", body: "Pusta premium search, icon submit, outside-click dismiss i guarded resolver path." },
+        { label: "modal runtime", state: "ready", body: "Terminal otwiera się jako client-only chunk z boot skeleton i safe-mode boundary." },
+        { label: "live data spine", state: "partial", body: "Candles są live/fallback aware; holder i order-book feeds dalej wymagają produkcyjnych API." },
+        { label: "audit storage", state: "blocked", body: "Operator commands, AI prompts i export manifests wymagają persistent storage." },
+        { label: "VLM access", state: "blocked", body: "Utility-only session gating dalej wymaga wallet/signature i limitów membership." },
+        { label: "export evidence", state: "blocked", body: "Case export wymaga source ledger, missing-data appendix i legal-safe renderer." },
+      ];
+    }
+    if (locale === "de") {
+      return [
+        { label: "Search Intake", state: "ready", body: "Leere Premium Search, Icon Submit, Outside-Click Dismiss und Guarded Resolver Path." },
+        { label: "Modal Runtime", state: "ready", body: "Terminal öffnet als Client-only Chunk mit Boot Skeleton und Safe-Mode Boundary." },
+        { label: "Live Data Spine", state: "partial", body: "Candles sind live/fallback-aware; Holder- und Order-Book-Feeds brauchen Production APIs." },
+        { label: "Audit Storage", state: "blocked", body: "Operator Commands, AI Prompts und Export Manifests brauchen persistenten Storage." },
+        { label: "VLM Access", state: "blocked", body: "Utility-only Session Gating braucht Wallet/Signature und Membership Limits." },
+        { label: "Export Evidence", state: "blocked", body: "Case Export braucht Source Ledger, Missing-Data Appendix und legal-safe Renderer." },
+      ];
+    }
+    return [
+      { label: "search intake", state: "ready", body: "Empty premium search, icon submit, outside-click dismiss and guarded resolver path." },
+      { label: "modal runtime", state: "ready", body: "Terminal opens in a client-only chunk with boot skeleton and safe-mode boundary." },
+      { label: "live data spine", state: "partial", body: "Candles are live/fallback aware; holder and order-book feeds still need production APIs." },
+      { label: "audit storage", state: "blocked", body: "Operator commands, AI prompts and export manifests need persistent storage." },
+      { label: "VLM access", state: "blocked", body: "Utility-only session gating still needs wallet/signature and membership limits." },
+      { label: "export evidence", state: "blocked", body: "Case export needs source ledger, missing-data appendix and legal-safe renderer." },
+    ];
+  }, [locale]);
+
+  const brainImportLanes = useMemo(() => {
+    if (locale === "pl") {
+      return [
+        { label: "Codex folder", state: "ready", body: "Codex pracuje tylko w `Desktop/codex`, bez dotykania pełnego repo." },
+        { label: "One file", state: "ready", body: "Edytowany jest tylko eksportowany risk-engine, a reszta plików jest read-only reference." },
+        { label: "Import guard", state: "ready", body: "Preflight blokuje signal IDs spoza typów, browser/Node APIs, `as any` i język inwestycyjny." },
+        { label: "Scenario matrix", state: "partial", body: "BTC, stablecoin, RWA, low-float pump, contract trap i no-data token są opisane do manual QA." },
+        { label: "Live feeds", state: "blocked", body: "Holder/orderbook/contract/OSINT feeds nadal muszą zostać produkcyjnie podłączone." },
+        { label: "Evidence export", state: "blocked", body: "Finalny AI verdict wymaga source ledger, timestamps i export-safe wording." },
+      ];
+    }
+    if (locale === "de") {
+      return [
+        { label: "Codex Folder", state: "ready", body: "Codex arbeitet nur in `Desktop/codex`, ohne das volle Repo zu berühren." },
+        { label: "One File", state: "ready", body: "Bearbeitet wird nur der exportierte risk-engine; andere Dateien sind read-only Reference." },
+        { label: "Import Guard", state: "ready", body: "Preflight blockiert Signal IDs außerhalb der Typen, Browser/Node APIs, `as any` und Investment-Sprache." },
+        { label: "Scenario Matrix", state: "partial", body: "BTC, Stablecoin, RWA, Low-Float Pump, Contract Trap und No-Data Token sind für manuelle QA beschrieben." },
+        { label: "Live Feeds", state: "blocked", body: "Holder/Orderbook/Contract/OSINT Feeds müssen noch production-ready angebunden werden." },
+        { label: "Evidence Export", state: "blocked", body: "Finales AI Verdict braucht Source Ledger, Timestamps und export-safe Wording." },
+      ];
+    }
+    return [
+      { label: "Codex folder", state: "ready", body: "Codex works only inside `Desktop/codex`, without touching the full repo." },
+      { label: "One file", state: "ready", body: "Only the exported risk-engine is edited; all other files stay read-only reference." },
+      { label: "Import guard", state: "ready", body: "Preflight blocks signal IDs outside types, browser/Node APIs, `as any` and investment language." },
+      { label: "Scenario matrix", state: "partial", body: "BTC, stablecoin, RWA, low-float pump, contract trap and no-data token are documented for manual QA." },
+      { label: "Live feeds", state: "blocked", body: "Holder/orderbook/contract/OSINT feeds still need production wiring." },
+      { label: "Evidence export", state: "blocked", body: "Final AI verdict needs source ledger, timestamps and export-safe wording." },
+    ];
+  }, [locale]);
   const sourceTrustAdapters = [
     { label: "Search resolver", state: "ready", body: "Local table and suggestions resolve first; external analyze only runs after guarded lookup." },
     { label: "429 cooldown", state: "partial", body: "Client cooldown is visible; production still needs server cache and abuse/rate-limit middleware." },
@@ -935,6 +1093,28 @@ export default function ShieldMapClient({
     ];
   }, [locale]);
 
+  const shieldAccessModes = useMemo(() => {
+    if (locale === "pl") {
+      return [
+        { label: "Basic", value: "publiczny prescreen", body: "Szybki risk score, top 10 punktów i edukacyjny opis bez głębokiego OSINT. Ma zatrzymać impulsywne wejście, nie dawać sygnału kup/sprzedaj." },
+        { label: "Pro", value: "member review", body: "Więcej źródeł, source confidence, ścieżki supply/liquidity/holders/contract i spokojny operator copy." },
+        { label: "Advanced", value: "investigator mode", body: "Pełny VLM risk brain, top 20 punktów, OSINT queue, evidence status, missing-data appendix i export-ready workflow." },
+      ];
+    }
+    if (locale === "de") {
+      return [
+        { label: "Basic", value: "öffentlicher Prescreen", body: "Schneller Risk Score, Top-10-Punkte und edukative Erklärung ohne Deep OSINT. Es bremst impulsive Einstiege, keine Buy/Sell Calls." },
+        { label: "Pro", value: "Member Review", body: "Mehr Quellen, Source Confidence, Supply/Liquidity/Holders/Contract Lanes und ruhige Operator-Sprache." },
+        { label: "Advanced", value: "Investigator Mode", body: "Voller VLM Risk Brain, Top-20-Punkte, OSINT Queue, Evidence Status, Missing-Data Appendix und exportfähiger Workflow." },
+      ];
+    }
+    return [
+      { label: "Basic", value: "public prescreen", body: "Fast risk score, top 10 points and educational copy without deep OSINT. It slows impulsive entry; it is not a entry/exit command." },
+      { label: "Pro", value: "member review", body: "More sources, source confidence, supply/liquidity/holders/contract lanes and calm operator language." },
+      { label: "Advanced", value: "investigator mode", body: "Full VLM risk brain, top 20 points, OSINT queue, evidence status, missing-data appendix and export-ready workflow." },
+    ];
+  }, [locale]);
+
   const statePillClass = (state: string) =>
     state === "ready"
       ? "border-emerald-300/[0.18] bg-emerald-400/[0.055] text-emerald-100"
@@ -1074,7 +1254,7 @@ export default function ShieldMapClient({
                 {shieldUi.liveBody}
               </p>
               <form onSubmit={runInvestigatorScan} className="relative mt-5 grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
-                <div className="relative min-w-0">
+                <div ref={investigatorSuggestRef} className="relative z-[120] min-w-0">
                   <label className="group flex min-h-14 items-center gap-3 rounded-full border border-white/[0.10] bg-black/[0.28] px-4 transition focus-within:border-cyan-200/[0.35]">
                     <Search className="h-4 w-4 shrink-0 text-cyan-100/[0.62]" />
                     <input
@@ -1084,13 +1264,12 @@ export default function ShieldMapClient({
                         setSuggestionsOpen(true);
                       }}
                       onFocus={() => setSuggestionsOpen(true)}
-                      onBlur={() => window.setTimeout(() => setSuggestionsOpen(false), 140)}
                       placeholder={shieldUi.placeholder}
                       className="min-w-0 flex-1 bg-transparent font-mono text-[13px] uppercase tracking-[0.12em] text-white outline-none placeholder:text-white/[0.25]"
                     />
                   </label>
                   {suggestionsOpen ? (
-                    <div className="shield-investigator-suggest-panel">
+                    <div className="shield-investigator-suggest-panel" role="listbox" aria-label={shieldUi.suggestionLabel}>
                       <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-cyan-100/[0.58]">{shieldUi.suggestionLabel}</p>
                       <div className="mt-2 grid gap-1.5">
                         {investigatorSuggestions.length ? investigatorSuggestions.map((item) => (
@@ -1327,10 +1506,10 @@ export default function ShieldMapClient({
           <div className="rounded-[2rem] border border-cyan-300/[0.14] bg-[radial-gradient(circle_at_30%_20%,rgba(34,211,238,0.10),transparent_34%),rgba(255,255,255,0.026)] p-4 md:p-6">
             <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-cyan-100">VLM Shield Investigator</p>
             <h2 className="mt-3 max-w-4xl text-3xl font-semibold tracking-[-0.055em] text-white md:text-5xl">
-              Bot ma działać jak śledczy OSINT, nie jak hype machine.
+              {pageCopy.investigatorTitle}
             </h2>
             <p className="shield-copy-safe mt-4 max-w-3xl text-sm leading-7 text-white/[0.56]">
-              Advanced VLM sprawdza low float, unlocki, buybacki, short squeeze, KOL disclosure, holderów i kontrakt. Każdy wniosek ma status dowodu: confirmed, likely, unverified, red flag albo unknown.
+              {pageCopy.investigatorBody}
             </p>
             <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
               {investigatorProtocol.map((item) => (
@@ -1345,7 +1524,7 @@ export default function ShieldMapClient({
             </div>
           </div>
           <div className="rounded-[2rem] border border-velmere-gold/[0.16] bg-velmere-gold/[0.055] p-4 md:p-5">
-            <p className="font-mono text-[10px] uppercase tracking-[0.20em] text-velmere-gold">investigator rules</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.20em] text-velmere-gold">{pageCopy.investigatorRules}</p>
             <div className="mt-4 grid gap-2">
               {investigatorGuardrails.map((rule) => (
                 <div key={rule} className="flex gap-3 rounded-2xl border border-white/[0.08] bg-black/[0.20] p-3">
@@ -1482,20 +1661,20 @@ export default function ShieldMapClient({
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
               <div className="min-w-0">
                 <p className="font-mono text-[10px] uppercase tracking-[0.20em] text-velmere-gold">
-                  Shield Map command room
+                  {pageCopy.commandRoom}
                 </p>
                 <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-white md:text-4xl">
-                  Mapa ma tłumaczyć produkt, nie wyglądać jak zwykły opis.
+                  {pageCopy.commandTitle}
                 </h2>
                 <p className="shield-copy-safe mt-3 max-w-3xl text-sm leading-7 text-white/[0.54]">
-                  Tu użytkownik widzi, które części terminala są live, które są partial/fallback i gdzie operator musi zrobić review. Prywatne wagi scoringu zostają ukryte, ale workflow jest jasny.
+                  {pageCopy.commandBody}
                 </p>
               </div>
               <Link
                 href="/market-integrity"
                 className="shield-premium-focus inline-flex shrink-0 items-center justify-center rounded-full border border-velmere-gold/[0.20] bg-velmere-gold/[0.075] px-4 py-2.5 font-mono text-[10px] uppercase tracking-[0.14em] text-velmere-gold transition hover:bg-velmere-gold/[0.12]"
               >
-                open terminal
+                {pageCopy.openTerminal}
               </Link>
             </div>
             <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -1509,7 +1688,7 @@ export default function ShieldMapClient({
             </div>
           </div>
           <div className="shield-map-radar-board p-4 md:p-5">
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-velmere-gold">active layer preview</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-velmere-gold">{pageCopy.activePreview}</p>
             <div className="mt-4 flex items-center gap-4">
               <span className="relative inline-flex h-20 w-20 shrink-0 items-center justify-center rounded-full border border-velmere-gold/[0.24] bg-velmere-gold/[0.06] text-velmere-gold">
                 <span className="absolute inset-[-0.8rem] rounded-full border border-dashed border-velmere-gold/[0.13]" />
@@ -1531,17 +1710,17 @@ export default function ShieldMapClient({
             <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
               <div className="min-w-0">
                 <p className="font-mono text-[10px] uppercase tracking-[0.20em] text-velmere-gold">
-                  Launch bridge · PASS71
+                  {pageCopy.launchBridge}
                 </p>
                 <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-white md:text-4xl">
-                  Co musi być gotowe zanim Shield będzie produkcyjnym terminalem.
+                  {pageCopy.launchTitle}
                 </h2>
                 <p className="shield-copy-safe mt-3 max-w-3xl text-sm leading-7 text-white/[0.54]">
-                  To jest most z obecnego premium UI do realnego produktu: live data contracts, audit logs, rate limits, VLM utility access i evidence export. Czerwone pola zostają blokadami, nie udajemy gotowości.
+                  {pageCopy.launchBody}
                 </p>
               </div>
               <span className="w-fit rounded-full border border-velmere-gold/[0.18] bg-velmere-gold/[0.060] px-3 py-2 font-mono text-[9px] uppercase tracking-[0.14em] text-velmere-gold">
-                build-to-100 spine
+                {pageCopy.buildSpine}
               </span>
             </div>
             <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
@@ -1565,6 +1744,40 @@ export default function ShieldMapClient({
         </div>
       </section>
 
+
+      <section className="luxury-section-wide py-6 md:py-8">
+        <div className="mx-auto max-w-none">
+          <div className="shield-map-launch-bridge p-4 md:p-5">
+            <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+              <div className="min-w-0">
+                <p className="font-mono text-[10px] uppercase tracking-[0.20em] text-cyan-100">
+                  {pageCopy.brainImportKicker}
+                </p>
+                <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-white md:text-4xl">
+                  {pageCopy.brainImportTitle}
+                </h2>
+                <p className="shield-copy-safe mt-3 max-w-3xl text-sm leading-7 text-white/[0.54]">
+                  {pageCopy.brainImportBody}
+                </p>
+              </div>
+              <span className="w-fit rounded-full border border-cyan-200/[0.18] bg-cyan-300/[0.060] px-3 py-2 font-mono text-[9px] uppercase tracking-[0.14em] text-cyan-100">
+                {pageCopy.brainImportBadge}
+              </span>
+            </div>
+            <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {brainImportLanes.map((lane) => (
+                <div key={lane.label} className="shield-map-contract-card">
+                  <div className="flex items-start justify-between gap-3">
+                    <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-white/[0.54]">{lane.label}</p>
+                    <span className={`rounded-full border px-2 py-1 font-mono text-[8px] uppercase tracking-[0.10em] ${statePillClass(lane.state)}`}>{lane.state}</span>
+                  </div>
+                  <p className="shield-copy-safe mt-3 text-[11px] leading-5 text-white/[0.48]">{lane.body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
 
       <section className="luxury-section-wide py-6 md:py-10">
         <div className="mx-auto max-w-none">
@@ -1650,7 +1863,36 @@ export default function ShieldMapClient({
         </div>
       </section>
 
-      <section id="prime-crypto-research-lab" className="luxury-section-wide border-t border-white/[0.06] py-10 md:py-14">
+            <section id="shield-access-mode-matrix" className="luxury-section-wide border-t border-white/[0.06] py-10 md:py-14">
+        <div className="mx-auto max-w-none">
+          <div className="rounded-[2rem] border border-cyan-200/[0.10] bg-gradient-to-br from-cyan-300/[0.055] via-white/[0.025] to-velmere-gold/[0.055] p-6 md:p-8">
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-cyan-100">
+              {locale === "pl" ? "Basic / Pro / Advanced · warstwy Shield" : locale === "de" ? "Basic / Pro / Advanced · Shield Ebenen" : "Basic / Pro / Advanced · Shield layers"}
+            </p>
+            <h2 className="mt-3 max-w-5xl text-3xl font-semibold tracking-[-0.055em] text-white md:text-5xl">
+              {locale === "pl" ? "Ten sam terminal, różna głębokość dowodów." : locale === "de" ? "Ein Terminal, unterschiedliche Beweistiefe." : "One terminal, different evidence depth."}
+            </h2>
+            <p className="shield-copy-safe mt-4 max-w-4xl text-sm leading-7 text-white/[0.58]">
+              {locale === "pl"
+                ? "Basic ma być szybki i spokojny. Pro dodaje źródła i kontekst. Advanced odblokowuje pełny tryb operatora: risk brain, OSINT, evidence i missing-data. Żaden poziom nie jest poradą inwestycyjną."
+                : locale === "de"
+                  ? "Basic bleibt schnell und ruhig. Pro ergänzt Quellen und Kontext. Advanced öffnet den Operator-Modus: Risk Brain, OSINT, Evidence und Missing-Data. Keine Ebene ist Investment Advice."
+                  : "Basic stays fast and calm. Pro adds sources and context. Advanced opens the operator path: risk brain, OSINT, evidence and missing-data. No tier is investment advice."}
+            </p>
+            <div className="mt-6 grid gap-4 md:grid-cols-3">
+              {shieldAccessModes.map((item) => (
+                <article key={item.label} className="rounded-[1.5rem] border border-white/[0.08] bg-black/[0.24] p-5">
+                  <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/[0.36]">{item.label}</p>
+                  <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.14em] text-cyan-100">{item.value}</p>
+                  <p className="shield-copy-safe mt-3 text-xs leading-6 text-white/[0.54]">{item.body}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+<section id="prime-crypto-research-lab" className="luxury-section-wide border-t border-white/[0.06] py-10 md:py-14">
         <div className="mx-auto max-w-none">
           <div className="rounded-[2rem] border border-velmere-gold/[0.12] bg-gradient-to-br from-velmere-gold/[0.07] via-white/[0.025] to-cyan-300/[0.05] p-6 md:p-8">
             <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-velmere-gold">

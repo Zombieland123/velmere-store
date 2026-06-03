@@ -7,6 +7,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/navigation";
 import { useModeStore } from "@/store/useModeStore";
 import { formatMoney, getLocalizedString, isProductCustomerPurchasable } from "@/lib/products/catalog";
+import { buildProductProviderTruthSnapshot } from "@/lib/launch/provider-truth-ledger";
 import type { Product } from "@/lib/products/types";
 
 type ProductCardProps = {
@@ -14,22 +15,100 @@ type ProductCardProps = {
   priority?: boolean;
 };
 
-const proMetrics = [
-  { icon: Ruler, label: "Weight", value: "450gsm" },
-  { icon: Scissors, label: "Seam", value: "Reinforced" },
-  { icon: Wind, label: "Breath", value: "Medium" },
-] as const;
+function cardCommerceCopy(locale: string) {
+  if (locale === "pl") {
+    return {
+      weight: "Gramatura",
+      seam: "Szew",
+      breath: "Oddychalność",
+      reinforced: "Wzmocniony",
+      medium: "Średnia",
+      fitNote: "Sprawdź rozmiar, dostawę i zwrot przed płatnością.",
+    };
+  }
+  if (locale === "de") {
+    return {
+      weight: "Gewicht",
+      seam: "Naht",
+      breath: "Atmung",
+      reinforced: "Verstärkt",
+      medium: "Mittel",
+      fitNote: "Größe, Lieferung und Rückgabe vor Zahlung prüfen.",
+    };
+  }
+  return {
+    weight: "Weight",
+    seam: "Seam",
+    breath: "Breath",
+    reinforced: "Reinforced",
+    medium: "Medium",
+    fitNote: "Check size, delivery and returns before payment.",
+  };
+}
+
+function providerSnapshotCopy(locale: string) {
+  if (locale === "pl") {
+    return {
+      provider: "provider",
+      source: "źródło",
+      blocked: "checkout zablokowany",
+      review: "manual review",
+      partial: "częściowe",
+      ready: "gotowe",
+      missing: "braki",
+    };
+  }
+  if (locale === "de") {
+    return {
+      provider: "Provider",
+      source: "Quelle",
+      blocked: "Checkout gesperrt",
+      review: "Manual Review",
+      partial: "teilweise",
+      ready: "bereit",
+      missing: "fehlend",
+    };
+  }
+  return {
+    provider: "provider",
+    source: "source",
+    blocked: "checkout blocked",
+    review: "manual review",
+    partial: "partial",
+    ready: "ready",
+    missing: "missing",
+  };
+}
+
+function providerSnapshotStatusLabel(status: string, locale: string) {
+  const copy = providerSnapshotCopy(locale);
+  if (status === "blocked") return copy.blocked;
+  if (status === "manual_review") return copy.review;
+  if (status === "ready") return copy.ready;
+  return copy.partial;
+}
 
 export default function ProductCard({ product, priority = false }: ProductCardProps) {
   const productT = useTranslations("Product");
   const locale = useLocale();
+  const commerce = cardCommerceCopy(locale);
+  const providerCopy = providerSnapshotCopy(locale);
   const { isProMode } = useModeStore();
   const reducedMotion = useReducedMotion();
   const purchasable = isProductCustomerPurchasable(product);
+  const providerSnapshot = buildProductProviderTruthSnapshot(product);
+  const providerStatusLabel = providerSnapshotStatusLabel(providerSnapshot.status, locale);
   const image = product.images[0];
   const hoverImage = product.images[1] ?? image;
   const title = getLocalizedString(product.title, locale);
   const description = getLocalizedString(product.shortDescription, locale);
+  const fitValue = product.truth ? getLocalizedString(product.truth.fit, locale) : commerce.medium;
+  const materialValue = product.truth ? getLocalizedString(product.truth.material, locale) : commerce.reinforced;
+  const productMetrics = [
+    { icon: Ruler, key: "weight", value: product.truth?.weight ?? "TBC" },
+    { icon: Scissors, key: "seam", value: materialValue },
+    { icon: Wind, key: "breath", value: fitValue },
+  ] as const;
 
   if (!isProMode) {
     return (
@@ -42,6 +121,9 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
               </p>
               <h3 className="mt-2 text-base font-semibold uppercase tracking-[0.08em] text-velmere-ivory">{title}</h3>
               <p className="mt-2 max-w-md text-sm leading-6 text-velmere-muted">{description}</p>
+              <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.14em] text-white/[0.36]">
+                {providerCopy.provider}: {product.provider} · {providerCopy.source}: {providerSnapshot.sourceMode} · {providerStatusLabel}
+              </p>
             </div>
             <div className="text-right">
               <p className="font-mono text-sm tabular-nums text-velmere-grey-soft">{formatMoney(product.price, locale)}</p>
@@ -107,16 +189,26 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
                 {title}
               </motion.h3>
               <p className="mt-3 line-clamp-2 text-sm leading-6 text-white/[0.52]">{description}</p>
+              <p className="mt-3 max-w-xs text-[10px] uppercase tracking-[0.16em] text-white/[0.34]">{commerce.fitNote}</p>
+              <div className="mt-4 rounded-2xl border border-velmere-gold/[0.16] bg-velmere-gold/[0.055] p-3">
+                <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-velmere-gold/[0.78]">
+                  {providerCopy.provider}: {product.provider} · {providerSnapshot.score}/100
+                </p>
+                <p className="mt-2 line-clamp-2 font-mono text-[9px] uppercase tracking-[0.12em] text-white/[0.40]">
+                  {providerCopy.source}: {providerSnapshot.sourceMode} · {providerStatusLabel}
+                  {providerSnapshot.missing.length ? ` · ${providerCopy.missing}: ${providerSnapshot.missing.slice(0, 2).join(", ")}` : ""}
+                </p>
+              </div>
             </div>
             <ArrowUpRight className="h-4 w-4 shrink-0 text-white/[0.32] transition-colors group-hover:text-[#d4af37]" />
           </div>
 
           <div className="mt-5 grid grid-cols-3 gap-2">
-            {proMetrics.map(({ icon: Icon, label, value }) => (
-              <div key={label} className="rounded-2xl border border-white/[0.10] bg-black/[0.25] p-3">
+            {productMetrics.map(({ icon: Icon, key, value }) => (
+              <div key={key} className="rounded-2xl border border-white/[0.10] bg-black/[0.25] p-3">
                 <Icon className="h-3.5 w-3.5 text-[#d4af37]" aria-hidden="true" />
-                <p className="mt-2 font-mono text-[9px] uppercase tracking-[0.16em] text-white/[0.34]">{label}</p>
-                <p className="mt-1 font-mono text-[11px] tabular-nums text-white/[0.72]">{value}</p>
+                <p className="mt-2 font-mono text-[9px] uppercase tracking-[0.16em] text-white/[0.34]">{commerce[key]}</p>
+                <p className="mt-1 line-clamp-2 font-mono text-[11px] tabular-nums text-white/[0.72]">{value}</p>
               </div>
             ))}
           </div>

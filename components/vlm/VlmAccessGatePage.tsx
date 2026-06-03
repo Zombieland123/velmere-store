@@ -52,6 +52,7 @@ const proHeroCopy = {
     learn: "Learn About VLM",
     utility: "Read Utility",
     waitlist: "Join Waitlist",
+    research: "Research Lab",
     status: "Contract status",
     checks: ["No custody", "No seed phrases", "No price claim"],
   },
@@ -62,6 +63,7 @@ const proHeroCopy = {
     learn: "Poznaj VLM",
     utility: "Czytaj utility",
     waitlist: "Dołącz do listy",
+    research: "Research Lab",
     status: "Status kontraktu",
     checks: ["Bez custody", "Bez seed phrase", "Bez obietnicy ceny"],
   },
@@ -72,8 +74,42 @@ const proHeroCopy = {
     learn: "VLM verstehen",
     utility: "Utility lesen",
     waitlist: "Warteliste",
+    research: "Research Lab",
     status: "Contract Status",
     checks: ["Keine Custody", "Keine Seed Phrase", "Kein Preisversprechen"],
+  },
+} as const;
+
+const vlmAccessTiers = {
+  en: {
+    kicker: "Basic / Pro / Advanced",
+    title: "Three access lanes, one safety rule.",
+    body: "VLM access should scale from public education to operator-grade review without promising ROI, yield or guaranteed access value.",
+    tiers: [
+      { name: "Basic", value: "public read", body: "Simple utility explanation, wallet safety, Research Lab and public Shield education. No deep OSINT, no evidence export." },
+      { name: "Pro", value: "member cockpit", body: "Deeper VLM workspace with source quality, case notes, Square routing and guarded review lanes." },
+      { name: "Advanced", value: "operator mode", body: "Full Shield investigator path: risk brain, evidence states, OSINT queue, missing-data appendix and export-ready workflow." },
+    ],
+  },
+  pl: {
+    kicker: "Basic / Pro / Advanced",
+    title: "Trzy poziomy dostępu, jedna zasada bezpieczeństwa.",
+    body: "VLM ma skalować się od publicznej edukacji do operatorskiego review, bez obietnic ROI, yieldu albo gwarantowanej wartości dostępu.",
+    tiers: [
+      { name: "Basic", value: "publiczny odczyt", body: "Proste wyjaśnienie utility, bezpieczeństwo portfela, Research Lab i publiczna edukacja Shield. Bez głębokiego OSINT i bez exportu evidence." },
+      { name: "Pro", value: "kokpit membera", body: "Głębsza przestrzeń VLM: jakość źródeł, notatki case’u, routing Square i kontrolowane ścieżki review." },
+      { name: "Advanced", value: "tryb operatora", body: "Pełna ścieżka śledcza Shield: risk brain, status dowodów, kolejka OSINT, missing-data appendix i workflow pod export." },
+    ],
+  },
+  de: {
+    kicker: "Basic / Pro / Advanced",
+    title: "Drei Zugangsspuren, eine Sicherheitsregel.",
+    body: "VLM soll von öffentlicher Bildung bis Operator-Review skalieren, ohne ROI, Yield oder garantierten Access-Wert zu versprechen.",
+    tiers: [
+      { name: "Basic", value: "öffentlicher Read", body: "Einfache Utility-Erklärung, Wallet-Sicherheit, Research Lab und öffentliche Shield-Bildung. Kein Deep OSINT, kein Evidence Export." },
+      { name: "Pro", value: "Member Cockpit", body: "Tieferer VLM Workspace mit Source Quality, Case Notes, Square Routing und kontrollierten Review-Lanes." },
+      { name: "Advanced", value: "Operator Mode", body: "Voller Shield-Investigator-Pfad: Risk Brain, Evidence States, OSINT Queue, Missing-Data Appendix und exportfähiger Workflow." },
+    ],
   },
 } as const;
 
@@ -115,6 +151,7 @@ export default function VlmAccessGatePage() {
   const searchParams = useSearchParams();
   const locale = useLocale() as keyof typeof proHeroCopy;
   const proText = proHeroCopy[locale] ?? proHeroCopy.en;
+  const tierText = vlmAccessTiers[locale] ?? vlmAccessTiers.en;
   const { mode, setMode } = useModeStore();
 
   useEffect(() => {
@@ -154,6 +191,7 @@ export default function VlmAccessGatePage() {
                 <div className="mt-9 flex flex-col gap-3 sm:flex-row">
                   <a href="#what-is-vlm" className="velmere-button-primary">{proText.learn}</a>
                   <a href="#utility" className="velmere-button-secondary">{proText.utility}</a>
+                  <Link href="/research-lab" className="velmere-button-secondary">{proText.research}</Link>
                   <Link href="/contact" className="velmere-button-ghost">{proText.waitlist}</Link>
                 </div>
               </div>
@@ -177,6 +215,28 @@ export default function VlmAccessGatePage() {
           </div>
         </section>
       )}
+
+      <section id="vlm-access-tiers" className="luxury-section pb-20">
+        <Reveal className="luxury-card">
+          <p className="velmere-label text-velmere-gold">{tierText.kicker}</p>
+          <div className="mt-5 grid gap-7 md:grid-cols-[0.7fr_1.3fr] md:items-end">
+            <div>
+              <h2 className="font-serif text-4xl leading-[0.94] tracking-[-0.045em] md:text-6xl">{tierText.title}</h2>
+              <p className="mt-5 text-sm leading-7 text-velmere-grey-soft">{tierText.body}</p>
+            </div>
+            <div className="grid gap-4 md:grid-cols-3">
+              {tierText.tiers.map((tier, index) => (
+                <div key={tier.name} className="rounded-[1.35rem] border border-white/[0.09] bg-white/[0.025] p-5">
+                  <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/[0.34]">0{index + 1}</p>
+                  <h3 className="mt-4 text-xl text-white">{tier.name}</h3>
+                  <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.14em] text-velmere-gold">{tier.value}</p>
+                  <p className="mt-3 text-xs leading-6 text-velmere-muted">{tier.body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Reveal>
+      </section>
 
       {mode === "pro" ? (
         <>

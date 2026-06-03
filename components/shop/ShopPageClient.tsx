@@ -11,6 +11,7 @@ import LuxurySection from "@/components/layout/LuxurySection";
 import { fadeUp } from "@/lib/motion";
 import { trackVelmereEvent } from "@/lib/analytics";
 import { getVisibleProducts } from "@/lib/products/catalog";
+import { buildCommerceLaunchAudit } from "@/lib/products/launch-readiness";
 
 const matrixSlots = ["Archive cut", "Drop reserve"];
 
@@ -53,6 +54,88 @@ function matrixCopy(locale: string, category: string | null) {
   };
 }
 
+function commerceCopy(locale: string) {
+  if (locale === "pl") {
+    return {
+      kicker: "commerce first",
+      title: "Ubranie jest rdzeniem Velmère.",
+      body: "Strona sklepu ma prowadzić do decyzji zakupowej przez jakość, rozmiar, dostawę i zwrot. Shield, VLM i Square wzmacniają zaufanie, ale nie zastępują produktu.",
+      rails: [
+        { label: "Fit", body: "Rozmiar, proporcja i sylwetka muszą być widoczne przed koszykiem." },
+        { label: "Material", body: "Gramatura, odczucie, care i trwałość mają być opisane prosto, bez przesady." },
+        { label: "Delivery", body: "Dostawa, podatki, zwroty i status fulfillmentu muszą być jasne przed płatnością." },
+      ],
+      digitalKicker: "digital layer",
+      digitalTitle: "VLM nie blokuje zakupu.",
+      digitalBody: "Warstwa cyfrowa może dawać dostęp, archive notes i community, ale clothing commerce zostaje oddzielony od tokena i portfela.",
+      readinessKicker: "launch control",
+      readinessTitle: "Sklep nie udaje gotowości.",
+      readinessBody: "Ta warstwa pokazuje stan realnego commerce: które produkty są tylko preview, czy checkout jest zamknięty i co blokuje sprzedaż publiczną.",
+      readinessCards: {
+        total: "Produkty",
+        preview: "Preview",
+        purchasable: "Gotowe do sprzedaży",
+        blocked: "Blokady",
+        score: "Readiness",
+      },
+      issueTitle: "Najważniejsze blokady",
+      noIssues: "Brak aktywnych blokad w audycie.",
+    };
+  }
+  if (locale === "de") {
+    return {
+      kicker: "commerce first",
+      title: "Kleidung ist der Kern von Velmère.",
+      body: "Die Shop-Seite führt über Qualität, Größe, Lieferung und Rückgabe zur Kaufentscheidung. Shield, VLM und Square stärken Vertrauen, ersetzen aber nicht das Produkt.",
+      rails: [
+        { label: "Fit", body: "Größe, Proportion und Silhouette müssen vor dem Warenkorb klar sein." },
+        { label: "Material", body: "Gewicht, Gefühl, Pflege und Haltbarkeit werden ruhig und konkret erklärt." },
+        { label: "Delivery", body: "Lieferung, Steuern, Rückgaben und Fulfillment-Status sind vor Zahlung sichtbar." },
+      ],
+      digitalKicker: "digital layer",
+      digitalTitle: "VLM blockiert keinen Kauf.",
+      digitalBody: "Die digitale Ebene kann Access, Archive Notes und Community geben, bleibt aber vom Clothing Checkout getrennt.",
+      readinessKicker: "launch control",
+      readinessTitle: "Der Shop täuscht keine Bereitschaft vor.",
+      readinessBody: "Diese Ebene zeigt den echten Commerce-Status: welche Produkte nur Preview sind, ob Checkout geschlossen ist und was den Public Launch blockiert.",
+      readinessCards: {
+        total: "Produkte",
+        preview: "Preview",
+        purchasable: "Verkaufsbereit",
+        blocked: "Blocker",
+        score: "Readiness",
+      },
+      issueTitle: "Wichtigste Blocker",
+      noIssues: "Keine aktiven Blocker im Audit.",
+    };
+  }
+  return {
+    kicker: "commerce first",
+    title: "Clothing is the core of Velmère.",
+    body: "The shop page should lead purchase decisions through quality, size, delivery and returns. Shield, VLM and Square increase trust, but they do not replace the garment.",
+    rails: [
+      { label: "Fit", body: "Size, proportion and silhouette need to be clear before cart." },
+      { label: "Material", body: "Weight, handfeel, care and durability should be described calmly and concretely." },
+      { label: "Delivery", body: "Delivery, taxes, returns and fulfilment status must be visible before payment." },
+    ],
+    digitalKicker: "digital layer",
+    digitalTitle: "VLM never blocks purchase.",
+    digitalBody: "The digital layer can provide access, archive notes and community, but it stays separated from clothing checkout.",
+    readinessKicker: "launch control",
+    readinessTitle: "The store does not pretend to be ready.",
+    readinessBody: "This layer shows the real commerce state: which products are preview-only, whether checkout is closed and what blocks a public sale.",
+    readinessCards: {
+      total: "Products",
+      preview: "Preview",
+      purchasable: "Sale-ready",
+      blocked: "Blockers",
+      score: "Readiness",
+    },
+    issueTitle: "Top blockers",
+    noIssues: "No active blockers in the audit.",
+  };
+}
+
 export default function ShopPage() {
   const t = useTranslations("Shop");
   const trust = useTranslations("Trust");
@@ -73,6 +156,8 @@ export default function ShopPage() {
 
   const visibleSlots = [...products, ...matrixSlots].slice(0, products.length + 2);
   const matrix = matrixCopy(locale, category);
+  const commerce = commerceCopy(locale);
+  const launchAudit = useMemo(() => buildCommerceLaunchAudit(products), [products]);
 
   useEffect(() => {
     trackVelmereEvent("clothing_view", { category: category ?? "all", sort });
@@ -141,6 +226,66 @@ export default function ShopPage() {
                 </Link>
               );
             })}
+          </div>
+        </div>
+
+        <div className="mb-8 grid gap-4 lg:grid-cols-[0.72fr_1.28fr]">
+          <div className="rounded-[1.5rem] border border-velmere-gold/[0.14] bg-velmere-gold/[0.045] p-5 md:p-6">
+            <p className="font-mono text-[10px] font-black uppercase tracking-[0.22em] text-velmere-gold">{commerce.kicker}</p>
+            <h2 className="mt-4 font-serif text-3xl leading-none text-white md:text-4xl">{commerce.title}</h2>
+            <p className="mt-4 text-sm leading-7 text-white/[0.60]">{commerce.body}</p>
+          </div>
+          <div className="grid gap-3 md:grid-cols-3">
+            {commerce.rails.map((item) => (
+              <div key={item.label} className="rounded-[1.25rem] border border-white/[0.08] bg-white/[0.025] p-4">
+                <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-velmere-gold">{item.label}</p>
+                <p className="mt-3 text-xs leading-6 text-white/[0.54]">{item.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="mb-8 rounded-[1.5rem] border border-cyan-200/[0.10] bg-cyan-300/[0.035] p-5 md:p-6">
+          <div className="grid gap-4 md:grid-cols-[0.35fr_0.65fr] md:items-center">
+            <div>
+              <p className="font-mono text-[10px] font-black uppercase tracking-[0.22em] text-cyan-100/[0.72]">{commerce.digitalKicker}</p>
+              <h2 className="mt-3 font-serif text-2xl text-white md:text-3xl">{commerce.digitalTitle}</h2>
+            </div>
+            <p className="text-sm leading-7 text-white/[0.58]">{commerce.digitalBody}</p>
+          </div>
+        </div>
+
+        <div className="mb-8 rounded-[1.5rem] border border-white/[0.10] bg-white/[0.030] p-5 md:p-6">
+          <div className="grid gap-5 lg:grid-cols-[0.48fr_0.52fr] lg:items-start">
+            <div>
+              <p className="font-mono text-[10px] font-black uppercase tracking-[0.22em] text-velmere-gold">{commerce.readinessKicker}</p>
+              <h2 className="mt-3 font-serif text-3xl leading-none text-white md:text-4xl">{commerce.readinessTitle}</h2>
+              <p className="mt-4 text-sm leading-7 text-white/[0.58]">{commerce.readinessBody}</p>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-5">
+              {[
+                [commerce.readinessCards.total, launchAudit.total],
+                [commerce.readinessCards.preview, launchAudit.preview],
+                [commerce.readinessCards.purchasable, launchAudit.purchasable],
+                [commerce.readinessCards.blocked, launchAudit.blocked],
+                [commerce.readinessCards.score, `${launchAudit.averageScore}%`],
+              ].map(([label, value]) => (
+                <div key={label} className="rounded-[1.1rem] border border-white/[0.08] bg-black/[0.22] p-3">
+                  <p className="font-mono text-[8px] uppercase tracking-[0.14em] text-white/[0.38]">{label}</p>
+                  <p className="mt-2 font-serif text-2xl text-white">{value}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="mt-5 rounded-[1.2rem] border border-white/[0.08] bg-black/[0.18] p-4">
+            <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+              <p className="font-mono text-[9px] font-black uppercase tracking-[0.18em] text-white/[0.50]">{commerce.issueTitle}</p>
+              <p className="max-w-2xl text-xs leading-6 text-white/[0.42]">
+                {launchAudit.topIssues.length > 0
+                  ? launchAudit.topIssues.map((item) => item.label).join(" · ")
+                  : commerce.noIssues}
+              </p>
+            </div>
           </div>
         </div>
 

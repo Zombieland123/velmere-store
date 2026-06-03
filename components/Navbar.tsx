@@ -28,6 +28,7 @@ const navLabels = {
     login: "Login",
     contact: "Contact",
     shield: "Shield",
+    research: "Research Lab",
   },
   pl: {
     collection: "Kolekcja",
@@ -42,6 +43,7 @@ const navLabels = {
     login: "Logowanie",
     contact: "Kontakt",
     shield: "Shield",
+    research: "Research Lab",
   },
   de: {
     collection: "Kollektion",
@@ -56,6 +58,7 @@ const navLabels = {
     login: "Login",
     contact: "Kontakt",
     shield: "Shield",
+    research: "Research Lab",
   },
 } as const;
 
@@ -533,6 +536,7 @@ export default function Navbar() {
                       links: [
                         { href: "/vlm-token", label: labels.vlm },
                         { href: "/market-integrity", label: labels.shield },
+                        { href: "/research-lab", label: labels.research },
                         { href: "/token-agreement", label: "Token agreement" },
                       ],
                     },

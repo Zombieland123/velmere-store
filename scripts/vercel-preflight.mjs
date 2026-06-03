@@ -26,6 +26,397 @@ if (!pkg.dependencies?.next && !pkg.devDependencies?.next) {
   errors.push("Next.js dependency is missing from package.json. Check Vercel Root Directory.");
 }
 
+
+try {
+  const rootArtifacts = fs.readdirSync(root).filter((name) => /^CODEX_.*\.(ts|tsx|js|jsx|mjs|cjs)$/.test(name));
+  for (const artifact of rootArtifacts) {
+    errors.push(`${artifact}: Codex handoff/source artifact is in the project root and will be compiled by Next/TypeScript. Move it to docs/codex-handoff as .txt or keep it outside the deployment ZIP.`);
+  }
+  const codexSourceArtifacts = walk(".", [".ts", ".tsx", ".js", ".jsx"]).filter((file) => /^CODEX_/.test(path.basename(file)));
+  for (const artifact of codexSourceArtifacts) {
+    errors.push(`${artifact}: Codex handoff files must not use source-code extensions inside the deployable project.`);
+  }
+} catch (error) {
+  errors.push(`Codex artifact guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+
+
+
+
+
+
+// Product truth production guard
+try {
+  const typeSource = read("lib/products/types.ts");
+  const catalogSource = read("lib/products/catalog.generated.ts");
+  const detailSource = read("components/shop/ProductDetailClient.tsx");
+  const readinessSource = read("lib/products/launch-readiness.ts");
+  for (const needle of ["ProductTruthProfile", "truth?: ProductTruthProfile"]) {
+    if (!typeSource.includes(needle)) errors.push(`lib/products/types.ts: missing product truth type ${needle}.`);
+  }
+  for (const needle of ["material:", "composition:", "sizeGuide:", "deliveryNote:", "returnNote:"]) {
+    const count = catalogSource.split(needle).length - 1;
+    if (count < 4) errors.push(`lib/products/catalog.generated.ts: product truth field ${needle} should exist for preview products; found ${count}.`);
+  }
+  for (const needle of ["productTruthIssues(product)", "product_truth_missing", "size_guide_missing"]) {
+    if (!readinessSource.includes(needle)) errors.push(`lib/products/launch-readiness.ts: missing product truth readiness guard ${needle}.`);
+  }
+  for (const needle of ["const truth = selectedProduct.truth", "productMeasurements", "productSpecs"]) {
+    if (!detailSource.includes(needle)) errors.push(`components/shop/ProductDetailClient.tsx: missing dynamic product truth surface ${needle}.`);
+  }
+} catch (error) {
+  errors.push(`Product truth production guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+// Commerce launch safety production guard
+try {
+  const launchSource = read("lib/products/launch-readiness.ts");
+  const shopSource = read("components/shop/ShopPageClient.tsx");
+  const catalogSource = read("lib/products/catalog.generated.ts");
+  for (const needle of ["buildCommerceLaunchAudit", "checkout_disabled", "automatic_mapping_missing", "localized_copy_missing"]) {
+    if (!launchSource.includes(needle)) errors.push(`lib/products/launch-readiness.ts: missing commerce launch guard ${needle}.`);
+  }
+  for (const needle of ["launchAudit.averageScore", "commerce.readinessKicker", "commerce.issueTitle"]) {
+    if (!shopSource.includes(needle)) errors.push(`components/shop/ShopPageClient.tsx: missing commerce launch UI ${needle}.`);
+  }
+  if (catalogSource.includes('status: "active"') && catalogSource.includes('fulfilmentMode: "disabled"')) {
+    errors.push("lib/products/catalog.generated.ts: active products cannot use disabled fulfilment.");
+  }
+} catch (error) {
+  errors.push(`Commerce launch safety production guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+
+
+
+
+
+
+
+
+// Operator copy progress production guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const casefileSource = read("lib/market-integrity/operator-casefile.ts");
+  const progressSource = read("lib/launch/project-progress.ts");
+  const cssSource = read("app/globals.css");
+  for (const needle of ["controlBody", "basicHint", "advancedHint"]) {
+    if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing operator copy marker ${needle}.`);
+  }
+  if (!cssSource.includes(".shield-token-action-panel .shield-mode-guide")) errors.push("app/globals.css: missing PASS148 hidden mode guide marker.");
+  for (const needle of ["low-risk pre-screen", "Missing sources still keep the case in review mode"]) {
+    if (!casefileSource.includes(needle)) errors.push(`lib/market-integrity/operator-casefile.ts: missing clear verdict marker ${needle}.`);
+  }
+  for (const needle of ["velmereProjectProgress", "velmereProjectOverallProgress", "evidence-export", "launch-safety"]) {
+    if (!progressSource.includes(needle)) errors.push(`lib/launch/project-progress.ts: missing progress matrix marker ${needle}.`);
+  }
+  if (!cssSource.includes("PASS132 — operator copy clarity")) {
+    errors.push("app/globals.css: missing PASS132 operator copy CSS.");
+  }
+} catch (error) {
+  errors.push(`Operator copy progress production guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+
+// Site page audit production guard
+try {
+  const auditSource = read("lib/launch/site-page-audit.ts");
+  for (const needle of ["velmereSitePageAudit", "Velmère Square", "VLM token / access layer", "Shield market table", "Admin import products", "vercelRisk", "launchBlockers"]) {
+    if (!auditSource.includes(needle)) errors.push(`lib/launch/site-page-audit.ts: missing site audit marker ${needle}.`);
+  }
+  const requiredRoutes = [
+    "app/[locale]/page.tsx",
+    "app/[locale]/clothing/page.tsx",
+    "app/[locale]/shop/page.tsx",
+    "app/[locale]/shop/[id]/page.tsx",
+    "app/[locale]/vlm-token/page.tsx",
+    "app/[locale]/square/page.tsx",
+    "app/[locale]/market-integrity/page.tsx",
+    "app/[locale]/market-integrity/shield-map/page.tsx",
+    "app/[locale]/account/page.tsx",
+    "app/[locale]/login/page.tsx",
+    "app/[locale]/member/page.tsx",
+    "app/[locale]/legal/terms/page.tsx",
+    "app/[locale]/admin/import-products/page.tsx",
+  ];
+  for (const route of requiredRoutes) {
+    if (!fs.existsSync(path.join(root, route))) errors.push(`Missing route required by site audit: ${route}.`);
+  }
+} catch (error) {
+  errors.push(`Site page audit production guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+// Broad Vercel static production guard
+try {
+  const sourceFiles = walk(".", [".ts", ".tsx", ".js", ".jsx", ".mjs"]);
+  const runtimeFiles = sourceFiles.filter((file) => !file.startsWith("scripts/") && !file.startsWith("docs/"));
+  for (const file of sourceFiles) {
+    if (/^CODEX_/.test(path.basename(file))) errors.push(`${file}: Codex source artifact must not be deployable.`);
+  }
+  for (const file of runtimeFiles) {
+    const source = read(file);
+    if (file.endsWith(".tsx") && /<img\b/.test(source)) errors.push(`${file}: raw <img> is blocked.`);
+    if (/\[\s*\.\.\.\s*[^\n;]*(\.values\(\)|\.keys\(\)|\.entries\(\))/.test(source)) errors.push(`${file}: direct iterator spread is blocked for Vercel target.`);
+    if ((file.includes("TokenRiskModal") || file.includes("market-integrity/risk-engine")) && source.includes("result.limitations")) errors.push(`${file}: stale result.limitations access is blocked.`);
+    if ((file.includes("TokenRiskModal") || file.includes("market-integrity/risk-engine")) && source.includes("safeTileIndex")) errors.push(`${file}: old safeTileIndex workaround must not return.`);
+    if ((file.startsWith("app/api/") || file.startsWith("app/actions/")) && ["window.", "document.", "localStorage", "navigator."].some((needle) => source.includes(needle))) {
+      errors.push(`${file}: browser API is used in server route/action code.`);
+    }
+  }
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  for (const marker of ["downloadEvidenceManifest", "copyEvidenceManifest", "motionPreset", "shield-token-review-tools-hidden"]) {
+    if (!modalSource.includes(marker)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing runtime safety marker ${marker}.`);
+  }
+} catch (error) {
+  errors.push(`Broad Vercel static production guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+// Orbit layout cleanup production guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  for (const needle of ["requestAnimationFrame(tick)", "targetFrameMs", "shield-vlm-static-board", "shield-vlm-detail-panel-side", "shield-token-review-tools-hidden"]) {
+    if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing orbit cleanup marker ${needle}.`);
+  }
+  for (const needle of ["PASS131 — orbit layout cleanup", ".shield-vlm-static-board", ".shield-vlm-detail-panel-side"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing orbit cleanup CSS marker ${needle}.`);
+  }
+} catch (error) {
+  errors.push(`Orbit layout cleanup production guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+// Evidence export manifest production guard
+try {
+  const evidenceSource = read("lib/market-integrity/evidence-report.ts");
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  for (const needle of ["ShieldEvidenceExportManifest", "buildShieldEvidenceExportManifest", "serializeShieldEvidenceExportManifest", "json_preview_only"]) {
+    if (!evidenceSource.includes(needle)) errors.push(`lib/market-integrity/evidence-report.ts: missing evidence export manifest marker ${needle}.`);
+  }
+  for (const needle of ["downloadEvidenceManifest", "copyEvidenceManifest", "shield-evidence-export-manifest"]) {
+    if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing evidence export UI marker ${needle}.`);
+  }
+  if (!cssSource.includes("PASS130 — evidence JSON manifest preview")) {
+    errors.push("app/globals.css: missing PASS130 evidence export manifest CSS.");
+  }
+} catch (error) {
+  errors.push(`Evidence export manifest production guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+// Evidence report production guard
+try {
+  const evidenceSource = read("lib/market-integrity/evidence-report.ts");
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  for (const needle of ["buildShieldEvidenceReportDraft", "sourceLedger", "missingDataAppendix", "redactionRules", "draft_only"]) {
+    if (!evidenceSource.includes(needle)) errors.push(`lib/market-integrity/evidence-report.ts: missing ${needle}.`);
+  }
+  for (const needle of ["buildShieldEvidenceReportDraft(result, operatorCaseFile)", "evidenceReportDraft.exportStatus", "shield-evidence-draft"]) {
+    if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing evidence report UI ${needle}.`);
+  }
+  if (!cssSource.includes("PASS129 — evidence draft source ledger")) {
+    errors.push("app/globals.css: missing PASS129 evidence draft CSS.");
+  }
+} catch (error) {
+  errors.push(`Evidence report production guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+// Operator casefile production guard
+try {
+  const casefileSource = read("lib/market-integrity/operator-casefile.ts");
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  for (const needle of ["buildShieldOperatorCaseFile", "ShieldOperatorCaseFile", "osintQueries", "operatorChecklist"]) {
+    if (!casefileSource.includes(needle)) errors.push(`lib/market-integrity/operator-casefile.ts: missing ${needle}.`);
+  }
+  for (const needle of ["buildShieldOperatorCaseFile(result)", "operatorCaseFile.primaryNextAction", "shield-operator-casefile", "shield-vlm-orbital-shell"]) {
+    if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS126 marker ${needle}.`);
+  }
+  for (const needle of ["PASS126 — operator casefile", ".shield-operator-casefile", ".shield-vlm-orbital-shell"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing PASS126 CSS marker ${needle}.`);
+  }
+} catch (error) {
+  errors.push(`Operator casefile production guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+
+// VLM motion governor production guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  for (const needle of ["type MotionPreset", "motionPreset", "renderHeavyCanvas", "shield-vlm-motion-governor"]) {
+    if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing VLM motion governor marker ${needle}.`);
+  }
+  for (const needle of ["PASS128 — VLM motion governor", "PASS148 — VLM brain cleanup", ".shield-vlm-motion-governor", ".shield-token-search-suggest-panel"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing VLM motion governor CSS marker ${needle}.`);
+  }
+} catch (error) {
+  errors.push(`VLM motion governor production guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+// VLM organic motion production guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  for (const needle of ["isInvestigationMode", "advancedOrbitalSlots", "setOrbitTick", "adaptive orbital risk sphere", `runVlmAiSequence("pro")`]) {
+    if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing VLM spherical motion marker ${needle}.`);
+  }
+  for (const needle of ["PASS125 — real VLM spherical orbit layer", "PASS127 — clean chart surface", "perspective: 2100px"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing VLM spherical motion CSS marker ${needle}.`);
+  }
+} catch (error) {
+  errors.push(`VLM organic motion production guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+// Shield runtime UI production guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const modalBody = modalSource.slice(modalSource.indexOf("export default function TokenRiskModal"));
+  const shieldMapSource = read("components/market-integrity/ShieldMapClient.tsx");
+  const marketSource = read("components/market-integrity/MarketIntegrityClient.tsx");
+  const cssSource = read("app/globals.css");
+
+  if (modalBody.includes("{ui.controlKicker}") && !modalBody.includes("const ui = useMemo(() =>")) {
+    errors.push("components/market-integrity/TokenRiskModal.tsx: ui control copy must exist in TokenRiskModal scope.");
+  }
+  for (const needle of ["investigatorSuggestRef", "closeOnOutsidePointer", "role=\"listbox\""]) {
+    if (!shieldMapSource.includes(needle)) errors.push(`components/market-integrity/ShieldMapClient.tsx: missing suggestion outside-click marker ${needle}.`);
+  }
+  if (shieldMapSource.includes("onBlur={() => window.setTimeout(() => setSuggestionsOpen(false)")) {
+    errors.push("components/market-integrity/ShieldMapClient.tsx: suggestions must not rely on blur timeout.");
+  }
+  if (!marketSource.includes("shield-token-search-suggest-panel") || !marketSource.includes("z-[10000]")) {
+    errors.push("components/market-integrity/MarketIntegrityClient.tsx: search suggestions must use high overlay layer.");
+  }
+  for (const needle of ["overflow: visible", "z-index: 10000", "shield-token-search-suggest-panel"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing Shield suggestion overlay CSS ${needle}.`);
+  }
+} catch (error) {
+  errors.push(`Shield runtime UI production guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+// AI risk brain scenario guard
+try {
+  const scenarioSource = read("scripts/verify-ai-risk-brain-scenarios.mjs");
+  for (const needle of ["mega_cap_normal_volatility", "stablecoin_depeg", "low_float_parabolic_pump", "contract_trap", "no_data_token"]) {
+    if (!scenarioSource.includes(needle)) errors.push(`scripts/verify-ai-risk-brain-scenarios.mjs: missing scenario ${needle}.`);
+  }
+} catch (error) {
+  errors.push(`AI risk brain scenario guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+// AI brain import contract production guard
+try {
+  const riskSource = read("lib/market-integrity/risk-engine.ts");
+  const typeSource = read("lib/market-integrity/risk-types.ts");
+  const promptSource = read("docs/codex-handoff/CODEX_AI_RISK_BRAIN_ONLY_ONE_FILE_PASS3_PROMPT.md");
+  for (const [needle, message] of [
+    ["export function analyzeTokenRisk", "analyzeTokenRisk export must remain."],
+    ["computeDataConfidence", "computeDataConfidence must remain."],
+    ["buildLimitations", "buildLimitations must remain."],
+    ["computeFusedRiskScore", "computeFusedRiskScore must remain."],
+    ["buildMetaModel", "buildMetaModel must remain."],
+    ["OSINT source ledger not attached", "OSINT limitation must remain."],
+    ["vesting/unlock schedule not verified", "vesting limitation must remain."],
+  ]) {
+    if (!riskSource.includes(needle)) errors.push(`lib/market-integrity/risk-engine.ts: ${message}`);
+  }
+  for (const forbidden of ["fetch(", "window.", "document.", "localStorage", "as any", "safe investment", "scam confirmed", "fraud proven", "buy signal", "sell signal"]) {
+    if (riskSource.toLowerCase().includes(forbidden.toLowerCase())) errors.push(`lib/market-integrity/risk-engine.ts: forbidden risk-engine content "${forbidden}".`);
+  }
+  const unionMatch = typeSource.match(/export type RiskSignalId =([\s\S]*?);/);
+  if (unionMatch) {
+    const allowed = new Set([...unionMatch[1].matchAll(/\|\s+"([^"]+)"/g)].map((match) => match[1]));
+    for (const match of riskSource.matchAll(/addSignal\(signals,\s*\{[\s\S]*?id:\s+"([^"]+)"/g)) {
+      if (!allowed.has(match[1])) errors.push(`lib/market-integrity/risk-engine.ts: signal id "${match[1]}" is missing from RiskSignalId union.`);
+    }
+  }
+  if (!promptSource.includes("edytować dokładnie jeden plik") || !promptSource.includes("NIE OTWIERAJ pełnego repo Velmère")) {
+    errors.push("docs/codex-handoff/CODEX_AI_RISK_BRAIN_ONLY_ONE_FILE_PASS3_PROMPT.md: prompt must force one-file codex workflow.");
+  }
+} catch (error) {
+  errors.push(`AI brain import contract production guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+// Locale surface production guard
+try {
+  const footerSource = read("components/Footer.tsx");
+  const homeSource = read("components/home/HomePageClient.tsx");
+  const shieldMapSource = read("components/market-integrity/ShieldMapClient.tsx");
+  if (!footerSource.includes("function footerCopy(locale: string)") || !footerSource.includes("useLocale()")) {
+    errors.push("components/Footer.tsx: footer must use locale-aware copy.");
+  }
+  if (!homeSource.includes("function homeCopy(locale: string)") || !homeSource.includes("const copy = homeCopy(useLocale())")) {
+    errors.push("components/home/HomePageClient.tsx: homepage must use locale-aware copy.");
+  }
+  for (const needle of ["const pageCopy = useMemo", "const atlasNodes = useMemo", "const commandRoomCards = useMemo", "const brainImportLanes = useMemo"]) {
+    if (!shieldMapSource.includes(needle)) errors.push(`components/market-integrity/ShieldMapClient.tsx: missing locale-aware block ${needle}.`);
+  }
+  if (/"\{pageCopy\./.test(shieldMapSource)) {
+    errors.push("components/market-integrity/ShieldMapClient.tsx: pageCopy placeholder found inside a string literal.");
+  }
+} catch (error) {
+  errors.push(`Locale surface production guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+// VLM brain performance guard
+try {
+  const modalFile = "components/market-integrity/TokenRiskModal.tsx";
+  const modalSource = read(modalFile);
+  const vlmForbidden = [
+    ["RISK ${riskScore}%", "Duplicated risk score under the VLM orb must not return."],
+    ["ctx.fillText(`RISK", "Canvas risk text under the VLM orb must not return."],
+    ["Math.random()", "VLM brain graph should use deterministic seeded randomness, not Math.random()."],
+    ["((index % 5)", "Old undefined index transform bug must not return."],
+    ["(index % 4)", "Old undefined index transform bug must not return."],
+  ];
+  for (const [needle, message] of vlmForbidden) {
+    if (modalSource.includes(needle)) errors.push(`${modalFile}: ${message}`);
+  }
+  const vlmRequired = [
+    ["maxAnimationLife", "Canvas animation should have a hard max lifetime."],
+    ["idleFrameBudget", "Canvas animation should slow down after the readout is complete."],
+    ["randomFrom", "VLM brain should use deterministic seeded graph generation."],
+    ["advancedTileStyle", "Advanced tiles should use the typed 3D cockpit placement helper."],
+    ["shield-vlm-tile-anchor", "Advanced tile anchors should be present to control 3D placement and overlap."],
+    ["prefers-reduced-motion: reduce", "Reduced-motion mode should be respected."],
+  ];
+  for (const [needle, message] of vlmRequired) {
+    if (!modalSource.includes(needle)) errors.push(`${modalFile}: ${message}`);
+  }
+} catch (error) {
+  errors.push(`VLM brain performance guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+// Risk engine production guard
+try {
+  const riskFile = "lib/market-integrity/risk-engine.ts";
+  const riskSource = read(riskFile);
+  const riskForbidden = [
+    ["result.limitations", "Limitations must live in metaModel.limitations, not result.limitations."],
+    ["RISK {riskScore}%", "Old duplicated VLM orb risk text must not return."],
+    ["odczyt ryzyka", "Old duplicated Polish risk text must not return."],
+    ["risk extraction", "Old duplicated English risk text must not return."],
+    ["((index % 5)", "Old undefined index transform bug must not return."],
+    ["(index % 4)", "Old undefined index transform bug must not return."],
+  ];
+  for (const [needle, message] of riskForbidden) {
+    if (riskSource.includes(needle)) errors.push(`${riskFile}: ${message}`);
+  }
+  if (/\[\s*\.\.\.\s*[^;\n]*(?:\.values\(\)|\.keys\(\)|\.entries\(\))/.test(riskSource)) {
+    errors.push(`${riskFile}: do not spread Map/Set iterators directly; use Array.from(...) for Vercel target safety.`);
+  }
+  if (!/export function analyzeTokenRisk\s*\(/.test(riskSource)) errors.push(`${riskFile}: analyzeTokenRisk export is missing.`);
+  if (!/export function levelFromScore\s*\(/.test(riskSource)) errors.push(`${riskFile}: levelFromScore export is missing.`);
+  if (!/export function badgeFromLevel\s*\(/.test(riskSource)) errors.push(`${riskFile}: badgeFromLevel export is missing.`);
+  if (/\b(buy now|safe buy|guaranteed profit|scam proven|fraud confirmed|moon|easy money)\b/i.test(riskSource)) {
+    errors.push(`${riskFile}: unsafe hype/advice/legal-accusation language found.`);
+  }
+} catch (error) {
+  errors.push(`Risk engine production guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
 const textFiles = [
   ...walk("app", [".ts", ".tsx", ".css", ".js", ".jsx"]),
   ...walk("components", [".ts", ".tsx", ".css", ".js", ".jsx"]),
@@ -380,6 +771,364 @@ try {
   }
 } catch (error) {
   errors.push(`Market integrity guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+
+// Square/VLM launch control production guard
+try {
+  const squareVlmModel = read("lib/launch/square-vlm-launch-control.ts");
+  const squareVlmComponent = read("components/launch/SquareVlmLaunchControl.tsx");
+  const squarePage = read("app/[locale]/square/page.tsx");
+  const vlmPage = read("app/[locale]/vlm-token/page.tsx");
+  const communityPage = read("app/[locale]/community/page.tsx");
+  for (const needle of ["squareVlmLaunchControl", "member-cockpit", "No ROI, no price promise"]) {
+    if (!squareVlmModel.includes(needle)) errors.push(`lib/launch/square-vlm-launch-control.ts: missing launch-control marker ${needle}.`);
+  }
+  for (const needle of ["SquareVlmLaunchControl", "utility/access layer", "safety boundary"]) {
+    if (!squareVlmComponent.includes(needle)) errors.push(`components/launch/SquareVlmLaunchControl.tsx: missing launch-control UI marker ${needle}.`);
+  }
+  if (!squarePage.includes("surface=\"square\"")) errors.push("app/[locale]/square/page.tsx: SquareVlmLaunchControl surface=square missing.");
+  if (!vlmPage.includes("surface=\"vlm\"")) errors.push("app/[locale]/vlm-token/page.tsx: SquareVlmLaunchControl surface=vlm missing.");
+  if (!communityPage.includes("surface=\"community\"")) errors.push("app/[locale]/community/page.tsx: SquareVlmLaunchControl surface=community missing.");
+} catch (error) {
+  errors.push(`Square/VLM launch control production guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+
+// Commerce launch control production guard
+try {
+  const commerceModel = read("lib/launch/commerce-launch-control.ts");
+  const commerceComponent = read("components/launch/CommerceLaunchControl.tsx");
+  const checkoutPage = read("app/[locale]/checkout/page.tsx");
+  const cartPage = read("app/[locale]/cart/page.tsx");
+  for (const needle of ["commerceLaunchControl", "No payment flow, card entry", "Fulfillment provider truth"]) {
+    if (!commerceModel.includes(needle)) errors.push(`lib/launch/commerce-launch-control.ts: missing commerce launch marker ${needle}.`);
+  }
+  for (const needle of ["CommerceLaunchControl", "operationally ready", "safety boundary"]) {
+    if (!commerceComponent.includes(needle)) errors.push(`components/launch/CommerceLaunchControl.tsx: missing commerce UI marker ${needle}.`);
+  }
+  if (!checkoutPage.includes("surface=\"checkout\"")) errors.push("app/[locale]/checkout/page.tsx: CommerceLaunchControl surface=checkout missing.");
+  if (!cartPage.includes("surface=\"cart\"")) errors.push("app/[locale]/cart/page.tsx: CommerceLaunchControl surface=cart missing.");
+} catch (error) {
+  errors.push(`Commerce launch control production guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+
+// Provider truth/admin gate production guard
+try {
+  const providerLedger = read("lib/launch/provider-truth-ledger.ts");
+  const providerPanel = read("components/launch/ProviderTruthLedgerPanel.tsx");
+  const adminPage = read("app/[locale]/admin/import-products/page.tsx");
+  for (const needle of ["providerTruthLedger", "All SKU readiness", "buildProductProviderTruthSnapshot"]) {
+    if (!providerLedger.includes(needle)) errors.push(`lib/launch/provider-truth-ledger.ts: missing provider truth marker ${needle}.`);
+  }
+  for (const needle of ["ProviderTruthLedgerPanel", "SKU and shipping need proof", "Provider, SKU i dostawa"]) {
+    if (!providerPanel.includes(needle)) errors.push(`components/launch/ProviderTruthLedgerPanel.tsx: missing provider truth UI marker ${needle}.`);
+  }
+  if (!adminPage.includes("adminGateCopy") || !adminPage.includes("admin gate / launch control")) {
+    errors.push("app/[locale]/admin/import-products/page.tsx: admin gate launch-control notice missing.");
+  }
+} catch (error) {
+  errors.push(`Provider truth/admin gate production guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+
+// Product provider snapshot production guard
+try {
+  const productCard = read("components/product/ProductCard.tsx");
+  const productDetail = read("components/shop/ProductDetailClient.tsx");
+  const providerLedger = read("lib/launch/provider-truth-ledger.ts");
+  for (const needle of ["buildProductProviderTruthSnapshot(product)", "providerSnapshot.score", "providerSnapshot.sourceMode"]) {
+    if (!productCard.includes(needle)) errors.push(`components/product/ProductCard.tsx: missing provider snapshot marker ${needle}.`);
+  }
+  for (const needle of ["buildProductProviderTruthSnapshot(selectedProduct)", "providerSnapshotTitle", "providerSnapshot.missing.join"]) {
+    if (!productDetail.includes(needle)) errors.push(`components/shop/ProductDetailClient.tsx: missing product provider detail marker ${needle}.`);
+  }
+  if (!providerLedger.includes("SKU truth snapshots now surface on cards/details")) {
+    errors.push("lib/launch/provider-truth-ledger.ts: product-level SKU snapshot status missing.");
+  }
+} catch (error) {
+  errors.push(`Product provider snapshot production guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+
+// Shipping/returns truth production guard
+try {
+  const shippingReturnsModel = read("lib/launch/shipping-returns-truth.ts");
+  const shippingReturnsPanel = read("components/launch/ShippingReturnsTruthPanel.tsx");
+  const checkoutPage = read("app/[locale]/checkout/page.tsx");
+  const returnsPage = read("app/[locale]/legal/returns/page.tsx");
+  for (const needle of ["shippingReturnsTruthMatrix", "Shipping costs", "Refund flow", "Provider exceptions"]) {
+    if (!shippingReturnsModel.includes(needle)) errors.push(`lib/launch/shipping-returns-truth.ts: missing shipping/returns marker ${needle}.`);
+  }
+  for (const needle of ["ShippingReturnsTruthPanel", "Shipping and returns must be clear", "Dostawa i zwroty"]) {
+    if (!shippingReturnsPanel.includes(needle)) errors.push(`components/launch/ShippingReturnsTruthPanel.tsx: missing shipping/returns UI marker ${needle}.`);
+  }
+  if (!checkoutPage.includes("surface=\"checkout\"")) errors.push("app/[locale]/checkout/page.tsx: ShippingReturnsTruthPanel surface=checkout missing.");
+  if (!returnsPage.includes("surface=\"legal\"")) errors.push("app/[locale]/legal/returns/page.tsx: ShippingReturnsTruthPanel surface=legal missing.");
+} catch (error) {
+  errors.push(`Shipping/returns truth production guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+
+// Payment/order readiness production guard
+try {
+  const paymentOrderModel = read("lib/launch/payment-order-readiness.ts");
+  const paymentOrderPanel = read("components/launch/PaymentOrderReadinessPanel.tsx");
+  const checkoutPage = read("app/[locale]/checkout/page.tsx");
+  const cartPage = read("app/[locale]/cart/page.tsx");
+  for (const needle of ["paymentOrderReadinessMatrix", "Payment provider", "Webhook and audit trail", "Customer emails"]) {
+    if (!paymentOrderModel.includes(needle)) errors.push(`lib/launch/payment-order-readiness.ts: missing payment/order marker ${needle}.`);
+  }
+  for (const needle of ["PaymentOrderReadinessPanel", "Payment and order state must be real", "Płatność i status"]) {
+    if (!paymentOrderPanel.includes(needle)) errors.push(`components/launch/PaymentOrderReadinessPanel.tsx: missing payment/order UI marker ${needle}.`);
+  }
+  if (!checkoutPage.includes("surface=\"checkout\"")) errors.push("app/[locale]/checkout/page.tsx: PaymentOrderReadinessPanel surface=checkout missing.");
+  if (!cartPage.includes("surface=\"cart\"")) errors.push("app/[locale]/cart/page.tsx: PaymentOrderReadinessPanel surface=cart missing.");
+} catch (error) {
+  errors.push(`Payment/order readiness production guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+
+// Order event ledger production guard
+try {
+  const orderEventModel = read("lib/launch/order-event-ledger.ts");
+  const orderEventPanel = read("components/launch/OrderEventLedgerPanel.tsx");
+  const checkoutPage = read("app/[locale]/checkout/page.tsx");
+  const cartPage = read("app/[locale]/cart/page.tsx");
+  const adminPage = read("app/[locale]/admin/import-products/page.tsx");
+  for (const needle of ["orderEventLedgerMatrix", "Idempotency key", "Signed webhook verification", "Order timeline"]) {
+    if (!orderEventModel.includes(needle)) errors.push(`lib/launch/order-event-ledger.ts: missing order event marker ${needle}.`);
+  }
+  for (const needle of ["OrderEventLedgerPanel", "Every order event needs a trace", "Każde zdarzenie"]) {
+    if (!orderEventPanel.includes(needle)) errors.push(`components/launch/OrderEventLedgerPanel.tsx: missing order event UI marker ${needle}.`);
+  }
+  if (!checkoutPage.includes("surface=\"checkout\"")) errors.push("app/[locale]/checkout/page.tsx: OrderEventLedgerPanel surface=checkout missing.");
+  if (!cartPage.includes("surface=\"cart\"")) errors.push("app/[locale]/cart/page.tsx: OrderEventLedgerPanel surface=cart missing.");
+  if (!adminPage.includes("surface=\"admin\"")) errors.push("app/[locale]/admin/import-products/page.tsx: OrderEventLedgerPanel surface=admin missing.");
+} catch (error) {
+  errors.push(`Order event ledger production guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+
+// Admin route gate production guard
+try {
+  const adminGateModel = read("lib/launch/admin-route-gate.ts");
+  const adminGatePanel = read("components/launch/AdminRouteGatePanel.tsx");
+  const adminPage = read("app/[locale]/admin/import-products/page.tsx");
+  for (const needle of ["adminRouteGateMatrix", "Admin authentication", "Environment gate", "Secret redaction"]) {
+    if (!adminGateModel.includes(needle)) errors.push(`lib/launch/admin-route-gate.ts: missing admin gate marker ${needle}.`);
+  }
+  for (const needle of ["AdminRouteGatePanel", "Admin tooling must stay private", "Admin tooling musi być prywatne"]) {
+    if (!adminGatePanel.includes(needle)) errors.push(`components/launch/AdminRouteGatePanel.tsx: missing admin gate UI marker ${needle}.`);
+  }
+  if (!adminPage.includes("AdminRouteGatePanel") || !adminPage.includes("surface=\"admin\"")) {
+    errors.push("app/[locale]/admin/import-products/page.tsx: AdminRouteGatePanel surface=admin missing.");
+  }
+} catch (error) {
+  errors.push(`Admin route gate production guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+
+// Admin environment gate production guard
+try {
+  const adminEnvGate = read("lib/launch/admin-environment-gate.ts");
+  const adminLockedPanel = read("components/launch/AdminToolsLockedPanel.tsx");
+  const adminPage = read("app/[locale]/admin/import-products/page.tsx");
+  for (const needle of ["getClientAdminEnvironmentGate", "NEXT_PUBLIC_ADMIN_TOOLS_ENABLED", "public_env_only"]) {
+    if (!adminEnvGate.includes(needle)) errors.push(`lib/launch/admin-environment-gate.ts: missing admin env marker ${needle}.`);
+  }
+  for (const needle of ["AdminToolsLockedPanel", "Product import is hidden behind an environment gate", "Import produktów jest schowany"]) {
+    if (!adminLockedPanel.includes(needle)) errors.push(`components/launch/AdminToolsLockedPanel.tsx: missing locked panel marker ${needle}.`);
+  }
+  for (const needle of ["AdminToolsLockedPanel", "if (!adminEnvironmentGate.isUnlocked)", "disabled={!adminEnvironmentGate.isUnlocked"]) {
+    if (!adminPage.includes(needle)) errors.push(`app/[locale]/admin/import-products/page.tsx: missing admin locked surface marker ${needle}.`);
+  }
+} catch (error) {
+  errors.push(`Admin environment gate production guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+
+// Admin auth/publish/secret production guard
+try {
+  const adminAuthContract = read("lib/launch/admin-server-auth-contract.ts");
+  const publishGate = read("lib/launch/publish-permission-gate.ts");
+  const secretPolicy = read("lib/launch/secret-redaction-policy.ts");
+  const adminPage = read("app/[locale]/admin/import-products/page.tsx");
+  for (const needle of ["adminServerAuthContract", "Server auth provider", "Server kill switch"]) {
+    if (!adminAuthContract.includes(needle)) errors.push(`lib/launch/admin-server-auth-contract.ts: missing admin auth marker ${needle}.`);
+  }
+  for (const needle of ["publishPermissionGate", "Active publish permission", "Audit before publish"]) {
+    if (!publishGate.includes(needle)) errors.push(`lib/launch/publish-permission-gate.ts: missing publish gate marker ${needle}.`);
+  }
+  for (const needle of ["secretRedactionPolicy", "Browser-visible secret scan", "Raw provider response redaction"]) {
+    if (!secretPolicy.includes(needle)) errors.push(`lib/launch/secret-redaction-policy.ts: missing secret redaction marker ${needle}.`);
+  }
+  for (const needle of ["AdminServerAuthContractPanel", "PublishPermissionGatePanel", "SecretRedactionPolicyPanel"]) {
+    if (!adminPage.includes(needle)) errors.push(`app/[locale]/admin/import-products/page.tsx: missing ${needle}.`);
+  }
+} catch (error) {
+  errors.push(`Admin auth/publish/secret production guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+
+// Admin mutation audit production guard
+try {
+  const redactedLogger = read("lib/launch/redacted-logger.ts");
+  const adminMutationAudit = read("lib/launch/admin-mutation-audit.ts");
+  const adminMutationPanel = read("components/launch/AdminMutationAuditPanel.tsx");
+  const adminPage = read("app/[locale]/admin/import-products/page.tsx");
+  for (const needle of ["redactOperatorLogValue", "createSafeOperatorLogLine", "redactedLoggerLaunchNote"]) {
+    if (!redactedLogger.includes(needle)) errors.push(`lib/launch/redacted-logger.ts: missing redacted logger marker ${needle}.`);
+  }
+  for (const needle of ["adminMutationAuditMatrix", "createAdminMutationAuditEnvelope", "Rollback context"]) {
+    if (!adminMutationAudit.includes(needle)) errors.push(`lib/launch/admin-mutation-audit.ts: missing mutation audit marker ${needle}.`);
+  }
+  for (const needle of ["AdminMutationAuditPanel", "Every import and publish must leave a safe trail"]) {
+    if (!adminMutationPanel.includes(needle)) errors.push(`components/launch/AdminMutationAuditPanel.tsx: missing admin mutation UI marker ${needle}.`);
+  }
+  if (!adminPage.includes("AdminMutationAuditPanel")) errors.push("app/[locale]/admin/import-products/page.tsx: AdminMutationAuditPanel missing.");
+} catch (error) {
+  errors.push(`Admin mutation audit production guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+
+// Admin audit persistence production guard
+try {
+  const adminAuditPersistence = read("lib/launch/admin-audit-persistence.ts");
+  const publishRollbackContext = read("lib/launch/publish-rollback-context.ts");
+  const supportSafeTimeline = read("lib/launch/support-safe-timeline.ts");
+  const adminPage = read("app/[locale]/admin/import-products/page.tsx");
+  for (const needle of ["adminAuditPersistenceMatrix", "createAdminAuditPersistencePreview", "Persistent storage adapter"]) {
+    if (!adminAuditPersistence.includes(needle)) errors.push(`lib/launch/admin-audit-persistence.ts: missing audit persistence marker ${needle}.`);
+  }
+  for (const needle of ["publishRollbackContextMatrix", "createPublishRollbackDiff", "Rollback id"]) {
+    if (!publishRollbackContext.includes(needle)) errors.push(`lib/launch/publish-rollback-context.ts: missing rollback marker ${needle}.`);
+  }
+  for (const needle of ["supportSafeTimelineMatrix", "createSupportSafeTimelinePreview", "Support-safe copy"]) {
+    if (!supportSafeTimeline.includes(needle)) errors.push(`lib/launch/support-safe-timeline.ts: missing support timeline marker ${needle}.`);
+  }
+  for (const needle of ["AdminAuditPersistencePanel", "PublishRollbackContextPanel", "SupportSafeTimelinePanel"]) {
+    if (!adminPage.includes(needle)) errors.push(`app/[locale]/admin/import-products/page.tsx: missing ${needle}.`);
+  }
+} catch (error) {
+  errors.push(`Admin audit persistence production guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+
+// Admin audit write API production guard
+try {
+  const adminAuditWriteContract = read("lib/launch/admin-audit-write-contract.ts");
+  const customerSafeExportBoundary = read("lib/launch/customer-safe-export-boundary.ts");
+  const adminAuditRoute = read("app/api/admin/audit-events/route.ts");
+  const adminPage = read("app/[locale]/admin/import-products/page.tsx");
+  for (const needle of ["adminAuditWriteRouteMatrix", "createAdminAuditWritePreview", "ADMIN_AUDIT_WRITE_ENABLED"]) {
+    if (!adminAuditWriteContract.includes(needle)) errors.push(`lib/launch/admin-audit-write-contract.ts: missing audit write marker ${needle}.`);
+  }
+  for (const needle of ["customerSafeExportBoundaryMatrix", "createCustomerSafeExportPreview", "Approval gate"]) {
+    if (!customerSafeExportBoundary.includes(needle)) errors.push(`lib/launch/customer-safe-export-boundary.ts: missing customer-safe export marker ${needle}.`);
+  }
+  for (const needle of ["createAdminAuditWritePreview", "storageWritePerformed: false", "locked-contract-preview"]) {
+    if (!adminAuditRoute.includes(needle)) errors.push(`app/api/admin/audit-events/route.ts: missing locked route marker ${needle}.`);
+  }
+  for (const needle of ["AdminAuditWriteApiPanel", "CustomerSafeExportBoundaryPanel"]) {
+    if (!adminPage.includes(needle)) errors.push(`app/[locale]/admin/import-products/page.tsx: missing ${needle}.`);
+  }
+} catch (error) {
+  errors.push(`Admin audit write API production guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+
+// Admin auth session/idempotency production guard
+try {
+  const adminAuthSession = read("lib/launch/admin-auth-session-guard.ts");
+  const adminIdempotency = read("lib/launch/admin-idempotency-store.ts");
+  const adminAuditWriteContract = read("lib/launch/admin-audit-write-contract.ts");
+  const adminAuditRoute = read("app/api/admin/audit-events/route.ts");
+  const adminPage = read("app/[locale]/admin/import-products/page.tsx");
+  for (const needle of ["adminAuthSessionMatrix", "getAdminSessionPreviewFromEnv", "requireAdminScope", "product:active_publish"]) {
+    if (!adminAuthSession.includes(needle)) errors.push(`lib/launch/admin-auth-session-guard.ts: missing auth session marker ${needle}.`);
+  }
+  for (const needle of ["adminIdempotencyStoreMatrix", "createAdminIdempotencyPreview", "Duplicate response policy"]) {
+    if (!adminIdempotency.includes(needle)) errors.push(`lib/launch/admin-idempotency-store.ts: missing idempotency marker ${needle}.`);
+  }
+  for (const needle of ["sessionPreview", "permissionPreview", "idempotencyPreview"]) {
+    if (!adminAuditWriteContract.includes(needle)) errors.push(`lib/launch/admin-audit-write-contract.ts: missing PASS147 audit write marker ${needle}.`);
+  }
+  if (!adminAuditRoute.includes("sessionPreview")) errors.push("app/api/admin/audit-events/route.ts: sessionPreview missing.");
+  for (const needle of ["AdminAuthSessionGuardPanel", "AdminIdempotencyStorePanel"]) {
+    if (!adminPage.includes(needle)) errors.push(`app/[locale]/admin/import-products/page.tsx: missing ${needle}.`);
+  }
+} catch (error) {
+  errors.push(`Admin auth session/idempotency production guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+
+// VLM brain orbit cleanup production guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const marketClientSource = read("components/market-integrity/MarketIntegrityClient.tsx");
+  const cssSource = read("app/globals.css");
+  for (const needle of ["PASS149 hard guard: Orbit 360 belongs only to Advanced", 'allowedMotionPresets', "selectedTileEvidenceCopy"]) {
+    if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS148 VLM brain marker ${needle}.`);
+  }
+  if (modalSource.includes('(["orbit", "lite", "static"]') || modalSource.includes("ui.motionLite")) {
+    errors.push("components/market-integrity/TokenRiskModal.tsx: Lite motion UI must stay removed.");
+  }
+  for (const needle of ["shield-suggestion-token-avatar", "localLookup", "shield-token-search-suggest-row"]) {
+    if (!marketClientSource.includes(needle)) errors.push(`components/market-integrity/MarketIntegrityClient.tsx: missing PASS148 search suggestion marker ${needle}.`);
+  }
+  if (!cssSource.includes("PASS148 — VLM brain cleanup")) errors.push("app/globals.css: missing PASS148 VLM brain cleanup CSS.");
+} catch (error) {
+  errors.push(`VLM brain orbit cleanup production guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+
+// VLM brain explainer advanced guard
+try {
+  const tokenRiskModal = read("components/market-integrity/TokenRiskModal.tsx");
+  const marketClient = read("components/market-integrity/MarketIntegrityClient.tsx");
+  const globalsCss = read("app/globals.css");
+  for (const needle of ["allowedMotionPresets", "renderHeavyCanvas = isAdvanced", "shield-vlm-detail-panel-solid", "operatorQuestion"]) {
+    if (!tokenRiskModal.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS149 marker ${needle}.`);
+  }
+  if (tokenRiskModal.includes('"lite"') || tokenRiskModal.includes("'lite'") || tokenRiskModal.includes('| "lite"')) {
+    errors.push("components/market-integrity/TokenRiskModal.tsx: Lite motion preset must remain removed.");
+  }
+  for (const needle of ["sourceMode?: \"local\" | \"live\" | \"merged\"", "token suggestions · logo aware", "click to open Shield readout"]) {
+    if (!marketClient.includes(needle)) errors.push(`components/market-integrity/MarketIntegrityClient.tsx: missing PASS149 marker ${needle}.`);
+  }
+  for (const needle of ["PASS149 — Advanced-only orbit guard", ".shield-vlm-detail-panel-solid"]) {
+    if (!globalsCss.includes(needle)) errors.push(`app/globals.css: missing PASS149 marker ${needle}.`);
+  }
+} catch (error) {
+  errors.push(`VLM brain explainer advanced guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+
+// VLM brain performance runtime guard
+try {
+  const tokenRiskModal = read("components/market-integrity/TokenRiskModal.tsx");
+  const globalsCss = read("app/globals.css");
+  for (const needle of [
+    "type BrainRuntimeMode = \"cinematic\" | \"performance\"",
+    "performanceRuntime",
+    "orbitUpdateFrameMs",
+    "advancedOrbitalSlots",
+    "PASS150 adaptive runtime governor",
+    "shield-vlm-runtime-governor",
+  ]) {
+    if (!tokenRiskModal.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS150 runtime marker ${needle}.`);
+  }
+  for (const needle of [
+    "PASS150 — VLM brain performance runtime governor",
+    ".shield-vlm-runtime-performance",
+    ".shield-vlm-runtime-governor",
+  ]) {
+    if (!globalsCss.includes(needle)) errors.push(`app/globals.css: missing PASS150 runtime CSS marker ${needle}.`);
+  }
+} catch (error) {
+  errors.push(`VLM brain performance runtime guard failed: ${error instanceof Error ? error.message : String(error)}`);
 }
 
 if (errors.length) {

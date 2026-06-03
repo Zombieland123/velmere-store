@@ -3,9 +3,12 @@
 import { ShoppingBag } from "lucide-react";
 import { useTranslations } from "next-intl";
 import LuxurySection from "@/components/layout/LuxurySection";
+import CommerceLaunchControl from "@/components/launch/CommerceLaunchControl";
+import PaymentOrderReadinessPanel from "@/components/launch/PaymentOrderReadinessPanel";
+import OrderEventLedgerPanel from "@/components/launch/OrderEventLedgerPanel";
 import { useCart } from "@/components/CartProvider";
 
-export default function CartPage() {
+export default function CartPage({ params: { locale } }: { params: { locale: string } }) {
   const t = useTranslations("Cart");
   const { openCart } = useCart();
 
@@ -28,6 +31,9 @@ export default function CartPage() {
           </button>
         </section>
       </LuxurySection>
+      <CommerceLaunchControl locale={locale} surface="cart" />
+      <PaymentOrderReadinessPanel locale={locale} surface="cart" />
+      <OrderEventLedgerPanel locale={locale} surface="cart" />
     </main>
   );
 }

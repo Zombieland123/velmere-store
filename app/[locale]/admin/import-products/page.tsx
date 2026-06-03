@@ -7,9 +7,26 @@ import { useTranslations } from "next-intl";
 import AiProductCopyButton from "@/components/admin/AiProductCopyButton";
 import ProductLaunchChecklist from "@/components/admin/ProductLaunchChecklist";
 import ProductionReadinessChecklist from "@/components/admin/ProductionReadinessChecklist";
+import CommerceLaunchControl from "@/components/launch/CommerceLaunchControl";
+import ProviderTruthLedgerPanel from "@/components/launch/ProviderTruthLedgerPanel";
+import OrderEventLedgerPanel from "@/components/launch/OrderEventLedgerPanel";
+import AdminRouteGatePanel from "@/components/launch/AdminRouteGatePanel";
+import AdminToolsLockedPanel from "@/components/launch/AdminToolsLockedPanel";
+import SecretRedactionPolicyPanel from "@/components/launch/SecretRedactionPolicyPanel";
+import PublishPermissionGatePanel from "@/components/launch/PublishPermissionGatePanel";
+import AdminServerAuthContractPanel from "@/components/launch/AdminServerAuthContractPanel";
+import AdminMutationAuditPanel from "@/components/launch/AdminMutationAuditPanel";
+import SupportSafeTimelinePanel from "@/components/launch/SupportSafeTimelinePanel";
+import PublishRollbackContextPanel from "@/components/launch/PublishRollbackContextPanel";
+import AdminAuditPersistencePanel from "@/components/launch/AdminAuditPersistencePanel";
+import CustomerSafeExportBoundaryPanel from "@/components/launch/CustomerSafeExportBoundaryPanel";
+import AdminAuditWriteApiPanel from "@/components/launch/AdminAuditWriteApiPanel";
+import AdminIdempotencyStorePanel from "@/components/launch/AdminIdempotencyStorePanel";
+import AdminAuthSessionGuardPanel from "@/components/launch/AdminAuthSessionGuardPanel";
 import LuxurySection from "@/components/layout/LuxurySection";
 import type { ProductImportDraft } from "@/lib/products/types";
 import { formatMoney, getLocalizedString } from "@/lib/products/catalog";
+import { getClientAdminEnvironmentGate } from "@/lib/launch/admin-environment-gate";
 
 type Tab = "links" | "printful" | "csv";
 
@@ -19,8 +36,30 @@ const TABS: Array<{ id: Tab; icon: typeof LinkIcon }> = [
   { id: "csv", icon: FileUp },
 ];
 
-export default function AdminImportProductsPage() {
+
+function adminGateCopy(locale: string) {
+  if (locale === "pl") {
+    return {
+      title: "Admin import jest narzędziem prywatnym.",
+      body: "Przed publicznym startem ta trasa musi mieć auth, environment gate, audit log i jasny limit publikacji. Nie może wyglądać jak funkcja dla klienta.",
+    };
+  }
+  if (locale === "de") {
+    return {
+      title: "Admin Import ist ein privates Werkzeug.",
+      body: "Vor dem öffentlichen Start braucht diese Route Auth, Environment Gate, Audit Log und klare Publish-Limits. Sie darf nicht wie eine Kundenfunktion wirken.",
+    };
+  }
+  return {
+    title: "Admin import is a private tool.",
+    body: "Before public launch this route needs auth, environment gate, audit log and clear publish limits. It must not look like a customer feature.",
+  };
+}
+
+export default function AdminImportProductsPage({ params: { locale } }: { params: { locale: string } }) {
   const t = useTranslations("AdminImport");
+  const adminGate = adminGateCopy(locale);
+  const adminEnvironmentGate = getClientAdminEnvironmentGate();
   const [token, setToken] = useState("");
   const [activeTab, setActiveTab] = useState<Tab>("links");
   const [urls, setUrls] = useState("");
@@ -99,9 +138,39 @@ export default function AdminImportProductsPage() {
     setCsv(await file.text());
   };
 
+  if (!adminEnvironmentGate.isUnlocked) {
+    return (
+      <main className="min-h-[100dvh] bg-velmere-black text-white">
+        <LuxurySection className="py-28 md:py-36">
+          <AdminToolsLockedPanel locale={locale} gate={adminEnvironmentGate} />
+        </LuxurySection>
+        <CommerceLaunchControl locale={locale} surface="admin" />
+        <ProviderTruthLedgerPanel locale={locale} surface="admin" />
+        <OrderEventLedgerPanel locale={locale} surface="admin" />
+        <AdminRouteGatePanel locale={locale} surface="admin" />
+        <AdminServerAuthContractPanel locale={locale} surface="admin" />
+        <PublishPermissionGatePanel locale={locale} surface="admin" />
+        <SecretRedactionPolicyPanel locale={locale} surface="admin" />
+        <AdminMutationAuditPanel locale={locale} surface="admin" />
+        <AdminAuditPersistencePanel locale={locale} surface="admin" />
+        <AdminAuthSessionGuardPanel locale={locale} surface="admin" />
+        <AdminAuditWriteApiPanel locale={locale} surface="admin" />
+        <AdminIdempotencyStorePanel locale={locale} surface="admin" />
+        <PublishRollbackContextPanel locale={locale} surface="admin" />
+        <SupportSafeTimelinePanel locale={locale} surface="admin" />
+        <CustomerSafeExportBoundaryPanel locale={locale} surface="admin" />
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-[100dvh] bg-velmere-black text-white">
       <LuxurySection className="py-28 md:py-36">
+        <section className="mb-8 rounded-[1.5rem] border border-red-400/[0.18] bg-red-500/[0.045] p-5">
+          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-red-100/[0.72]">admin gate / launch control</p>
+          <h1 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-white">{adminGate.title}</h1>
+          <p className="mt-3 max-w-3xl text-sm leading-7 text-white/[0.58]">{adminGate.body}</p>
+        </section>
         <div className="mb-10 max-w-4xl">
           <p className="luxury-kicker text-velmere-gold/[0.80]">{t("kicker")}</p>
           <h1 className="mt-6 font-serif text-5xl leading-tight text-white md:text-7xl">{t("title")}</h1>
@@ -192,7 +261,7 @@ export default function AdminImportProductsPage() {
               <button
                 type="button"
                 onClick={runImport}
-                disabled={isBusy || !token}
+                disabled={!adminEnvironmentGate.isUnlocked || isBusy || !token}
                 className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-white px-6 text-[11px] font-semibold uppercase tracking-[0.2em] text-black transition-colors hover:bg-velmere-gold disabled:cursor-not-allowed disabled:bg-white/[0.10] disabled:text-white/[0.34]"
               >
                 {status === "loading" && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
@@ -201,7 +270,7 @@ export default function AdminImportProductsPage() {
               <button
                 type="button"
                 onClick={() => publish("coming_soon")}
-                disabled={isBusy || selectedDrafts.length === 0 || !token}
+                disabled={!adminEnvironmentGate.isUnlocked || isBusy || selectedDrafts.length === 0 || !token}
                 className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/[0.12] px-6 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/[0.62] transition-colors hover:border-white/[0.25] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
               >
                 {t("publishComingSoon")}
@@ -209,7 +278,7 @@ export default function AdminImportProductsPage() {
               <button
                 type="button"
                 onClick={() => publish("active")}
-                disabled={isBusy || selectedDrafts.length === 0 || hasSelectedDraftErrors || !token}
+                disabled={!adminEnvironmentGate.isUnlocked || isBusy || selectedDrafts.length === 0 || hasSelectedDraftErrors || !token}
                 className="inline-flex min-h-12 items-center justify-center rounded-full border border-velmere-gold/[0.35] px-6 text-[11px] font-semibold uppercase tracking-[0.2em] text-velmere-gold transition-colors hover:bg-velmere-gold hover:text-black disabled:cursor-not-allowed disabled:opacity-40"
               >
                 {t("publishActive")}
@@ -340,6 +409,21 @@ export default function AdminImportProductsPage() {
           <ProductLaunchChecklist />
         </div>
       </LuxurySection>
+      <CommerceLaunchControl locale={locale} surface="admin" />
+      <ProviderTruthLedgerPanel locale={locale} surface="admin" />
+      <OrderEventLedgerPanel locale={locale} surface="admin" />
+      <AdminRouteGatePanel locale={locale} surface="admin" />
+        <AdminServerAuthContractPanel locale={locale} surface="admin" />
+        <PublishPermissionGatePanel locale={locale} surface="admin" />
+        <SecretRedactionPolicyPanel locale={locale} surface="admin" />
+        <AdminMutationAuditPanel locale={locale} surface="admin" />
+        <AdminAuditPersistencePanel locale={locale} surface="admin" />
+        <AdminAuthSessionGuardPanel locale={locale} surface="admin" />
+        <AdminAuditWriteApiPanel locale={locale} surface="admin" />
+        <AdminIdempotencyStorePanel locale={locale} surface="admin" />
+        <PublishRollbackContextPanel locale={locale} surface="admin" />
+        <SupportSafeTimelinePanel locale={locale} surface="admin" />
+        <CustomerSafeExportBoundaryPanel locale={locale} surface="admin" />
     </main>
   );
 }

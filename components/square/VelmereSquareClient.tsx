@@ -95,6 +95,23 @@ const copy = {
     loginRequired: "Login required before publishing to Square.",
     commentLocked: "Comments unlock after login.",
     modalKicker: "VELMÈRE / SIGNAL THREAD",
+    modesKicker: "Square operating lanes",
+    modesTitle: "Community without chaos.",
+    modesBody: "Square should feel like a curated signal room: readable public posts, protected publishing and calm moderation before anything becomes public.",
+    modes: [
+      { label: "Read", value: "public", body: "Guests can read public posts, drops and archive notes without wallet pressure." },
+      { label: "Publish", value: "guarded", body: "Posting is account-gated and remains moderation-first so Square does not become spam." },
+      { label: "Member rooms", value: "locked", body: "Private rooms, rewards and deeper community signals unlock only through verified access rails." },
+    ],
+    trustKicker: "trust and moderation",
+    trustTitle: "Square needs signal, not noise.",
+    trustBody: "Every public interaction should feel curated: no wallet pressure, no spam mechanics, no financial hype and no unsafe private-message funnels.",
+    trustRails: [
+      "Guest reading stays public and low-friction.",
+      "Publishing stays account-gated and moderation-first.",
+      "Member rooms stay access-gated and never ask for seed phrases.",
+      "Market or token talk is routed to Shield language: anomaly, review, uncertainty.",
+    ],
     rooms: {
       drop: "Drop quest",
       style: "Style arena",
@@ -143,6 +160,23 @@ const copy = {
     loginRequired: "Logowanie jest wymagane przed publikacją w Square.",
     commentLocked: "Komentarze odblokujesz po logowaniu.",
     modalKicker: "VELMÈRE / WĄTEK SYGNAŁU",
+    modesKicker: "tryby działania Square",
+    modesTitle: "Społeczność bez chaosu.",
+    modesBody: "Square ma działać jak kontrolowany pokój sygnałów: czytelne publiczne posty, chronione publikowanie i spokojna moderacja zanim coś stanie się publiczne.",
+    modes: [
+      { label: "Czytaj", value: "publiczne", body: "Goście mogą czytać publiczne posty, dropy i notatki archiwum bez presji podłączania portfela." },
+      { label: "Publikuj", value: "kontrolowane", body: "Publikowanie wymaga konta i zostaje moderation-first, żeby Square nie zamieniło się w spam." },
+      { label: "Pokoje memberów", value: "zablokowane", body: "Prywatne pokoje, nagrody i głębsze sygnały społeczności odblokowują się tylko przez zweryfikowany dostęp." },
+    ],
+    trustKicker: "zaufanie i moderacja",
+    trustTitle: "Square potrzebuje sygnału, nie szumu.",
+    trustBody: "Każda publiczna interakcja ma być kontrolowana: bez presji portfela, bez spamu, bez finansowego hype’u i bez niebezpiecznych przejść do prywatnych wiadomości.",
+    trustRails: [
+      "Czytanie dla gości zostaje publiczne i proste.",
+      "Publikowanie zostaje account-gated i moderation-first.",
+      "Pokoje memberów są access-gated i nigdy nie proszą o seed phrase.",
+      "Rozmowy o rynku albo tokenach idą językiem Shield: anomalia, review, niepewność.",
+    ],
     rooms: {
       drop: "Misja dropu",
       style: "Arena stylu",
@@ -556,6 +590,41 @@ export default function VelmereSquareClient() {
               </button>
             </div>
           </motion.div>
+
+          <div className="grid gap-3 lg:grid-cols-[0.72fr_1.28fr]">
+            <div className="rounded-[1.5rem] border border-white/[0.10] bg-[#101012] p-5 md:p-6">
+              <p className="font-mono text-[10px] font-black uppercase tracking-[0.22em] text-[#d4af37]">{text.modesKicker}</p>
+              <h2 className="mt-4 font-serif text-3xl leading-none text-white md:text-4xl">{text.modesTitle}</h2>
+              <p className="mt-4 text-sm leading-7 text-white/[0.62]">{text.modesBody}</p>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-3">
+              {text.modes.map((item, index) => (
+                <div key={item.label} className="rounded-[1.35rem] border border-white/[0.08] bg-white/[0.025] p-4">
+                  <p className="font-mono text-[9px] font-black uppercase tracking-[0.2em] text-white/[0.30]">0{index + 1}</p>
+                  <h3 className="mt-4 text-lg text-white">{item.label}</h3>
+                  <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.14em] text-[#d4af37]">{item.value}</p>
+                  <p className="mt-3 text-xs leading-6 text-white/[0.54]">{item.body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-[1.55rem] border border-[#d4af37]/[0.12] bg-[#d4af37]/[0.035] p-5 md:p-6">
+            <div className="grid gap-5 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+              <div>
+                <p className="font-mono text-[10px] font-black uppercase tracking-[0.22em] text-[#d4af37]">{text.trustKicker}</p>
+                <h2 className="mt-3 font-serif text-3xl leading-none text-white md:text-4xl">{text.trustTitle}</h2>
+                <p className="mt-4 text-sm leading-7 text-white/[0.60]">{text.trustBody}</p>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {text.trustRails.map((rail) => (
+                  <div key={rail} className="rounded-2xl border border-white/[0.075] bg-black/[0.20] p-4 text-xs leading-6 text-white/[0.56]">
+                    {rail}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
 
           <div className="grid gap-3 sm:grid-cols-3">
             {squareStats.map(({ label, value, icon: Icon }) => (

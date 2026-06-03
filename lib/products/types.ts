@@ -47,6 +47,30 @@ export type ProductImage = {
   height?: number;
 };
 
+export type ProductSizeMeasurement = {
+  size: string;
+  chest?: string;
+  length?: string;
+  shoulders?: string;
+  waist?: string;
+  inseam?: string;
+};
+
+export type ProductTruthProfile = {
+  material: LocalizedString;
+  composition: LocalizedString;
+  weight?: string;
+  fit: LocalizedString;
+  care: LocalizedString[];
+  sizeGuide: {
+    note: LocalizedString;
+    measurements: ProductSizeMeasurement[];
+  };
+  deliveryNote: LocalizedString;
+  returnNote: LocalizedString;
+  launchNote?: LocalizedString;
+};
+
 export type Product = {
   id: string;
   slug: string;
@@ -61,6 +85,7 @@ export type Product = {
   title: LocalizedString;
   description: LocalizedString;
   shortDescription: LocalizedString;
+  truth?: ProductTruthProfile;
 
   price: {
     amount: number;

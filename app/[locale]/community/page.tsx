@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ArrowUpRight } from "lucide-react";
 import LuxurySection from "@/components/layout/LuxurySection";
 import { Link } from "@/navigation";
+import SquareVlmLaunchControl from "@/components/launch/SquareVlmLaunchControl";
 import { buildVelmereMetadata } from "@/lib/seo/metadata";
 
 export function generateMetadata({ params: { locale } }: { params: { locale: string } }): Metadata {
@@ -44,6 +45,7 @@ export default function CommunityPage({ params: { locale } }: { params: { locale
           ))}
         </div>
       </LuxurySection>
+      <SquareVlmLaunchControl locale={locale} surface="community" />
     </main>
   );
 }

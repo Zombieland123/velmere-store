@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import VlmAccessGatePage from "@/components/vlm/VlmAccessGatePage";
+import SquareVlmLaunchControl from "@/components/launch/SquareVlmLaunchControl";
 import { buildVelmereMetadata } from "@/lib/seo/metadata";
 
 export function generateMetadata({ params: { locale } }: { params: { locale: string } }): Metadata {
@@ -12,10 +13,13 @@ export function generateMetadata({ params: { locale } }: { params: { locale: str
   });
 }
 
-export default function VlmTokenPage() {
+export default function VlmTokenPage({ params: { locale } }: { params: { locale: string } }) {
   return (
-    <Suspense fallback={null}>
-      <VlmAccessGatePage />
-    </Suspense>
+    <>
+      <Suspense fallback={null}>
+        <VlmAccessGatePage />
+      </Suspense>
+      <SquareVlmLaunchControl locale={locale} surface="vlm" />
+    </>
   );
 }
