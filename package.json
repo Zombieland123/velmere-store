@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run check:i18n && npm run vercel:preflight && next build",
+    "build": "npm run check:i18n && npm run repair:codex-handoff && npm run vercel:preflight && next build",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
@@ -51,7 +51,8 @@
     "verify:admin-auth-session-idempotency": "node scripts/verify-admin-auth-session-idempotency-safety.mjs",
     "verify:vlm-brain-orbit-cleanup": "node scripts/verify-vlm-brain-orbit-cleanup-safety.mjs",
     "verify:vlm-brain-explainer-advanced-guard": "node scripts/verify-vlm-brain-explainer-advanced-guard-safety.mjs",
-    "verify:vlm-brain-performance-runtime": "node scripts/verify-vlm-brain-performance-runtime-safety.mjs"
+    "verify:vlm-brain-performance-runtime": "node scripts/verify-vlm-brain-performance-runtime-safety.mjs",
+    "repair:codex-handoff": "node scripts/repair-codex-handoff.mjs"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

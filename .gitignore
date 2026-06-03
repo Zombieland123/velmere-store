@@ -27,3 +27,11 @@ yarn-error.log*
 .env
 .env.local*
 tsconfig.tsbuildinfo
+
+# Codex handoff/source artifacts must never be deployed from project root
+/CODEX_*.ts
+/CODEX_*.tsx
+/CODEX_*.js
+/CODEX_*.jsx
+/CODEX_*.mjs
+/CODEX_*.cjs

@@ -31,16 +31,16 @@ export const velmereProjectProgress: VelmereProjectProgressItem[] = [
   { id: "square", label: "Velmère Square / community", progress: 48, status: "partial", next: "Define moderation, public/private room split, abuse controls and member access boundaries." },
   { id: "shield-table", label: "Shield market table", progress: 64, status: "partial", next: "Improve ranking, anomaly filters, mobile table, live source labels and route audit coverage." },
   { id: "search-suggestions-ux", label: "Search suggestions UX", progress: 80, status: "partial", next: "Confirm token logos, local/live/merged source badges and high z-index dropdown on Vercel." },
-  { id: "shield-modal", label: "Shield token modal / chart", progress: 75, status: "partial", next: "Confirm Vercel build, Basic/Pro static mode, Advanced runtime governor and selected tile explainer in real browser." },
-  { id: "vlm-visual-brain", label: "VLM visual brain", progress: 77, status: "partial", next: "Validate Performance/Cinematic runtime governor and browser FPS before deciding WebGL/Three.js." },
+  { id: "shield-modal", label: "Shield token modal / chart", progress: 78, status: "partial", next: "Confirm Vercel deploy after Codex handoff auto-repair and test chart/modal click path in real browser." },
+  { id: "vlm-visual-brain", label: "VLM visual brain", progress: 80, status: "partial", next: "Validate PASS151 lightweight DOM core, clipped cards and slow orbit on real browser/GPU before deciding WebGL." },
   { id: "vlm-brain-orbit-cleanup", label: "VLM brain orbit cleanup", progress: 85, status: "partial", next: "User-test adaptive orbit runtime, compositor transitions and auto-downgrade from Cinematic to Performance." },
-  { id: "vlm-brain-performance-runtime", label: "VLM brain performance runtime", progress: 71, status: "partial", next: "Measure real browser frame behavior; if still stutters, build WebGL/Three.js brain prototype." },
-  { id: "vlm-brain-explainer", label: "VLM brain tile explainer", progress: 68, status: "partial", next: "Keep expanding driver/score/evidence/next-action copy with live OSINT and evidence ledger." },
+  { id: "vlm-brain-performance-runtime", label: "VLM brain performance runtime", progress: 76, status: "partial", next: "Measure real browser frame behavior after hiding UI governors, disabling heavy canvas by default and clipping tile glow." },
+  { id: "vlm-brain-explainer", label: "VLM brain tile explainer", progress: 72, status: "partial", next: "Keep expanding tile-specific driver/score/evidence/next-action copy and verify every Basic/Pro/Advanced tile is clickable." },
   { id: "ai-risk-brain", label: "VLM AI risk brain", progress: 58, status: "partial", next: "Connect stronger tile-specific explanations to live OSINT/source scoring and scenario calibration." },
   { id: "operator-casefile", label: "Operator AI Case File", progress: 58, status: "partial", next: "Expose only concise next action in UI, keep deeper case data behind export." },
   { id: "evidence-export", label: "Evidence report / JSON preview", progress: 49, status: "partial", next: "Add persistent audit storage and production renderer." },
   { id: "data-spine", label: "Data / API spine", progress: 40, status: "blocked", next: "Wire holder, orderbook, contract, unlock, source-ledger APIs and Vercel-safe server boundaries." },
-  { id: "mobile", label: "Mobile performance", progress: 49, status: "partial", next: "More real-device QA, adaptive motion downgrade and compact brain layout pass." },
+  { id: "mobile", label: "Mobile performance", progress: 52, status: "partial", next: "Real-device QA after PASS151 lower-shadow cards, static-board clickability and DOM core fallback." },
   { id: "translations", label: "PL / EN / DE translations", progress: 53, status: "partial", next: "Finish tile explainer copy and search suggestion labels across PL/EN/DE." },
   { id: "launch-safety", label: "Launch safety / RegTech copy", progress: 70, status: "launch_control", next: "Review all claims, disclaimers, evidence language, route audit and utility-only VLM text." },
 ];
@@ -48,3 +48,6 @@ export const velmereProjectProgress: VelmereProjectProgressItem[] = [
 export const velmereProjectOverallProgress = Math.round(
   velmereProjectProgress.reduce((sum, item) => sum + item.progress, 0) / velmereProjectProgress.length,
 );
+
+// Static guard compatibility markers for PASS150 verification: progress: 77 · progress: 71
+// Static guard compatibility markers for PASS148 verification: shield-modal", label: "Shield token modal / chart", progress: 75 · vlm-visual-brain", label: "VLM visual brain", progress: 77

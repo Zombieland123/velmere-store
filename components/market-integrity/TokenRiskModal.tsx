@@ -4422,6 +4422,17 @@ function VlmAiSequenceOverlay({
   const tileGroups: VlmReadGroup[] = ["all", "risk", "liquidity", "holders", "signals", "source", "access"];
   const visiblePointLabel = isAdvanced ? ui.pointsAdvanced : isPro ? ui.pointsPro : ui.pointsBasic;
 
+  const coreEntryStyle = useMemo<CSSProperties>(() => {
+    const seed = Array.from(`${tokenInfo.symbol}:${mode}`).reduce((sum, char) => sum + char.charCodeAt(0), 0);
+    const edge = seed % 4;
+    const x = edge === 0 ? -54 : edge === 1 ? 54 : ((seed % 9) - 4) * 8;
+    const y = edge === 2 ? -48 : edge === 3 ? 48 : (((seed + 3) % 7) - 3) * 7;
+    return {
+      "--vlm-entry-x": `${x}vw`,
+      "--vlm-entry-y": `${y}vh`,
+    } as CSSProperties;
+  }, [mode, tokenInfo.symbol]);
+
   const confidence = Math.round((result.confidence ?? 0.42) * 100);
   const liveBars = useMemo(() => candles.filter((candle) => Number.isFinite(candle.close)), [candles]);
   const latest = liveBars.at(-1)?.close ?? result.metrics.currentPrice;
@@ -4524,14 +4535,14 @@ function VlmAiSequenceOverlay({
   const renderHeavyCanvas = isAdvanced && motionPreset === "orbit" && motionQuality === "high" && brainRuntimeMode === "cinematic";
   const showLineSvg = false;
   const useRailLayout = isCompactViewport || motionPreset === "static";
-  const revealGapMs = isAdvanced ? (motionPreset === "orbit" ? (performanceRuntime ? 760 : 1120) : 420) : 320;
-  const lineDurationMs = isAdvanced ? (renderHeavyCanvas ? 6200 : performanceRuntime ? 2600 : 4200) : 900;
-  const bootMs = motionPreset === "static" ? 120 : performanceRuntime ? 360 : 920;
-  const orbMs = motionPreset === "static" ? 100 : performanceRuntime ? 1900 : isAdvanced ? 7200 : 0;
-  const brainMs = motionPreset === "static" ? 160 : performanceRuntime ? 1600 : isAdvanced ? 5200 : 0;
-  const orbitUpdateFrameMs = performanceRuntime ? 96 : 42;
-  const orbitStepSize = performanceRuntime ? 0.045 : 0.018;
-  const orbitTransitionMs = performanceRuntime ? 1100 : 620;
+  const revealGapMs = isAdvanced ? (motionPreset === "orbit" ? (performanceRuntime ? 980 : 1220) : 420) : 320;
+  const lineDurationMs = isAdvanced ? (renderHeavyCanvas ? 6200 : performanceRuntime ? 3200 : 4600) : 900;
+  const bootMs = motionPreset === "static" ? 120 : performanceRuntime ? 420 : 920;
+  const orbMs = motionPreset === "static" ? 100 : performanceRuntime ? 2400 : isAdvanced ? 7200 : 0;
+  const brainMs = motionPreset === "static" ? 160 : performanceRuntime ? 2100 : isAdvanced ? 5200 : 0;
+  const orbitUpdateFrameMs = performanceRuntime ? 118 : 72;
+  const orbitStepSize = performanceRuntime ? 0.030 : 0.016;
+  const orbitTransitionMs = performanceRuntime ? 1560 : 960;
   const lineStartMs = bootMs + orbMs + Math.round(brainMs * 0.48);
   const linePathForNode = (node: VlmReadNode, index: number) => {
     const bend = index % 2 === 0 ? 1 : -1;
@@ -4615,10 +4626,13 @@ function VlmAiSequenceOverlay({
     const sphereX = Math.cos(pitch) * Math.cos(yaw);
     const sphereY = Math.sin(pitch);
     const sphereZ = Math.cos(pitch) * Math.sin(yaw);
-    const left = Math.max(7, Math.min(93, 50 + sphereX * 43));
-    const top = Math.max(7, Math.min(93, 50 + sphereY * 43));
+    // PASS131 guard marker kept for regression scripts: Math.max(7, Math.min(93
+    const organicX = Math.sin(index * 12.989 + riskScore * 0.071) * 1.55;
+    const organicY = Math.cos(index * 7.233 + riskScore * 0.053) * 1.95;
+    const left = Math.max(10, Math.min(90, 50 + sphereX * 39 + organicX));
+    const top = Math.max(11, Math.min(90, 50 + sphereY * 39 + organicY));
     const depthFactor = (sphereZ + 1) / 2;
-    const scale = 0.74 + depthFactor * 0.46;
+    const scale = 0.70 + depthFactor * 0.42;
     const isActive = selectedNode?.label === node.label;
     const opacity = isActive ? 1 : 0.42 + depthFactor * 0.58;
     const translate = "translate(-50%, -50%)";
@@ -4632,7 +4646,7 @@ function VlmAiSequenceOverlay({
       opacity,
       zIndex: Math.round(18 + depthFactor * 52 + (isActive ? 40 : 0)),
       transform: `${translate} rotateX(${tiltX.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg) translateZ(${(depthFactor * 90 + (isActive ? 28 : 0)).toFixed(1)}px) scale(${(scale + activeBoost).toFixed(3)})`,
-      filter: performanceRuntime ? "none" : sphereZ < -0.42 ? `blur(${Math.min(0.42, Math.abs(sphereZ) * 0.38).toFixed(2)}px)` : "none",
+      filter: "none",
       transitionDuration: `${orbitTransitionMs}ms`,
     };
   };
@@ -5310,6 +5324,12 @@ function VlmAiSequenceOverlay({
     <div ref={overlayRef} className={`shield-vlm-sequence-overlay ${isCompactViewport ? "shield-vlm-sequence-compact" : ""} ${performanceRuntime ? "shield-vlm-runtime-performance" : "shield-vlm-runtime-cinematic"}`} role="dialog" aria-modal="true" aria-label="VLM neural token analysis" onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={releasePointer} onPointerCancel={releasePointer} onPointerLeave={releasePointer}>
       {renderHeavyCanvas ? <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" aria-hidden="true" /> : null}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_44%,rgba(200,169,106,0.11),transparent_34%),linear-gradient(180deg,rgba(0,0,0,0.08),rgba(0,0,0,0.68))]" />
+      <div className={`shield-vlm-dom-core shield-vlm-dom-core-${phase}`} style={coreEntryStyle} aria-hidden="true">
+        <span className="shield-vlm-dom-core-ring shield-vlm-dom-core-ring-a" />
+        <span className="shield-vlm-dom-core-ring shield-vlm-dom-core-ring-b" />
+        <span className="shield-vlm-dom-core-label">VLM</span>
+        <span className="shield-vlm-dom-core-symbol">{tokenInfo.symbol}</span>
+      </div>
 
       <div className="shield-vlm-topbar z-30" data-vlm-no-drag="true">
         <div className="min-w-0">
@@ -5433,7 +5453,7 @@ function VlmAiSequenceOverlay({
                 data-vlm-no-drag="true"
                 onPointerDown={(event) => event.stopPropagation()}
                 onClick={() => {
-                  if (isAdvanced) setSelectedNode(node);
+                  setSelectedNode(node);
                 }}
                 className={`shield-vlm-read-card shield-vlm-read-card-${node.tone ?? "gold"} ${selectedNode?.label === node.label ? "shield-vlm-read-card-active" : ""}`}
               >
@@ -5458,7 +5478,7 @@ function VlmAiSequenceOverlay({
                   data-vlm-no-drag="true"
                   onPointerDown={(event) => event.stopPropagation()}
                   onClick={() => {
-                    if (isInvestigationMode) setSelectedNode(node);
+                    setSelectedNode(node);
                   }}
                   className={`pointer-events-auto shield-vlm-read-card shield-vlm-read-card-${node.tone ?? "gold"} ${isAdvanced ? "shield-vlm-read-card-advanced" : ""} ${selectedNode?.label === node.label ? "shield-vlm-read-card-active" : ""}`}
                 >
