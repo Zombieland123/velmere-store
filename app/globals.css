@@ -5924,3 +5924,819 @@
     transform: translateX(-50%) !important;
   }
 }
+
+/* PASS162 · VLM tile intelligence 2.0 + full progress matrix */
+@layer components {
+  .shield-vlm-detail-severity {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.10);
+    padding: 0.42rem 0.68rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.56rem;
+    font-weight: 800;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    background: rgba(255,255,255,0.035);
+    color: rgba(255,255,255,0.68);
+  }
+
+  .shield-vlm-detail-severity-calm {
+    border-color: rgba(52,211,153,0.22);
+    background: rgba(52,211,153,0.075);
+    color: rgba(167,243,208,0.88);
+  }
+
+  .shield-vlm-detail-severity-watch {
+    border-color: rgba(200,169,106,0.28);
+    background: rgba(200,169,106,0.090);
+    color: rgba(250,204,121,0.90);
+  }
+
+  .shield-vlm-detail-severity-red,
+  .shield-vlm-detail-severity-blocked {
+    border-color: rgba(255,77,109,0.24);
+    background: rgba(255,77,109,0.080);
+    color: rgba(255,190,204,0.92);
+  }
+
+  .shield-vlm-detail-panel-solid .rounded-xl {
+    overflow: hidden;
+    overflow-clip-margin: 0;
+  }
+}
+
+/* PASS163 · source spine / live readiness panel */
+@layer components {
+  .shield-source-spine-panel {
+    margin-top: 0.95rem;
+    border-radius: 1.2rem;
+    border: 1px solid rgba(255,255,255,0.085);
+    background:
+      radial-gradient(circle at 12% 0%, rgba(34,211,238,0.08), transparent 38%),
+      linear-gradient(145deg, rgba(255,255,255,0.030), rgba(255,255,255,0.010)),
+      rgba(0,0,0,0.22);
+    padding: 0.9rem;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.045);
+    overflow: hidden;
+    contain: paint;
+  }
+
+  .shield-source-spine-row {
+    display: grid;
+    grid-template-columns: auto minmax(0,1fr) auto;
+    align-items: center;
+    gap: 0.65rem;
+    border-radius: 0.92rem;
+    border: 1px solid rgba(255,255,255,0.070);
+    background: rgba(255,255,255,0.025);
+    padding: 0.62rem 0.68rem;
+  }
+
+  .shield-source-spine-row strong {
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.09);
+    background: rgba(0,0,0,0.24);
+    padding: 0.34rem 0.50rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.52rem;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.50);
+  }
+
+  .shield-source-spine-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.28);
+    box-shadow: 0 0 18px rgba(255,255,255,0.08);
+  }
+
+  .shield-source-spine-row-live {
+    border-color: rgba(52,211,153,0.16);
+    background: rgba(52,211,153,0.035);
+  }
+
+  .shield-source-spine-row-live .shield-source-spine-dot {
+    background: rgb(52,211,153);
+    box-shadow: 0 0 18px rgba(52,211,153,0.30);
+  }
+
+  .shield-source-spine-row-partial {
+    border-color: rgba(200,169,106,0.18);
+    background: rgba(200,169,106,0.045);
+  }
+
+  .shield-source-spine-row-partial .shield-source-spine-dot,
+  .shield-source-spine-row-fallback .shield-source-spine-dot,
+  .shield-source-spine-row-loading .shield-source-spine-dot {
+    background: rgb(200,169,106);
+    box-shadow: 0 0 18px rgba(200,169,106,0.26);
+  }
+
+  .shield-source-spine-row-blocked,
+  .shield-source-spine-row-missing {
+    border-color: rgba(255,77,109,0.13);
+    background: rgba(255,77,109,0.030);
+  }
+
+  .shield-source-spine-row-blocked .shield-source-spine-dot,
+  .shield-source-spine-row-missing .shield-source-spine-dot {
+    background: rgb(255,77,109);
+    box-shadow: 0 0 18px rgba(255,77,109,0.24);
+  }
+}
+
+@media (max-width: 980px) {
+  .shield-source-spine-panel {
+    padding: 0.78rem;
+  }
+
+  .shield-source-spine-row {
+    grid-template-columns: auto minmax(0,1fr);
+  }
+
+  .shield-source-spine-row strong {
+    grid-column: 2;
+    justify-self: start;
+  }
+}
+
+/* PASS165 · full surface readiness index */
+@layer components {
+  .fsri-shell {
+    position: relative;
+    overflow: hidden;
+    border-radius: 2rem;
+    border: 1px solid rgba(255,255,255,0.10);
+    background:
+      radial-gradient(circle at 10% 0%, rgba(200,169,106,0.14), transparent 34%),
+      radial-gradient(circle at 92% 18%, rgba(34,211,238,0.075), transparent 32%),
+      linear-gradient(145deg, rgba(255,255,255,0.040), rgba(255,255,255,0.012)),
+      rgba(0,0,0,0.30);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.055), 0 28px 110px rgba(0,0,0,0.24);
+    padding: clamp(1.2rem, 3vw, 2.1rem);
+    contain: paint;
+  }
+
+  .fsri-shell::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(to right, rgba(255,255,255,0.030) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.026) 1px, transparent 1px);
+    background-size: 48px 48px;
+    opacity: 0.25;
+    mask-image: radial-gradient(circle at 35% 18%, black, transparent 72%);
+  }
+
+  .fsri-shell > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .fsri-card {
+    min-width: 0;
+    overflow: hidden;
+    border-radius: 1.35rem;
+    border: 1px solid rgba(255,255,255,0.085);
+    background:
+      linear-gradient(145deg, rgba(255,255,255,0.044), rgba(255,255,255,0.015)),
+      rgba(0,0,0,0.22);
+    padding: 1rem;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.045);
+  }
+
+  .fsri-status {
+    flex-shrink: 0;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.10);
+    background: rgba(0,0,0,0.24);
+    padding: 0.32rem 0.52rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.50rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.52);
+  }
+
+  .fsri-status-ready {
+    border-color: rgba(52,211,153,0.18);
+    background: rgba(52,211,153,0.060);
+    color: rgba(167,243,208,0.88);
+  }
+
+  .fsri-status-review {
+    border-color: rgba(200,169,106,0.22);
+    background: rgba(200,169,106,0.070);
+    color: rgba(250,204,121,0.88);
+  }
+
+  .fsri-status-blocked {
+    border-color: rgba(255,77,109,0.18);
+    background: rgba(255,77,109,0.055);
+    color: rgba(255,190,204,0.88);
+  }
+}
+
+@media (max-width: 780px) {
+  .fsri-shell {
+    border-radius: 1.45rem;
+    padding: 1rem;
+  }
+
+  .fsri-card {
+    border-radius: 1.05rem;
+    padding: 0.85rem;
+  }
+}
+
+/* PASS166 · production data backbone / audit ledger / source freshness / telemetry */
+@layer components {
+  .pdb-shell {
+    position: relative;
+    overflow: hidden;
+    border-radius: 2rem;
+    border: 1px solid rgba(255,255,255,0.10);
+    background:
+      radial-gradient(circle at 10% 0%, rgba(200,169,106,0.13), transparent 34%),
+      radial-gradient(circle at 92% 14%, rgba(34,211,238,0.090), transparent 34%),
+      radial-gradient(circle at 50% 100%, rgba(255,77,109,0.045), transparent 36%),
+      linear-gradient(145deg, rgba(255,255,255,0.040), rgba(255,255,255,0.012)),
+      rgba(0,0,0,0.34);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.055), 0 30px 118px rgba(0,0,0,0.28);
+    padding: clamp(1.2rem, 3vw, 2.1rem);
+    contain: paint;
+  }
+
+  .pdb-shell::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(to right, rgba(255,255,255,0.030) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.026) 1px, transparent 1px);
+    background-size: 48px 48px;
+    opacity: 0.22;
+    mask-image: radial-gradient(circle at 32% 18%, black, transparent 74%);
+  }
+
+  .pdb-shell > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .pdb-stat,
+  .pdb-card {
+    min-width: 0;
+    overflow: hidden;
+    border-radius: 1.35rem;
+    border: 1px solid rgba(255,255,255,0.085);
+    background:
+      linear-gradient(145deg, rgba(255,255,255,0.044), rgba(255,255,255,0.014)),
+      rgba(0,0,0,0.24);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.045);
+  }
+
+  .pdb-stat {
+    padding: 1rem;
+  }
+
+  .pdb-stat p {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.56rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.36);
+  }
+
+  .pdb-stat strong {
+    display: block;
+    margin-top: 0.45rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 1.35rem;
+    color: white;
+  }
+
+  .pdb-card {
+    padding: 1rem;
+  }
+
+  .pdb-card-telemetry {
+    border-color: rgba(34,211,238,0.13);
+    background:
+      radial-gradient(circle at 12% 0%, rgba(34,211,238,0.080), transparent 36%),
+      rgba(255,255,255,0.020);
+  }
+
+  .pdb-status,
+  .pdb-priority {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.10);
+    padding: 0.34rem 0.52rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.50rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .pdb-status-ready {
+    border-color: rgba(52,211,153,0.18);
+    background: rgba(52,211,153,0.060);
+    color: rgba(167,243,208,0.88);
+  }
+
+  .pdb-status-review,
+  .pdb-priority-p1 {
+    border-color: rgba(200,169,106,0.22);
+    background: rgba(200,169,106,0.070);
+    color: rgba(250,204,121,0.88);
+  }
+
+  .pdb-status-blocked,
+  .pdb-priority-p0 {
+    border-color: rgba(255,77,109,0.18);
+    background: rgba(255,77,109,0.055);
+    color: rgba(255,190,204,0.88);
+  }
+
+  .pdb-priority-p2 {
+    border-color: rgba(255,255,255,0.10);
+    background: rgba(255,255,255,0.035);
+    color: rgba(255,255,255,0.55);
+  }
+}
+
+@media (max-width: 780px) {
+  .pdb-shell {
+    border-radius: 1.45rem;
+    padding: 1rem;
+  }
+
+  .pdb-card {
+    border-radius: 1.05rem;
+    padding: 0.85rem;
+  }
+}
+
+/* PASS167 · storage adapter readiness + account order event timeline */
+@layer components {
+  .sar-shell,
+  .aoet-shell {
+    position: relative;
+    overflow: hidden;
+    border-radius: 2rem;
+    border: 1px solid rgba(255,255,255,0.10);
+    background:
+      radial-gradient(circle at 10% 0%, rgba(200,169,106,0.13), transparent 34%),
+      radial-gradient(circle at 92% 14%, rgba(34,211,238,0.080), transparent 34%),
+      linear-gradient(145deg, rgba(255,255,255,0.040), rgba(255,255,255,0.012)),
+      rgba(0,0,0,0.34);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.055), 0 30px 118px rgba(0,0,0,0.28);
+    padding: clamp(1.2rem, 3vw, 2.1rem);
+    contain: paint;
+  }
+
+  .sar-shell::before,
+  .aoet-shell::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(to right, rgba(255,255,255,0.030) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.026) 1px, transparent 1px);
+    background-size: 48px 48px;
+    opacity: 0.20;
+    mask-image: radial-gradient(circle at 32% 18%, black, transparent 74%);
+  }
+
+  .sar-shell > *,
+  .aoet-shell > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .sar-stat,
+  .sar-card,
+  .aoet-row {
+    min-width: 0;
+    overflow: hidden;
+    border-radius: 1.35rem;
+    border: 1px solid rgba(255,255,255,0.085);
+    background:
+      linear-gradient(145deg, rgba(255,255,255,0.044), rgba(255,255,255,0.014)),
+      rgba(0,0,0,0.24);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.045);
+  }
+
+  .sar-stat {
+    padding: 1rem;
+  }
+
+  .sar-stat p {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.56rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.36);
+  }
+
+  .sar-stat strong {
+    display: block;
+    margin-top: 0.45rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 1.35rem;
+    color: white;
+  }
+
+  .sar-card {
+    padding: 1rem;
+  }
+
+  .sar-status,
+  .sar-priority,
+  .aoet-row span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.10);
+    padding: 0.34rem 0.52rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.50rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .sar-status-ready,
+  .aoet-row-ready span {
+    border-color: rgba(52,211,153,0.18);
+    background: rgba(52,211,153,0.060);
+    color: rgba(167,243,208,0.88);
+  }
+
+  .sar-status-review,
+  .sar-priority-p1,
+  .aoet-row-review span {
+    border-color: rgba(200,169,106,0.22);
+    background: rgba(200,169,106,0.070);
+    color: rgba(250,204,121,0.88);
+  }
+
+  .sar-status-blocked,
+  .sar-priority-p0,
+  .aoet-row-blocked span {
+    border-color: rgba(255,77,109,0.18);
+    background: rgba(255,77,109,0.055);
+    color: rgba(255,190,204,0.88);
+  }
+
+  .sar-priority-p2 {
+    border-color: rgba(255,255,255,0.10);
+    background: rgba(255,255,255,0.035);
+    color: rgba(255,255,255,0.55);
+  }
+
+  .aoet-row {
+    display: grid;
+    grid-template-columns: auto minmax(0,1fr);
+    gap: 0.85rem;
+    align-items: start;
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 780px) {
+  .sar-shell,
+  .aoet-shell {
+    border-radius: 1.45rem;
+    padding: 1rem;
+  }
+
+  .sar-card,
+  .aoet-row {
+    border-radius: 1.05rem;
+    padding: 0.85rem;
+  }
+}
+
+/* PASS168 · VLM brain static board + advanced orbit polish */
+@layer components {
+  .shield-vlm-topbar-minimal {
+    left: clamp(0.75rem, 2vw, 1.15rem) !important;
+    right: clamp(0.75rem, 2vw, 1.15rem) !important;
+    top: clamp(0.75rem, 2vw, 1.05rem) !important;
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: space-between !important;
+    gap: 0.75rem !important;
+    pointer-events: none !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+  }
+
+  .shield-vlm-brain-chip,
+  .shield-vlm-topbar-actions {
+    pointer-events: auto;
+  }
+
+  .shield-vlm-brain-chip {
+    max-width: min(18rem, 54vw);
+    border-radius: 999px;
+    border: 1px solid rgba(200,169,106,0.18);
+    background: rgba(3,4,7,0.68);
+    padding: 0.46rem 0.72rem;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 18px 60px rgba(0,0,0,0.32);
+    backdrop-filter: blur(14px);
+  }
+
+  .shield-vlm-brain-chip span,
+  .shield-vlm-brain-chip strong {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    text-transform: uppercase;
+  }
+
+  .shield-vlm-brain-chip span {
+    font-size: 0.54rem;
+    letter-spacing: 0.18em;
+    color: rgba(200,169,106,0.88);
+  }
+
+  .shield-vlm-brain-chip strong {
+    margin-top: 0.12rem;
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+    color: rgba(255,255,255,0.62);
+  }
+
+  .shield-vlm-topbar-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.45rem;
+  }
+
+  .shield-vlm-motion-toggle-mini {
+    display: inline-flex;
+    gap: 0.25rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.10);
+    background: rgba(0,0,0,0.46);
+    padding: 0.25rem;
+    backdrop-filter: blur(14px);
+  }
+
+  .shield-vlm-motion-toggle-mini button,
+  .shield-vlm-back-button {
+    border-radius: 999px;
+    border: 1px solid transparent;
+    padding: 0.48rem 0.66rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.55rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.54);
+    transition: border-color 180ms ease, background 180ms ease, color 180ms ease, transform 180ms ease;
+  }
+
+  .shield-vlm-motion-toggle-mini button:hover,
+  .shield-vlm-motion-toggle-mini button.is-active,
+  .shield-vlm-back-button:hover {
+    border-color: rgba(200,169,106,0.28);
+    background: rgba(200,169,106,0.08);
+    color: rgba(200,169,106,0.92);
+  }
+
+  .shield-vlm-back-button {
+    border-color: rgba(255,255,255,0.10);
+    background: rgba(0,0,0,0.44);
+    backdrop-filter: blur(14px);
+  }
+
+  .shield-vlm-orbit-status,
+  .shield-vlm-runtime-governor {
+    display: none !important;
+  }
+
+  .shield-vlm-static-evidence-board {
+    position: absolute;
+    inset: clamp(4.8rem, 8vh, 5.9rem) clamp(0.75rem, 2vw, 1.25rem) clamp(1rem, 2vh, 1.3rem);
+    overflow: hidden;
+    border-radius: 1.65rem;
+    border: 1px solid rgba(255,255,255,0.10);
+    background:
+      radial-gradient(circle at 50% 44%, rgba(200,169,106,0.09), transparent 24%),
+      radial-gradient(circle at 18% 10%, rgba(34,211,238,0.075), transparent 34%),
+      radial-gradient(circle at 88% 18%, rgba(255,255,255,0.035), transparent 32%),
+      rgba(0,0,0,0.18);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.055), 0 28px 110px rgba(0,0,0,0.30);
+    padding: clamp(0.85rem, 1.8vw, 1.25rem);
+    contain: layout paint style;
+    pointer-events: auto;
+  }
+
+  .shield-vlm-static-board-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    position: relative;
+    z-index: 3;
+  }
+
+  .shield-vlm-static-board-header > span {
+    flex-shrink: 0;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.10);
+    background: rgba(255,255,255,0.035);
+    padding: 0.38rem 0.62rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.56rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.42);
+  }
+
+  .shield-vlm-static-filter {
+    position: relative;
+    z-index: 4;
+    margin-top: 0.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .shield-vlm-static-core-window {
+    pointer-events: none;
+    position: absolute;
+    left: 50%;
+    top: 52%;
+    z-index: 1;
+    display: flex;
+    height: min(20rem, 42vw);
+    width: min(20rem, 42vw);
+    transform: translate(-50%, -50%);
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    border: 1px solid rgba(200,169,106,0.14);
+    background:
+      radial-gradient(circle at 50% 45%, rgba(200,169,106,0.16), transparent 30%),
+      radial-gradient(circle at 50% 50%, rgba(34,211,238,0.07), transparent 46%),
+      rgba(0,0,0,0.10);
+    opacity: 0.82;
+  }
+
+  .shield-vlm-static-core-ring {
+    position: absolute;
+    inset: 16%;
+    border-radius: 999px;
+    border: 1px solid rgba(200,169,106,0.20);
+    box-shadow: 0 0 42px rgba(200,169,106,0.11), inset 0 0 42px rgba(34,211,238,0.06);
+  }
+
+  .shield-vlm-static-core-label,
+  .shield-vlm-static-core-symbol {
+    position: absolute;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    text-transform: uppercase;
+  }
+
+  .shield-vlm-static-core-label {
+    font-size: clamp(1.4rem, 4vw, 3.2rem);
+    letter-spacing: 0.18em;
+    color: rgba(255,255,255,0.82);
+  }
+
+  .shield-vlm-static-core-symbol {
+    bottom: 30%;
+    font-size: 0.66rem;
+    letter-spacing: 0.16em;
+    color: rgba(200,169,106,0.74);
+  }
+
+  .shield-vlm-static-card-grid {
+    position: relative;
+    z-index: 2;
+    margin-top: clamp(0.85rem, 2vh, 1.2rem);
+    display: grid;
+    grid-template-columns: repeat(4, minmax(8.2rem, 1fr));
+    gap: clamp(0.45rem, 0.8vw, 0.75rem);
+    max-height: calc(100% - 6.4rem);
+    overflow-y: auto;
+    padding-right: 0.2rem;
+  }
+
+  .shield-vlm-static-card-grid::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .shield-vlm-static-card-grid::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: rgba(200,169,106,0.18);
+  }
+
+  .shield-vlm-static-card {
+    min-height: 6.2rem;
+    transform: translateZ(0);
+    will-change: transform, opacity;
+  }
+
+  .shield-vlm-static-card:nth-child(8n+3),
+  .shield-vlm-static-card:nth-child(8n+6) {
+    margin-top: 2.4rem;
+  }
+
+  .shield-vlm-read-card-advanced {
+    width: clamp(7.5rem, 12vw, 10.3rem) !important;
+    min-height: 5.55rem !important;
+    transform-style: preserve-3d;
+    will-change: transform, opacity;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.060), 0 20px 70px rgba(0,0,0,0.38) !important;
+  }
+
+  .shield-vlm-detail-panel-solid {
+    background:
+      radial-gradient(circle at 14% 0%, rgba(200,169,106,0.10), transparent 34%),
+      linear-gradient(180deg, rgba(10,12,16,0.985), rgba(1,2,5,0.975)) !important;
+    border-color: rgba(200,169,106,0.18) !important;
+    box-shadow: 0 34px 130px rgba(0,0,0,0.78), inset 0 1px 0 rgba(255,255,255,0.075) !important;
+    backdrop-filter: blur(18px) !important;
+  }
+
+  .shield-token-search-suggest-panel {
+    z-index: 2147483000 !important;
+    isolation: isolate;
+  }
+}
+
+@media (max-width: 1180px) {
+  .shield-vlm-static-card-grid {
+    grid-template-columns: repeat(3, minmax(8rem, 1fr));
+  }
+
+  .shield-vlm-static-card:nth-child(8n+3),
+  .shield-vlm-static-card:nth-child(8n+6) {
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 780px) {
+  .shield-vlm-topbar-minimal {
+    align-items: stretch !important;
+  }
+
+  .shield-vlm-brain-chip {
+    max-width: 52vw;
+  }
+
+  .shield-vlm-motion-toggle-mini button,
+  .shield-vlm-back-button {
+    padding: 0.43rem 0.52rem;
+    font-size: 0.49rem;
+  }
+
+  .shield-vlm-static-evidence-board {
+    inset: 4.25rem 0.45rem 0.7rem;
+    border-radius: 1.15rem;
+    padding: 0.72rem;
+  }
+
+  .shield-vlm-static-core-window {
+    display: none;
+  }
+
+  .shield-vlm-static-card-grid {
+    grid-template-columns: 1fr;
+    max-height: calc(100% - 6.8rem);
+  }
+
+  .shield-vlm-static-card {
+    min-height: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shield-vlm-read-card-advanced,
+  .shield-vlm-static-card {
+    transition-duration: 1ms !important;
+    animation: none !important;
+  }
+}

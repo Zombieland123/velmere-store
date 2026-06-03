@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { unstable_setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import MarketIntegrityClient from "@/components/market-integrity/MarketIntegrityClient";
+import ProductionDataBackbonePanel from "@/components/launch/ProductionDataBackbonePanel";
+import StorageAdapterReadinessPanel from "@/components/launch/StorageAdapterReadinessPanel";
 import { marketIntegrityDemoResults } from "@/lib/market-integrity/demo-tokens";
 import { buildVelmereMetadata, SUPPORTED_LOCALES } from "@/lib/seo/metadata";
 
@@ -18,5 +20,11 @@ export default function MarketIntegrityPage({ params: { locale } }: { params: { 
   if (!SUPPORTED_LOCALES.includes(locale as (typeof SUPPORTED_LOCALES)[number])) notFound();
   unstable_setRequestLocale(locale);
 
-  return <MarketIntegrityClient demoResults={marketIntegrityDemoResults} />;
+  return (
+    <>
+      <MarketIntegrityClient demoResults={marketIntegrityDemoResults} />
+      <ProductionDataBackbonePanel locale={locale} surface="shield" />
+      <StorageAdapterReadinessPanel locale={locale} surface="shield" />
+    </>
+  );
 }

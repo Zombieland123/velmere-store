@@ -5,6 +5,10 @@ import ProviderTruthLedgerPanel from "@/components/launch/ProviderTruthLedgerPan
 import ShippingReturnsTruthPanel from "@/components/launch/ShippingReturnsTruthPanel";
 import PaymentOrderReadinessPanel from "@/components/launch/PaymentOrderReadinessPanel";
 import OrderEventLedgerPanel from "@/components/launch/OrderEventLedgerPanel";
+import FullSurfaceReadinessIndex from "@/components/launch/FullSurfaceReadinessIndex";
+import ProductionDataBackbonePanel from "@/components/launch/ProductionDataBackbonePanel";
+import StorageAdapterReadinessPanel from "@/components/launch/StorageAdapterReadinessPanel";
+import AccountOrderEventTimelinePanel from "@/components/launch/AccountOrderEventTimelinePanel";
 import LuxurySection from "@/components/layout/LuxurySection";
 import { buildVelmereMetadata } from "@/lib/seo/metadata";
 
@@ -104,6 +108,10 @@ export default function CheckoutPage({ params: { locale } }: { params: { locale:
       <ShippingReturnsTruthPanel locale={locale} surface="checkout" />
       <PaymentOrderReadinessPanel locale={locale} surface="checkout" />
       <OrderEventLedgerPanel locale={locale} surface="checkout" />
+      <FullSurfaceReadinessIndex locale={locale} surface="checkout" />
+      <ProductionDataBackbonePanel locale={locale} surface="checkout" />
+      <StorageAdapterReadinessPanel locale={locale} surface="checkout" />
+      <AccountOrderEventTimelinePanel locale={locale} surface="checkout" />
     </main>
   );
 }

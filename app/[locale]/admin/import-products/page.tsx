@@ -23,6 +23,7 @@ import CustomerSafeExportBoundaryPanel from "@/components/launch/CustomerSafeExp
 import AdminAuditWriteApiPanel from "@/components/launch/AdminAuditWriteApiPanel";
 import AdminIdempotencyStorePanel from "@/components/launch/AdminIdempotencyStorePanel";
 import AdminAuthSessionGuardPanel from "@/components/launch/AdminAuthSessionGuardPanel";
+import OperatorLaunchGateMatrixPanel from "@/components/launch/OperatorLaunchGateMatrixPanel";
 import LuxurySection from "@/components/layout/LuxurySection";
 import type { ProductImportDraft } from "@/lib/products/types";
 import { formatMoney, getLocalizedString } from "@/lib/products/catalog";
@@ -148,6 +149,7 @@ export default function AdminImportProductsPage({ params: { locale } }: { params
         <ProviderTruthLedgerPanel locale={locale} surface="admin" />
         <OrderEventLedgerPanel locale={locale} surface="admin" />
         <AdminRouteGatePanel locale={locale} surface="admin" />
+        <OperatorLaunchGateMatrixPanel locale={locale} surface="admin" />
         <AdminServerAuthContractPanel locale={locale} surface="admin" />
         <PublishPermissionGatePanel locale={locale} surface="admin" />
         <SecretRedactionPolicyPanel locale={locale} surface="admin" />
@@ -413,6 +415,7 @@ export default function AdminImportProductsPage({ params: { locale } }: { params
       <ProviderTruthLedgerPanel locale={locale} surface="admin" />
       <OrderEventLedgerPanel locale={locale} surface="admin" />
       <AdminRouteGatePanel locale={locale} surface="admin" />
+        <OperatorLaunchGateMatrixPanel locale={locale} surface="admin" />
         <AdminServerAuthContractPanel locale={locale} surface="admin" />
         <PublishPermissionGatePanel locale={locale} surface="admin" />
         <SecretRedactionPolicyPanel locale={locale} surface="admin" />

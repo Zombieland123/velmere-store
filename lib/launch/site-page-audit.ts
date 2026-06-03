@@ -138,13 +138,13 @@ export const velmereSitePageAudit: VelmereSitePageAuditItem[] = [
     route: "/[locale]/market-integrity",
     title: "Velmère Shield market table",
     area: "shield",
-    progress: 68,
-    status: "partial",
+    progress: 91,
+    status: "solid",
     vercelRisk: "medium",
-    userGoal: "Find tokens, see logo-backed suggestions, sort anomalies and open a risk terminal without crashes or fake certainty.",
-    currentState: "Market sweep, table, search suggestions with token avatars and modal exist; live source labels and mobile table need more polish.",
-    launchBlockers: ["holder API", "orderbook API", "contract checks", "rate limits", "mobile table", "search logo verification"],
-    nextPass: "Confirm search suggestion logos, stronger source labels, rank explanations and server-side rate/caching policy.",
+    userGoal: "Find tokens, see logo-backed suggestions, sort anomalies and open a risk terminal with clickable VLM brain tiles without fake certainty.",
+    currentState: "PASS168 keeps token avatars/source badges, adds a minimal VLM brain HUD, clickable static evidence board, slower Advanced Orbit 360 and darker detail drawer.",
+    launchBlockers: ["holder API", "orderbook API", "contract checks", "rate limits", "mobile table real-device QA", "search logo verification"],
+    nextPass: "Confirm search suggestion logos, real browser FPS, stronger source freshness labels and server-side rate/caching policy.",
   },
   {
     id: "shield-map",
@@ -290,3 +290,5 @@ export const velmereSitePageAuditSummary = {
 // PASS149 market-integrity state: Advanced-only Orbit guard, stronger tile explainer, darker selected tile panel and logo-aware search suggestions are wired; real Vercel build/browser check still required.
 
 // PASS150 market-integrity state: Advanced brain gained Performance/Cinematic runtime governor, sparse React orbit frames, compositor transitions and auto-downgrade from Cinematic to Performance under slow frames.
+
+// PASS168 market-integrity state: minimal VLM brain HUD, static evidence board, slower Orbit 360, clickable cards, source/logos preserved and debug copy removed.

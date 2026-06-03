@@ -18,7 +18,7 @@ for (const needle of [
   'const [brainRuntimeMode, setBrainRuntimeMode]',
   'const [frameHealth, setFrameHealth]',
   'performanceRuntime',
-  'renderHeavyCanvas = isAdvanced && motionPreset === "orbit" && motionQuality === "high" && brainRuntimeMode === "cinematic"',
+  'const renderHeavyCanvas = false',
   'orbitUpdateFrameMs',
   'orbitStepSize',
   'orbitTransitionMs',
@@ -26,10 +26,10 @@ for (const needle of [
   'PASS150 adaptive runtime governor',
   'targetFrameMs = orbitUpdateFrameMs',
   'setBrainRuntimeMode("performance")',
-  'shield-vlm-motion-stack',
-  'shield-vlm-runtime-governor',
+  'shield-vlm-topbar-minimal',
+  'shield-vlm-motion-toggle-mini',
   'shield-vlm-runtime-performance',
-  'adaptive orbital risk sphere',
+  'shield-vlm-static-evidence-board',
 ]) {
   if (!modal.includes(needle)) errors.push(`TokenRiskModal.tsx missing PASS150 runtime marker: ${needle}`);
 }

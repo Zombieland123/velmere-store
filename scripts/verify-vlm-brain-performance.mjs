@@ -26,7 +26,7 @@ for (const needle of [
   "isInvestigationMode",
   "advancedOrbitalSlots",
   "setOrbitTick",
-  "adaptive orbital risk sphere",
+  "shield-vlm-brain-chip",
   "runVlmAiSequence(\"pro\")",
   "const isActive = selectedNode?.label === node.label",
 ]) {

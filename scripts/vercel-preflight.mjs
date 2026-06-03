@@ -245,7 +245,7 @@ try {
 try {
   const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
   const cssSource = read("app/globals.css");
-  for (const needle of ["type MotionPreset", "motionPreset", "renderHeavyCanvas", "shield-vlm-motion-governor"]) {
+  for (const needle of ["type MotionPreset", "motionPreset", "renderHeavyCanvas", "shield-vlm-motion-toggle-mini"]) {
     if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing VLM motion governor marker ${needle}.`);
   }
   for (const needle of ["PASS128 — VLM motion governor", "PASS148 — VLM brain cleanup", ".shield-vlm-motion-governor", ".shield-token-search-suggest-panel"]) {
@@ -259,7 +259,7 @@ try {
 try {
   const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
   const cssSource = read("app/globals.css");
-  for (const needle of ["isInvestigationMode", "advancedOrbitalSlots", "setOrbitTick", "adaptive orbital risk sphere", `runVlmAiSequence("pro")`]) {
+  for (const needle of ["isInvestigationMode", "advancedOrbitalSlots", "setOrbitTick", "shield-vlm-brain-chip", `runVlmAiSequence("pro")`]) {
     if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing VLM spherical motion marker ${needle}.`);
   }
   for (const needle of ["PASS125 — real VLM spherical orbit layer", "PASS127 — clean chart surface", "perspective: 2100px"]) {
@@ -1089,7 +1089,7 @@ try {
   const tokenRiskModal = read("components/market-integrity/TokenRiskModal.tsx");
   const marketClient = read("components/market-integrity/MarketIntegrityClient.tsx");
   const globalsCss = read("app/globals.css");
-  for (const needle of ["allowedMotionPresets", "renderHeavyCanvas = isAdvanced", "shield-vlm-detail-panel-solid", "operatorQuestion"]) {
+  for (const needle of ["allowedMotionPresets", "const renderHeavyCanvas = false", "shield-vlm-detail-panel-solid", "operatorQuestion"]) {
     if (!tokenRiskModal.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS149 marker ${needle}.`);
   }
   if (tokenRiskModal.includes('"lite"') || tokenRiskModal.includes("'lite'") || tokenRiskModal.includes('| "lite"')) {
@@ -1116,7 +1116,7 @@ try {
     "orbitUpdateFrameMs",
     "advancedOrbitalSlots",
     "PASS150 adaptive runtime governor",
-    "shield-vlm-runtime-governor",
+    "shield-vlm-static-evidence-board",
   ]) {
     if (!tokenRiskModal.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS150 runtime marker ${needle}.`);
   }
@@ -1130,6 +1130,39 @@ try {
 } catch (error) {
   errors.push(`VLM brain performance runtime guard failed: ${error instanceof Error ? error.message : String(error)}`);
 }
+
+
+// PASS168 VLM brain static/advanced polish guard
+try {
+  const tokenRiskModal = read("components/market-integrity/TokenRiskModal.tsx");
+  const marketClient = read("components/market-integrity/MarketIntegrityClient.tsx");
+  const globalsCss = read("app/globals.css");
+  for (const needle of [
+    "shield-vlm-topbar-minimal",
+    "shield-vlm-brain-chip",
+    "useStaticEvidenceBoard",
+    "shield-vlm-static-evidence-board",
+    "selectedNode.detail",
+    "const renderHeavyCanvas = false",
+    "autoSpin = autoRotate ? orbitTick * 0.00058",
+  ]) {
+    if (!tokenRiskModal.includes(needle) && !globalsCss.includes(needle)) {
+      errors.push(`PASS168 VLM brain polish marker missing: ${needle}.`);
+    }
+  }
+  for (const forbidden of ["adaptive orbital risk sphere", "sparse react frames", "compositor motion", "ctx.fillText(`RISK"]) {
+    if (`${tokenRiskModal}\n${globalsCss}`.includes(forbidden)) errors.push(`PASS168 debug/forbidden UI marker remains: ${forbidden}.`);
+  }
+  for (const needle of ["TokenAvatar image={item.image}", "live + table", "click to open Shield readout"]) {
+    if (!marketClient.includes(needle)) errors.push(`PASS168 search suggestion marker missing: ${needle}.`);
+  }
+  if (!fs.existsSync(path.join(root, "scripts/verify-vlm-brain-static-advanced-polish-safety.mjs"))) {
+    errors.push("PASS168 guard script is missing.");
+  }
+} catch (error) {
+  errors.push(`PASS168 VLM brain polish guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
 
 if (errors.length) {
   console.error("Velmère preflight failed:");

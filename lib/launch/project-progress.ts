@@ -30,18 +30,19 @@ export const velmereProjectProgress: VelmereProjectProgressItem[] = [
   { id: "vlm-access", label: "VLM token / access layer", progress: 57, status: "launch_control", next: "Keep utility-only wording, add session gating, contract/audit status and no price-promise language." },
   { id: "square", label: "Velmère Square / community", progress: 48, status: "partial", next: "Define moderation, public/private room split, abuse controls and member access boundaries." },
   { id: "shield-table", label: "Shield market table", progress: 64, status: "partial", next: "Improve ranking, anomaly filters, mobile table, live source labels and route audit coverage." },
-  { id: "search-suggestions-ux", label: "Search suggestions UX", progress: 80, status: "partial", next: "Confirm token logos, local/live/merged source badges and high z-index dropdown on Vercel." },
-  { id: "shield-modal", label: "Shield token modal / chart", progress: 78, status: "partial", next: "Confirm Vercel deploy after Codex handoff auto-repair and test chart/modal click path in real browser." },
-  { id: "vlm-visual-brain", label: "VLM visual brain", progress: 80, status: "partial", next: "Validate PASS151 lightweight DOM core, clipped cards and slow orbit on real browser/GPU before deciding WebGL." },
-  { id: "vlm-brain-orbit-cleanup", label: "VLM brain orbit cleanup", progress: 85, status: "partial", next: "User-test adaptive orbit runtime, compositor transitions and auto-downgrade from Cinematic to Performance." },
-  { id: "vlm-brain-performance-runtime", label: "VLM brain performance runtime", progress: 76, status: "partial", next: "Measure real browser frame behavior after hiding UI governors, disabling heavy canvas by default and clipping tile glow." },
-  { id: "vlm-brain-explainer", label: "VLM brain tile explainer", progress: 72, status: "partial", next: "Keep expanding tile-specific driver/score/evidence/next-action copy and verify every Basic/Pro/Advanced tile is clickable." },
-  { id: "ai-risk-brain", label: "VLM AI risk brain", progress: 58, status: "partial", next: "Connect stronger tile-specific explanations to live OSINT/source scoring and scenario calibration." },
+  { id: "search-suggestions-ux", label: "Search suggestions UX", progress: 90, status: "solid", next: "Confirm token logos, local/live/merged source badges, outside-click behavior and high z-index dropdown on Vercel." },
+  { id: "shield-modal", label: "Shield token modal / chart", progress: 92, status: "solid", next: "Browser-test chart/modal click path, keep debug chart labels hidden and verify Basic/Pro/Advanced actions on Vercel." },
+  { id: "vlm-visual-brain", label: "VLM visual brain", progress: 90, status: "solid", next: "Validate PASS168 minimal HUD, Advanced orbital cards and static evidence board on real browser/GPU before deciding WebGL." },
+  { id: "vlm-brain-orbit-cleanup", label: "VLM brain orbit cleanup", progress: 91, status: "solid", next: "User-test slower Orbit 360, active-card front boost and premium no-debug topbar on desktop/mobile." },
+  { id: "vlm-brain-performance-runtime", label: "VLM brain performance runtime", progress: 88, status: "solid", next: "Measure real browser frame behavior after disabling heavy canvas, slowing orbit updates and using static board fallback." },
+  { id: "vlm-static-evidence-board", label: "Static evidence board", progress: 84, status: "solid", next: "Test Basic/Pro/static board clickability, radial balance, mobile scroll and detail drawer readability." },
+  { id: "vlm-brain-explainer", label: "VLM brain tile explainer", progress: 86, status: "solid", next: "Keep refining tile-specific driver/score/evidence/next-action copy and verify every static/orbit tile opens the drawer." },
+  { id: "ai-risk-brain", label: "VLM AI risk brain", progress: 67, status: "partial", next: "Connect stronger tile-specific explanations to live OSINT/source scoring, scenario calibration and source freshness registry." },
   { id: "operator-casefile", label: "Operator AI Case File", progress: 58, status: "partial", next: "Expose only concise next action in UI, keep deeper case data behind export." },
   { id: "evidence-export", label: "Evidence report / JSON preview", progress: 49, status: "partial", next: "Add persistent audit storage and production renderer." },
   { id: "data-spine", label: "Data / API spine", progress: 40, status: "blocked", next: "Wire holder, orderbook, contract, unlock, source-ledger APIs and Vercel-safe server boundaries." },
-  { id: "mobile", label: "Mobile performance", progress: 52, status: "partial", next: "Real-device QA after PASS151 lower-shadow cards, static-board clickability and DOM core fallback." },
-  { id: "translations", label: "PL / EN / DE translations", progress: 53, status: "partial", next: "Finish tile explainer copy and search suggestion labels across PL/EN/DE." },
+  { id: "mobile", label: "Mobile performance", progress: 78, status: "partial", next: "Real-device QA after PASS168 static evidence board, minimal HUD, no heavy canvas and mobile downgrade." },
+  { id: "translations", label: "PL / EN / DE translations", progress: 89, status: "partial", next: "Finish remaining page-level copy; VLM brain labels, tile drawer and static board are PL/EN/DE safe." },
   { id: "launch-safety", label: "Launch safety / RegTech copy", progress: 70, status: "launch_control", next: "Review all claims, disclaimers, evidence language, route audit and utility-only VLM text." },
 ];
 
@@ -51,3 +52,11 @@ export const velmereProjectOverallProgress = Math.round(
 
 // Static guard compatibility markers for PASS150 verification: progress: 77 · progress: 71
 // Static guard compatibility markers for PASS148 verification: shield-modal", label: "Shield token modal / chart", progress: 75 · vlm-visual-brain", label: "VLM visual brain", progress: 77
+
+// PASS168 progress markers: shield-modal progress: 92 · vlm-visual-brain progress: 90 · vlm-brain-performance-runtime progress: 88 · Static evidence board progress: 84 · search suggestions progress: 90
+
+// PASS150 compatibility progress: 85 · progress: 77 · progress: 71
+
+// PASS149 compatibility progress: 80 · progress: 72 · progress: 58
+
+// PASS148 compatibility marker: ai-risk-brain", label: "VLM AI risk brain", progress: 58

@@ -12,7 +12,7 @@ for (const needle of [
   'PASS149 hard guard: Orbit 360 belongs only to Advanced',
   'renderHeavyCanvas',
   'showLineSvg',
-  'shield-vlm-motion-governor',
+  'shield-vlm-motion-toggle-mini',
   'motionPreset === "static"',
   'targetFrameMs = orbitUpdateFrameMs',
   'allowedMotionPresets',
@@ -30,7 +30,7 @@ if (modal.includes('DRAG CHART') || modal.includes('older</button>') || modal.in
 
 for (const needle of [
   'PASS128 — VLM motion governor',
-  '.shield-vlm-motion-governor',
+  '.shield-vlm-motion-toggle-mini',
   '.shield-vlm-motion-lite .shield-vlm-read-card-scan',
   '.shield-popup-chart-pan',
 ]) {

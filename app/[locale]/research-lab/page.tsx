@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Link } from "@/navigation";
 import { buildVelmereMetadata } from "@/lib/seo/metadata";
+import FullSurfaceReadinessIndex from "@/components/launch/FullSurfaceReadinessIndex";
 
 type ResearchLocale = "pl" | "de" | "en";
 
@@ -228,6 +229,7 @@ export default function ResearchLabPage({ params: { locale } }: { params: { loca
           </div>
         </div>
       </section>
+      <FullSurfaceReadinessIndex locale={locale} surface="research" />
     </main>
   );
 }

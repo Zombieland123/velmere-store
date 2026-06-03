@@ -10,8 +10,8 @@ const css = read('app/globals.css');
 const home = read('components/home/HomePageClient.tsx');
 const evidence = read('lib/market-integrity/evidence-report.ts');
 
-if (!modal.includes('const useRailLayout = true; // PASS157')) {
-  failures.push('TokenRiskModal must force clean side-rail layout for VLM readout.');
+if (!modal.includes('useStaticEvidenceBoard') || !modal.includes('shield-vlm-static-evidence-board')) {
+  failures.push('TokenRiskModal must keep clean static evidence board layout for Basic/Pro/static VLM readout.');
 }
 if (!modal.includes('shield-vlm-group-filter') || !modal.includes('setActiveTileGroup(group)')) {
   failures.push('VLM rail must expose category filter chips.');
@@ -19,8 +19,8 @@ if (!modal.includes('shield-vlm-group-filter') || !modal.includes('setActiveTile
 if (!modal.includes('activeTileGroup === "all" ? visibleNodes : visibleNodes.filter')) {
   failures.push('VLM rail filter must actually filter visible nodes.');
 }
-if (!css.includes('PASS157 · large polish') || !css.includes('.shield-vlm-motion-stack') || !css.includes('display: none !important')) {
-  failures.push('PASS157 CSS must hide debug/performance controls and apply side-rail polish.');
+if (!css.includes('PASS157 · large polish') || !css.includes('.shield-vlm-motion-stack') || !css.includes('display: none !important') || !css.includes('PASS168 · VLM brain static board')) {
+  failures.push('PASS157/PASS168 CSS must hide debug/performance controls and apply static-board/orbit polish.');
 }
 if (home.includes('"{copy.') || home.includes('["{copy.')) {
   failures.push('HomePageClient must not ship literal {copy.*} placeholder strings.');

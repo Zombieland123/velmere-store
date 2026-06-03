@@ -7,6 +7,7 @@ import Reveal from "@/components/ui/Reveal";
 import NeuralBrainVisual from "@/components/home/NeuralBrainVisual";
 import LuxuryProductCarousel from "@/components/home/LuxuryProductCarousel";
 import EditorialFeatureSwitcher from "@/components/home/EditorialFeatureSwitcher";
+import FullSurfaceReadinessIndex from "@/components/launch/FullSurfaceReadinessIndex";
 
 function homeCopy(locale: string) {
   if (locale === "pl") {
@@ -330,6 +331,8 @@ export default function HomePageClient() {
           </div>
         </Reveal>
       </section>
+
+      <FullSurfaceReadinessIndex locale={locale} surface="home" />
 
       <section className="luxury-section pb-20 md:pb-24">
         <EditorialFeatureSwitcher />

@@ -1705,3 +1705,12 @@ Scenario runtime uses project dependencies (`zod`, `ts-node`). In this artifact 
 - Real browser FPS must confirm whether Performance runtime is enough.
 - If Advanced still stutters, the next serious path is WebGL/Three.js brain renderer.
 - AI risk brain still needs live OSINT/source scoring.
+
+
+## PASS168 — VLM Brain Static + Advanced Polish
+- Advanced Orbit 360: slower public orbit, heavy canvas disabled, no Performance/Cinematic runtime UI in the user-facing brain.
+- Static/Basic/Pro: rebuilt as a centered premium evidence board instead of a broken right-side list.
+- Top-left HUD: reduced to a small premium chip: VLM RISK BRAIN + token/mode.
+- Tile detail drawer: keeps driver, score read, evidence need, next operator action and selected tile detail visible on a dark panel.
+- Search suggestions: token logo/avatar and source badge preserved with high z-index dropdown.
+- Guards: `verify:vlm-brain-static-advanced-polish` added and wired into `verify:shield-all` + `vercel-preflight`.

@@ -645,7 +645,10 @@ export default function MarketIntegrityClient({
       active = false;
       window.clearTimeout(timer);
     };
-  }, [findLocalSuggestions, query, sourceCooldownActive]);
+  // PASS161: do not put findLocalSuggestions in this dependency list before its const initializer.
+  // The callback runs after render; marketRows covers the local-suggestion data dependency and avoids a runtime TDZ crash.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [marketRows, query, sourceCooldownActive]);
 
   useEffect(() => {
     function handleOutsidePointer(event: PointerEvent) {

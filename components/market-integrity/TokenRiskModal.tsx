@@ -4415,6 +4415,9 @@ function VlmAiSequenceOverlay({
         caseEvidence: "evidence",
         shieldMap: "Otwórz Shield Map",
         memberLayer: "Warstwa VLM member",
+        brainChip: "VLM RISK BRAIN",
+        evidenceBoard: "Evidence board",
+        boardHint: "Czysta mapa kafelków bez ciężkiego 3D",
       };
     }
     if (locale === "de") {
@@ -4464,6 +4467,9 @@ function VlmAiSequenceOverlay({
         caseEvidence: "Evidence",
         shieldMap: "Shield Map öffnen",
         memberLayer: "VLM Member Layer",
+        brainChip: "VLM RISK BRAIN",
+        evidenceBoard: "Evidence Board",
+        boardHint: "Klare Kachelkarte ohne schweres 3D",
       };
     }
     return {
@@ -4512,6 +4518,9 @@ function VlmAiSequenceOverlay({
       caseEvidence: "evidence",
       shieldMap: "Open Shield Map",
       memberLayer: "VLM member layer",
+      brainChip: "VLM RISK BRAIN",
+      evidenceBoard: "Evidence board",
+      boardHint: "Clean tile map without heavy 3D",
     };
   }, [locale]);
 
@@ -4668,17 +4677,18 @@ function VlmAiSequenceOverlay({
   }, [isAdvanced, isPro, riskScore, result, orderbook, liquidityStress, volatilityScore, holderScore, dominantAgent?.label, signalCount, signalPreview, flowRatio, tokenInfo.tokenAddress]);
   const motionGovernorLabel = motionPreset === "orbit" ? `360 ${ui.motion}` : `${ui.motionStatic.toLowerCase()} ${ui.motion}`;
   const performanceRuntime = brainRuntimeMode === "performance" || frameHealth !== "smooth";
-  const renderHeavyCanvas = isAdvanced && motionPreset === "orbit" && motionQuality === "high" && brainRuntimeMode === "cinematic";
+  const renderHeavyCanvas = false; // PASS168: no heavy canvas in the public Shield brain; WebGL prototype lane stays separate.
   const showLineSvg = false;
-  const useRailLayout = true; // PASS157 / PASS160: all modes use operator cockpit: left evidence rail, center VLM neural core, right detail drawer. Advanced adds the 360 core/orbital shell.
+  const useStaticEvidenceBoard = motionPreset === "static" || !isAdvanced;
+  const useRailLayout = useStaticEvidenceBoard; // PASS168: Basic/Pro/static render a premium evidence board; Advanced Orbit 360 renders orbital cards around the VLM core.
   const revealGapMs = isAdvanced ? (motionPreset === "orbit" ? (performanceRuntime ? 980 : 1220) : 420) : 320;
   const lineDurationMs = isAdvanced ? (renderHeavyCanvas ? 6200 : performanceRuntime ? 3200 : 4600) : 900;
   const bootMs = motionPreset === "static" ? 120 : performanceRuntime ? 420 : 920;
   const orbMs = motionPreset === "static" ? 100 : performanceRuntime ? 2400 : isAdvanced ? 7200 : 0;
   const brainMs = motionPreset === "static" ? 160 : performanceRuntime ? 2100 : isAdvanced ? 5200 : 0;
-  const orbitUpdateFrameMs = performanceRuntime ? 118 : 72;
-  const orbitStepSize = performanceRuntime ? 0.030 : 0.016;
-  const orbitTransitionMs = performanceRuntime ? 1560 : 960;
+  const orbitUpdateFrameMs = performanceRuntime ? 180 : 116;
+  const orbitStepSize = performanceRuntime ? 0.018 : 0.011;
+  const orbitTransitionMs = performanceRuntime ? 2100 : 1380;
   const lineStartMs = bootMs + orbMs + Math.round(brainMs * 0.48);
   const linePathForNode = (node: VlmReadNode, index: number) => {
     const bend = index % 2 === 0 ? 1 : -1;
@@ -4756,7 +4766,7 @@ function VlmAiSequenceOverlay({
 
     const slot = advancedOrbitalSlots[index % advancedOrbitalSlots.length];
     const ref = rotationRef.current;
-    const autoSpin = autoRotate ? orbitTick * 0.00115 : 0;
+    const autoSpin = autoRotate ? orbitTick * 0.00058 : 0;
     const yaw = slot.theta + ref.y * 1.85 + autoSpin;
     const pitch = Math.max(-1.16, Math.min(1.16, slot.phi + ref.x * 1.35));
     const sphereX = Math.cos(pitch) * Math.cos(yaw);
@@ -4765,10 +4775,10 @@ function VlmAiSequenceOverlay({
     // PASS131 guard marker kept for regression scripts: Math.max(7, Math.min(93
     const organicX = Math.sin(index * 12.989 + riskScore * 0.071) * 1.55;
     const organicY = Math.cos(index * 7.233 + riskScore * 0.053) * 1.95;
-    const left = Math.max(10, Math.min(90, 50 + sphereX * 39 + organicX));
-    const top = Math.max(11, Math.min(90, 50 + sphereY * 39 + organicY));
+    const left = Math.max(12, Math.min(88, 50 + sphereX * 36 + organicX));
+    const top = Math.max(13, Math.min(87, 50 + sphereY * 34 + organicY));
     const depthFactor = (sphereZ + 1) / 2;
-    const scale = 0.70 + depthFactor * 0.42;
+    const scale = 0.66 + depthFactor * 0.36;
     const isActive = selectedNode?.label === node.label;
     const opacity = isActive ? 1 : 0.42 + depthFactor * 0.58;
     const translate = "translate(-50%, -50%)";
@@ -4781,7 +4791,7 @@ function VlmAiSequenceOverlay({
       top: `${top}%`,
       opacity,
       zIndex: Math.round(18 + depthFactor * 52 + (isActive ? 40 : 0)),
-      transform: `${translate} rotateX(${tiltX.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg) translateZ(${(depthFactor * 90 + (isActive ? 28 : 0)).toFixed(1)}px) scale(${(scale + activeBoost).toFixed(3)})`,
+      transform: `${translate} rotateX(${tiltX.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg) translateZ(${(depthFactor * 72 + (isActive ? 34 : 0)).toFixed(1)}px) scale(${(scale + activeBoost).toFixed(3)})`,
       filter: "none",
       transitionDuration: `${orbitTransitionMs}ms`,
     };
@@ -5341,6 +5351,45 @@ function VlmAiSequenceOverlay({
     const groupLabel = groupLabels[selectedNode.group];
     const sourceState = result.dataQuality === "live" ? "live source" : result.dataQuality === "partial" ? "partial source" : "fallback / missing source";
     const value = selectedNode.value;
+    const numericValue = Number.parseFloat(String(value).replace(/[^0-9.-]/g, ""));
+    const isGerman = locale === "de";
+    const isPolish = locale === "pl";
+    const severityTone =
+      selectedNode.group === "source" && /block|missing|brak/i.test(String(value))
+        ? "blocked"
+        : Number.isFinite(numericValue) && numericValue >= 65
+          ? "red"
+          : Number.isFinite(numericValue) && numericValue >= 35
+            ? "watch"
+            : "calm";
+    const severityLabel = isPolish
+      ? severityTone === "blocked" ? "blokada dowodów" : severityTone === "red" ? "red flag" : severityTone === "watch" ? "wymaga kontroli" : "spokojny skrót"
+      : isGerman
+        ? severityTone === "blocked" ? "Beweis-Blocker" : severityTone === "red" ? "Red Flag" : severityTone === "watch" ? "Review nötig" : "ruhiger Kurzbefund"
+        : severityTone === "blocked" ? "evidence blocker" : severityTone === "red" ? "red flag" : severityTone === "watch" ? "review needed" : "calm summary";
+    const intelligenceLabels = isPolish
+      ? {
+          caseSummary: "Wniosek VLM",
+          inputTrace: "Dane użyte przez kafelek",
+          missingTrace: "Czego brakuje do mocnego werdyktu",
+          operatorAction: "Następny ruch operatora",
+          caveat: "To jest skrót analityczny, nie certyfikat bezpieczeństwa.",
+        }
+      : isGerman
+        ? {
+            caseSummary: "VLM-Befund",
+            inputTrace: "Daten, die diese Kachel nutzt",
+            missingTrace: "Was für ein starkes Urteil fehlt",
+            operatorAction: "Nächster Operator-Schritt",
+            caveat: "Das ist eine Analyse-Zusammenfassung, kein Sicherheitszertifikat.",
+          }
+        : {
+            caseSummary: "VLM readout",
+            inputTrace: "Data used by this tile",
+            missingTrace: "What is missing for a strong verdict",
+            operatorAction: "Next operator move",
+            caveat: "This is an analytical summary, not a safety certificate.",
+          };
     const groupCopy: Record<Exclude<VlmReadGroup, "all">, {
       driver: string;
       scoreRead: string;
@@ -5453,6 +5502,11 @@ function VlmAiSequenceOverlay({
           },
     };
     const copy = groupCopy[selectedNode.group];
+    const inputTrace = isPolish
+      ? `Wejścia: ${selectedNode.detail}; source=${sourceState}; confidence=${confidence}%; chart=${chartSource}.`
+      : isGerman
+        ? `Inputs: ${selectedNode.detail}; Quelle=${sourceState}; Confidence=${confidence}%; Chart=${chartSource}.`
+        : `Inputs: ${selectedNode.detail}; source=${sourceState}; confidence=${confidence}%; chart=${chartSource}.`;
     return {
       groupLabel,
       sourceState,
@@ -5464,6 +5518,10 @@ function VlmAiSequenceOverlay({
       operatorQuestion: copy.operatorQuestion,
       confidence: `${confidence}%`,
       chartSource,
+      severityLabel,
+      severityTone,
+      intelligenceLabels,
+      inputTrace,
     };
   }, [selectedNode, groupLabels, result.dataQuality, locale, confidence, chartSource, nodeDisplayCopy]);
 
@@ -5489,64 +5547,45 @@ function VlmAiSequenceOverlay({
         <span className="shield-vlm-dom-core-symbol">{tokenInfo.symbol}</span>
       </div>
 
-      <div className="shield-vlm-topbar z-30" data-vlm-no-drag="true">
-        <div className="min-w-0">
-          <p className="shield-vlm-phase-pill">{phaseLabel}</p>
-          <p className="mt-2 font-mono text-[9px] uppercase tracking-[0.18em] text-white/[0.34]">
-            {tokenInfo.symbol} · {visiblePointLabel} · {motionGovernorLabel}
-          </p>
-          {isAdvanced ? <p className="mt-2 font-mono text-[8px] uppercase tracking-[0.16em] text-white/[0.24]">{ui.rotateHint}</p> : null}
-          {isAdvanced ? (
-            <p className="mt-1 font-mono text-[8px] uppercase tracking-[0.16em] text-white/[0.28]">adaptive orbital risk sphere · sparse react frames · compositor motion</p>
-          ) : (
-            <p className="mt-1 font-mono text-[8px] uppercase tracking-[0.16em] text-cyan-100/[0.32]">static evidence cards · no heavy 3d load</p>
-          )}
+      <div className="shield-vlm-topbar shield-vlm-topbar-minimal z-30" data-vlm-no-drag="true">
+        <div className="shield-vlm-brain-chip">
+          <span>{ui.brainChip}</span>
+          <strong>{tokenInfo.symbol} · {isAdvanced ? ui.advancedTitle : isPro ? ui.proTitle : ui.basicTitle}</strong>
         </div>
 
-        <div className="shield-vlm-motion-stack" data-vlm-no-drag="true" onPointerDown={(event) => event.stopPropagation()}>
-          <div className="shield-vlm-motion-governor" aria-label={ui.motionGovernor}>
-            {allowedMotionPresets.map((preset) => (
-              <button
-                key={preset}
-                type="button"
-                onClick={() => setMotionPreset(preset)}
-                className={motionPreset === preset ? "is-active" : ""}
-              >
-                {preset === "orbit" ? ui.motionOrbit : ui.motionStatic}
-              </button>
-            ))}
-          </div>
-          {isAdvanced && motionPreset === "orbit" ? (
-            <div className="shield-vlm-runtime-governor" aria-label="VLM brain runtime governor">
-              {(["performance", "cinematic"] as BrainRuntimeMode[]).map((runtime) => (
+        <div className="shield-vlm-topbar-actions" data-vlm-no-drag="true" onPointerDown={(event) => event.stopPropagation()}>
+          {isAdvanced ? (
+            <div className="shield-vlm-motion-toggle-mini" aria-label={ui.motionGovernor}>
+              {allowedMotionPresets.map((preset) => (
                 <button
-                  key={runtime}
+                  key={preset}
                   type="button"
                   onClick={() => {
-                    setBrainRuntimeMode(runtime);
-                    setFrameHealth(runtime === "cinematic" && motionQuality === "high" ? "smooth" : "guarded");
+                    setMotionPreset(preset);
+                    setFrameHealth("guarded");
+                    setBrainRuntimeMode("performance");
                   }}
-                  className={brainRuntimeMode === runtime ? "is-active" : ""}
+                  className={motionPreset === preset ? "is-active" : ""}
                 >
-                  {runtime === "performance" ? ui.runtimePerformance : ui.runtimeCinematic}
+                  {preset === "orbit" ? ui.motionOrbit : ui.evidenceBoard}
                 </button>
               ))}
             </div>
           ) : null}
-        </div>
 
-        <button
-          type="button"
-          data-vlm-no-drag="true"
-          onPointerDown={(event) => event.stopPropagation()}
-          onClick={(event) => {
-            event.stopPropagation();
-            onClose();
-          }}
-          className="rounded-full border border-white/[0.12] bg-white/[0.06] px-4 py-2 font-mono text-[10px] uppercase tracking-[0.14em] text-white/[0.62] backdrop-blur-xl transition hover:border-velmere-gold/[0.35] hover:text-velmere-gold"
-        >
-          {ui.back}
-        </button>
+          <button
+            type="button"
+            data-vlm-no-drag="true"
+            onPointerDown={(event) => event.stopPropagation()}
+            onClick={(event) => {
+              event.stopPropagation();
+              onClose();
+            }}
+            className="shield-vlm-back-button"
+          >
+            {ui.back}
+          </button>
+        </div>
       </div>
 
       {isInvestigationMode && motionPreset !== "static" ? (
@@ -5554,13 +5593,6 @@ function VlmAiSequenceOverlay({
           <span className="shield-vlm-orbital-shell-ring shield-vlm-orbital-shell-ring-a" />
           <span className="shield-vlm-orbital-shell-ring shield-vlm-orbital-shell-ring-b" />
           <span className="shield-vlm-orbital-shell-ring shield-vlm-orbital-shell-ring-c" />
-        </div>
-      ) : null}
-
-      {isAdvanced ? (
-        <div className="shield-vlm-orbit-status z-30" data-vlm-no-drag="true" onPointerDown={(event) => event.stopPropagation()}>
-          <span>{motionPreset === "orbit" ? `${brainRuntimeMode} · ${frameHealth === "smooth" ? ui.frameSmooth : frameHealth === "degraded" ? ui.frameDegraded : ui.frameGuarded}` : "static"}</span>
-          <strong>{filteredVisibleNodes.length}/{readNodes.length}</strong>
         </div>
       ) : null}
 
@@ -5598,44 +5630,45 @@ function VlmAiSequenceOverlay({
       ) : null}
 
       {useRailLayout ? (
-        <div className={`shield-vlm-compact-rail z-20 ${motionPreset === "static" ? "shield-vlm-static-board" : ""}`}>
-          <div className="shield-vlm-rail-header mb-3 px-1">
-            <div className="flex items-start justify-between gap-3">
-              <div className="min-w-0">
-                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-velmere-gold">{visiblePointLabel}</p>
-                <p className="mt-1 text-[11px] leading-5 text-white/[0.45]">{ui.tapPoint}</p>
-              </div>
-              <span className="shrink-0 rounded-full border border-white/[0.10] bg-white/[0.035] px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.13em] text-white/[0.38]">{filteredVisibleNodes.length}/{visibleNodes.length}</span>
+        <div className="shield-vlm-static-evidence-board z-20" data-vlm-no-drag="true" onPointerDown={(event) => event.stopPropagation()}>
+          <div className="shield-vlm-static-board-header">
+            <div className="min-w-0">
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-velmere-gold">{ui.evidenceBoard}</p>
+              <p className="mt-1 text-[11px] leading-5 text-white/[0.45]">{ui.boardHint} · {ui.tapPoint}</p>
             </div>
-            <div className="shield-vlm-group-filter mt-3 flex flex-wrap gap-1.5">
-              {tileGroups.map((group) => (
-                <button
-                  key={group}
-                  type="button"
-                  data-vlm-no-drag="true"
-                  onPointerDown={(event) => event.stopPropagation()}
-                  onClick={() => setActiveTileGroup(group)}
-                  className={activeTileGroup === group ? "is-active" : ""}
-                >
-                  {groupLabels[group]}
-                </button>
-              ))}
-            </div>
+            <span>{filteredVisibleNodes.length}/{visibleNodes.length}</span>
           </div>
-          <div className="grid gap-2">
+          <div className="shield-vlm-group-filter shield-vlm-static-filter">
+            {tileGroups.map((group) => (
+              <button
+                key={group}
+                type="button"
+                data-vlm-no-drag="true"
+                onPointerDown={(event) => event.stopPropagation()}
+                onClick={() => setActiveTileGroup(group)}
+                className={activeTileGroup === group ? "is-active" : ""}
+              >
+                {groupLabels[group]}
+              </button>
+            ))}
+          </div>
+          <div className="shield-vlm-static-core-window" aria-hidden="true">
+            <span className="shield-vlm-static-core-ring" />
+            <span className="shield-vlm-static-core-label">VLM</span>
+            <span className="shield-vlm-static-core-symbol">{tokenInfo.symbol}</span>
+          </div>
+          <div className="shield-vlm-static-card-grid">
             {filteredVisibleNodes.map((node, index) => {
               const display = nodeDisplayCopy[node.group];
               return (
                 <button
-                  key={`vlm-rail-${node.label}`}
+                  key={`vlm-static-${node.label}`}
                   type="button"
                   data-vlm-no-drag="true"
                   onPointerDown={(event) => event.stopPropagation()}
-                  onClick={() => {
-                    setSelectedNode(node);
-                  }}
-                  className={`shield-vlm-read-card shield-vlm-read-card-${node.tone ?? "gold"} ${selectedNode?.label === node.label ? "shield-vlm-read-card-active" : ""}`}
-                  style={{ animationDelay: `${Math.min(index * 70, 700)}ms` }}
+                  onClick={() => setSelectedNode(node)}
+                  className={`shield-vlm-read-card shield-vlm-static-card shield-vlm-read-card-${node.tone ?? "gold"} ${selectedNode?.label === node.label ? "shield-vlm-read-card-active" : ""}`}
+                  style={{ animationDelay: `${Math.min(index * 45, 520)}ms` }}
                 >
                   <div className="shield-vlm-read-card-scan" />
                   <p className="relative font-mono text-[8px] uppercase tracking-[0.16em] text-white/[0.35]">{node.label.split(" ")[0]} · {display.label}</p>
@@ -5648,7 +5681,7 @@ function VlmAiSequenceOverlay({
           </div>
         </div>
       ) : (
-        <div className={`pointer-events-none absolute inset-0 z-20 ${isInvestigationMode ? "shield-vlm-tile-deck shield-vlm-motion-governed" : ""} ` }>
+        <div className="pointer-events-none absolute inset-0 z-20 shield-vlm-tile-deck shield-vlm-motion-governed">
           {filteredVisibleNodes.map((node, index) => {
               const display = nodeDisplayCopy[node.group];
               return (
@@ -5661,10 +5694,8 @@ function VlmAiSequenceOverlay({
                     type="button"
                     data-vlm-no-drag="true"
                     onPointerDown={(event) => event.stopPropagation()}
-                    onClick={() => {
-                      setSelectedNode(node);
-                    }}
-                    className={`pointer-events-auto shield-vlm-read-card shield-vlm-read-card-${node.tone ?? "gold"} ${isAdvanced ? "shield-vlm-read-card-advanced" : ""} ${selectedNode?.label === node.label ? "shield-vlm-read-card-active" : ""}`}
+                    onClick={() => setSelectedNode(node)}
+                    className={`pointer-events-auto shield-vlm-read-card shield-vlm-read-card-${node.tone ?? "gold"} shield-vlm-read-card-advanced ${selectedNode?.label === node.label ? "shield-vlm-read-card-active" : ""}`}
                     style={{ animationDelay: `${Math.min(index * 70, 700)}ms` }}
                   >
                     <div className="shield-vlm-read-card-scan" />
@@ -5701,15 +5732,35 @@ function VlmAiSequenceOverlay({
             </div>
             <button type="button" data-vlm-no-drag="true" onPointerDown={(event) => event.stopPropagation()} onClick={() => setSelectedNode(null)} className="rounded-full border border-white/[0.10] px-2 py-1 font-mono text-[9px] uppercase tracking-[0.12em] text-white/[0.50] hover:text-white">{ui.close}</button>
           </div>
-          <p className="mt-3 font-mono text-2xl text-white tabular-nums">{selectedNode.value}</p>
+          <div className="mt-3 flex flex-wrap items-end justify-between gap-3">
+            <p className="font-mono text-2xl text-white tabular-nums">{selectedNode.value}</p>
+            <span className={`shield-vlm-detail-severity shield-vlm-detail-severity-${selectedTileEvidenceCopy?.severityTone ?? "calm"}`}>
+              {selectedTileEvidenceCopy?.severityLabel}
+            </span>
+          </div>
           <div className="mt-3 rounded-2xl border border-white/[0.12] bg-black/[0.82] p-4 shadow-[0_24px_80px_rgba(0,0,0,0.55)]">
             <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-velmere-gold">{selectedTileEvidenceCopy?.groupLabel} · {selectedTileEvidenceCopy?.sourceState}</p>
-            <p className="mt-3 text-xs leading-6 text-white/[0.74]">{selectedTileEvidenceCopy?.driver}</p>
-            <p className="mt-3 rounded-xl border border-white/[0.08] bg-white/[0.035] p-3 text-xs leading-6 text-white/[0.62]">{selectedTileEvidenceCopy?.scoreRead}</p>
-            <p className="mt-3 text-xs leading-6 text-white/[0.58]">{selectedTileEvidenceCopy?.why}</p>
-            <p className="mt-3 border-t border-white/[0.08] pt-3 text-xs leading-6 text-cyan-100/[0.70]">{selectedTileEvidenceCopy?.evidenceNeed}</p>
-            <p className="mt-3 rounded-xl border border-velmere-gold/[0.14] bg-velmere-gold/[0.055] p-3 text-xs leading-6 text-velmere-gold/[0.82]">{selectedTileEvidenceCopy?.next}</p>
-            <p className="mt-3 font-mono text-[9px] uppercase tracking-[0.12em] text-white/[0.38]">{selectedTileEvidenceCopy?.operatorQuestion}</p>
+            <p className="mt-2 text-xs leading-6 text-white/[0.66]">{selectedNode.detail}</p>
+            <div className="mt-3 rounded-xl border border-white/[0.08] bg-white/[0.035] p-3">
+              <p className="font-mono text-[8px] uppercase tracking-[0.14em] text-cyan-100/[0.50]">{selectedTileEvidenceCopy?.intelligenceLabels.caseSummary}</p>
+              <p className="mt-2 text-xs leading-6 text-white/[0.76]">{selectedTileEvidenceCopy?.driver}</p>
+              <p className="mt-2 text-xs leading-6 text-white/[0.58]">{selectedTileEvidenceCopy?.why}</p>
+            </div>
+            <div className="mt-3 rounded-xl border border-white/[0.08] bg-black/[0.30] p-3">
+              <p className="font-mono text-[8px] uppercase tracking-[0.14em] text-cyan-100/[0.50]">{selectedTileEvidenceCopy?.intelligenceLabels.inputTrace}</p>
+              <p className="mt-2 text-xs leading-6 text-white/[0.62]">{selectedTileEvidenceCopy?.inputTrace}</p>
+              <p className="mt-2 text-xs leading-6 text-white/[0.56]">{selectedTileEvidenceCopy?.scoreRead}</p>
+            </div>
+            <div className="mt-3 rounded-xl border border-cyan-200/[0.10] bg-cyan-300/[0.035] p-3">
+              <p className="font-mono text-[8px] uppercase tracking-[0.14em] text-cyan-100/[0.60]">{selectedTileEvidenceCopy?.intelligenceLabels.missingTrace}</p>
+              <p className="mt-2 text-xs leading-6 text-cyan-100/[0.72]">{selectedTileEvidenceCopy?.evidenceNeed}</p>
+            </div>
+            <div className="mt-3 rounded-xl border border-velmere-gold/[0.14] bg-velmere-gold/[0.055] p-3">
+              <p className="font-mono text-[8px] uppercase tracking-[0.14em] text-velmere-gold/[0.72]">{selectedTileEvidenceCopy?.intelligenceLabels.operatorAction}</p>
+              <p className="mt-2 text-xs leading-6 text-velmere-gold/[0.84]">{selectedTileEvidenceCopy?.next}</p>
+              <p className="mt-2 font-mono text-[9px] uppercase tracking-[0.12em] text-white/[0.38]">{selectedTileEvidenceCopy?.operatorQuestion}</p>
+            </div>
+            <p className="mt-3 text-[11px] leading-5 text-white/[0.42]">{selectedTileEvidenceCopy?.intelligenceLabels.caveat}</p>
           </div>
           {isInvestigationMode ? (
             <div className="mt-3 grid gap-2 rounded-2xl border border-white/[0.10] bg-black/[0.50] p-3 font-mono text-[9px] uppercase tracking-[0.12em] text-white/[0.50] sm:grid-cols-3">
@@ -5780,7 +5831,7 @@ function AdvancedVlmNeuralConsole({
   ];
   /* < */
   const aiFeed = [
-    `Advanced mode dla ${tokenInfo.symbol}: spinam wykres, source ledger, liquidity, holders i evidence w jedną mapę VLM.`,
+    `Advanced mode dla ${tokenInfo.symbol}: spinam wykres, source ledger, liquidity, holders i evidence w jedną mapę systemu.`,
     `Risk center: ${combinedScore}/100. To jest flaga algorytmiczna, nie wyrok, nie porada inwestycyjna i nie dowód prawny.`,
     `Najpierw sprawdzam źródła: ${result.dataQuality}. Brakujące dane podnoszą uncertainty, a nie bezpieczeństwo.`,
     orderbook
@@ -6490,6 +6541,121 @@ export default function TokenRiskModal({
   const combinedLevel = levelFromScore(combinedScore);
   const combinedBadge = badgeFromLevel(combinedLevel);
 
+  const sourceSpineCopy = locale === "pl"
+    ? {
+        title: "Source spine",
+        subtitle: "Co jest live, co jest częściowe, a czego nadal brakuje.",
+        live: "live",
+        partial: "partial",
+        fallback: "fallback",
+        missing: "missing",
+        blocked: "blocked",
+        loading: "loading",
+        market: "Market data",
+        candles: "Świece / OHLCV",
+        orderbook: "Orderbook",
+        holders: "Holderzy",
+        contract: "Kontrakt",
+        osint: "OSINT",
+        waiting: "czeka na źródło",
+        readyLabel: "warstw gotowych",
+        freshness: "świeżość",
+        ttl: "TTL",
+      }
+    : locale === "de"
+      ? {
+          title: "Source spine",
+          subtitle: "Was live ist, was partial ist und was noch fehlt.",
+          live: "live",
+          partial: "partial",
+          fallback: "fallback",
+          missing: "missing",
+          blocked: "blocked",
+          loading: "loading",
+          market: "Market data",
+          candles: "Kerzen / OHLCV",
+          orderbook: "Orderbook",
+          holders: "Holder",
+          contract: "Contract",
+          osint: "OSINT",
+          waiting: "wartet auf Quelle",
+          readyLabel: "Schichten bereit",
+          freshness: "Freshness",
+          ttl: "TTL",
+        }
+      : {
+          title: "Source spine",
+          subtitle: "What is live, what is partial, and what is still missing.",
+          live: "live",
+          partial: "partial",
+          fallback: "fallback",
+          missing: "missing",
+          blocked: "blocked",
+          loading: "loading",
+          market: "Market data",
+          candles: "Candles / OHLCV",
+          orderbook: "Orderbook",
+          holders: "Holders",
+          contract: "Contract",
+          osint: "OSINT",
+          waiting: "waiting for source",
+          readyLabel: "layers ready",
+          freshness: "freshness",
+          ttl: "TTL",
+        };
+
+  const sourceSpineRows = [
+    {
+      id: "market",
+      label: sourceSpineCopy.market,
+      tone: result.dataQuality === "live" ? "live" : result.dataQuality === "partial" ? "partial" : "fallback",
+      state: result.dataQuality === "live" ? sourceSpineCopy.live : result.dataQuality === "partial" ? sourceSpineCopy.partial : sourceSpineCopy.fallback,
+      detail: `${formatUsd(result.metrics.currentPrice)} · ${formatUsd(result.metrics.volume24h)} vol`,
+      freshness: result.dataQuality === "live" ? "≤ 5m" : result.dataQuality === "partial" ? "≤ 30m" : "fallback",
+    },
+    {
+      id: "candles",
+      label: sourceSpineCopy.candles,
+      tone: chartLoading ? "loading" : chartError ? "fallback" : candles.length >= 24 ? "live" : candles.length ? "partial" : "missing",
+      state: chartLoading ? sourceSpineCopy.loading : chartError ? sourceSpineCopy.fallback : candles.length >= 24 ? sourceSpineCopy.live : candles.length ? sourceSpineCopy.partial : sourceSpineCopy.missing,
+      detail: `${candles.length || chartPoints.length} bars · ${chartSource}`,
+      freshness: chartLoading ? "…" : chartError ? "fallback" : candles.length >= 24 ? "≤ 15m" : candles.length ? "partial" : "missing",
+    },
+    {
+      id: "orderbook",
+      label: sourceSpineCopy.orderbook,
+      tone: orderbookLoading ? "loading" : orderbook ? "live" : orderbookError ? "blocked" : "missing",
+      state: orderbookLoading ? sourceSpineCopy.loading : orderbook ? sourceSpineCopy.live : orderbookError ? sourceSpineCopy.blocked : sourceSpineCopy.missing,
+      detail: orderbook ? `spread ${formatPercent(orderbook.spreadPercent)} · depth ${formatUsd(orderbook.bidDepthUsd + orderbook.askDepthUsd)}` : orderbookError ?? sourceSpineCopy.waiting,
+      freshness: orderbookLoading ? "…" : orderbook ? "≤ 10m" : "missing",
+    },
+    {
+      id: "holders",
+      label: sourceSpineCopy.holders,
+      tone: result.metrics.holderCount || result.metrics.top10HolderPercent ? "partial" : "missing",
+      state: result.metrics.holderCount || result.metrics.top10HolderPercent ? sourceSpineCopy.partial : sourceSpineCopy.missing,
+      detail: `${formatNumber(result.metrics.holderCount)} holders · top10 ${formatPercent(result.metrics.top10HolderPercent)}`,
+      freshness: result.metrics.holderCount || result.metrics.top10HolderPercent ? "manual/partial" : "missing",
+    },
+    {
+      id: "contract",
+      label: sourceSpineCopy.contract,
+      tone: asset.tokenAddress ? "partial" : "missing",
+      state: asset.tokenAddress ? sourceSpineCopy.partial : sourceSpineCopy.missing,
+      detail: asset.tokenAddress ? `${asset.chainId ?? "chain"} · address attached` : "address needed",
+      freshness: asset.tokenAddress ? "static" : "missing",
+    },
+    {
+      id: "osint",
+      label: sourceSpineCopy.osint,
+      tone: "blocked",
+      state: sourceSpineCopy.blocked,
+      detail: locale === "pl" ? "wymaga świeżego researchu / źródeł" : locale === "de" ? "benötigt frische Recherche / Quellen" : "requires fresh research / sources",
+      freshness: "blocked",
+    },
+  ] as const;
+  const sourceSpineReadyCount = sourceSpineRows.filter((row) => row.tone === "live" || row.tone === "partial").length;
+
   const metrics = [
     {
       icon: BarChart3,
@@ -6923,6 +7089,31 @@ export default function TokenRiskModal({
                   <p className="mt-2 text-xs leading-6 text-white/[0.54]">{ui.modeGuideBody}</p>
                 </div>
               )}
+
+              <div className="shield-source-spine-panel">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-velmere-gold">{sourceSpineCopy.title}</p>
+                    <p className="mt-1 text-xs leading-5 text-white/[0.50]">{sourceSpineCopy.subtitle}</p>
+                  </div>
+                  <span className="shrink-0 rounded-full border border-white/[0.10] bg-black/[0.30] px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.12em] text-white/[0.50]">
+                    {sourceSpineReadyCount}/{sourceSpineRows.length} {sourceSpineCopy.readyLabel}
+                  </span>
+                </div>
+                <div className="mt-3 grid gap-2">
+                  {sourceSpineRows.map((row) => (
+                    <div key={row.id} className={`shield-source-spine-row shield-source-spine-row-${row.tone}`}>
+                      <span className="shield-source-spine-dot" />
+                      <div className="min-w-0">
+                        <p className="font-mono text-[9px] uppercase tracking-[0.13em] text-white/[0.60]">{row.label}</p>
+                        <p className="mt-1 truncate text-[11px] text-white/[0.42]">{row.detail}</p>
+                        <p className="mt-1 font-mono text-[8px] uppercase tracking-[0.12em] text-white/[0.30]">{sourceSpineCopy.freshness}: {row.freshness}</p>
+                      </div>
+                      <strong>{row.state}</strong>
+                    </div>
+                  ))}
+                </div>
+              </div>
 
               <div className="shield-token-metric-grid-hidden" aria-hidden="true">
                 {[

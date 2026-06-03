@@ -1,5 +1,6 @@
 import type { TokenRiskResult } from "./risk-types";
-import type { ShieldOperatorCaseFile, ShieldOperatorLane } from "./operator-casefile";
+import type { ShieldOperatorCaseFile, ShieldOperatorLane, ShieldOperatorLaneId } from "./operator-casefile";
+import type { InvestigatorProtocol, InvestigatorRiskLane } from "./shield-investigator";
 
 export type ShieldEvidenceSourceMode = "live" | "partial" | "fallback" | "missing" | "blocked";
 
@@ -176,7 +177,71 @@ function laneItem(lane: ShieldOperatorLane) {
   return `${lane.label} · ${lane.status} · ${lane.nextAction}`;
 }
 
-export function buildShieldEvidenceReportDraft(result: TokenRiskResult, caseFile: ShieldOperatorCaseFile): ShieldEvidenceReportDraft {
+
+type EvidenceCaseInput = ShieldOperatorCaseFile | InvestigatorProtocol;
+
+function isInvestigatorProtocol(input: EvidenceCaseInput): input is InvestigatorProtocol {
+  return "caseFrame" in input && "webQueries" in input;
+}
+
+function mapInvestigatorLaneId(id: InvestigatorRiskLane["id"]): ShieldOperatorLaneId {
+  if (id === "insider") return "holders";
+  if (id === "supply") return "supply";
+  if (id === "unlock") return "unlock";
+  if (id === "liquidity") return "liquidity";
+  if (id === "social") return "social";
+  if (id === "contract") return "contract";
+  return "evidence";
+}
+
+function normalizeEvidenceCaseFile(result: TokenRiskResult, input: EvidenceCaseInput): ShieldOperatorCaseFile {
+  if (!isInvestigatorProtocol(input)) return input;
+
+  const primaryLane = [...input.lanes].sort((a, b) => b.score - a.score)[0];
+  const confidence = input.confidenceScore;
+  const evidenceStatus =
+    input.caseFrame.operatorMode === "block_verdict"
+      ? "unknown"
+      : input.finalVerdict === "High manipulation risk"
+        ? "red_flag"
+        : confidence >= 72
+          ? "likely"
+          : "unverified";
+
+  const lanes: ShieldOperatorLane[] = input.lanes.map((lane) => ({
+    id: mapInvestigatorLaneId(lane.id),
+    label: lane.label,
+    status: lane.status,
+    priority: lane.score,
+    reason: lane.headline || lane.body,
+    nextAction: lane.nextStep,
+  }));
+
+  const blockers = Array.from(new Set([
+    ...input.redFlags,
+    ...input.caseFrame.missingData,
+  ])).slice(0, 7);
+
+  return {
+    caseId: input.caseFrame.caseId,
+    symbol: result.token.symbol || input.caseFrame.asset || "TOKEN",
+    riskLevel: result.level,
+    riskScore: result.score,
+    confidence,
+    evidenceStatus,
+    quickVerdict: input.quickVerdict,
+    dominantAgentLabel: primaryLane?.label ?? input.finalVerdict,
+    primaryNextAction: input.nextActions[0]?.body ?? primaryLane?.nextStep ?? "Attach source ledger and verify the strongest lane manually.",
+    lanes,
+    blockers,
+    osintQueries: input.webQueries,
+    operatorChecklist: input.nextActions.map((action) => `${action.label}: ${action.body}`).slice(0, 7),
+    copyGuard: "Use anomaly/review wording only. This is a prescreen summary, not proof, not a safety certificate and not financial advice.",
+  };
+}
+
+export function buildShieldEvidenceReportDraft(result: TokenRiskResult, caseInput: EvidenceCaseInput): ShieldEvidenceReportDraft {
+  const caseFile = normalizeEvidenceCaseFile(result, caseInput);
   const generatedAt = result.generatedAt || new Date().toISOString();
   const reportId = normalizeId(`VLM-EVIDENCE-${result.token.symbol}-${generatedAt}`).slice(0, 64);
   const ledger = sourceLedger(result);
