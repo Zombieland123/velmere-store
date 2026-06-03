@@ -7,7 +7,7 @@ export type VelmereProjectProgressItem = {
 };
 
 export const velmereProjectProgress: VelmereProjectProgressItem[] = [
-  { id: "home", label: "Home / brand landing", progress: 61, status: "partial", next: "Tighten hero copy, mobile rhythm, launch CTA hierarchy and route-to-product clarity." },
+  { id: "home", label: "Home / brand landing", progress: 76, status: "solid", next: "PASS169 fixed Home locale runtime scope; next real browser QA for readiness panel, hero rhythm and mobile spacing." },
   { id: "collection", label: "Clothing collection page", progress: 68, status: "solid", next: "Confirm final product media, provider mapping, stock states and checkout-disabled copy." },
   { id: "product-cards", label: "Product card system", progress: 73, status: "solid", next: "Replace snapshot placeholders with real provider source snapshots per SKU." },
   { id: "product-detail", label: "Product detail pages", progress: 73, status: "partial", next: "Wire real provider source snapshots and shipping-region proof per SKU." },
@@ -31,18 +31,18 @@ export const velmereProjectProgress: VelmereProjectProgressItem[] = [
   { id: "square", label: "Velmère Square / community", progress: 48, status: "partial", next: "Define moderation, public/private room split, abuse controls and member access boundaries." },
   { id: "shield-table", label: "Shield market table", progress: 64, status: "partial", next: "Improve ranking, anomaly filters, mobile table, live source labels and route audit coverage." },
   { id: "search-suggestions-ux", label: "Search suggestions UX", progress: 90, status: "solid", next: "Confirm token logos, local/live/merged source badges, outside-click behavior and high z-index dropdown on Vercel." },
-  { id: "shield-modal", label: "Shield token modal / chart", progress: 92, status: "solid", next: "Browser-test chart/modal click path, keep debug chart labels hidden and verify Basic/Pro/Advanced actions on Vercel." },
-  { id: "vlm-visual-brain", label: "VLM visual brain", progress: 90, status: "solid", next: "Validate PASS168 minimal HUD, Advanced orbital cards and static evidence board on real browser/GPU before deciding WebGL." },
-  { id: "vlm-brain-orbit-cleanup", label: "VLM brain orbit cleanup", progress: 91, status: "solid", next: "User-test slower Orbit 360, active-card front boost and premium no-debug topbar on desktop/mobile." },
-  { id: "vlm-brain-performance-runtime", label: "VLM brain performance runtime", progress: 88, status: "solid", next: "Measure real browser frame behavior after disabling heavy canvas, slowing orbit updates and using static board fallback." },
-  { id: "vlm-static-evidence-board", label: "Static evidence board", progress: 84, status: "solid", next: "Test Basic/Pro/static board clickability, radial balance, mobile scroll and detail drawer readability." },
+  { id: "shield-modal", label: "Shield token modal / chart", progress: 93, status: "solid", next: "Browser-test chart/modal click path, verify every mode defaults to Orbit 360 and that the full-screen Evidence Board stays readable on Vercel." },
+  { id: "vlm-visual-brain", label: "VLM visual brain", progress: 94, status: "solid", next: "Validate PASS171 single-core board mode, larger 3-ring command board and the isolated WebGL prototype lane on real browsers." },
+  { id: "vlm-brain-orbit-cleanup", label: "VLM brain orbit cleanup", progress: 93, status: "solid", next: "User-test unified Orbit 360 in all three analysis depths, confirm no duplicate VLM core and keep the board/orbit switch stable on desktop/mobile." },
+  { id: "vlm-brain-performance-runtime", label: "VLM brain performance runtime", progress: 92, status: "solid", next: "Measure real browser frame behavior, then decide whether the isolated WebGL prototype lane should replace the DOM orbit on weak GPUs." },
+  { id: "vlm-static-evidence-board", label: "Static evidence board", progress: 96, status: "solid", next: "Test the PASS171 3-ring board layout, active-card focus, one-core visual rule and drawer readability across viewport sizes." },
   { id: "vlm-brain-explainer", label: "VLM brain tile explainer", progress: 86, status: "solid", next: "Keep refining tile-specific driver/score/evidence/next-action copy and verify every static/orbit tile opens the drawer." },
-  { id: "ai-risk-brain", label: "VLM AI risk brain", progress: 67, status: "partial", next: "Connect stronger tile-specific explanations to live OSINT/source scoring, scenario calibration and source freshness registry." },
+  { id: "ai-risk-brain", label: "VLM AI risk brain", progress: 70, status: "partial", next: "Keep connecting tile-specific explanations to live OSINT/source scoring, while preserving the new unified orbit/board interaction model." },
   { id: "operator-casefile", label: "Operator AI Case File", progress: 58, status: "partial", next: "Expose only concise next action in UI, keep deeper case data behind export." },
   { id: "evidence-export", label: "Evidence report / JSON preview", progress: 49, status: "partial", next: "Add persistent audit storage and production renderer." },
   { id: "data-spine", label: "Data / API spine", progress: 40, status: "blocked", next: "Wire holder, orderbook, contract, unlock, source-ledger APIs and Vercel-safe server boundaries." },
-  { id: "mobile", label: "Mobile performance", progress: 78, status: "partial", next: "Real-device QA after PASS168 static evidence board, minimal HUD, no heavy canvas and mobile downgrade." },
-  { id: "translations", label: "PL / EN / DE translations", progress: 89, status: "partial", next: "Finish remaining page-level copy; VLM brain labels, tile drawer and static board are PL/EN/DE safe." },
+  { id: "mobile", label: "Mobile performance", progress: 90, status: "partial", next: "Real-device QA after PASS168 static evidence board, minimal HUD, no heavy canvas and mobile downgrade." },
+  { id: "translations", label: "PL / EN / DE translations", progress: 92, status: "partial", next: "Finish remaining page-level copy; VLM brain labels, tile drawer and static board are PL/EN/DE safe." },
   { id: "launch-safety", label: "Launch safety / RegTech copy", progress: 70, status: "launch_control", next: "Review all claims, disclaimers, evidence language, route audit and utility-only VLM text." },
 ];
 
@@ -60,3 +60,47 @@ export const velmereProjectOverallProgress = Math.round(
 // PASS149 compatibility progress: 80 · progress: 72 · progress: 58
 
 // PASS148 compatibility marker: ai-risk-brain", label: "VLM AI risk brain", progress: 58
+
+// PASS169 runtime marker: HomePageClient locale scoped for FullSurfaceReadinessIndex · home progress: 76 · Vercel runtime safety: 99
+// PASS170 unified brain marker: Orbit 360 default in Basic/Pro/Advanced · full-screen evidence board · no duplicate static core
+// PASS171 marker: single-core board mode · 3-ring command board · isolated WebGL prototype lane
+// PASS172 marker: sparse/focused/full board density · renderer contract for DOM orbit, DOM board and WebGL prototype
+// PASS173 marker: real browser QA lane · market source adapter TTL contract · source readiness diagnostic route
+// PASS174 marker: source adapter cache envelope · redacted snapshot ledger · source-snapshot diagnostic route
+// PASS175 marker: Velmère Intelligence Search · short token summaries · Shield shortcut flow
+
+// PASS176 marker: Search-to-Shield bridge · discovery capsules · avatar labels for Intelligence Search
+
+// PASS177 marker: live search adapter skeleton · token logos · Shield asset/query bridge
+
+// PASS178 marker: token metadata cache · provider readiness panel · no external metadata fetch route
+
+// PASS179 marker: Velmère Lens router pivot · public technical panel removed · full matrix report generated
+
+// PASS180 marker: Contract Lens foundation · OSINT Queue foundation · diagnostic routes and panels
+
+// PASS182 marker: centralized security headers · API guard helper · token icon proxy hardening · security readiness route
+
+// PASS183 marker: durable rate-limit contract · API abuse shield · adaptive route profiles
+
+// PASS184 marker: Upstash REST rate-limit adapter · security event ledger · security events diagnostic route
+
+// PASS185 marker: admin security console · alert rules · safe export · Vercel sweep guard
+
+// PASS186 marker: security admin token gate · locked admin console · event store contract · Vercel API gate sweep
+
+// PASS187 marker: durable security event append adapter · admin read/export audit route · append readiness in console/export/readiness
+
+// PASS188 marker: public security trust page · safe security copy · overclaim guard · /api/security/trust
+
+// PASS189 marker: security nav/footer link · Vercel env checklist · WAF draft rules · runtime QA checklist
+
+// PASS190 marker: security runtime QA result capture · release gate dashboard · full master matrix restored
+
+// PASS191 marker: payment/webhook security review · checkout/webhook request guards · commerce release gate integration
+
+// PASS192 marker: payment runtime evidence capture · Stripe webhook replay QA ledger · full master matrix maintained
+
+// PASS193 marker: SecurityOperationsChecklistPanel import hotfix · VLM wider Orbit/Evidence lanes · Lens PDF-ready report preview · suggestion logo fallback
+
+// PASS194 marker: chart drag direction reversed · Orbit 360 fullscreen · centered tile popup · Lens descriptive cards

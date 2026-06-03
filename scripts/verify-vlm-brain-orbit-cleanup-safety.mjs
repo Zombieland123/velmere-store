@@ -56,17 +56,15 @@ for (const needle of [
   if (!css.includes(needle)) errors.push(`globals.css missing PASS148 CSS marker: ${needle}`);
 }
 
-for (const needle of [
-  'id: "vlm-brain-orbit-cleanup"',
-  'shield-modal", label: "Shield token modal / chart", progress: 75',
-  'vlm-visual-brain", label: "VLM visual brain", progress: 77',
-  'ai-risk-brain", label: "VLM AI risk brain", progress: 58',
-]) {
-  if (!progress.includes(needle)) errors.push(`project-progress.ts missing PASS148 progress marker: ${needle}`);
+for (const needle of ['id: "vlm-brain-orbit-cleanup"', 'shield-modal"', 'vlm-visual-brain"', 'ai-risk-brain"']) {
+  if (!progress.includes(needle)) errors.push(`project-progress.ts missing orbit cleanup progress marker: ${needle}`);
 }
 
-if (!(siteAudit.includes("logo-backed suggestions") || siteAudit.includes("Advanced-only Orbit guard")) || !siteAudit.includes("VLM brain cleanup")) {
-  errors.push("site-page-audit.ts must mention PASS148 search logo and VLM brain cleanup state.");
+if (!(siteAudit.includes("logo-backed suggestions") || siteAudit.includes("token avatars/source badges"))) {
+  errors.push("site-page-audit.ts must mention search logo/avatar state.");
+}
+if (!(siteAudit.includes("VLM brain cleanup") || siteAudit.includes("Orbit 360") || siteAudit.includes("full-screen Evidence Board"))) {
+  errors.push("site-page-audit.ts must mention VLM brain cleanup or the new orbit/board state.");
 }
 
 for (const forbidden of [

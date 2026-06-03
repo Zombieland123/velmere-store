@@ -6740,3 +6740,2366 @@
     animation: none !important;
   }
 }
+
+/* PASS170 · unified Orbit 360 + full-screen evidence board */
+@layer components {
+  .shield-vlm-static-evidence-board {
+    position: absolute !important;
+    inset: clamp(5.8rem, 9vh, 6.8rem) clamp(1rem, 2vw, 1.6rem) clamp(1rem, 2vh, 1.45rem) !important;
+    z-index: 24 !important;
+    display: block !important;
+    overflow: hidden !important;
+    border-radius: 1.8rem !important;
+    border: 1px solid rgba(200,169,106,0.17) !important;
+    background:
+      radial-gradient(circle at 20% 18%, rgba(34,211,238,0.10), transparent 32%),
+      radial-gradient(circle at 80% 10%, rgba(200,169,106,0.08), transparent 26%),
+      linear-gradient(145deg, rgba(7,10,14,0.96), rgba(0,0,0,0.96)) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 26px 100px rgba(0,0,0,0.48) !important;
+    padding: 1rem 1rem 1rem !important;
+  }
+
+  .shield-vlm-static-board-header {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .shield-vlm-static-board-header > span {
+    flex-shrink: 0;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.04);
+    padding: 0.42rem 0.72rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+  }
+
+  .shield-vlm-static-filter {
+    position: relative;
+    z-index: 3;
+    margin-top: 0.95rem !important;
+  }
+
+  .shield-vlm-static-stage {
+    position: absolute;
+    inset: 8.2rem 0.25rem 0.25rem 0.25rem;
+    overflow: hidden;
+  }
+
+  .shield-vlm-static-card {
+    position: absolute !important;
+    width: clamp(9.4rem, 14vw, 12rem) !important;
+    min-height: 6.5rem !important;
+    padding: 0.9rem 1rem 0.9rem 1.05rem !important;
+    border-radius: 1.15rem !important;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 18px 42px rgba(0,0,0,0.34), inset 0 1px 0 rgba(255,255,255,0.06) !important;
+    animation: shieldVlmReadCardIn 620ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .shield-vlm-static-card:hover,
+  .shield-vlm-static-card.shield-vlm-read-card-active {
+    transform: translate(-50%, -50%) scale(1.03) !important;
+  }
+
+  .shield-vlm-static-card .shield-vlm-card-detail-pill {
+    margin-top: 0.55rem;
+  }
+
+  .shield-vlm-static-core-window {
+    display: none !important;
+  }
+
+  .shield-vlm-topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 1100px) {
+  .shield-vlm-static-evidence-board {
+    inset: 5.5rem 0.75rem 0.75rem 0.75rem !important;
+    padding: 0.85rem !important;
+  }
+
+  .shield-vlm-static-stage {
+    inset: 8.75rem 0 0 0;
+  }
+
+  .shield-vlm-static-card {
+    width: clamp(8.3rem, 38vw, 10.5rem) !important;
+    min-height: 5.85rem !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .shield-vlm-static-evidence-board {
+    inset: 5rem 0.55rem 0.55rem 0.55rem !important;
+  }
+
+  .shield-vlm-static-stage {
+    inset: 10.5rem 0 0 0;
+  }
+
+  .shield-vlm-static-card {
+    width: clamp(7rem, 44vw, 9rem) !important;
+    min-height: 5.45rem !important;
+    padding: 0.72rem 0.8rem 0.7rem 0.86rem !important;
+  }
+
+  .shield-vlm-topbar-actions {
+    gap: 0.45rem;
+  }
+}
+
+/* PASS171 · evidence board focus polish + single-core board mode */
+@layer components {
+  .shield-vlm-board-mode .shield-vlm-dom-core {
+    z-index: 27 !important;
+    opacity: 0.92 !important;
+    filter: drop-shadow(0 0 46px rgba(34,211,238,0.18)) drop-shadow(0 0 42px rgba(200,169,106,0.16)) !important;
+  }
+
+  .shield-vlm-board-mode .shield-vlm-dom-core-label {
+    opacity: 0.82;
+  }
+
+  .shield-vlm-board-mode .shield-vlm-dom-core-symbol {
+    opacity: 0.74;
+  }
+
+  .shield-vlm-board-mode .shield-vlm-static-evidence-board {
+    z-index: 21 !important;
+    background:
+      radial-gradient(circle at 50% 54%, rgba(0,0,0,0.18) 0 11rem, transparent 11.1rem),
+      radial-gradient(circle at 20% 18%, rgba(34,211,238,0.105), transparent 32%),
+      radial-gradient(circle at 82% 12%, rgba(200,169,106,0.090), transparent 28%),
+      linear-gradient(145deg, rgba(7,10,14,0.86), rgba(0,0,0,0.92)) !important;
+  }
+
+  .shield-vlm-static-map-rings {
+    pointer-events: none;
+    position: absolute;
+    inset: 8.2rem 0.25rem 0.25rem 0.25rem;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  .shield-vlm-static-map-ring {
+    position: absolute;
+    left: 50%;
+    top: 55%;
+    border-radius: 999px;
+    border: 1px solid rgba(200,169,106,0.13);
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 70px rgba(34,211,238,0.055), inset 0 0 54px rgba(200,169,106,0.035);
+  }
+
+  .shield-vlm-static-map-ring-a {
+    width: min(36rem, 52vw);
+    height: min(22rem, 33vw);
+  }
+
+  .shield-vlm-static-map-ring-b {
+    width: min(50rem, 70vw);
+    height: min(31rem, 45vw);
+    border-color: rgba(34,211,238,0.095);
+    transform: translate(-50%, -50%) rotate(-7deg);
+  }
+
+  .shield-vlm-static-map-ring-c {
+    width: min(62rem, 84vw);
+    height: min(38rem, 54vw);
+    opacity: 0.72;
+    transform: translate(-50%, -50%) rotate(11deg);
+  }
+
+  .shield-vlm-static-stage {
+    z-index: 5 !important;
+  }
+
+  .shield-vlm-static-card {
+    isolation: isolate;
+    transform-origin: center center;
+    transition:
+      transform 190ms ease,
+      border-color 190ms ease,
+      background 190ms ease,
+      box-shadow 190ms ease,
+      opacity 190ms ease !important;
+  }
+
+  .shield-vlm-static-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background:
+      radial-gradient(circle at 18% 0%, rgba(255,255,255,0.08), transparent 34%),
+      linear-gradient(120deg, rgba(255,255,255,0.050), transparent 42%);
+    opacity: 0.46;
+    z-index: 0;
+  }
+
+  .shield-vlm-static-card-outer {
+    opacity: 0.90;
+  }
+
+  .shield-vlm-static-card:hover,
+  .shield-vlm-static-card.shield-vlm-read-card-active {
+    border-color: rgba(34,211,238,0.35) !important;
+    box-shadow: 0 24px 58px rgba(0,0,0,0.48), 0 0 34px rgba(34,211,238,0.12), inset 0 1px 0 rgba(255,255,255,0.075) !important;
+  }
+
+  .shield-vlm-static-card.shield-vlm-read-card-active {
+    background:
+      linear-gradient(90deg, rgba(34,211,238,0.30), rgba(34,211,238,0.060) 0.27rem, transparent 0.28rem),
+      linear-gradient(135deg, rgba(34,211,238,0.105), rgba(255,255,255,0.026) 45%, rgba(0,0,0,0.46)),
+      #07090c !important;
+  }
+
+  .shield-vlm-detail-panel-solid {
+    background:
+      radial-gradient(circle at 100% 0%, rgba(34,211,238,0.075), transparent 32%),
+      linear-gradient(180deg, rgba(255,255,255,0.052), rgba(255,255,255,0.016)),
+      #05070a !important;
+    box-shadow: 0 34px 130px rgba(0,0,0,0.76), inset 0 1px 0 rgba(255,255,255,0.065) !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .shield-vlm-static-map-rings {
+    inset: 10.5rem 0 0 0;
+  }
+
+  .shield-vlm-static-map-ring-a {
+    width: 28rem;
+    height: 18rem;
+  }
+
+  .shield-vlm-static-map-ring-b {
+    width: 38rem;
+    height: 25rem;
+  }
+
+  .shield-vlm-static-map-ring-c {
+    width: 48rem;
+    height: 31rem;
+  }
+
+  .shield-vlm-board-mode .shield-vlm-dom-core {
+    top: 56% !important;
+    width: clamp(7.8rem, 32vw, 11rem) !important;
+    height: clamp(7.8rem, 32vw, 11rem) !important;
+  }
+}
+
+/* PASS172 · evidence board sparse/focused density polish */
+@layer components {
+  .shield-vlm-static-density-sparse .shield-vlm-static-stage,
+  .shield-vlm-static-density-focused .shield-vlm-static-stage {
+    inset: 7.6rem 0.25rem 0.25rem 0.25rem;
+  }
+
+  .shield-vlm-static-density-sparse .shield-vlm-static-card {
+    width: clamp(12rem, 18vw, 15.2rem) !important;
+    min-height: 7.4rem !important;
+    padding: 1rem 1.1rem !important;
+    opacity: 0.98 !important;
+  }
+
+  .shield-vlm-static-density-focused .shield-vlm-static-card {
+    width: clamp(10.8rem, 16vw, 13.4rem) !important;
+    min-height: 6.9rem !important;
+  }
+
+  .shield-vlm-static-density-sparse .shield-vlm-static-map-ring-a {
+    width: min(32rem, 48vw);
+    height: min(20rem, 30vw);
+    border-color: rgba(34,211,238,0.16);
+  }
+
+  .shield-vlm-static-density-sparse .shield-vlm-static-map-ring-b {
+    width: min(44rem, 62vw);
+    height: min(28rem, 39vw);
+  }
+
+  .shield-vlm-static-density-sparse .shield-vlm-static-map-ring-c {
+    opacity: 0.42;
+  }
+
+  .shield-vlm-static-density-focused .shield-vlm-static-map-ring-a {
+    width: min(34rem, 50vw);
+    height: min(21rem, 31vw);
+  }
+
+  .shield-vlm-static-density-focused .shield-vlm-static-map-ring-b {
+    width: min(48rem, 66vw);
+    height: min(29rem, 42vw);
+  }
+
+  .shield-vlm-static-density-sparse .shield-vlm-static-card::after,
+  .shield-vlm-static-density-focused .shield-vlm-static-card::after {
+    content: "";
+    position: absolute;
+    left: 1rem;
+    right: 1rem;
+    bottom: 0.72rem;
+    height: 1px;
+    pointer-events: none;
+    background: linear-gradient(90deg, transparent, rgba(34,211,238,0.18), transparent);
+    opacity: 0.85;
+  }
+
+  .shield-vlm-static-density-sparse .shield-vlm-dom-core,
+  .shield-vlm-static-density-focused .shield-vlm-dom-core {
+    filter: drop-shadow(0 0 56px rgba(34,211,238,0.22)) drop-shadow(0 0 42px rgba(200,169,106,0.16)) !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .shield-vlm-static-density-sparse .shield-vlm-static-card,
+  .shield-vlm-static-density-focused .shield-vlm-static-card {
+    width: clamp(8.4rem, 39vw, 10.6rem) !important;
+    min-height: 5.9rem !important;
+  }
+
+  .shield-vlm-static-density-sparse .shield-vlm-static-stage,
+  .shield-vlm-static-density-focused .shield-vlm-static-stage {
+    inset: 10.2rem 0 0 0;
+  }
+}
+
+/* PASS173 · real browser QA + market integrity source readiness */
+@layer components {
+  .misr-shell,
+  .rbqa-shell {
+    position: relative;
+    overflow: hidden;
+    border-radius: 2rem;
+    border: 1px solid rgba(255,255,255,0.10);
+    background:
+      radial-gradient(circle at 10% 0%, rgba(200,169,106,0.13), transparent 34%),
+      radial-gradient(circle at 92% 14%, rgba(34,211,238,0.085), transparent 34%),
+      linear-gradient(145deg, rgba(255,255,255,0.040), rgba(255,255,255,0.012)),
+      rgba(0,0,0,0.34);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.055), 0 30px 118px rgba(0,0,0,0.28);
+    padding: clamp(1.2rem, 3vw, 2.1rem);
+    contain: paint;
+  }
+
+  .misr-shell::before,
+  .rbqa-shell::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(to right, rgba(255,255,255,0.030) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.026) 1px, transparent 1px);
+    background-size: 48px 48px;
+    opacity: 0.18;
+    mask-image: radial-gradient(circle at 32% 18%, black, transparent 74%);
+  }
+
+  .misr-shell > *,
+  .rbqa-shell > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .misr-stat,
+  .misr-card,
+  .rbqa-card {
+    min-width: 0;
+    overflow: hidden;
+    border-radius: 1.35rem;
+    border: 1px solid rgba(255,255,255,0.085);
+    background:
+      linear-gradient(145deg, rgba(255,255,255,0.044), rgba(255,255,255,0.014)),
+      rgba(0,0,0,0.24);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.045);
+  }
+
+  .misr-stat {
+    padding: 1rem;
+  }
+
+  .misr-stat p {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.56rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.36);
+  }
+
+  .misr-stat strong {
+    display: block;
+    margin-top: 0.45rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 1.35rem;
+    color: white;
+  }
+
+  .misr-card,
+  .rbqa-card {
+    padding: 1rem;
+  }
+
+  .misr-mode,
+  .misr-priority {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.10);
+    padding: 0.34rem 0.52rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.50rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .misr-mode-live {
+    border-color: rgba(52,211,153,0.18);
+    background: rgba(52,211,153,0.060);
+    color: rgba(167,243,208,0.88);
+  }
+
+  .misr-mode-partial,
+  .misr-mode-fallback {
+    border-color: rgba(200,169,106,0.22);
+    background: rgba(200,169,106,0.070);
+    color: rgba(250,204,121,0.88);
+  }
+
+  .misr-mode-blocked {
+    border-color: rgba(255,77,109,0.18);
+    background: rgba(255,77,109,0.055);
+    color: rgba(255,190,204,0.88);
+  }
+
+  .misr-priority {
+    border-color: rgba(255,255,255,0.10);
+    background: rgba(255,255,255,0.035);
+    color: rgba(255,255,255,0.55);
+  }
+}
+
+@media (max-width: 780px) {
+  .misr-shell,
+  .rbqa-shell {
+    border-radius: 1.45rem;
+    padding: 1rem;
+  }
+
+  .misr-card,
+  .rbqa-card {
+    border-radius: 1.05rem;
+    padding: 0.85rem;
+  }
+}
+
+/* PASS174 · source snapshot ledger / cache envelope preview */
+@layer components {
+  .sslp-shell {
+    position: relative;
+    overflow: hidden;
+    border-radius: 2rem;
+    border: 1px solid rgba(255,255,255,0.10);
+    background:
+      radial-gradient(circle at 10% 0%, rgba(200,169,106,0.13), transparent 34%),
+      radial-gradient(circle at 92% 14%, rgba(34,211,238,0.085), transparent 34%),
+      radial-gradient(circle at 50% 100%, rgba(255,77,109,0.045), transparent 36%),
+      linear-gradient(145deg, rgba(255,255,255,0.040), rgba(255,255,255,0.012)),
+      rgba(0,0,0,0.34);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.055), 0 30px 118px rgba(0,0,0,0.28);
+    padding: clamp(1.2rem, 3vw, 2.1rem);
+    contain: paint;
+  }
+
+  .sslp-shell::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(to right, rgba(255,255,255,0.030) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.026) 1px, transparent 1px);
+    background-size: 48px 48px;
+    opacity: 0.18;
+    mask-image: radial-gradient(circle at 32% 18%, black, transparent 74%);
+  }
+
+  .sslp-shell > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .sslp-stat,
+  .sslp-card {
+    min-width: 0;
+    overflow: hidden;
+    border-radius: 1.35rem;
+    border: 1px solid rgba(255,255,255,0.085);
+    background:
+      linear-gradient(145deg, rgba(255,255,255,0.044), rgba(255,255,255,0.014)),
+      rgba(0,0,0,0.24);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.045);
+  }
+
+  .sslp-stat {
+    padding: 1rem;
+  }
+
+  .sslp-stat p {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.56rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.36);
+  }
+
+  .sslp-stat strong {
+    display: block;
+    margin-top: 0.45rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 1.35rem;
+    color: white;
+  }
+
+  .sslp-card {
+    padding: 1rem;
+  }
+
+  .sslp-mode,
+  .sslp-lane {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.10);
+    padding: 0.34rem 0.52rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.50rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .sslp-lane {
+    border-color: rgba(255,255,255,0.10);
+    background: rgba(255,255,255,0.035);
+    color: rgba(255,255,255,0.55);
+  }
+
+  .sslp-mode-live {
+    border-color: rgba(52,211,153,0.18);
+    background: rgba(52,211,153,0.060);
+    color: rgba(167,243,208,0.88);
+  }
+
+  .sslp-mode-partial,
+  .sslp-mode-fallback {
+    border-color: rgba(200,169,106,0.22);
+    background: rgba(200,169,106,0.070);
+    color: rgba(250,204,121,0.88);
+  }
+
+  .sslp-mode-blocked {
+    border-color: rgba(255,77,109,0.18);
+    background: rgba(255,77,109,0.055);
+    color: rgba(255,190,204,0.88);
+  }
+}
+
+@media (max-width: 780px) {
+  .sslp-shell {
+    border-radius: 1.45rem;
+    padding: 1rem;
+  }
+
+  .sslp-card {
+    border-radius: 1.05rem;
+    padding: 0.85rem;
+  }
+}
+
+/* PASS175 · Velmère Intelligence Search */
+@layer components {
+  .vis-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 2rem;
+    border: 1px solid rgba(255,255,255,0.10);
+    background:
+      radial-gradient(circle at 12% 0%, rgba(200,169,106,0.14), transparent 34%),
+      radial-gradient(circle at 88% 16%, rgba(34,211,238,0.090), transparent 34%),
+      linear-gradient(145deg, rgba(255,255,255,0.045), rgba(255,255,255,0.014)),
+      rgba(0,0,0,0.34);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.055), 0 30px 118px rgba(0,0,0,0.26);
+    padding: clamp(1.25rem, 3.5vw, 2.4rem);
+    contain: paint;
+  }
+
+  .vis-hero::before,
+  .vis-result-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(to right, rgba(255,255,255,0.030) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.026) 1px, transparent 1px);
+    background-size: 48px 48px;
+    opacity: 0.18;
+    mask-image: radial-gradient(circle at 32% 18%, black, transparent 74%);
+  }
+
+  .vis-hero > *,
+  .vis-result-card > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .vis-search-shell {
+    margin-top: 2rem;
+    border-radius: 1.45rem;
+    border: 1px solid rgba(255,255,255,0.10);
+    background: rgba(0,0,0,0.28);
+    padding: 0.78rem;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+
+  .vis-search-input-row {
+    display: grid;
+    grid-template-columns: auto minmax(0,1fr) auto;
+    align-items: center;
+    gap: 0.8rem;
+    border-radius: 1.1rem;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.035);
+    padding: 0.75rem 0.8rem;
+  }
+
+  .vis-search-input {
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    color: white;
+    font-size: 0.95rem;
+    outline: none;
+  }
+
+  .vis-search-input::placeholder {
+    color: rgba(255,255,255,0.34);
+  }
+
+  .vis-search-button,
+  .vis-shield-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    border-radius: 999px;
+    border: 1px solid rgba(200,169,106,0.24);
+    background: rgba(200,169,106,0.10);
+    padding: 0.65rem 0.95rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(250,204,121,0.92);
+    transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+  }
+
+  .vis-search-button:hover,
+  .vis-shield-link:hover {
+    border-color: rgba(200,169,106,0.45);
+    background: rgba(200,169,106,0.16);
+    transform: translateY(-1px);
+  }
+
+  .vis-mode-row {
+    margin-top: 0.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .vis-mode-chip,
+  .vis-soft-chip,
+  .vis-category,
+  .vis-source-badge,
+  .vis-confidence {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.09);
+    background: rgba(255,255,255,0.035);
+    padding: 0.38rem 0.62rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.56rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.50);
+  }
+
+  .vis-mode-chip-active {
+    border-color: rgba(200,169,106,0.30);
+    background: rgba(200,169,106,0.10);
+    color: rgba(250,204,121,0.90);
+  }
+
+  .vis-error,
+  .vis-empty,
+  .vis-result-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1.55rem;
+    border: 1px solid rgba(255,255,255,0.09);
+    background:
+      linear-gradient(145deg, rgba(255,255,255,0.042), rgba(255,255,255,0.014)),
+      rgba(0,0,0,0.28);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.045), 0 24px 80px rgba(0,0,0,0.20);
+  }
+
+  .vis-error,
+  .vis-empty {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.1rem 1.2rem;
+    color: rgba(255,255,255,0.62);
+  }
+
+  .vis-error {
+    margin-top: 1rem;
+    border-color: rgba(255,77,109,0.18);
+    color: rgba(255,190,204,0.88);
+  }
+
+  .vis-result-card {
+    padding: clamp(1rem, 2.5vw, 1.45rem);
+  }
+
+  .vis-token-avatar {
+    display: inline-flex;
+    width: 2.35rem;
+    height: 2.35rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.10);
+    background: rgba(255,255,255,0.05);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: white;
+  }
+
+  .vis-tone-calm {
+    border-color: rgba(52,211,153,0.22);
+    background: rgba(52,211,153,0.10);
+  }
+
+  .vis-tone-review {
+    border-color: rgba(200,169,106,0.24);
+    background: rgba(200,169,106,0.10);
+  }
+
+  .vis-tone-elevated,
+  .vis-tone-blocked {
+    border-color: rgba(255,77,109,0.20);
+    background: rgba(255,77,109,0.08);
+  }
+
+  .vis-source-live {
+    border-color: rgba(52,211,153,0.20);
+    color: rgba(167,243,208,0.88);
+  }
+
+  .vis-source-table {
+    border-color: rgba(200,169,106,0.24);
+    color: rgba(250,204,121,0.88);
+  }
+
+  .vis-source-fallback,
+  .vis-source-missing {
+    border-color: rgba(255,77,109,0.18);
+    color: rgba(255,190,204,0.88);
+  }
+
+  .vis-info-box,
+  .vis-source-row {
+    min-width: 0;
+    overflow: hidden;
+    border-radius: 1.05rem;
+    border: 1px solid rgba(255,255,255,0.075);
+    background: rgba(0,0,0,0.22);
+    padding: 0.9rem;
+  }
+
+  .vis-info-box p,
+  .vis-source-row p {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.52rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.36);
+  }
+
+  .vis-info-box span,
+  .vis-source-row span {
+    margin-top: 0.45rem;
+    display: block;
+    font-size: 0.74rem;
+    line-height: 1.65;
+    color: rgba(255,255,255,0.56);
+  }
+
+  .vis-source-row {
+    display: flex;
+    gap: 0.7rem;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 760px) {
+  .vis-search-input-row {
+    grid-template-columns: auto minmax(0,1fr);
+  }
+
+  .vis-search-button {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .vis-hero,
+  .vis-result-card {
+    border-radius: 1.25rem;
+  }
+}
+
+/* PASS176 · Intelligence Search bridge + discovery capsules */
+@layer components {
+  .vsdr-shell {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1.6rem;
+    border: 1px solid rgba(255,255,255,0.095);
+    background:
+      radial-gradient(circle at 12% 0%, rgba(34,211,238,0.090), transparent 34%),
+      radial-gradient(circle at 88% 18%, rgba(200,169,106,0.105), transparent 32%),
+      linear-gradient(145deg, rgba(255,255,255,0.040), rgba(255,255,255,0.012)),
+      rgba(0,0,0,0.28);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.045), 0 24px 90px rgba(0,0,0,0.20);
+    padding: clamp(1rem, 2.4vw, 1.55rem);
+    contain: paint;
+  }
+
+  .vsdr-shell::before,
+  .vsdr-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(to right, rgba(255,255,255,0.026) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.022) 1px, transparent 1px);
+    background-size: 42px 42px;
+    opacity: 0.16;
+    mask-image: radial-gradient(circle at 32% 18%, black, transparent 74%);
+  }
+
+  .vsdr-shell > *,
+  .vsdr-card > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .vsdr-card {
+    position: relative;
+    overflow: hidden;
+    min-height: 11rem;
+    border-radius: 1.18rem;
+    border: 1px solid rgba(255,255,255,0.082);
+    background:
+      linear-gradient(145deg, rgba(255,255,255,0.044), rgba(255,255,255,0.014)),
+      rgba(0,0,0,0.24);
+    padding: 1rem;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+  }
+
+  .vis-bridge-box {
+    flex-shrink: 0;
+    width: min(100%, 20rem);
+    border-radius: 1.15rem;
+    border: 1px solid rgba(200,169,106,0.16);
+    background:
+      radial-gradient(circle at 100% 0%, rgba(200,169,106,0.095), transparent 32%),
+      rgba(0,0,0,0.24);
+    padding: 0.95rem;
+  }
+
+  .vis-bridge-box p {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.54rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(250,204,121,0.82);
+  }
+
+  .vis-bridge-box span {
+    margin-top: 0.5rem;
+    display: block;
+    font-size: 0.72rem;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.48);
+  }
+
+  .vis-bridge-box .vis-shield-link {
+    margin-top: 0.8rem;
+    width: 100%;
+  }
+}
+
+@media (max-width: 760px) {
+  .vis-bridge-box {
+    width: 100%;
+  }
+
+  .vsdr-card {
+    min-height: auto;
+  }
+}
+
+/* PASS177 · live search adapter skeleton + result logos + Shield query bridge */
+@layer components {
+  .vis-token-avatar-image {
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: block;
+  }
+
+  .vis-live-adapter-note {
+    margin-top: 0.55rem !important;
+    display: inline-flex !important;
+    width: auto;
+    border-radius: 999px;
+    border: 1px solid rgba(34,211,238,0.14);
+    background: rgba(34,211,238,0.055);
+    padding: 0.32rem 0.54rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.50rem !important;
+    line-height: 1;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(165,243,252,0.78) !important;
+  }
+
+  .vis-bridge-box {
+    border-color: rgba(34,211,238,0.14);
+    background:
+      radial-gradient(circle at 0% 0%, rgba(34,211,238,0.070), transparent 32%),
+      radial-gradient(circle at 100% 0%, rgba(200,169,106,0.095), transparent 32%),
+      rgba(0,0,0,0.24);
+  }
+}
+
+/* PASS178 · token metadata cache/provider readiness */
+@layer components {
+  .tmp-shell {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1.65rem;
+    border: 1px solid rgba(255,255,255,0.095);
+    background:
+      radial-gradient(circle at 12% 0%, rgba(200,169,106,0.12), transparent 34%),
+      radial-gradient(circle at 90% 18%, rgba(34,211,238,0.085), transparent 32%),
+      linear-gradient(145deg, rgba(255,255,255,0.040), rgba(255,255,255,0.012)),
+      rgba(0,0,0,0.30);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.045), 0 24px 90px rgba(0,0,0,0.20);
+    padding: clamp(1rem, 2.4vw, 1.65rem);
+    contain: paint;
+  }
+
+  .tmp-shell::before,
+  .tmp-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(to right, rgba(255,255,255,0.026) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.022) 1px, transparent 1px);
+    background-size: 42px 42px;
+    opacity: 0.14;
+    mask-image: radial-gradient(circle at 32% 18%, black, transparent 74%);
+  }
+
+  .tmp-shell > *,
+  .tmp-card > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .tmp-stat,
+  .tmp-card {
+    min-width: 0;
+    overflow: hidden;
+    border-radius: 1.25rem;
+    border: 1px solid rgba(255,255,255,0.085);
+    background:
+      linear-gradient(145deg, rgba(255,255,255,0.044), rgba(255,255,255,0.014)),
+      rgba(0,0,0,0.24);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+  }
+
+  .tmp-stat {
+    padding: 0.95rem;
+  }
+
+  .tmp-stat p {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.52rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.36);
+  }
+
+  .tmp-stat strong {
+    display: block;
+    margin-top: 0.42rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 1.25rem;
+    color: white;
+  }
+
+  .tmp-card {
+    position: relative;
+    padding: 1rem;
+  }
+
+  .tmp-priority,
+  .tmp-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.10);
+    padding: 0.32rem 0.52rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 0.50rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .tmp-priority {
+    background: rgba(255,255,255,0.035);
+    color: rgba(255,255,255,0.55);
+  }
+
+  .tmp-status-active {
+    border-color: rgba(52,211,153,0.18);
+    background: rgba(52,211,153,0.060);
+    color: rgba(167,243,208,0.88);
+  }
+
+  .tmp-status-planned {
+    border-color: rgba(200,169,106,0.22);
+    background: rgba(200,169,106,0.070);
+    color: rgba(250,204,121,0.88);
+  }
+
+  .tmp-status-blocked {
+    border-color: rgba(255,77,109,0.18);
+    background: rgba(255,77,109,0.055);
+    color: rgba(255,190,204,0.88);
+  }
+}
+
+@media (max-width: 780px) {
+  .tmp-shell {
+    border-radius: 1.3rem;
+    padding: 1rem;
+  }
+
+  .tmp-card {
+    border-radius: 1.05rem;
+    padding: 0.85rem;
+  }
+}
+
+/* PASS179 · Velmère Lens command router */
+@layer components {
+  .vlcr-shell {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1.6rem;
+    border: 1px solid rgba(255,255,255,0.095);
+    background:
+      radial-gradient(circle at 10% 0%, rgba(200,169,106,0.12), transparent 32%),
+      radial-gradient(circle at 90% 14%, rgba(34,211,238,0.085), transparent 34%),
+      linear-gradient(145deg, rgba(255,255,255,0.040), rgba(255,255,255,0.012)),
+      rgba(0,0,0,0.30);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.045), 0 24px 90px rgba(0,0,0,0.20);
+    padding: clamp(1rem, 2.6vw, 1.7rem);
+    contain: paint;
+  }
+
+  .vlcr-shell::before,
+  .vlcr-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(to right, rgba(255,255,255,0.026) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.022) 1px, transparent 1px);
+    background-size: 42px 42px;
+    opacity: 0.14;
+    mask-image: radial-gradient(circle at 32% 18%, black, transparent 74%);
+  }
+
+  .vlcr-shell > *,
+  .vlcr-card > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .vlcr-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1.18rem;
+    border: 1px solid rgba(255,255,255,0.082);
+    background:
+      linear-gradient(145deg, rgba(255,255,255,0.044), rgba(255,255,255,0.014)),
+      rgba(0,0,0,0.24);
+    padding: 1rem;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+  }
+
+  .vlcr-priority {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    border: 1px solid rgba(200,169,106,0.20);
+    background: rgba(200,169,106,0.070);
+    padding: 0.30rem 0.48rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 0.48rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(250,204,121,0.86);
+  }
+
+  .vlcr-link {
+    margin-top: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    border-radius: 999px;
+    border: 1px solid rgba(34,211,238,0.15);
+    background: rgba(34,211,238,0.055);
+    padding: 0.52rem 0.74rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 0.56rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(165,243,252,0.78);
+    transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+  }
+
+  .vlcr-link:hover {
+    transform: translateY(-1px);
+    border-color: rgba(34,211,238,0.30);
+    background: rgba(34,211,238,0.095);
+  }
+}
+
+@media (max-width: 760px) {
+  .vlcr-shell,
+  .vlcr-card {
+    border-radius: 1.15rem;
+  }
+}
+
+/* PASS180 · Contract Lens + OSINT Queue foundations */
+@layer components {
+  .clp-shell,
+  .oqp-shell {
+    position: relative;
+    overflow: hidden;
+    border-radius: 2rem;
+    border: 1px solid rgba(255,255,255,0.10);
+    background:
+      radial-gradient(circle at 10% 0%, rgba(200,169,106,0.13), transparent 34%),
+      radial-gradient(circle at 92% 14%, rgba(34,211,238,0.085), transparent 34%),
+      radial-gradient(circle at 50% 100%, rgba(255,77,109,0.045), transparent 36%),
+      linear-gradient(145deg, rgba(255,255,255,0.040), rgba(255,255,255,0.012)),
+      rgba(0,0,0,0.34);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.055), 0 30px 118px rgba(0,0,0,0.28);
+    padding: clamp(1.2rem, 3vw, 2.1rem);
+    contain: paint;
+  }
+
+  .clp-shell::before,
+  .oqp-shell::before,
+  .clp-card::before,
+  .oqp-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(to right, rgba(255,255,255,0.030) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.026) 1px, transparent 1px);
+    background-size: 48px 48px;
+    opacity: 0.16;
+    mask-image: radial-gradient(circle at 32% 18%, black, transparent 74%);
+  }
+
+  .clp-shell > *,
+  .oqp-shell > *,
+  .clp-card > *,
+  .oqp-card > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .clp-stat,
+  .oqp-stat,
+  .clp-card,
+  .oqp-card {
+    min-width: 0;
+    overflow: hidden;
+    border-radius: 1.35rem;
+    border: 1px solid rgba(255,255,255,0.085);
+    background:
+      linear-gradient(145deg, rgba(255,255,255,0.044), rgba(255,255,255,0.014)),
+      rgba(0,0,0,0.24);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.045);
+  }
+
+  .clp-stat,
+  .oqp-stat {
+    padding: 1rem;
+  }
+
+  .clp-stat p,
+  .oqp-stat p {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 0.54rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.36);
+  }
+
+  .clp-stat strong,
+  .oqp-stat strong {
+    display: block;
+    margin-top: 0.45rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 1.35rem;
+    color: white;
+  }
+
+  .clp-card,
+  .oqp-card {
+    position: relative;
+    padding: 1rem;
+  }
+
+  .clp-tone,
+  .clp-mode,
+  .oqp-priority,
+  .oqp-status,
+  .oqp-kind {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.10);
+    padding: 0.32rem 0.52rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 0.50rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .clp-mode,
+  .oqp-priority,
+  .oqp-kind {
+    background: rgba(255,255,255,0.035);
+    color: rgba(255,255,255,0.55);
+  }
+
+  .clp-tone-calm,
+  .oqp-status-queued {
+    border-color: rgba(52,211,153,0.18);
+    background: rgba(52,211,153,0.060);
+    color: rgba(167,243,208,0.88);
+  }
+
+  .clp-tone-review,
+  .oqp-status-manual,
+  .oqp-status-needs {
+    border-color: rgba(200,169,106,0.22);
+    background: rgba(200,169,106,0.070);
+    color: rgba(250,204,121,0.88);
+  }
+
+  .clp-tone-elevated,
+  .clp-tone-blocked,
+  .oqp-status-blocked {
+    border-color: rgba(255,77,109,0.18);
+    background: rgba(255,77,109,0.055);
+    color: rgba(255,190,204,0.88);
+  }
+}
+
+@media (max-width: 780px) {
+  .clp-shell,
+  .oqp-shell {
+    border-radius: 1.45rem;
+    padding: 1rem;
+  }
+
+  .clp-card,
+  .oqp-card {
+    border-radius: 1.05rem;
+    padding: 0.85rem;
+  }
+}
+
+
+/* PASS181 · Shield polish: centered VLM core, wider modal, side-column evidence board, safer containment */
+@layer components {
+  .shield-token-popup-shell {
+    width: min(1360px, calc(100vw - 1rem)) !important;
+    max-height: min(94dvh, 920px) !important;
+  }
+
+  .shield-vlm-sequence-overlay {
+    overflow: hidden !important;
+    contain: layout paint style !important;
+    isolation: isolate !important;
+  }
+
+  .shield-vlm-sequence-overlay::before,
+  .shield-vlm-sequence-overlay::after {
+    opacity: 0.22 !important;
+    filter: none !important;
+  }
+
+  .shield-vlm-topbar-minimal {
+    align-items: flex-start !important;
+  }
+
+  .shield-vlm-topbar-actions {
+    flex-wrap: nowrap !important;
+    justify-content: flex-end !important;
+    margin-left: auto !important;
+  }
+
+  .shield-vlm-back-button-corner {
+    margin-left: 0.15rem !important;
+  }
+
+  .shield-vlm-orbit-mode .shield-vlm-dom-core,
+  .shield-vlm-board-mode .shield-vlm-dom-core {
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+  }
+
+  .shield-vlm-board-mode .shield-vlm-dom-core {
+    z-index: 26 !important;
+  }
+
+  .shield-vlm-board-mode .shield-vlm-static-evidence-board {
+    inset: clamp(5.4rem, 8vh, 6.2rem) clamp(0.8rem, 1.5vw, 1.25rem) clamp(0.8rem, 1.5vh, 1.2rem) !important;
+    padding: 1rem 1rem 1rem !important;
+  }
+
+  .shield-vlm-static-stage,
+  .shield-vlm-static-map-rings {
+    inset: 8.15rem 0.35rem 0.45rem 0.35rem !important;
+  }
+
+  .shield-vlm-static-map-ring-a {
+    width: min(28rem, 38vw) !important;
+    height: min(18rem, 25vw) !important;
+  }
+
+  .shield-vlm-static-map-ring-b {
+    width: min(39rem, 54vw) !important;
+    height: min(24rem, 34vw) !important;
+  }
+
+  .shield-vlm-static-map-ring-c {
+    width: min(52rem, 72vw) !important;
+    height: min(31rem, 44vw) !important;
+    opacity: 0.58 !important;
+  }
+
+  .shield-vlm-static-card {
+    width: clamp(10rem, 13.2vw, 11.8rem) !important;
+    min-height: 6.4rem !important;
+  }
+
+  .shield-vlm-detail-panel-side,
+  .shield-vlm-detail-panel-solid {
+    right: clamp(0.8rem, 1.6vw, 1.35rem) !important;
+    width: min(25rem, 28vw) !important;
+    max-width: calc(100vw - 2rem) !important;
+  }
+
+  .shield-token-search-suggest-row {
+    align-items: center !important;
+  }
+
+  .shield-suggestion-token-avatar,
+  .shield-token-search-suggest-row .shield-suggestion-token-avatar {
+    display: inline-flex !important;
+    overflow: hidden !important;
+    flex-shrink: 0 !important;
+  }
+}
+
+@media (max-width: 1180px) {
+  .shield-token-popup-shell {
+    width: min(1280px, calc(100vw - 0.85rem)) !important;
+  }
+
+  .shield-vlm-topbar-actions {
+    flex-wrap: wrap !important;
+  }
+
+  .shield-vlm-detail-panel-side,
+  .shield-vlm-detail-panel-solid {
+    width: min(22rem, 36vw) !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .shield-vlm-static-card {
+    width: clamp(8.2rem, 36vw, 10rem) !important;
+    min-height: 5.7rem !important;
+  }
+
+  .shield-vlm-board-mode .shield-vlm-dom-core {
+    top: 52% !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .shield-token-popup-shell {
+    width: min(100vw - 0.5rem, 100%) !important;
+    max-height: min(96dvh, 940px) !important;
+  }
+
+  .shield-vlm-static-stage,
+  .shield-vlm-static-map-rings {
+    inset: 10.6rem 0 0 0 !important;
+  }
+
+  .shield-vlm-detail-panel-side,
+  .shield-vlm-detail-panel-solid {
+    right: 0.55rem !important;
+    left: 0.55rem !important;
+    width: auto !important;
+    max-width: none !important;
+  }
+}
+
+/* PASS185 · Admin Security Console + alert rules + safe export */
+@layer components {
+  .asc-shell {
+    position: relative;
+    overflow: hidden;
+    border-radius: 2rem;
+    border: 1px solid rgba(255,255,255,0.10);
+    background:
+      radial-gradient(circle at 10% 0%, rgba(200,169,106,0.13), transparent 34%),
+      radial-gradient(circle at 92% 14%, rgba(34,211,238,0.085), transparent 34%),
+      radial-gradient(circle at 50% 100%, rgba(255,77,109,0.045), transparent 36%),
+      linear-gradient(145deg, rgba(255,255,255,0.040), rgba(255,255,255,0.012)),
+      rgba(0,0,0,0.34);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.055), 0 30px 118px rgba(0,0,0,0.28);
+    padding: clamp(1.2rem, 3vw, 2.1rem);
+    contain: paint;
+  }
+
+  .asc-shell::before,
+  .asc-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(to right, rgba(255,255,255,0.030) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.026) 1px, transparent 1px);
+    background-size: 48px 48px;
+    opacity: 0.16;
+    mask-image: radial-gradient(circle at 32% 18%, black, transparent 74%);
+  }
+
+  .asc-shell > *,
+  .asc-card > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .asc-stat,
+  .asc-card {
+    min-width: 0;
+    overflow: hidden;
+    border-radius: 1.35rem;
+    border: 1px solid rgba(255,255,255,0.085);
+    background:
+      linear-gradient(145deg, rgba(255,255,255,0.044), rgba(255,255,255,0.014)),
+      rgba(0,0,0,0.24);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.045);
+  }
+
+  .asc-card {
+    position: relative;
+    padding: 1rem;
+  }
+
+  .asc-card-strong {
+    border-color: rgba(34,211,238,0.13);
+    background:
+      radial-gradient(circle at 100% 0%, rgba(34,211,238,0.070), transparent 32%),
+      linear-gradient(145deg, rgba(255,255,255,0.048), rgba(255,255,255,0.014)),
+      rgba(0,0,0,0.26);
+  }
+
+  .asc-stat {
+    padding: 1rem;
+  }
+
+  .asc-stat p {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 0.54rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.36);
+  }
+
+  .asc-stat strong {
+    display: block;
+    margin-top: 0.45rem;
+    overflow-wrap: anywhere;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: clamp(0.95rem, 1.8vw, 1.22rem);
+    color: white;
+  }
+
+  .asc-severity,
+  .asc-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.10);
+    padding: 0.32rem 0.52rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 0.50rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .asc-status {
+    background: rgba(255,255,255,0.035);
+    color: rgba(255,255,255,0.55);
+  }
+
+  .asc-severity-info {
+    border-color: rgba(52,211,153,0.18);
+    background: rgba(52,211,153,0.060);
+    color: rgba(167,243,208,0.88);
+  }
+
+  .asc-severity-review {
+    border-color: rgba(200,169,106,0.22);
+    background: rgba(200,169,106,0.070);
+    color: rgba(250,204,121,0.88);
+  }
+
+  .asc-severity-elevated,
+  .asc-severity-critical {
+    border-color: rgba(255,77,109,0.18);
+    background: rgba(255,77,109,0.055);
+    color: rgba(255,190,204,0.88);
+  }
+
+  .asc-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    border-radius: 999px;
+    border: 1px solid rgba(34,211,238,0.15);
+    background: rgba(34,211,238,0.055);
+    padding: 0.72rem 0.92rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 0.58rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(165,243,252,0.78);
+    transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+  }
+
+  .asc-link:hover {
+    transform: translateY(-1px);
+    border-color: rgba(34,211,238,0.30);
+    background: rgba(34,211,238,0.095);
+  }
+}
+
+@media (max-width: 780px) {
+  .asc-shell {
+    border-radius: 1.45rem;
+    padding: 1rem;
+  }
+
+  .asc-card {
+    border-radius: 1.05rem;
+    padding: 0.85rem;
+  }
+}
+
+/* PASS188 · Velmère Security Trust public surface */
+@layer components {
+  .vst-hero,
+  .vst-card,
+  .vst-roadmap {
+    position: relative;
+    overflow: hidden;
+    border-radius: 2rem;
+    border: 1px solid rgba(255,255,255,0.10);
+    background:
+      radial-gradient(circle at 10% 0%, rgba(200,169,106,0.13), transparent 34%),
+      radial-gradient(circle at 92% 14%, rgba(34,211,238,0.085), transparent 34%),
+      radial-gradient(circle at 50% 100%, rgba(255,77,109,0.040), transparent 36%),
+      linear-gradient(145deg, rgba(255,255,255,0.040), rgba(255,255,255,0.012)),
+      rgba(0,0,0,0.34);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.055), 0 30px 118px rgba(0,0,0,0.28);
+    contain: paint;
+  }
+
+  .vst-hero,
+  .vst-roadmap {
+    padding: clamp(1.2rem, 3vw, 2.2rem);
+  }
+
+  .vst-card {
+    padding: 1.05rem;
+  }
+
+  .vst-hero::before,
+  .vst-card::before,
+  .vst-roadmap::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(to right, rgba(255,255,255,0.030) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.026) 1px, transparent 1px);
+    background-size: 48px 48px;
+    opacity: 0.16;
+    mask-image: radial-gradient(circle at 32% 18%, black, transparent 74%);
+  }
+
+  .vst-hero > *,
+  .vst-card > *,
+  .vst-roadmap > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .vst-stat {
+    min-width: 0;
+    overflow: hidden;
+    border-radius: 1.35rem;
+    border: 1px solid rgba(255,255,255,0.085);
+    background:
+      linear-gradient(145deg, rgba(255,255,255,0.044), rgba(255,255,255,0.014)),
+      rgba(0,0,0,0.24);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.045);
+    padding: 1rem;
+  }
+
+  .vst-stat p {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 0.54rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.36);
+  }
+
+  .vst-stat strong {
+    display: block;
+    margin-top: 0.45rem;
+    overflow-wrap: anywhere;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: clamp(1.05rem, 2vw, 1.35rem);
+    color: white;
+  }
+
+  .vst-chip,
+  .vst-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.10);
+    background: rgba(255,255,255,0.035);
+    padding: 0.34rem 0.58rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 0.52rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.56);
+  }
+
+  .vst-chip-live {
+    border-color: rgba(52,211,153,0.18);
+    background: rgba(52,211,153,0.060);
+    color: rgba(167,243,208,0.88);
+  }
+
+  .vst-chip-preview {
+    border-color: rgba(200,169,106,0.22);
+    background: rgba(200,169,106,0.070);
+    color: rgba(250,204,121,0.88);
+  }
+
+  .vst-chip-planned,
+  .vst-chip-blocked {
+    border-color: rgba(255,77,109,0.18);
+    background: rgba(255,77,109,0.055);
+    color: rgba(255,190,204,0.88);
+  }
+
+  .vst-link {
+    border-color: rgba(34,211,238,0.15);
+    background: rgba(34,211,238,0.055);
+    padding: 0.74rem 0.92rem;
+    font-weight: 800;
+    color: rgba(165,243,252,0.78);
+    transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+  }
+
+  .vst-link:hover {
+    transform: translateY(-1px);
+    border-color: rgba(34,211,238,0.30);
+    background: rgba(34,211,238,0.095);
+  }
+}
+
+@media (max-width: 780px) {
+  .vst-hero,
+  .vst-card,
+  .vst-roadmap {
+    border-radius: 1.45rem;
+  }
+
+  .vst-card {
+    padding: 0.9rem;
+  }
+}
+
+/* PASS189 · Security operations checklist + nav/footer trust integration */
+@layer components {
+  .vso-shell {
+    position: relative;
+    overflow: hidden;
+    border-radius: 2rem;
+    border: 1px solid rgba(255,255,255,0.10);
+    background:
+      radial-gradient(circle at 10% 0%, rgba(200,169,106,0.13), transparent 34%),
+      radial-gradient(circle at 92% 14%, rgba(34,211,238,0.085), transparent 34%),
+      radial-gradient(circle at 50% 100%, rgba(255,77,109,0.040), transparent 36%),
+      linear-gradient(145deg, rgba(255,255,255,0.040), rgba(255,255,255,0.012)),
+      rgba(0,0,0,0.34);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.055), 0 30px 118px rgba(0,0,0,0.28);
+    padding: clamp(1.2rem, 3vw, 2.2rem);
+    contain: paint;
+  }
+
+  .vso-card,
+  .vso-stat {
+    min-width: 0;
+    overflow: hidden;
+    border-radius: 1.35rem;
+    border: 1px solid rgba(255,255,255,0.085);
+    background:
+      linear-gradient(145deg, rgba(255,255,255,0.044), rgba(255,255,255,0.014)),
+      rgba(0,0,0,0.24);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.045);
+  }
+
+  .vso-card {
+    padding: 1rem;
+  }
+
+  .vso-stat {
+    padding: 0.9rem;
+  }
+
+  .vso-stat p {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 0.52rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.36);
+  }
+
+  .vso-stat strong {
+    display: block;
+    margin-top: 0.42rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: clamp(0.95rem, 1.75vw, 1.2rem);
+    color: white;
+  }
+
+  .vso-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.10);
+    background: rgba(255,255,255,0.035);
+    padding: 0.32rem 0.52rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 0.50rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+  }
+
+  .vso-status-ready {
+    border-color: rgba(52,211,153,0.18);
+    background: rgba(52,211,153,0.060);
+    color: rgba(167,243,208,0.88);
+  }
+
+  .vso-status-partial,
+  .vso-status-manual {
+    border-color: rgba(200,169,106,0.22);
+    background: rgba(200,169,106,0.070);
+    color: rgba(250,204,121,0.88);
+  }
+
+  .vso-status-blocked {
+    border-color: rgba(255,77,109,0.18);
+    background: rgba(255,77,109,0.055);
+    color: rgba(255,190,204,0.88);
+  }
+}
+
+@media (max-width: 780px) {
+  .vso-shell,
+  .vso-card,
+  .vso-stat {
+    border-radius: 1.25rem;
+  }
+
+  .vso-card {
+    padding: 0.85rem;
+  }
+}
+
+/* PASS193 · VLM Brain viewport expansion, split evidence lanes, security overflow fix, Lens report polish */
+@layer components {
+  .shield-vlm-sequence-overlay {
+    width: min(86rem, calc(100vw - 5.5rem)) !important;
+    max-width: calc(100vw - 5.5rem) !important;
+    min-height: min(47rem, calc(100vh - 8rem)) !important;
+    margin-inline: auto !important;
+    border-radius: 2rem !important;
+  }
+
+  .shield-vlm-topbar {
+    max-width: calc(100% - 2rem) !important;
+    padding-right: 0 !important;
+  }
+
+  .shield-vlm-orbit-mode .shield-vlm-dom-core,
+  .shield-vlm-board-mode .shield-vlm-dom-core {
+    left: 50% !important;
+    top: 53% !important;
+  }
+
+  .shield-vlm-orbit-mode .shield-vlm-dom-core {
+    width: clamp(10rem, 14vw, 14.8rem) !important;
+    height: clamp(10rem, 14vw, 14.8rem) !important;
+  }
+
+  .shield-vlm-tile-deck {
+    inset: 4.6rem 1.15rem 1.1rem 1.15rem !important;
+    overflow: visible !important;
+    transform: translateZ(0);
+  }
+
+  .shield-vlm-tile-deck .shield-vlm-read-card-advanced {
+    width: clamp(9.8rem, 11.8vw, 13.8rem) !important;
+    min-height: 5.1rem !important;
+    padding: 0.9rem 0.98rem 0.86rem !important;
+    background:
+      linear-gradient(90deg, rgba(200,169,106,0.38), rgba(200,169,106,0.060) 0.24rem, transparent 0.26rem),
+      radial-gradient(circle at 10% 0%, rgba(255,255,255,0.12), transparent 38%),
+      linear-gradient(140deg, rgba(12,15,20,0.98), rgba(0,0,0,0.96)) !important;
+    border-color: rgba(200,169,106,0.24) !important;
+    box-shadow: 0 22px 58px rgba(0,0,0,0.50), inset 0 1px 0 rgba(255,255,255,0.075) !important;
+  }
+
+  .shield-vlm-tile-deck .shield-vlm-read-card-advanced p:first-of-type {
+    color: rgba(255,255,255,0.58) !important;
+    text-shadow: 0 1px 14px rgba(0,0,0,0.75);
+  }
+
+  .shield-vlm-tile-deck .shield-vlm-read-card-advanced p:nth-of-type(2) {
+    color: rgba(255,255,255,0.97) !important;
+    font-size: clamp(0.82rem, 0.82vw, 1rem) !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    line-height: 1.08 !important;
+    text-shadow: 0 2px 18px rgba(0,0,0,0.88);
+  }
+
+  .shield-vlm-tile-deck .shield-vlm-read-card-advanced p:nth-of-type(3) {
+    color: rgba(250,204,121,0.92) !important;
+  }
+
+  .shield-vlm-zoom-controls {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.28rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.09);
+    background: rgba(0,0,0,0.34);
+    padding: 0.28rem;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.045);
+  }
+
+  .shield-vlm-zoom-controls button,
+  .shield-vlm-zoom-controls span {
+    min-width: 1.85rem;
+    height: 1.65rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 0.55rem;
+    font-weight: 850;
+    letter-spacing: 0.08em;
+    color: rgba(255,255,255,0.62);
+  }
+
+  .shield-vlm-zoom-controls button {
+    border: 1px solid rgba(200,169,106,0.14);
+    background: rgba(200,169,106,0.055);
+    color: rgba(250,204,121,0.86);
+    transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
+  }
+
+  .shield-vlm-zoom-controls button:hover {
+    border-color: rgba(200,169,106,0.34);
+    background: rgba(200,169,106,0.12);
+    transform: translateY(-1px);
+  }
+
+  .shield-vlm-board-mode .shield-vlm-static-evidence-board {
+    inset: clamp(5.2rem, 7vh, 6.1rem) clamp(0.55rem, 0.9vw, 0.9rem) clamp(0.55rem, 1.2vh, 0.9rem) !important;
+    overflow: visible !important;
+  }
+
+  .shield-vlm-static-stage,
+  .shield-vlm-static-map-rings {
+    inset: 8.4rem -2.1rem 0.65rem -2.1rem !important;
+    overflow: visible !important;
+  }
+
+  .shield-vlm-static-map-ring {
+    left: 50% !important;
+    top: 53% !important;
+  }
+
+  .shield-vlm-static-card {
+    width: clamp(10.7rem, 12vw, 13rem) !important;
+    min-height: 6.25rem !important;
+    background:
+      linear-gradient(90deg, rgba(200,169,106,0.34), rgba(200,169,106,0.055) 0.25rem, transparent 0.26rem),
+      radial-gradient(circle at 8% 0%, rgba(255,255,255,0.12), transparent 36%),
+      linear-gradient(140deg, rgba(12,15,20,0.985), rgba(0,0,0,0.965)) !important;
+  }
+
+  .shield-vlm-static-card:hover,
+  .shield-vlm-static-card.shield-vlm-read-card-active {
+    transform: var(--vlm-static-transform, translate(-50%, -50%) scale(1.045)) !important;
+  }
+
+  .shield-vlm-board-mode .shield-vlm-dom-core {
+    z-index: 20 !important;
+    width: clamp(10rem, 13vw, 13.8rem) !important;
+    height: clamp(10rem, 13vw, 13.8rem) !important;
+  }
+
+  .shield-vlm-detail-panel-side,
+  .shield-vlm-detail-panel-solid {
+    z-index: 62 !important;
+    background:
+      radial-gradient(circle at 100% 0%, rgba(34,211,238,0.10), transparent 30%),
+      linear-gradient(180deg, rgba(255,255,255,0.060), rgba(255,255,255,0.018)),
+      #05070a !important;
+    box-shadow: 0 36px 145px rgba(0,0,0,0.80), inset 0 1px 0 rgba(255,255,255,0.075) !important;
+  }
+
+  .vst-hero,
+  .vst-card,
+  .vst-roadmap,
+  .vso-shell,
+  .vso-card,
+  .vlcr-shell,
+  .vlcr-card {
+    overflow: hidden !important;
+    overflow-clip-margin: 0 !important;
+    isolation: isolate !important;
+    contain: paint !important;
+  }
+
+  .vst-hero::before,
+  .vst-card::before,
+  .vst-roadmap::before,
+  .vso-shell::before,
+  .vlcr-shell::before,
+  .vlcr-card::before {
+    inset: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .shield-token-search-suggest-panel {
+    z-index: 2147483000 !important;
+  }
+
+  .shield-suggestion-token-avatar {
+    display: inline-flex !important;
+    overflow: hidden !important;
+    background-color: #05070a !important;
+  }
+}
+
+@media (min-width: 1500px) {
+  .shield-vlm-sequence-overlay {
+    width: min(92rem, calc(100vw - 7rem)) !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .shield-vlm-sequence-overlay {
+    width: calc(100vw - 1rem) !important;
+    max-width: calc(100vw - 1rem) !important;
+  }
+
+  .shield-vlm-static-stage,
+  .shield-vlm-static-map-rings {
+    inset: 10rem 0 0.5rem 0 !important;
+    overflow: hidden !important;
+  }
+
+  .shield-vlm-zoom-controls {
+    display: none !important;
+  }
+}
+
+/* PASS193 · Lens PDF-ready report preview controls */
+@layer components {
+  .vlcr-action-row {
+    margin-top: 0.85rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    align-items: center;
+  }
+
+  .vlcr-action-row .vlcr-link {
+    margin-top: 0 !important;
+  }
+
+  .vlcr-link-muted {
+    border-color: rgba(200,169,106,0.15) !important;
+    background: rgba(200,169,106,0.055) !important;
+    color: rgba(250,204,121,0.78) !important;
+  }
+
+  .vlcr-report-preview {
+    position: relative;
+    z-index: 1;
+    margin-top: 1rem;
+    border-radius: 1.15rem;
+    border: 1px solid rgba(200,169,106,0.14);
+    background:
+      radial-gradient(circle at 0% 0%, rgba(200,169,106,0.10), transparent 34%),
+      rgba(0,0,0,0.24);
+    padding: 1rem;
+    overflow: hidden;
+    contain: paint;
+  }
+}
+
+/* PASS194 · full-screen Orbit 360 hotfix, single-popup details and calmer Lens/Search polish */
+@layer components {
+  .shield-vlm-sequence-overlay {
+    position: fixed !important;
+    inset: clamp(0.65rem, 1.6vh, 1.15rem) clamp(0.85rem, 3vw, 2.75rem) clamp(0.85rem, 2.2vh, 1.35rem) !important;
+    width: auto !important;
+    max-width: none !important;
+    height: auto !important;
+    max-height: none !important;
+    z-index: 2147482600 !important;
+    border-radius: clamp(1.45rem, 2.3vw, 2.25rem) !important;
+    overflow: hidden !important;
+    contain: layout paint style !important;
+    background:
+      radial-gradient(circle at 50% 50%, rgba(200,169,106,0.11), transparent 27%),
+      radial-gradient(circle at 50% 50%, rgba(34,211,238,0.075), transparent 38%),
+      linear-gradient(145deg, rgba(8,9,12,0.997), rgba(0,0,0,0.996)) !important;
+  }
+
+  .shield-vlm-sequence-overlay .shield-vlm-dom-core {
+    left: 50% !important;
+    top: 50% !important;
+    width: clamp(10.2rem, 17vw, 18rem) !important;
+    height: clamp(10.2rem, 17vw, 18rem) !important;
+    transform: translate3d(-50%, -50%, 0) scale(var(--vlm-core-scale, 1)) !important;
+    z-index: 18 !important;
+  }
+
+  .shield-vlm-sequence-overlay .shield-vlm-orbital-shell {
+    left: 50% !important;
+    top: 50% !important;
+    width: clamp(22rem, 42vw, 48rem) !important;
+    height: clamp(22rem, 42vw, 48rem) !important;
+    transform: translate3d(-50%, -50%, 0) !important;
+    opacity: 0.5 !important;
+  }
+
+  .shield-vlm-topbar-minimal {
+    position: absolute !important;
+    inset: clamp(0.75rem, 1.4vw, 1.15rem) clamp(0.75rem, 1.6vw, 1.35rem) auto clamp(0.75rem, 1.6vw, 1.35rem) !important;
+    z-index: 80 !important;
+    min-height: 3.4rem !important;
+    padding: 0 !important;
+  }
+
+  .shield-vlm-topbar-actions {
+    position: absolute !important;
+    left: clamp(8.5rem, 16vw, 14rem) !important;
+    right: 0 !important;
+    top: 0 !important;
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    gap: 0.42rem !important;
+    padding-right: clamp(7rem, 12vw, 10rem) !important;
+  }
+
+  .shield-vlm-back-button-corner {
+    position: absolute !important;
+    right: 0 !important;
+    top: 0 !important;
+    min-height: 2.9rem !important;
+    white-space: nowrap !important;
+    z-index: 4 !important;
+  }
+
+  .shield-vlm-motion-toggle-mini button:not(.is-active) {
+    display: none !important;
+  }
+
+  .shield-vlm-zoom-controls {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.22rem !important;
+    border-radius: 999px !important;
+    border: 1px solid rgba(255,255,255,0.10) !important;
+    background: rgba(0,0,0,0.48) !important;
+    padding: 0.25rem !important;
+    backdrop-filter: blur(14px) !important;
+  }
+
+  .shield-vlm-zoom-controls button,
+  .shield-vlm-zoom-controls span {
+    min-width: 2.1rem !important;
+    border-radius: 999px !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+    padding: 0.48rem 0.55rem !important;
+    text-align: center !important;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+    font-size: 0.55rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.10em !important;
+    color: rgba(255,255,255,0.62) !important;
+  }
+
+  .shield-vlm-zoom-controls button:hover {
+    border-color: rgba(200,169,106,0.28) !important;
+    background: rgba(200,169,106,0.09) !important;
+    color: rgba(200,169,106,0.92) !important;
+  }
+
+  .shield-vlm-read-card-advanced {
+    width: clamp(8.9rem, 11.6vw, 12.2rem) !important;
+    min-height: 6.1rem !important;
+    background:
+      radial-gradient(circle at 16% 0%, rgba(255,255,255,0.105), transparent 38%),
+      linear-gradient(145deg, rgba(18,20,24,0.94), rgba(0,0,0,0.90)) !important;
+    border-color: rgba(255,255,255,0.13) !important;
+  }
+
+  .shield-vlm-read-card-advanced p:first-of-type {
+    color: rgba(255,255,255,0.52) !important;
+  }
+
+  .shield-vlm-read-card-advanced p:nth-of-type(2) {
+    font-size: clamp(0.78rem, 1.08vw, 1rem) !important;
+    color: rgba(255,255,255,0.94) !important;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.75) !important;
+  }
+
+  .shield-vlm-read-card-advanced p:nth-of-type(3) {
+    color: rgba(223,190,112,0.88) !important;
+  }
+
+  .shield-vlm-detail-dismiss-layer {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 2147483200 !important;
+    background: rgba(0,0,0,0.26) !important;
+    backdrop-filter: blur(2px) !important;
+  }
+
+  .shield-vlm-detail-panel-popup {
+    position: fixed !important;
+    left: 50% !important;
+    top: 50% !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: min(44rem, calc(100vw - 2rem)) !important;
+    max-width: min(44rem, calc(100vw - 2rem)) !important;
+    max-height: min(82dvh, 47rem) !important;
+    transform: translate3d(-50%, -50%, 0) !important;
+    z-index: 2147483300 !important;
+    overflow: hidden auto !important;
+    border-radius: 1.65rem !important;
+    padding: clamp(1rem, 2vw, 1.35rem) !important;
+  }
+
+  .shield-mode-guide-dismiss-layer {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 2147483000 !important;
+    background: rgba(0,0,0,0.38) !important;
+    backdrop-filter: blur(3px) !important;
+  }
+
+  .shield-mode-guide-popup {
+    position: fixed !important;
+    left: 50% !important;
+    top: 50% !important;
+    z-index: 2147483100 !important;
+    width: min(34rem, calc(100vw - 2rem)) !important;
+    max-height: min(78dvh, 32rem) !important;
+    transform: translate3d(-50%, -50%, 0) !important;
+    overflow: hidden auto !important;
+    border-radius: 1.45rem !important;
+    border: 1px solid rgba(200,169,106,0.24) !important;
+    background:
+      radial-gradient(circle at 0% 0%, rgba(200,169,106,0.14), transparent 42%),
+      linear-gradient(145deg, rgba(10,12,16,0.985), rgba(1,2,5,0.985)) !important;
+    box-shadow: 0 34px 130px rgba(0,0,0,0.78), inset 0 1px 0 rgba(255,255,255,0.08) !important;
+    padding: 1rem !important;
+  }
+
+  .shield-source-spine-panel.hidden,
+  .shield-token-metric-grid-hidden,
+  .shield-token-review-tools-hidden {
+    display: none !important;
+  }
+
+  .shield-token-search-suggest-row .shield-suggestion-token-avatar {
+    width: 2.45rem !important;
+    height: 2.45rem !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  .shield-popup-chart-guide {
+    opacity: 0.72 !important;
+  }
+
+  .vlcr-action-row,
+  .vlcr-link {
+    display: none !important;
+  }
+
+  .vlcr-card {
+    min-height: 15rem !important;
+  }
+
+  .vlcr-card .font-mono.text-\[9px\] {
+    color: rgba(200,169,106,0.72) !important;
+  }
+}
+
+@media (max-width: 780px) {
+  .shield-vlm-sequence-overlay {
+    inset: 0.45rem !important;
+    border-radius: 1.1rem !important;
+  }
+
+  .shield-vlm-topbar-actions {
+    left: 0 !important;
+    top: 3.65rem !important;
+    right: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .shield-vlm-back-button-corner {
+    top: -3.65rem !important;
+  }
+
+  .shield-vlm-sequence-overlay .shield-vlm-dom-core {
+    width: clamp(9rem, 42vw, 12rem) !important;
+    height: clamp(9rem, 42vw, 12rem) !important;
+  }
+
+  .shield-vlm-detail-panel-popup {
+    width: calc(100vw - 1rem) !important;
+    max-height: 86dvh !important;
+  }
+}

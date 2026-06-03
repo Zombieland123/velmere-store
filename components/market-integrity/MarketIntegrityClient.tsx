@@ -20,6 +20,7 @@ import {
   Search,
   Radar,
   Star,
+  Globe,
   X,
 } from "lucide-react";
 import dynamic from "next/dynamic";
@@ -289,7 +290,7 @@ function proxiedIcon(image?: string) {
   return image;
 }
 
-const knownTokenLogoMap: Record<string, string> = {
+const knownTokenLogoMap = {
   btc: "https://assets.coingecko.com/coins/images/1/large/bitcoin.png",
   bitcoin: "https://assets.coingecko.com/coins/images/1/large/bitcoin.png",
   eth: "https://assets.coingecko.com/coins/images/279/large/ethereum.png",
@@ -307,21 +308,29 @@ const knownTokenLogoMap: Record<string, string> = {
   link: "https://assets.coingecko.com/coins/images/877/large/chainlink-new-logo.png",
   matic: "https://assets.coingecko.com/coins/images/4713/large/matic-token-icon.png",
   near: "https://assets.coingecko.com/coins/images/10365/large/near.jpg",
-};
+  sui: "https://assets.coingecko.com/coins/images/26375/large/sui-ocean-square.png",
+  arbitrum: "https://assets.coingecko.com/coins/images/16547/large/arb.jpg",
+  arb: "https://assets.coingecko.com/coins/images/16547/large/arb.jpg",
+  optimism: "https://assets.coingecko.com/coins/images/25244/large/Optimism.png",
+  op: "https://assets.coingecko.com/coins/images/25244/large/Optimism.png",
+  wif: "https://assets.coingecko.com/coins/images/33566/large/dogwifhat.jpg",
+  bonk: "https://assets.coingecko.com/coins/images/28600/large/bonk.jpg",
+} as const;
 
 function knownTokenLogo(symbol?: string, id?: string, name?: string) {
   const candidates = [symbol, id, name]
     .filter(Boolean)
     .map((value) => String(value).trim().toLowerCase());
+  const logoLookup: { [key: string]: string | undefined } = knownTokenLogoMap;
   for (const candidate of candidates) {
-    if (knownTokenLogoMap[candidate]) return knownTokenLogoMap[candidate];
+    if (logoLookup[candidate]) return logoLookup[candidate];
   }
   return undefined;
 }
 
-function TokenAvatar({ image, symbol }: { image?: string; symbol: string }) {
+function TokenAvatar({ image, symbol, id, name }: { image?: string; symbol: string; id?: string; name?: string }) {
   const [failed, setFailed] = useState(false);
-  const src = proxiedIcon(image ?? knownTokenLogo(symbol, symbol, symbol));
+  const src = proxiedIcon(image ?? knownTokenLogo(symbol, id, name));
   const symbolLabel = symbol.slice(0, 2).toUpperCase();
   if (!src || failed) {
     return (
@@ -911,6 +920,22 @@ export default function MarketIntegrityClient({
     startTerminalTransition(() => setSelected(item));
   }
 
+  function handleSuggestionSelect(item: Suggestion) {
+    setQuery(item.symbol);
+    setSuggestionsOpen(false);
+    setSuggestions([]);
+    const localMatch =
+      findLocalMarketMatch(item.id) ??
+      findLocalMarketMatch(item.symbol) ??
+      findLocalMarketMatch(item.name);
+    if (localMatch) {
+      setResult(localMatch.result);
+      openTokenModal(localMatch);
+      return;
+    }
+    void scanToken(item.id || item.symbol || item.name);
+  }
+
   function closeTokenModal() {
     setSelected(null);
   }
@@ -923,11 +948,22 @@ export default function MarketIntegrityClient({
   useEffect(() => {
     if (routeScanHandledRef.current || marketLoading || !marketRows.length)
       return;
-    const routeScan = new URLSearchParams(window.location.search).get("scan");
+    const routeParams = new URLSearchParams(window.location.search);
+    const routeScan =
+      routeParams.get("scan") ??
+      routeParams.get("asset") ??
+      routeParams.get("query");
     if (!routeScan) return;
+    const fromSearchBridge = routeParams.get("from") === "velmere-search";
     routeScanHandledRef.current = true;
-    setQuery(routeScan.toUpperCase());
-    void scanToken(routeScan);
+    const cleanRouteScan = routeScan.replace(/[^a-zA-Z0-9:_ -]/g, "").slice(0, 96);
+    setQuery(cleanRouteScan.toUpperCase());
+    if (fromSearchBridge) {
+      setActiveTab("top");
+      setSortKey("risk");
+      setSortDirection("desc");
+    }
+    void scanToken(cleanRouteScan);
     // scanToken intentionally reads the latest resolver state after markets load.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [marketLoading, marketRows.length]);
@@ -1263,14 +1299,10 @@ export default function MarketIntegrityClient({
                       <button
                         key={item.id}
                         type="button"
-                        onClick={() => {
-                          setQuery(item.symbol);
-                          setSuggestionsOpen(false);
-                          void scanToken(item.id);
-                        }}
+                        onClick={() => handleSuggestionSelect(item)}
                         className="shield-token-search-suggest-row flex w-full items-center gap-3 border-b border-white/[0.06] px-4 py-3 text-left transition last:border-b-0 hover:bg-cyan-300/[0.055]"
                       >
-                        <TokenAvatar image={item.image} symbol={item.symbol} />
+                        <TokenAvatar image={item.image} symbol={item.symbol} id={item.id} name={item.name} />
                         <span className="min-w-0 flex-1">
                           <span className="flex min-w-0 items-center gap-2">
                             <span className="block truncate text-sm font-semibold text-white">
@@ -1297,6 +1329,14 @@ export default function MarketIntegrityClient({
               </form>
 
               <div className="flex items-center justify-end gap-2">
+                <Link
+                  href="/search"
+                  className="shield-map-button shield-premium-focus"
+                  aria-label="Open Velmère Browser"
+                >
+                  <Globe className="h-3.5 w-3.5" />
+                  Velmère browser
+                </Link>
                 <Link
                   href="/market-integrity/shield-map"
                   className="shield-map-button shield-premium-focus"
@@ -1514,7 +1554,7 @@ export default function MarketIntegrityClient({
                     >
                       <div className="flex min-w-0 items-start justify-between gap-3">
                         <div className="flex min-w-0 items-center gap-3">
-                          <TokenAvatar image={row.image} symbol={row.symbol} />
+                          <TokenAvatar image={row.image} symbol={row.symbol} id={row.id} name={row.name} />
                           <div className="min-w-0">
                             <p className="truncate text-sm font-semibold text-white">
                               {row.name}
@@ -1679,6 +1719,8 @@ export default function MarketIntegrityClient({
                               <TokenAvatar
                                 image={row.image}
                                 symbol={row.symbol}
+                                id={row.id}
+                                name={row.name}
                               />
                               <div className="min-w-0">
                                 <p className="truncate text-sm font-semibold text-white transition group-hover:text-velmere-gold">

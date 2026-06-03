@@ -1714,3 +1714,712 @@ Scenario runtime uses project dependencies (`zod`, `ts-node`). In this artifact 
 - Tile detail drawer: keeps driver, score read, evidence need, next operator action and selected tile detail visible on a dark panel.
 - Search suggestions: token logo/avatar and source badge preserved with high z-index dropdown.
 - Guards: `verify:vlm-brain-static-advanced-polish` added and wired into `verify:shield-all` + `vercel-preflight`.
+
+
+---
+
+## PASS 169 — Home locale runtime fix
+
+### What changed
+- Fixed `ReferenceError: locale is not defined` in `components/home/HomePageClient.tsx`.
+- Replaced inline `homeCopy(useLocale())` with a scoped `const locale = useLocale(); const copy = homeCopy(locale);`.
+- Added PASS169 guard to prevent Home readiness panels from using an undefined locale.
+- Wired the guard into `verify:shield-all` and `vercel-preflight`.
+
+### Progress estimate
+
+| Area | Previous | After PASS 169 | Change |
+|---|---:|---:|---:|
+| Vercel/static build safety | 99% | 99% | 0% |
+| Home / brand landing | 75% | 76% | +1% |
+| Runtime Shield stability | 95% | 95% | 0% |
+| Full translations | 91% | 91% | 0% |
+| Whole brand/site launch readiness | 97% | 97% | 0% |
+
+### Current blockers
+- Full Vercel `next build` still needs confirmation after the fix.
+- Real browser QA is still needed for VLM brain, Shield modal and Home readiness panels.
+
+
+---
+
+## PASS 170 — Unified Orbit 360 + full-screen Evidence Board
+
+### What changed
+- Orbit 360 is now the default brain view for **Basic**, **Pro** and **Advanced** instead of only Advanced.
+- Added a second shared view in every mode: a **full-screen Evidence Board** with cards distributed around the VLM core.
+- Removed the duplicate static core rendering that caused the double **VLM** bug in board mode.
+- Kept tile click interactions and the right-side detail drawer, while making the board layout feel like a command map instead of a broken list.
+- Added PASS170 guard coverage for the unified orbit/board flow.
+
+### Progress estimate
+
+| Area | Previous | After PASS 170 | Change |
+|---|---:|---:|---:|
+| Shield token modal / chart | 92% | 93% | +1% |
+| VLM visual brain | 90% | 92% | +2% |
+| VLM brain orbit cleanup | 91% | 93% | +2% |
+| VLM brain performance runtime | 88% | 89% | +1% |
+| Static evidence board | 84% | 90% | +6% |
+| VLM AI risk brain | 67% | 70% | +3% |
+| Mobile performance | 78% | 79% | +1% |
+| Full translations | 89% | 90% | +1% |
+
+### Current blockers
+- Real browser QA is still needed for Orbit 360 smoothness in Basic/Pro on weaker GPUs.
+- Mobile spacing and overlap still need real-device testing for the full-screen board.
+- Live holder/orderbook/contract source feeds are still the main data blocker.
+
+---
+## PASS 171 — Evidence Board Focus Polish + WebGL-ready Lane
+
+### What changed
+- Board mode now uses `shield-vlm-board-mode` so the existing VLM core stays visible as the only core.
+- Removed duplicate static VLM core labels from board mode.
+- Board cards now use a bigger 3-ring command-map distribution instead of a cramped ring.
+- Added visual map rings and stronger active-card focus.
+- Added a safe, dependency-free `VlmBrainWebGLPrototype.tsx` lane that is not imported into the public runtime.
+
+### Progress estimate
+
+| Area | Previous | After PASS 171 | Change |
+|---|---:|---:|---:|
+| VLM visual brain | 92% | 93% | +1% |
+| VLM brain performance runtime | 89% | 90% | +1% |
+| Static evidence board | 90% | 94% | +4% |
+| Mobile performance | 79% | 81% | +2% |
+| WebGL/Three-ready lane | 0% | 24% | +24% |
+
+### Current blockers
+- Real browser/GPU QA is still needed.
+- WebGL lane is only a prototype; it is intentionally not wired into Shield runtime.
+- Live data sources and durable audit storage remain bigger blockers than UI polish.
+
+---
+## PASS 172 — Board Density Polish + Renderer Contract
+
+### What changed
+- Evidence Board now has `sparse`, `focused` and `full` density states.
+- Sparse filters with 1–4 cards use larger focused cards instead of looking broken/empty.
+- Added `lib/launch/vlm-brain-renderer-contract.ts` to formalize active DOM Orbit 360, DOM Evidence Board fallback and WebGL prototype lane.
+- Added PASS172 guard and wired it into `verify:shield-all` + `vercel-preflight`.
+
+### Progress estimate
+
+| Area | Previous | After PASS 172 | Change |
+|---|---:|---:|---:|
+| VLM visual brain | 93% | 94% | +1% |
+| VLM brain performance runtime | 90% | 91% | +1% |
+| Static evidence board | 94% | 96% | +2% |
+| Mobile performance | 81% | 82% | +1% |
+| WebGL/Three-ready lane | 24% | 34% | +10% |
+| Performance budget / lazy load | 74% | 76% | +2% |
+
+### Current blockers
+- Real-browser FPS and mobile overlap still need manual QA.
+- WebGL remains a contract/prototype, not the public renderer.
+- Live source feeds and durable audit storage remain bigger production blockers.
+
+---
+## PASS 173 — Real Browser QA + Source Adapter Readiness
+
+### What changed
+- Added a visible real-browser QA lane for Orbit Basic, Orbit Pro, Orbit Advanced, Evidence Board, mobile overlap and reduced motion.
+- Added `lib/market-integrity/live-source-adapter-contract.ts` with TTL/stale/source-freshness rules.
+- Added `/api/market-integrity/source-readiness` diagnostic route.
+- Added `MarketIntegritySourceReadinessPanel` to the Shield page so missing/blocked source lanes are visible.
+- Added PASS173 guard and wired it into `verify:shield-all` + `vercel-preflight`.
+
+### Progress estimate
+
+| Area | Previous | After PASS 173 | Change |
+|---|---:|---:|---:|
+| VLM brain performance runtime | 91% | 92% | +1% |
+| Real browser QA lane | 0% | 42% | +42% |
+| Source adapters / live feeds | 65% | 73% | +8% |
+| Data provenance / timestamps | 82% | 86% | +4% |
+| OSINT queue / analyst workflow | 65% | 68% | +3% |
+| Legal / safe wording | 82% | 84% | +2% |
+
+### Current blockers
+- Diagnostic source readiness route does not fetch third-party APIs yet.
+- Live orderbook, holder, contract and unlock adapters still need implementation.
+- Real Vercel/browser FPS QA must still be done manually.
+
+---
+## PASS 174 — Source Cache + Snapshot Ledger Preview
+
+### What changed
+- Added `lib/market-integrity/source-adapter-runtime.ts` with redacted source envelopes, cache decisions and TTL/stale metadata.
+- Added `/api/market-integrity/source-snapshot` diagnostic GET/POST preview route.
+- Added `SourceSnapshotLedgerPanel` to the Shield page so the future audit/source snapshot shape is visible.
+- Added strict payload allowlist/redaction for source snapshots.
+- Added PASS174 guard and wired it into `verify:shield-all` + `vercel-preflight`.
+
+### Progress estimate
+
+| Area | Previous | After PASS 174 | Change |
+|---|---:|---:|---:|
+| API route type safety | 94% | 95% | +1% |
+| Source adapters / live feeds | 73% | 78% | +5% |
+| Data provenance / timestamps | 86% | 90% | +4% |
+| Audit ledger / persistence | 80% | 83% | +3% |
+| Security / secret redaction | 91% | 93% | +2% |
+| Legal / safe wording | 84% | 85% | +1% |
+
+### Current blockers
+- Source snapshot route is still diagnostic only and does not write durable storage.
+- Real orderbook, holder, contract and unlock adapters are still not connected.
+- Server cache/rate policy still needs actual adapter implementation.
+
+---
+## PASS 175 — Velmère Intelligence Search Foundation
+
+### What changed
+- Added `/[locale]/search` as a controlled Velmère Intelligence Search surface.
+- Added `/api/search` preview gateway.
+- Added short token/project summaries with source confidence, missing data and next operator step.
+- Added direct shortcut flow from short result into full Velmère Shield analysis.
+- Added safety boundary: short research summary only, no financial advice and no safety certificate.
+- Added PASS175 guard and wired it into `verify:shield-all` + `vercel-preflight`.
+
+### Progress estimate
+
+| Area | Previous | After PASS 175 | Change |
+|---|---:|---:|---:|
+| Velmère Intelligence Search | 0% | 46% | +46% |
+| Shield shortcut flow | 70% | 78% | +8% |
+| Source adapters / live feeds | 78% | 79% | +1% |
+| Data provenance / timestamps | 90% | 91% | +1% |
+| Legal / safe wording | 85% | 87% | +2% |
+| PL/EN/DE translations | 90% | 91% | +1% |
+
+### Current blockers
+- Search is still local preview, not public web search.
+- Live web/OSINT adapters are not attached yet.
+- Shield shortcut should be tested against real query state and browser navigation.
+
+
+---
+## PASS 176 — Search Bridge + Discovery Capsules
+
+### What changed
+- Added Search-to-Shield bridge contract and `/api/search/bridge`.
+- Search results now carry `bridge`, `avatarLabel` and stronger full Shield shortcut metadata.
+- Added `VelmereSearchDiscoveryRail` with new research capsule concepts: Narrative radar, Contract lens, Source gap map and VLM capsule.
+- Added bridge card UI inside search result cards.
+- Added PASS176 guard and wired it into `verify:shield-all` + `vercel-preflight`.
+
+### Progress estimate
+
+| Area | Previous | After PASS 176 | Change |
+|---|---:|---:|---:|
+| Velmère Intelligence Search | 46% | 58% | +12% |
+| Search → Shield shortcut flow | 78% | 89% | +11% |
+| API route type safety | 96% | 97% | +1% |
+| Legal / safe wording | 87% | 88% | +1% |
+| PL/EN/DE translations | 91% | 92% | +1% |
+
+### Current blockers
+- Search bridge still needs real Shield query-state QA in browser.
+- Live web/OSINT adapters are still not attached.
+- Token logos need a provider source before replacing fallback avatars.
+
+
+---
+## PASS 177 — Live Search Adapter Skeleton + Token Logos + Shield Query State
+
+### What changed
+- Added token logo image fields for indexed search results with fallback avatars.
+- Added `lib/search/live-search-adapter-skeleton.ts` and `/api/search/live-preview`.
+- Search-to-Shield route now uses `?asset=`, `?query=` and `?from=velmere-search`.
+- Shield reads those params and attempts to open the relevant analysis flow.
+- Added PASS177 guard and wired it into `verify:shield-all` + `vercel-preflight`.
+
+### Progress estimate
+
+| Area | Previous | After PASS 177 | Change |
+|---|---:|---:|---:|
+| Velmère Intelligence Search | 58% | 67% | +9% |
+| Search → Shield shortcut flow | 89% | 94% | +5% |
+| API route type safety | 97% | 98% | +1% |
+| Source adapters / live feeds | 80% | 84% | +4% |
+| Legal / safe wording | 88% | 89% | +1% |
+
+### Current blockers
+- Live adapter route still performs no external fetch.
+- Shield query bridge needs browser QA against Vercel routing.
+- Token logos use external image URLs until a provider/cache layer is chosen.
+
+
+---
+## PASS 178 — Token Metadata Cache + Provider Readiness
+
+### What changed
+- Added `lib/search/token-metadata-cache.ts` with token metadata records and provider readiness.
+- Added `/api/search/token-metadata` diagnostic route.
+- Added `TokenMetadataProviderPanel` to the Search page.
+- Added cache/provider copy that explains logo/rank/symbol context without treating metadata as safety.
+- Added PASS178 guard and wired it into `verify:shield-all` + `vercel-preflight`.
+
+### Progress estimate
+
+| Area | Previous | After PASS 178 | Change |
+|---|---:|---:|---:|
+| Velmère Intelligence Search | 67% | 74% | +7% |
+| Token metadata / logo readiness | 24% | 62% | +38% |
+| API route type safety | 98% | 99% | +1% |
+| Data provenance / timestamps | 93% | 94% | +1% |
+| Legal / safe wording | 89% | 90% | +1% |
+
+### Current blockers
+- Token metadata route is curated/cache-ready only and performs no external provider fetch.
+- Logo proxy/local sprite is still not implemented.
+- Durable provider cache/storage is still missing.
+
+
+---
+## PASS 179 — Velmère Lens Router Pivot + Full Matrix
+
+### What changed
+- Pivoted `/search` public UX from browser/search feeling into **Velmère Lens**.
+- Added `velmere-lens-route-map.ts` with destinations: Shield, Contract Lens, VLM Access, Docs, OSINT Queue and Source Ledger.
+- Added `VelmereLensCommandRouter` and `/api/search/lens-route`.
+- Removed the technical Token Metadata Provider Panel from the public Lens page while keeping it available in the repo/readiness layer.
+- Added full progress matrix with all major areas.
+
+### Progress estimate
+
+| Area | Previous | After PASS 179 | Change |
+|---|---:|---:|---:|
+| Velmère Lens / Search | 74% | 83% | +9% |
+| Navigation / route clarity | 72% | 76% | +4% |
+| Contract lens readiness | 46% | 52% | +6% |
+| OSINT queue / analyst workflow | 69% | 72% | +3% |
+| Legal / safe wording | 90% | 92% | +2% |
+| PL/EN/DE translations | 93% | 94% | +1% |
+
+### Current blockers
+- Lens routes need real browser QA.
+- Contract Lens is route-ready but not connected to a real analyzer.
+- Live adapters and durable source storage are still the largest blockers.
+
+
+---
+## PASS 180 — Contract Lens + OSINT Queue Foundations
+
+### What changed
+- Added Contract Lens contract, panel and diagnostic route.
+- Added OSINT Queue contract, panel and diagnostic route.
+- Added Contract Lens and OSINT Queue panels to the Shield page.
+- Contract Lens covers owner, proxy, mint, pause, blacklist, tax, liquidity lock and verified-source signals.
+- OSINT Queue separates KOL/social/news/project claims into manual review with source requirements and safe wording.
+- Added PASS180 guard and wired it into `verify:shield-all` + `vercel-preflight`.
+
+### Progress estimate
+
+| Area | Previous | After PASS 180 | Change |
+|---|---:|---:|---:|
+| Contract lens readiness | 52% | 70% | +18% |
+| OSINT queue / analyst workflow | 72% | 82% | +10% |
+| Shield terminal | 96% | 97% | +1% |
+| Source adapters / live feeds | 85% | 86% | +1% |
+| Data provenance / timestamps | 95% | 96% | +1% |
+| Legal / safe wording | 92% | 94% | +2% |
+
+### Current blockers
+- Contract Lens still has no real server-only analyzer.
+- OSINT Queue still has no durable source ledger/reviewer identity.
+- Routes are diagnostic and perform no external fetch.
+
+
+---
+## PASS 182 — Security Hardening Immediate Layer
+
+### What changed
+- Centralized web security headers into `lib/security/http-security.mjs`.
+- Added `lib/security/api-guard.ts` for no-store JSON, method guard, URL-size guard, bounded query sanitization and soft rate limiting.
+- Added `/api/security/readiness`.
+- Hardened public market search/analyze endpoints with guard helper.
+- Hardened token icon proxy against non-HTTPS URLs, credentials, explicit ports, unknown hosts, non-image responses and oversized assets.
+- Added PASS182 guard and wired it into `verify:shield-all` + `vercel-preflight`.
+
+### Progress estimate
+
+| Area | Previous | After PASS 182 | Change |
+|---|---:|---:|---:|
+| Security headers / CSP | 62% | 88% | +26% |
+| API route defensive guards | 48% | 73% | +25% |
+| Token icon proxy safety | 58% | 84% | +26% |
+| Public search abuse resistance | 54% | 73% | +19% |
+| Security readiness API | 0% | 70% | +70% |
+| Security launch readiness | 41% | 63% | +22% |
+
+### Current blockers
+- Soft rate limiting is in-memory per runtime instance, not durable/distributed.
+- CSP still allows inline scripts/styles because the current app uses inline styling and Next runtime requirements.
+- Production still needs dependency scanning, Vercel environment review, WAF/bot layer and external security testing.
+
+
+---
+## PASS 183 — Durable Rate Limit + API Abuse Shield
+
+### What changed
+- Added `lib/security/durable-rate-limit.ts` with provider contract, Upstash readiness detection and memory fallback.
+- Added `lib/security/api-abuse-shield.ts` with scanner/user-agent, malicious URL and sensitive-query scoring.
+- Added `/api/security/abuse-shield`.
+- Updated `/api/security/readiness` with durable rate-limit readiness.
+- Moved public market search/analyze/icon routes onto API Abuse Shield.
+- Added PASS183 guard and wired it into `verify:shield-all` + `vercel-preflight`.
+
+### Progress estimate
+
+| Area | Previous | After PASS 183 | Change |
+|---|---:|---:|---:|
+| API route defensive guards | 73% | 82% | +9% |
+| Durable rate-limit readiness | 0% | 58% | +58% |
+| Public search abuse resistance | 73% | 83% | +10% |
+| Token icon proxy safety | 84% | 88% | +4% |
+| API abuse scoring | 0% | 64% | +64% |
+| Security launch readiness | 63% | 71% | +8% |
+
+### Current blockers
+- Rate limiting still uses memory fallback unless a distributed provider is connected.
+- Upstash/Redis credentials are only readiness-detected, not called yet.
+- WAF/bot protection and monitoring alerts are still external platform tasks.
+
+
+---
+## PASS 184 — Upstash REST Adapter + Security Event Ledger
+
+### What changed
+- Upgraded `durable-rate-limit.ts` from readiness-only to server-only Upstash REST `/pipeline` adapter.
+- Added fallback mode `upstash_fallback_memory`.
+- Added `security-event-ledger.ts` with in-memory event records and client fingerprinting.
+- Added `/api/security/events`.
+- API Abuse Shield now records method blocks, oversized URLs, abuse blocks, rate limits, suspicious allowed requests and provider fallback.
+- Readiness and abuse-shield diagnostic routes now include event ledger snapshots.
+- Added PASS184 guard and wired it into `verify:shield-all` + `vercel-preflight`.
+
+### Progress estimate
+
+| Area | Previous | After PASS 184 | Change |
+|---|---:|---:|---:|
+| Durable rate-limit readiness | 58% | 78% | +20% |
+| Upstash/Redis adapter | 0% | 68% | +68% |
+| Security event ledger | 0% | 66% | +66% |
+| API abuse scoring | 64% | 72% | +8% |
+| Security readiness API | 78% | 86% | +8% |
+| Security launch readiness | 71% | 79% | +8% |
+
+### Current blockers
+- Security events are still in-memory preview, not durable.
+- Upstash env vars must be configured in production.
+- Alerting, retention policy and admin-only event viewer are still missing.
+
+
+---
+## PASS 185 — Admin Security Console + Alert Rules + Vercel Sweep
+
+### What changed
+- Added `lib/security/security-alert-rules.ts`.
+- Added `/api/security/alerts` and `/api/security/export`.
+- Added `components/admin/SecurityConsolePanel.tsx` and `/[locale]/admin/security`.
+- Readiness and abuse-shield routes now include alert rule snapshots.
+- Added safe JSON security export boundary: no raw IP, no raw query payloads and no secrets.
+- Added PASS185 Vercel sweep guard and wired it into `verify:shield-all` + `vercel-preflight`.
+
+### Progress estimate
+
+| Area | Previous | After PASS 185 | Change |
+|---|---:|---:|---:|
+| Admin security console | 0% | 74% | +74% |
+| Security alert rules | 0% | 72% | +72% |
+| Security safe export | 0% | 68% | +68% |
+| Monitoring / alerting readiness | 28% | 46% | +18% |
+| Vercel potential error sweep | 61% | 78% | +17% |
+| Security launch readiness | 79% | 84% | +5% |
+
+### Current blockers
+- Admin security route/export are preview surfaces and still need real admin auth gating.
+- Event ledger remains in-memory until durable storage is added.
+- Alert rules need production threshold tuning and notification delivery.
+- WAF/bot platform config and browser QA still need manual work.
+
+
+---
+## PASS 186 — Security Admin Gate + Event Store Contract + Vercel Sweep
+
+### What changed
+- Added `lib/security/security-admin-auth.ts`.
+- Added `lib/security/security-event-store-contract.ts`.
+- Added `SecurityConsoleLockedPanel` and locked `/[locale]/admin/security` by default.
+- Added `/api/security/event-store`.
+- Token-gated sensitive security APIs:
+  - `/api/security/events`
+  - `/api/security/alerts`
+  - `/api/security/export`
+  - `/api/security/event-store`
+- Readiness and abuse-shield routes now expose security admin gate and event-store contract snapshots.
+- Added PASS186 guard and wired it into `verify:shield-all` + `vercel-preflight`.
+
+### Progress estimate
+
+| Area | Previous | After PASS 186 | Change |
+|---|---:|---:|---:|
+| Security admin API gate | 0% | 76% | +76% |
+| Security event store contract | 0% | 64% | +64% |
+| Security locked-state UX | 0% | 78% | +78% |
+| Admin security console | 74% | 82% | +8% |
+| Security safe export | 68% | 78% | +10% |
+| Security launch readiness | 84% | 88% | +4% |
+
+### Current blockers
+- Token gate is not a full identity provider.
+- Durable security event storage is still a contract, not a write adapter.
+- Admin-read/export audit events are still missing.
+- Vercel env combinations and locked/unlocked behavior need browser QA.
+
+
+---
+## PASS 187 — Durable Security Event Append Adapter + Admin Read Audit Events
+
+### What changed
+- Added `lib/security/security-event-append-adapter.ts`.
+- Added `lib/security/security-admin-audit.ts`.
+- Added `/api/security/admin-audit`.
+- `recordSecurityEvent()` now mirrors redacted events through best-effort append adapter.
+- `verifySecurityAdminToken()` now records allowed, denied and not-configured admin security attempts.
+- Event store, export, readiness and abuse-shield diagnostics now include append adapter and admin audit snapshots.
+- Security Console now shows append mode and admin audit count.
+- Added PASS187 guard and wired it into `verify:shield-all` + `vercel-preflight`.
+
+### Progress estimate
+
+| Area | Previous | After PASS 187 | Change |
+|---|---:|---:|---:|
+| Security event append adapter | 0% | 72% | +72% |
+| Security admin audit | 0% | 70% | +70% |
+| Security event ledger | 72% | 79% | +7% |
+| Security event store contract | 64% | 72% | +8% |
+| Security safe export | 78% | 84% | +6% |
+| Security launch readiness | 88% | 91% | +3% |
+
+### Current blockers
+- Append adapter needs production Upstash envs and a retention policy.
+- Admin audit is still in-memory until durable audit storage exists.
+- Operator identity is still token-gate based, not real session identity.
+- WAF/bot layer and browser QA still need manual platform work.
+
+
+---
+## PASS 188 — Security Trust Copy + Public Security Page + Overclaim Guard
+
+### What changed
+- Added `lib/security/security-trust-copy.ts`.
+- Added `components/security/SecurityTrustPage.tsx`.
+- Added public `/[locale]/security`.
+- Added public `/api/security/trust`.
+- Added PL/DE/EN public security copy with implemented pillars and roadmap.
+- Added overclaim guard against claims like best-in-world, unhackable or guaranteed secure.
+- Added PASS188 guard and wired it into `verify:shield-all` + `vercel-preflight`.
+
+### Progress estimate
+
+| Area | Previous | After PASS 188 | Change |
+|---|---:|---:|---:|
+| Security public trust page | 0% | 76% | +76% |
+| Security trust API | 0% | 74% | +74% |
+| Security copy / positioning | 38% | 82% | +44% |
+| Security overclaim safety | 42% | 88% | +46% |
+| Brand trust / credibility | 54% | 68% | +14% |
+| Legal / safe wording | 97% | 98% | +1% |
+
+### Current blockers
+- Do not publicly claim "best security in the world"; keep copy tied to implemented controls and roadmap.
+- `/security` needs browser QA and nav/footer link decision.
+- Real production envs, WAF/bot rules and durable storage still remain launch blockers.
+
+
+---
+## PASS 189 — Security Page Nav/Footer Integration + Vercel Env Checklist + WAF Rules Draft
+
+### What changed
+- Added `lib/security/security-operations-checklist.ts`.
+- Added `components/security/SecurityOperationsChecklistPanel.tsx`.
+- Added `/api/security/operations-checklist`.
+- Added Security link to desktop nav, mobile menu and footer.
+- Added safe footer security microcopy in PL/DE/EN.
+- Added Vercel env checklist, WAF draft rules and runtime QA docs under `docs/security`.
+- Added PASS189 guard and wired it into `verify:shield-all` + `vercel-preflight`.
+
+### Progress estimate
+
+| Area | Previous | After PASS 189 | Change |
+|---|---:|---:|---:|
+| Security operations checklist | 0% | 78% | +78% |
+| Vercel env checklist | 0% | 82% | +82% |
+| Vercel WAF rules draft | 0% | 70% | +70% |
+| Security runtime QA checklist | 0% | 76% | +76% |
+| Security nav/footer integration | 0% | 86% | +86% |
+| Security public trust page | 76% | 84% | +8% |
+
+### Current blockers
+- Vercel envs must be manually configured.
+- WAF rules must be manually applied and tested.
+- Runtime QA checklist must be executed on Vercel preview/production.
+
+
+---
+## PASS 190 — Runtime QA Result Capture + Security Release Gate Dashboard
+
+### What changed
+- Added `lib/security/security-runtime-qa.ts`.
+- Added `lib/security/security-release-gate.ts`.
+- Added `/api/security/runtime-qa`.
+- Added `/api/security/release-gate`.
+- Readiness, operations checklist and export APIs include runtime QA + release gate snapshots.
+- Admin Security Console shows runtime QA progress and release gate state.
+- Added runtime QA result-capture and release gate docs.
+- Restored full master progress matrix surface.
+- Added PASS190 guard and wired it into `verify:shield-all` + `vercel-preflight`.
+
+### Progress estimate
+
+| Area | Previous | After PASS 190 | Change |
+|---|---:|---:|---:|
+| Security release gate dashboard | 0% | 74% | +74% |
+| Security runtime QA result capture | 0% | 76% | +76% |
+| Security readiness API | 94% | 96% | +2% |
+| Admin security console | 86% | 90% | +4% |
+| Real browser QA lane | 49% | 58% | +9% |
+| Security runtime QA checklist | 76% | 84% | +8% |
+
+### Current blockers
+- Vercel envs still need manual setup.
+- WAF rules still need manual platform configuration.
+- Runtime QA evidence must be captured on Vercel preview/production.
+- Payment/webhook security review remains a hard release blocker.
+
+
+---
+## PASS 191 — Payment/Webhook Security Review + Commerce Release Gate Integration
+
+### What changed
+- Added `lib/security/payment-webhook-guard.ts`.
+- Added `lib/security/payment-webhook-security.ts`.
+- Added `/api/security/payment-webhook-review`.
+- Added checkout request content-type/size guard.
+- Added Stripe webhook signature/header/payload boundary guard.
+- Added supported Stripe webhook event allowlist.
+- Payment/webhook snapshot is included in readiness, export, operations checklist, abuse shield, runtime QA and release gate.
+- Admin Security Console shows payment/webhook score and API shortcut.
+- Added PASS191 guard and wired it into `verify:shield-all` + `vercel-preflight`.
+
+### Progress estimate
+
+| Area | Previous | After PASS 191 | Change |
+|---|---:|---:|---:|
+| Payment/webhook security | 72% | 84% | +12% |
+| Payment checkout request boundary | 0% | 74% | +74% |
+| Stripe webhook request boundary | 0% | 78% | +78% |
+| Commerce/order/payment readiness | 76% | 82% | +6% |
+| Security release gate dashboard | 74% | 82% | +8% |
+| Security runtime QA result capture | 76% | 82% | +6% |
+
+### Current blockers
+- Vercel Stripe envs and store readiness flags must be configured.
+- Stripe signed webhook test must be run on Vercel.
+- Duplicate replay and order persistence must be verified.
+- Refund/support workflow still needs production proof.
+
+
+---
+## PASS 192 — Payment Runtime Evidence Capture + Stripe Webhook Replay QA Ledger
+
+### What changed
+- Added `lib/security/payment-runtime-evidence.ts`.
+- Added `lib/security/stripe-webhook-replay-qa.ts`.
+- Added `/api/security/payment-runtime-evidence` with admin-gated GET/POST.
+- Added `/api/security/stripe-webhook-replay-qa` with admin-gated GET/POST.
+- Payment/webhook review, release gate, runtime QA, readiness, export, operations checklist and admin console now include evidence/replay snapshots.
+- Added docs for payment runtime evidence and Stripe webhook replay QA.
+- Added PASS192 guard and wired it into `verify:shield-all` + `vercel-preflight`.
+
+### Progress estimate
+
+| Area | Previous | After PASS 192 | Change |
+|---|---:|---:|---:|
+| Payment runtime evidence capture | 0% | 78% | +78% |
+| Stripe webhook replay QA ledger | 0% | 76% | +76% |
+| Payment/webhook security | 84% | 88% | +4% |
+| Commerce/order/payment readiness | 82% | 85% | +3% |
+| Security release gate dashboard | 82% | 86% | +4% |
+| Real browser QA lane | 60% | 64% | +4% |
+
+### Current blockers
+- Evidence ledger is in-memory until durable operator storage is added.
+- Stripe/Vercel signed webhook tests still need to be executed.
+- Duplicate replay proof and order persistence proof remain manual blockers.
+
+
+---
+## PASS 193 — VLM Brain Layout Hotfix + Security Import Fix + Lens Report Preview
+
+### What changed
+- Fixed `SecurityOperationsChecklistPanel is not defined` by adding the missing import in `SecurityTrustPage.tsx`.
+- Widened the VLM Brain overlay and kept the core centered.
+- Added Orbit 360 zoom controls and mouse-wheel zoom.
+- Reworked Evidence Board placement into left/right side lanes around the VLM core.
+- Improved Advanced Orbit card contrast/readability.
+- Hardened Security/Lens card containment to prevent gradient/color bleed outside frames.
+- Added Lens route-level report metadata and `/api/search/lens-report` PDF-ready HTML preview.
+- Added stronger token logo fallback and suggestion panel visibility guards.
+
+### Progress estimate
+
+| Area | Previous | After PASS 193 | Change |
+|---|---:|---:|---:|
+| SecurityOperationsChecklistPanel runtime hotfix | 0% | 100% | +100% |
+| VLM Brain window containment | 88% | 96% | +8% |
+| Evidence Board split lanes | 68% | 88% | +20% |
+| Advanced orbit card readability | 72% | 88% | +16% |
+| Velmère Lens report preview | 0% | 78% | +78% |
+| Search suggestions logo fallback | 74% | 88% | +14% |
+
+### Current blockers
+- Browser QA still needs to confirm VLM card positioning on your exact monitor sizes.
+- Lens report is PDF-ready HTML, not a real generated PDF binary yet.
+- Live holder/orderbook/contract adapters and WAF/envs remain manual launch blockers.
+
+
+---
+## PASS 194 — Orbit 360 Modal Cleanup + Chart Drag Fix + Lens Button Removal
+
+### What changed
+- Reversed token chart drag direction for more natural panning.
+- Hid Evidence Board from the VLM brain UI for now; Basic, Pro and Advanced all open Orbit 360.
+- Forced VLM Orbit overlay to near-fullscreen and centered the VLM core.
+- Moved Back to chart behavior back to chart/modal instead of opening extra readout panels.
+- Converted selected VLM tile detail into one centered popup over everything.
+- Converted mode info into one centered popup and hid Source Spine/muted secondary description clutter.
+- Improved Advanced Orbit card readability.
+- Removed visible Lens Open/PDF-ready card buttons while retaining backend report routes.
+- Improved token suggestion logo fallback by passing id/name into TokenAvatar.
+
+### Progress estimate
+
+| Area | Previous | After PASS 194 | Change |
+|---|---:|---:|---:|
+| Token chart drag UX | 62% | 88% | +26% |
+| Token modal mode info popup | 52% | 90% | +38% |
+| VLM mode return-to-chart | 46% | 92% | +46% |
+| VLM AI risk brain | 74% | 82% | +8% |
+| VLM visual brain / motion | 96% | 98% | +2% |
+| Selected tile popup readability | 74% | 94% | +20% |
+| Lens card clutter | 48% | 88% | +40% |
+
+### Current blockers
+- Browser QA on target monitor still required.
+- Real PDF generator is not built yet; PDF-ready route remains backend-ready only.
+- Evidence Board is hidden, not deleted; future mode needs better design before re-enable.

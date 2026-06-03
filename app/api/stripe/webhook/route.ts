@@ -4,8 +4,11 @@ import { markFailed, markFulfilmentPending, markPaid } from "@/lib/orders/order-
 import { hasProcessedStripeWebhookEvent, markStripeWebhookEventProcessed, persistStripeCheckoutOrder, type PersistOrderItemInput } from "@/lib/db/order-service";
 import { getStripeServerClient } from "@/lib/stripe/server";
 import { createPrintfulOrderDraft } from "@/lib/printful/orders";
+import { validateStripeWebhookBoundary } from "@/lib/security/payment-webhook-guard";
 
 export const runtime = "nodejs";
+
+const SUPPORTED_STRIPE_WEBHOOK_EVENTS = new Set(["checkout.session.completed"]);
 
 type CompactMetadataItem = {
   id?: unknown;
@@ -35,6 +38,9 @@ function parseMetadataOrderItems(value: string | null | undefined): PersistOrder
 }
 
 export async function POST(req: Request) {
+  const paymentGuard = validateStripeWebhookBoundary(req);
+  if (!paymentGuard.ok) return paymentGuard.response;
+
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
   if (!webhookSecret) {
     return NextResponse.json({ error: "Missing STRIPE_WEBHOOK_SECRET on server." }, { status: 500 });
@@ -58,6 +64,11 @@ export async function POST(req: Request) {
 
   if (await hasProcessedStripeWebhookEvent(event.id)) {
     return NextResponse.json({ received: true, duplicate: true });
+  }
+
+  if (!SUPPORTED_STRIPE_WEBHOOK_EVENTS.has(event.type)) {
+    await markStripeWebhookEventProcessed(event.id, event.type);
+    return NextResponse.json({ received: true, unsupported: true, type: event.type });
   }
 
   if (event.type === "checkout.session.completed") {

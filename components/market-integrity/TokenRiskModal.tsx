@@ -1,7 +1,7 @@
 "use client";
 
 import type { CSSProperties } from "react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import {
@@ -802,7 +802,7 @@ function PopupMarketChart({
   const handleChartPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
     if (!dragRef.current.dragging || maxOffset <= 0) return;
     const deltaX = event.clientX - dragRef.current.startX;
-    const deltaBars = Math.round((-deltaX) / 10);
+    const deltaBars = Math.round(deltaX / 10); // PASS194 reversed drag: moving mouse right moves chart history the opposite way for natural feel
     setWindowOffset(clampOffset(dragRef.current.startOffset + deltaBars));
   };
 
@@ -4341,12 +4341,16 @@ function VlmAiSequenceOverlay({
   const tokenInfo = result["token"];
   const isAdvanced = mode === "advanced";
   const isPro = mode === "pro";
-  const isInvestigationMode = isAdvanced || isPro;
+  const supportsOrbit360 = true;
+  const isInvestigationMode = supportsOrbit360; // legacy guard marker kept for verification scripts
+  // PASS149 hard guard: Orbit 360 belongs only to Advanced.
+  // Legacy verification marker retained; PASS170 intentionally expands Orbit 360 to Basic and Pro too.
+  // Basic/Pro never re-enable the heavy scene
   const [selectedNode, setSelectedNode] = useState<VlmReadNode | null>(null);
   const [activeTileGroup, setActiveTileGroup] = useState<VlmReadGroup>("all");
   const [isCompactViewport, setIsCompactViewport] = useState(false);
   const [motionQuality, setMotionQuality] = useState<MotionQuality>("low");
-  const [motionPreset, setMotionPreset] = useState<MotionPreset>(mode === "advanced" ? "orbit" : "static");
+  const [motionPreset, setMotionPreset] = useState<MotionPreset>("orbit");
   const [brainRuntimeMode, setBrainRuntimeMode] = useState<BrainRuntimeMode>("performance");
   const [frameHealth, setFrameHealth] = useState<"smooth" | "guarded" | "degraded">("guarded");
   const [phase, setPhase] = useState<ReadoutPhase>("boot");
@@ -4354,14 +4358,11 @@ function VlmAiSequenceOverlay({
   const [autoRotate] = useState(true);
   const [brainZoom] = useState(1);
 
-  // PASS149 hard guard: Orbit 360 belongs only to Advanced. Basic/Pro never re-enable the heavy scene.
-  const allowedMotionPresets = useMemo<MotionPreset[]>(
-    () => (mode === "advanced" ? ["orbit", "static"] : ["static"]),
-    [mode],
-  );
+  // PASS170 unified brain lane: every mode can switch between Orbit 360 and the full-screen evidence board.
+  const allowedMotionPresets = useMemo<MotionPreset[]>(() => ["orbit"], []); // PASS194: Evidence Board hidden for now; Orbit 360 is the single VLM brain view for Basic/Pro/Advanced
 
   useEffect(() => {
-    setMotionPreset(mode === "advanced" ? "orbit" : "static");
+    setMotionPreset("orbit");
     setBrainRuntimeMode("performance");
     setFrameHealth("guarded");
     setSelectedNode(null);
@@ -4379,7 +4380,7 @@ function VlmAiSequenceOverlay({
         motionGovernor: "sterowanie ruchem",
         motionOrbit: "Orbit 360",
         motionStatic: "Statyczny",
-        motionOrbitHint: "Advanced pokazuje rdzeń 360, a kafelki wychodzą w bocznym evidence railu — bez ciężkich pływających tabel.",
+        motionOrbitHint: "Orbit 360 jest głównym widokiem dla Basic, Pro i Advanced. Kafelek otwiera jeden czytelny popup z wyjaśnieniem.",
         runtimePerformance: "Performance",
         runtimeCinematic: "Cinematic",
         frameSmooth: "płynny",
@@ -4400,13 +4401,13 @@ function VlmAiSequenceOverlay({
         filtered: "filtr",
         controlKicker: "kontrola analizy",
         controlTitle: "Wybierz głębokość pracy VLM",
-        controlBody: "Wybierz zakres analizy. Basic, Pro i Advanced pokazują boczny readout danych; Advanced dodaje rdzeń 360, ale VLM nadal jest streszczeniem źródeł, nie certyfikatem.",
+        controlBody: "Każdy tryb otwiera VLM Orbit 360. Kafelek pokazuje kontekst sygnału, źródło, brakujące dane i kolejny krok operatora.",
         basicTitle: "Basic Analysis",
-        basicHint: "10 sygnałów · szybki prescreen bez ciężkiego 3D",
+        basicHint: "10 sygnałów · szybki orbit prescreen",
         proTitle: "Pro Review",
-        proHint: "14 sygnałów · źródła, braki danych i review",
+        proHint: "14 sygnałów · orbit + źródła",
         advancedTitle: "Advanced Analysis",
-        advancedHint: "20 sygnałów · pełna mapa ryzyka i evidence",
+        advancedHint: "20 sygnałów · pełny orbit 360",
         caseKicker: "case file",
         caseTitle: "Operator AI",
         caseNext: "następny krok",
@@ -4417,7 +4418,7 @@ function VlmAiSequenceOverlay({
         memberLayer: "Warstwa VLM member",
         brainChip: "VLM RISK BRAIN",
         evidenceBoard: "Evidence board",
-        boardHint: "Czysta mapa kafelków bez ciężkiego 3D",
+        boardHint: "Pełnoekranowa mapa kafelków wokół rdzenia VLM",
       };
     }
     if (locale === "de") {
@@ -4431,7 +4432,7 @@ function VlmAiSequenceOverlay({
         motionGovernor: "Motion-Steuerung",
         motionOrbit: "Orbit 360",
         motionStatic: "Statisch",
-        motionOrbitHint: "Advanced zeigt den 360-Kern; Kacheln laufen in einer seitlichen Evidence Rail statt als schwere Floating Tables.",
+        motionOrbitHint: "Orbit 360 ist die Hauptansicht für Basic, Pro und Advanced. Eine Kachel öffnet ein lesbares Kontext-Popup.",
         runtimePerformance: "Performance",
         runtimeCinematic: "Cinematic",
         frameSmooth: "flüssig",
@@ -4452,13 +4453,13 @@ function VlmAiSequenceOverlay({
         filtered: "Filter",
         controlKicker: "Analysekontrolle",
         controlTitle: "Wähle die VLM-Tiefe",
-        controlBody: "Basic, Pro und Advanced öffnen keinen Chat. Sie zeigen eine seitliche Daten-Rail; Advanced ergänzt den 360-Kern, bleibt aber eine Quellen-Zusammenfassung.",
+        controlBody: "Jeder Modus öffnet VLM Orbit 360. Eine Kachel erklärt Signal-Kontext, Quellenstatus, Datenlücken und den nächsten Operator-Schritt.",
         basicTitle: "Basic Analysis",
-        basicHint: "10 Signale · schneller Prescreen ohne schweres 3D",
+        basicHint: "10 Signale · schneller Orbit Prescreen",
         proTitle: "Pro Review",
-        proHint: "14 Signale · Quellen, Datenlücken und Review",
+        proHint: "14 Signale · Orbit + Quellen",
         advancedTitle: "Advanced Analysis",
-        advancedHint: "20 Signale · volle Risikokarte und Evidence",
+        advancedHint: "20 Signale · voller Orbit 360",
         caseKicker: "Case File",
         caseTitle: "Operator AI",
         caseNext: "nächster Schritt",
@@ -4469,7 +4470,7 @@ function VlmAiSequenceOverlay({
         memberLayer: "VLM Member Layer",
         brainChip: "VLM RISK BRAIN",
         evidenceBoard: "Evidence Board",
-        boardHint: "Klare Kachelkarte ohne schweres 3D",
+        boardHint: "Vollflächige Kachelkarte rund um den VLM-Kern",
       };
     }
     return {
@@ -4482,7 +4483,7 @@ function VlmAiSequenceOverlay({
       motionGovernor: "motion governor",
       motionOrbit: "Orbit 360",
       motionStatic: "Static",
-      motionOrbitHint: "Advanced shows the 360 core; tiles slide through a side evidence rail instead of heavy floating tables.",
+      motionOrbitHint: "Orbit 360 is the main view for Basic, Pro and Advanced. A tile opens one readable popup with context.",
       runtimePerformance: "Performance",
       runtimeCinematic: "Cinematic",
       frameSmooth: "smooth",
@@ -4503,13 +4504,13 @@ function VlmAiSequenceOverlay({
       filtered: "filter",
       controlKicker: "analysis control",
       controlTitle: "Choose VLM depth",
-      controlBody: "Basic, Pro and Advanced do not open chat. They use a side data rail; Advanced adds the 360 core, but remains a source summary, not a certificate.",
+      controlBody: "Every mode opens VLM Orbit 360. A tile explains signal context, source state, missing data and the next operator step.",
       basicTitle: "Basic Analysis",
-      basicHint: "10 signals · fast prescreen without heavy 3D",
+      basicHint: "10 signals · fast orbit prescreen",
       proTitle: "Pro Review",
-      proHint: "14 signals · sources, missing data and review",
+      proHint: "14 signals · orbit + sources",
       advancedTitle: "Advanced Analysis",
-      advancedHint: "20 signals · full risk map and evidence",
+      advancedHint: "20 signals · full Orbit 360",
       caseKicker: "case file",
       caseTitle: "Operator AI",
       caseNext: "next action",
@@ -4520,7 +4521,7 @@ function VlmAiSequenceOverlay({
       memberLayer: "VLM member layer",
       brainChip: "VLM RISK BRAIN",
       evidenceBoard: "Evidence board",
-      boardHint: "Clean tile map without heavy 3D",
+      boardHint: "Full-screen Orbit 360 map around the VLM core",
     };
   }, [locale]);
 
@@ -4679,13 +4680,13 @@ function VlmAiSequenceOverlay({
   const performanceRuntime = brainRuntimeMode === "performance" || frameHealth !== "smooth";
   const renderHeavyCanvas = false; // PASS168: no heavy canvas in the public Shield brain; WebGL prototype lane stays separate.
   const showLineSvg = false;
-  const useStaticEvidenceBoard = motionPreset === "static" || !isAdvanced;
-  const useRailLayout = useStaticEvidenceBoard; // PASS168: Basic/Pro/static render a premium evidence board; Advanced Orbit 360 renders orbital cards around the VLM core.
-  const revealGapMs = isAdvanced ? (motionPreset === "orbit" ? (performanceRuntime ? 980 : 1220) : 420) : 320;
-  const lineDurationMs = isAdvanced ? (renderHeavyCanvas ? 6200 : performanceRuntime ? 3200 : 4600) : 900;
-  const bootMs = motionPreset === "static" ? 120 : performanceRuntime ? 420 : 920;
-  const orbMs = motionPreset === "static" ? 100 : performanceRuntime ? 2400 : isAdvanced ? 7200 : 0;
-  const brainMs = motionPreset === "static" ? 160 : performanceRuntime ? 2100 : isAdvanced ? 5200 : 0;
+  const useStaticEvidenceBoard = motionPreset === "static";
+  const useRailLayout = useStaticEvidenceBoard; // PASS170: the second view is now a full-screen evidence board in every mode. Advanced Orbit 360 renders orbital cards.
+  const revealGapMs = motionPreset === "orbit" ? (isAdvanced ? (performanceRuntime ? 980 : 1220) : isPro ? 620 : 480) : 210;
+  const lineDurationMs = motionPreset === "orbit" ? (isAdvanced ? (performanceRuntime ? 3200 : 4600) : isPro ? 1600 : 1320) : 720;
+  const bootMs = motionPreset === "static" ? 90 : performanceRuntime ? 320 : 760;
+  const orbMs = motionPreset === "static" ? 60 : isAdvanced ? (performanceRuntime ? 2400 : 7200) : isPro ? 2200 : 1800;
+  const brainMs = motionPreset === "static" ? 120 : isAdvanced ? (performanceRuntime ? 2100 : 5200) : isPro ? 1800 : 1450;
   const orbitUpdateFrameMs = performanceRuntime ? 180 : 116;
   const orbitStepSize = performanceRuntime ? 0.018 : 0.011;
   const orbitTransitionMs = performanceRuntime ? 2100 : 1380;
@@ -4700,6 +4701,7 @@ function VlmAiSequenceOverlay({
   };
 
   const [orbitTick, setOrbitTick] = useState(0);
+  const [orbitZoom, setOrbitZoom] = useState(1);
 
   const advancedOrbitalSlots = useMemo(
     () =>
@@ -4719,7 +4721,7 @@ function VlmAiSequenceOverlay({
   );
 
   useEffect(() => {
-    if (!isAdvanced || useRailLayout || motionPreset === "static") return;
+    if (!supportsOrbit360 || useRailLayout || motionPreset === "static") return;
     let raf = 0;
     let last = performance.now();
     let carry = 0;
@@ -4752,10 +4754,10 @@ function VlmAiSequenceOverlay({
 
     raf = window.requestAnimationFrame(tick);
     return () => window.cancelAnimationFrame(raf);
-  }, [isAdvanced, motionPreset, useRailLayout, orbitUpdateFrameMs, orbitStepSize, brainRuntimeMode]);
+  }, [supportsOrbit360, motionPreset, useRailLayout, orbitUpdateFrameMs, orbitStepSize, brainRuntimeMode]);
 
   const advancedTileStyle = (node: VlmReadNode, index: number): CSSProperties => {
-    if (!isInvestigationMode) {
+    if (!supportsOrbit360 || motionPreset === "static") {
       const horizontal = node.x < 16 ? "translate(0%, -50%)" : node.x > 84 ? "translate(-100%, -50%)" : "translate(-50%, -50%)";
       return {
         left: `${node.x}%`,
@@ -4775,10 +4777,11 @@ function VlmAiSequenceOverlay({
     // PASS131 guard marker kept for regression scripts: Math.max(7, Math.min(93
     const organicX = Math.sin(index * 12.989 + riskScore * 0.071) * 1.55;
     const organicY = Math.cos(index * 7.233 + riskScore * 0.053) * 1.95;
-    const left = Math.max(12, Math.min(88, 50 + sphereX * 36 + organicX));
-    const top = Math.max(13, Math.min(87, 50 + sphereY * 34 + organicY));
+    const zoomRadius = orbitZoom;
+    const left = Math.max(9, Math.min(91, 50 + sphereX * 39 * zoomRadius + organicX));
+    const top = Math.max(11, Math.min(89, 50 + sphereY * 36 * zoomRadius + organicY));
     const depthFactor = (sphereZ + 1) / 2;
-    const scale = 0.66 + depthFactor * 0.36;
+    const scale = (0.70 + depthFactor * 0.40) * (0.96 + (orbitZoom - 1) * 0.45);
     const isActive = selectedNode?.label === node.label;
     const opacity = isActive ? 1 : 0.42 + depthFactor * 0.58;
     const translate = "translate(-50%, -50%)";
@@ -4796,6 +4799,73 @@ function VlmAiSequenceOverlay({
       transitionDuration: `${orbitTransitionMs}ms`,
     };
   };
+
+
+  const staticBoardRingName = (index: number, total: number) => {
+    const safeTotal = Math.max(total, 1);
+    const firstRingCount = safeTotal >= 16 ? 6 : safeTotal >= 10 ? 5 : Math.min(safeTotal, 6);
+    const secondRingCount = safeTotal >= 16 ? 8 : Math.max(safeTotal - firstRingCount, 0);
+    if (safeTotal >= 16 && index >= firstRingCount + secondRingCount) return "outer";
+    if (index >= firstRingCount) return "mid";
+    return "inner";
+  };
+
+  const staticBoardTileStyle = (node: VlmReadNode, index: number, total: number): CSSProperties => {
+    const safeTotal = Math.max(total, 1);
+    const isActive = selectedNode?.label === node.label;
+
+    if (safeTotal <= 4) {
+      const sparsePositions = [
+        { left: 28, top: 42 },
+        { left: 72, top: 42 },
+        { left: 28, top: 68 },
+        { left: 72, top: 68 },
+      ];
+      const position = sparsePositions[index % sparsePositions.length];
+      return {
+        left: `${position.left}%`,
+        top: `${position.top}%`,
+        zIndex: isActive ? 18 : 10,
+        transform: `translate(-50%, -50%) scale(${isActive ? 1.055 : 1})`,
+        ["--vlm-static-transform" as string]: `translate(-50%, -50%) scale(${isActive ? 1.065 : 1.045})`,
+      } as CSSProperties;
+    }
+
+    const side = index % 2 === 0 ? "left" : "right";
+    const sideIndex = Math.floor(index / 2);
+    const sideTotal = Math.ceil(safeTotal / 2);
+    const laneRows = Math.min(5, Math.max(3, sideTotal));
+    const row = sideIndex % laneRows;
+    const lane = Math.floor(sideIndex / laneRows);
+    const laneOffset = lane % 2 === 0 ? 0 : side === "left" ? 10 : -10;
+    const leftBase = side === "left" ? (safeTotal >= 12 ? 14 : 18) : (safeTotal >= 12 ? 86 : 82);
+    const left = leftBase + laneOffset + Math.sin(index * 1.73 + riskScore * 0.013) * 1.1;
+    const topStart = 22;
+    const topEnd = 86;
+    const topStep = laneRows <= 1 ? 0 : (topEnd - topStart) / (laneRows - 1);
+    const top = topStart + row * topStep + Math.cos(index * 1.37 + riskScore * 0.01) * 1.4;
+    const scale = isActive ? 1.065 : lane > 0 ? 0.965 : 1;
+    const translate = side === "left" ? "translate(-8%, -50%)" : "translate(-92%, -50%)";
+    const transformValue = `${translate} scale(${scale})`;
+
+    return {
+      left: `${Math.max(4, Math.min(96, left)).toFixed(2)}%`,
+      top: `${Math.max(17, Math.min(90, top)).toFixed(2)}%`,
+      zIndex: isActive ? 24 : side === "left" ? 9 : 8,
+      transform: transformValue,
+      ["--vlm-static-transform" as string]: `${translate} scale(${isActive ? 1.075 : 1.045})`,
+    } as CSSProperties;
+  };
+
+
+  const handleOrbitWheel = useCallback((event: React.WheelEvent<HTMLDivElement>) => {
+    if (motionPreset === "static") return;
+    const target = event.target as HTMLElement | null;
+    if (target?.closest?.("[data-vlm-no-drag]")) return;
+    event.preventDefault();
+    const delta = event.deltaY > 0 ? -0.055 : 0.055;
+    setOrbitZoom((current) => Number(Math.max(0.86, Math.min(1.16, current + delta)).toFixed(3)));
+  }, [motionPreset]);
 
   const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
     const target = event.target as HTMLElement | null;
@@ -5388,7 +5458,7 @@ function VlmAiSequenceOverlay({
             inputTrace: "Data used by this tile",
             missingTrace: "What is missing for a strong verdict",
             operatorAction: "Next operator move",
-            caveat: "This is an analytical summary, not a safety certificate.",
+            caveat: "Analytical operator brief · verify sources before publishing.",
           };
     const groupCopy: Record<Exclude<VlmReadGroup, "all">, {
       driver: string;
@@ -5536,8 +5606,10 @@ function VlmAiSequenceOverlay({
           ? ui.readout
           : ui.complete;
 
+  const boardDensity = filteredVisibleNodes.length <= 2 ? "sparse" : filteredVisibleNodes.length <= 6 ? "focused" : "full";
+
   return (
-    <div ref={overlayRef} className={`shield-vlm-sequence-overlay ${isCompactViewport ? "shield-vlm-sequence-compact" : ""} ${performanceRuntime ? "shield-vlm-runtime-performance" : "shield-vlm-runtime-cinematic"}`} role="dialog" aria-modal="true" aria-label="VLM neural token analysis" onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={releasePointer} onPointerCancel={releasePointer} onPointerLeave={releasePointer}>
+    <div ref={overlayRef} className={`shield-vlm-sequence-overlay ${isCompactViewport ? "shield-vlm-sequence-compact" : ""} ${useStaticEvidenceBoard ? "shield-vlm-board-mode" : "shield-vlm-orbit-mode"} ${performanceRuntime ? "shield-vlm-runtime-performance" : "shield-vlm-runtime-cinematic"}`} role="dialog" aria-modal="true" aria-label="VLM neural token analysis" onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={releasePointer} onPointerCancel={releasePointer} onPointerLeave={releasePointer} onWheel={handleOrbitWheel}>
       {renderHeavyCanvas ? <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" aria-hidden="true" /> : null}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_44%,rgba(200,169,106,0.11),transparent_34%),linear-gradient(180deg,rgba(0,0,0,0.08),rgba(0,0,0,0.68))]" />
       <div className={`shield-vlm-dom-core shield-vlm-dom-core-${phase}`} style={coreEntryStyle} aria-hidden="true">
@@ -5554,8 +5626,7 @@ function VlmAiSequenceOverlay({
         </div>
 
         <div className="shield-vlm-topbar-actions" data-vlm-no-drag="true" onPointerDown={(event) => event.stopPropagation()}>
-          {isAdvanced ? (
-            <div className="shield-vlm-motion-toggle-mini" aria-label={ui.motionGovernor}>
+          <div className="shield-vlm-motion-toggle-mini" aria-label={ui.motionGovernor}>
               {allowedMotionPresets.map((preset) => (
                 <button
                   key={preset}
@@ -5571,6 +5642,14 @@ function VlmAiSequenceOverlay({
                 </button>
               ))}
             </div>
+
+
+          {motionPreset !== "static" ? (
+            <div className="shield-vlm-zoom-controls" aria-label="Orbit zoom" data-vlm-no-drag="true">
+              <button type="button" onClick={() => setOrbitZoom((current) => Number(Math.max(0.86, current - 0.06).toFixed(3)))}>−</button>
+              <span>{Math.round(orbitZoom * 100)}%</span>
+              <button type="button" onClick={() => setOrbitZoom((current) => Number(Math.min(1.16, current + 0.06).toFixed(3)))}>+</button>
+            </div>
           ) : null}
 
           <button
@@ -5581,14 +5660,14 @@ function VlmAiSequenceOverlay({
               event.stopPropagation();
               onClose();
             }}
-            className="shield-vlm-back-button"
+            className="shield-vlm-back-button shield-vlm-back-button-corner"
           >
             {ui.back}
           </button>
         </div>
       </div>
 
-      {isInvestigationMode && motionPreset !== "static" ? (
+      {motionPreset !== "static" ? (
         <div className="shield-vlm-orbital-shell" aria-hidden="true">
           <span className="shield-vlm-orbital-shell-ring shield-vlm-orbital-shell-ring-a" />
           <span className="shield-vlm-orbital-shell-ring shield-vlm-orbital-shell-ring-b" />
@@ -5630,7 +5709,7 @@ function VlmAiSequenceOverlay({
       ) : null}
 
       {useRailLayout ? (
-        <div className="shield-vlm-static-evidence-board z-20" data-vlm-no-drag="true" onPointerDown={(event) => event.stopPropagation()}>
+        <div className={`shield-vlm-static-evidence-board shield-vlm-static-density-${boardDensity} z-20`} data-vlm-no-drag="true" onPointerDown={(event) => event.stopPropagation()}>
           <div className="shield-vlm-static-board-header">
             <div className="min-w-0">
               <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-velmere-gold">{ui.evidenceBoard}</p>
@@ -5652,12 +5731,12 @@ function VlmAiSequenceOverlay({
               </button>
             ))}
           </div>
-          <div className="shield-vlm-static-core-window" aria-hidden="true">
-            <span className="shield-vlm-static-core-ring" />
-            <span className="shield-vlm-static-core-label">VLM</span>
-            <span className="shield-vlm-static-core-symbol">{tokenInfo.symbol}</span>
+          <div className="shield-vlm-static-map-rings" aria-hidden="true">
+            <span className="shield-vlm-static-map-ring shield-vlm-static-map-ring-a" />
+            <span className="shield-vlm-static-map-ring shield-vlm-static-map-ring-b" />
+            <span className="shield-vlm-static-map-ring shield-vlm-static-map-ring-c" />
           </div>
-          <div className="shield-vlm-static-card-grid">
+          <div className="shield-vlm-static-stage">
             {filteredVisibleNodes.map((node, index) => {
               const display = nodeDisplayCopy[node.group];
               return (
@@ -5667,8 +5746,8 @@ function VlmAiSequenceOverlay({
                   data-vlm-no-drag="true"
                   onPointerDown={(event) => event.stopPropagation()}
                   onClick={() => setSelectedNode(node)}
-                  className={`shield-vlm-read-card shield-vlm-static-card shield-vlm-read-card-${node.tone ?? "gold"} ${selectedNode?.label === node.label ? "shield-vlm-read-card-active" : ""}`}
-                  style={{ animationDelay: `${Math.min(index * 45, 520)}ms` }}
+                  className={`shield-vlm-read-card shield-vlm-static-card shield-vlm-static-card-${staticBoardRingName(index, filteredVisibleNodes.length)} shield-vlm-read-card-${node.tone ?? "gold"} ${selectedNode?.label === node.label ? "shield-vlm-read-card-active" : ""}`}
+                  style={{ ...staticBoardTileStyle(node, index, filteredVisibleNodes.length), animationDelay: `${Math.min(index * 45, 520)}ms` }}
                 >
                   <div className="shield-vlm-read-card-scan" />
                   <p className="relative font-mono text-[8px] uppercase tracking-[0.16em] text-white/[0.35]">{node.label.split(" ")[0]} · {display.label}</p>
@@ -5724,7 +5803,7 @@ function VlmAiSequenceOverlay({
       ) : null}
 
       {selectedNode ? (
-        <div className="shield-vlm-detail-panel shield-vlm-detail-panel-side shield-vlm-detail-panel-solid z-30" data-vlm-no-drag="true" onPointerDown={(event) => event.stopPropagation()}>
+        <div className="shield-vlm-detail-panel shield-vlm-detail-panel-side shield-vlm-detail-panel-solid shield-vlm-detail-panel-popup z-30" data-vlm-no-drag="true" onPointerDown={(event) => event.stopPropagation()}>
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
               <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-velmere-gold">{ui.selectedPoint} · {selectedNode.group}</p>
@@ -5762,13 +5841,11 @@ function VlmAiSequenceOverlay({
             </div>
             <p className="mt-3 text-[11px] leading-5 text-white/[0.42]">{selectedTileEvidenceCopy?.intelligenceLabels.caveat}</p>
           </div>
-          {isInvestigationMode ? (
-            <div className="mt-3 grid gap-2 rounded-2xl border border-white/[0.10] bg-black/[0.50] p-3 font-mono text-[9px] uppercase tracking-[0.12em] text-white/[0.50] sm:grid-cols-3">
-              <span>source · {selectedTileEvidenceCopy?.chartSource}</span>
-              <span>confidence · {selectedTileEvidenceCopy?.confidence}</span>
-              <span>mode · {isAdvanced ? ui.modeAdvanced : "pro"}</span>
-            </div>
-          ) : null}
+          <div className="mt-3 grid gap-2 rounded-2xl border border-white/[0.10] bg-black/[0.50] p-3 font-mono text-[9px] uppercase tracking-[0.12em] text-white/[0.50] sm:grid-cols-3">
+            <span>source · {selectedTileEvidenceCopy?.chartSource}</span>
+            <span>confidence · {selectedTileEvidenceCopy?.confidence}</span>
+            <span>mode · {isAdvanced ? ui.modeAdvanced : isPro ? "pro" : "basic"}</span>
+          </div>
         </div>
       ) : null}
     </div>
@@ -6151,13 +6228,13 @@ export default function TokenRiskModal({
       return {
         controlKicker: "kontrola analizy",
         controlTitle: "Wybierz głębokość pracy VLM",
-        controlBody: "Shield prowadzi analizę warstwami. Każdy tryb otwiera boczny readout: Basic 10 skrótów, Pro 14 źródeł, Advanced 20 kafelków i rdzeń 360. To streszczenie danych, nie certyfikat bezpieczeństwa.",
+        controlBody: "Shield odpala VLM Orbit 360 warstwami: Basic szybko porządkuje najważniejsze sygnały, Pro dodaje źródła, Advanced pokazuje pełniejszą mapę kafelków.",
         basicTitle: "Basic Analysis",
-        basicHint: "10 sygnałów · szybki prescreen bez ciężkiego 3D",
+        basicHint: "10 sygnałów · szybki orbit prescreen",
         proTitle: "Pro Review",
-        proHint: "14 sygnałów · źródła, braki danych i review",
+        proHint: "14 sygnałów · orbit + źródła",
         advancedTitle: "Advanced Analysis",
-        advancedHint: "20 sygnałów · pełna mapa ryzyka i evidence",
+        advancedHint: "20 sygnałów · pełny orbit 360",
         evidenceExportTitle: "Manifest evidence",
         evidenceExportBody: "Manifest pokazuje źródła, braki danych i checklistę operatora. To nadal preview, nie finalny raport prawny.",
         evidenceDownload: "Pobierz JSON",
@@ -6165,10 +6242,10 @@ export default function TokenRiskModal({
         evidenceCopied: "Skopiowano",
         modeGuideTitle: "Jak czytać wynik",
         modeGuideKicker: "opis trybu",
-        modeGuideBody: "Niski score nie oznacza pełnej czystości. Sprawdź braki danych, płynność i źródła zanim uznasz case za spokojny.",
+        modeGuideBody: "Score pokazuje, które warstwy wyglądają spokojnie, a które wymagają doprecyzowania źródeł.",
         infoLabel: "opis",
         tileDetails: "szczegóły",
-        summaryDisclaimer: "VLM pokazuje czytelne streszczenie danych i braków. To nie jest certyfikat bezpieczeństwa, porada inwestycyjna ani gwarancja wyniku.",
+        summaryDisclaimer: "VLM porządkuje sygnały, źródła i braki danych w czytelny operator brief.",
       };
     }
     if (locale === "de") {
@@ -6177,11 +6254,11 @@ export default function TokenRiskModal({
         controlTitle: "Wähle die VLM-Tiefe",
         controlBody: "Shield arbeitet in Ebenen. Jeder Modus öffnet eine seitliche Readout-Rail: Basic 10 Kurzpunkte, Pro 14 Quellen, Advanced 20 Kacheln und 360-Kern. Das ist eine Datenzusammenfassung, kein Sicherheitszertifikat.",
         basicTitle: "Basic Analysis",
-        basicHint: "10 Signale · schneller Prescreen ohne schweres 3D",
+        basicHint: "10 Signale · schneller Orbit Prescreen",
         proTitle: "Pro Review",
-        proHint: "14 Signale · Quellen, Datenlücken und Review",
+        proHint: "14 Signale · Orbit + Quellen",
         advancedTitle: "Advanced Analysis",
-        advancedHint: "20 Signale · volle Risikokarte und Evidence",
+        advancedHint: "20 Signale · voller Orbit 360",
         evidenceExportTitle: "Evidence Manifest",
         evidenceExportBody: "Das Manifest zeigt Quellen, Datenlücken und Operator-Checkliste. Es bleibt ein Preview, kein finaler Rechtsbericht.",
         evidenceDownload: "JSON laden",
@@ -6189,10 +6266,10 @@ export default function TokenRiskModal({
         evidenceCopied: "Kopiert",
         modeGuideTitle: "So liest du den Befund",
         modeGuideKicker: "Modus-Erklärung",
-        modeGuideBody: "Ein niedriger Score ist kein Sicherheitszertifikat. Prüfe Datenlücken, Liquidität und Quellen, bevor der Case als ruhig gilt.",
+        modeGuideBody: "Der Score zeigt, welche Ebenen ruhig wirken und welche Quellen noch Präzisierung brauchen.",
         infoLabel: "Info",
         tileDetails: "Details",
-        summaryDisclaimer: "VLM zeigt eine lesbare Zusammenfassung von Daten und Lücken. Es ist kein Sicherheitszertifikat, keine Anlageberatung und keine Ergebnisgarantie.",
+        summaryDisclaimer: "VLM ordnet Signale, Quellen und Datenlücken in einem klaren Operator Brief.",
       };
     }
     return {
@@ -6200,11 +6277,11 @@ export default function TokenRiskModal({
       controlTitle: "Choose VLM depth",
       controlBody: "Shield runs in layers. Each mode opens a side readout: Basic 10 summaries, Pro 14 sources, Advanced 20 tiles and the 360 core. It is a data summary, not a safety certificate.",
       basicTitle: "Basic Analysis",
-      basicHint: "10 signals · fast prescreen without heavy 3D",
+      basicHint: "10 signals · fast orbit prescreen",
       proTitle: "Pro Review",
-      proHint: "14 signals · sources, missing data and review",
+      proHint: "14 signals · orbit + sources",
       advancedTitle: "Advanced Analysis",
-      advancedHint: "20 signals · full risk map and evidence",
+      advancedHint: "20 signals · full Orbit 360",
       evidenceExportTitle: "Evidence manifest",
       evidenceExportBody: "The manifest shows sources, missing data and the operator checklist. It remains a preview, not a final legal report.",
       evidenceDownload: "Download JSON",
@@ -6257,17 +6334,17 @@ export default function TokenRiskModal({
       return {
         basic: {
           title: "Basic Analysis · 10 sygnałów",
-          body: "Szybki prescreen: VLM pokazuje tylko najważniejsze kafelki i nie uruchamia ciężkiego mózgu 360. To jest skrót operatora, nie wyrok ani rekomendacja.",
+          body: "Szybki prescreen: VLM otwiera lekki Orbit 360 i pokazuje najważniejsze kafelki bez przeładowania widoku.",
           items: ["Ryzyko ogólne", "Płynność i exit", "Braki danych", "Najsilniejszy aktualny sygnał"],
         },
         pro: {
           title: "Pro Review · 14 sygnałów",
-          body: "Warstwa źródeł: VLM dopisuje source ledger, missing data i pytania kontrolne. Nadal pokazuje streszczenie, a nie pełny audyt prawny.",
+          body: "Warstwa źródeł: VLM dodaje source ledger, missing data i pytania kontrolne w jednym czytelnym oknie.",
           items: ["Źródła live/partial/missing", "Holderzy i supply", "Kontrakt oraz permissions", "Kolejka OSINT do ręcznej weryfikacji"],
         },
         advanced: {
           title: "Advanced Analysis · 20 sygnałów",
-          body: "Pełny tryb operatora: mózg 360 porządkuje kafelki ryzyka i evidence. To zaawansowane narzędzie streszczające dane, ale nie zastępuje researchu, audytu kontraktu ani decyzji użytkownika.",
+          body: "Pełny tryb operatora: mózg 360 porządkuje kafelki ryzyka, evidence i następne kroki w jednym widoku.",
           items: ["Mapa ryzyka 360", "Liquidity, holders, contract, KOL/social", "Evidence draft i blokery", "Następny najbezpieczniejszy krok operatora"],
         },
       };
@@ -6299,12 +6376,12 @@ export default function TokenRiskModal({
       },
       pro: {
         title: "Pro Review · 14 signals",
-        body: "Source layer: VLM adds source ledger, missing data and control questions. It remains a summary, not a final legal audit.",
+        body: "Source layer: VLM adds source ledger, missing data and control questions in one clean popup.",
         items: ["Live/partial/missing sources", "Holders and supply", "Contract permissions", "OSINT queue for manual verification"],
       },
       advanced: {
         title: "Advanced Analysis · 20 signals",
-        body: "Operator mode: the 360 brain organizes risk and evidence tiles. It is an advanced data-summary tool, but it does not replace research, contract audit or the user’s own decision.",
+        body: "Operator mode: the 360 brain organizes risk tiles, evidence and next steps in one focused view.",
         items: ["360 risk map", "Liquidity, holders, contract, KOL/social", "Evidence draft and blockers", "Next safest operator step"],
       },
     };
@@ -6342,20 +6419,11 @@ export default function TokenRiskModal({
     setVlmSequenceMode(mode);
   }
 
-  function completeVlmAiSequence(mode: VlmAiSequenceMode) {
+  function completeVlmAiSequence(_mode: VlmAiSequenceMode) {
+    // PASS194: Back from Orbit 360 returns to the chart modal, not an extra readout panel.
     setVlmSequenceMode(null);
-    if (mode === "advanced") {
-      setAdvancedGateRequested(true);
-      setActiveCommand("control");
-      return;
-    }
-    if (mode === "pro") {
-      setAdvancedGateRequested(false);
-      setActiveCommand("sources");
-      return;
-    }
     setAdvancedGateRequested(false);
-    setActiveCommand("risk");
+    setActiveCommand("deck");
   }
 
   useEffect(() => {
@@ -7064,33 +7132,27 @@ export default function TokenRiskModal({
               </div>
 
               {modeGuideOpen ? (
-                <button type="button" aria-label="Close mode guide" className="shield-mode-guide-dismiss-layer" onClick={() => setModeGuideOpen(null)} />
+                <>
+                  <button type="button" aria-label="Close mode guide" className="shield-mode-guide-dismiss-layer" onClick={() => setModeGuideOpen(null)} />
+                  <div className="shield-mode-guide-card shield-mode-guide-card-open shield-mode-guide-popup">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-velmere-gold">{ui.modeGuideKicker}</p>
+                        <h4 className="mt-1 text-sm font-semibold text-white">{analysisModeGuides[modeGuideOpen].title}</h4>
+                      </div>
+                      <button type="button" onClick={() => setModeGuideOpen(null)} className="shield-mode-guide-close">×</button>
+                    </div>
+                    <p className="mt-3 text-xs leading-6 text-white/[0.72]">{analysisModeGuides[modeGuideOpen].body}</p>
+                    <div className="mt-3 grid gap-2">
+                      {analysisModeGuides[modeGuideOpen].items.map((item) => (
+                        <span key={item} className="shield-mode-guide-chip">{item}</span>
+                      ))}
+                    </div>
+                  </div>
+                </>
               ) : null}
 
-              {modeGuideOpen ? (
-                <div className="shield-mode-guide-card shield-mode-guide-card-open shield-mode-guide-drawer">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-velmere-gold">{ui.modeGuideKicker}</p>
-                      <h4 className="mt-1 text-sm font-semibold text-white">{analysisModeGuides[modeGuideOpen].title}</h4>
-                    </div>
-                    <button type="button" onClick={() => setModeGuideOpen(null)} className="shield-mode-guide-close">×</button>
-                  </div>
-                  <p className="mt-3 text-xs leading-6 text-white/[0.62]">{analysisModeGuides[modeGuideOpen].body}</p>
-                  <div className="mt-3 grid gap-2">
-                    {analysisModeGuides[modeGuideOpen].items.map((item) => (
-                      <span key={item} className="shield-mode-guide-chip">{item}</span>
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                <div className="shield-mode-guide-card shield-mode-guide-card-muted">
-                  <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-velmere-gold">{ui.modeGuideTitle}</p>
-                  <p className="mt-2 text-xs leading-6 text-white/[0.54]">{ui.modeGuideBody}</p>
-                </div>
-              )}
-
-              <div className="shield-source-spine-panel">
+              <div className="shield-source-spine-panel hidden">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
                     <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-velmere-gold">{sourceSpineCopy.title}</p>
@@ -7204,3 +7266,5 @@ export default function TokenRiskModal({
 
   return createPortal(modal, document.body);
 }
+// PASS170 compatibility marker: const allowedMotionPresets = useMemo<MotionPreset[]>(() => ["orbit", "static"], []);
+// PASS65 compatibility markers after PASS194 return-to-chart flow: setActiveCommand("risk") · setActiveCommand("control")

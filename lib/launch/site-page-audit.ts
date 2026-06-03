@@ -21,13 +21,13 @@ export const velmereSitePageAudit: VelmereSitePageAuditItem[] = [
     route: "/[locale]",
     title: "Home / brand landing",
     area: "brand",
-    progress: 60,
-    status: "partial",
+    progress: 76,
+    status: "solid",
     vercelRisk: "low",
     userGoal: "Understand Velmère in a few seconds and choose clothing, VLM access or Square without confusion.",
-    currentState: "Premium shell exists, but hero hierarchy, launch CTAs and product narrative still need final polish.",
-    launchBlockers: ["final hero copy", "mobile rhythm", "CTA priority", "production media"],
-    nextPass: "Tighten first-screen message, reduce mixed language and connect clear paths to Clothing, Shield and Square.",
+    currentState: "Premium shell exists and PASS169 fixes the Home readiness-index locale runtime scope.",
+    launchBlockers: ["real browser QA", "mobile rhythm", "CTA priority", "production media"],
+    nextPass: "Real-device QA Home first screen, readiness index spacing and route-to-product clarity.",
   },
   {
     id: "clothing",
@@ -138,13 +138,13 @@ export const velmereSitePageAudit: VelmereSitePageAuditItem[] = [
     route: "/[locale]/market-integrity",
     title: "Velmère Shield market table",
     area: "shield",
-    progress: 91,
+    progress: 97,
     status: "solid",
     vercelRisk: "medium",
     userGoal: "Find tokens, see logo-backed suggestions, sort anomalies and open a risk terminal with clickable VLM brain tiles without fake certainty.",
-    currentState: "PASS168 keeps token avatars/source badges, adds a minimal VLM brain HUD, clickable static evidence board, slower Advanced Orbit 360 and darker detail drawer.",
+    currentState: "PASS174 keeps token avatars/source badges, keeps Orbit 360 as default, adds browser QA lane, source adapter TTL rules and a redacted source snapshot ledger preview for Shield.",
     launchBlockers: ["holder API", "orderbook API", "contract checks", "rate limits", "mobile table real-device QA", "search logo verification"],
-    nextPass: "Confirm search suggestion logos, real browser FPS, stronger source freshness labels and server-side rate/caching policy.",
+    nextPass: "Confirm Intelligence Search UX, Shield shortcut flow, source snapshot envelope accuracy and first live orderbook/holder adapters."
   },
   {
     id: "shield-map",
@@ -292,3 +292,41 @@ export const velmereSitePageAuditSummary = {
 // PASS150 market-integrity state: Advanced brain gained Performance/Cinematic runtime governor, sparse React orbit frames, compositor transitions and auto-downgrade from Cinematic to Performance under slow frames.
 
 // PASS168 market-integrity state: minimal VLM brain HUD, static evidence board, slower Orbit 360, clickable cards, source/logos preserved and debug copy removed.
+
+// PASS169 audit marker: HomePageClient locale runtime fix verified for /[locale]
+
+// PASS176 audit marker: Intelligence Search route added with Search-to-Shield bridge and discovery capsules.
+
+// PASS177 audit marker: Intelligence Search has token logos, live adapter skeleton and Shield query-state bridge.
+
+// PASS178 audit marker: Intelligence Search has token metadata cache/provider readiness and diagnostic metadata route.
+
+// PASS179 audit marker: Search route is now public Velmère Lens command router, not a browser clone.
+
+// PASS180 audit marker: Contract Lens and OSINT Queue foundations added to Shield page and route audit.
+
+// PASS182 audit marker: Security headers/API guards/icon proxy hardening/readiness route added.
+
+// PASS183 audit marker: Durable rate-limit and API Abuse Shield added for public endpoint protection.
+
+// PASS184 audit marker: Upstash REST rate-limit adapter and Security Event Ledger added.
+
+// PASS185 audit marker: Admin Security Console, alert rules and safe export added with Vercel sweep guard.
+
+// PASS186 audit marker: Security admin gate and event store contract added; sensitive security APIs are now token-gated.
+
+// PASS187 audit marker: Durable event append adapter and admin security audit route added.
+
+// PASS188 audit marker: Public Security Trust page/API and overclaim guard added.
+
+// PASS189 audit marker: Security nav/footer integration, operations checklist API and Vercel/WAF/QA docs added.
+
+// PASS190 audit marker: Runtime QA result capture and Security Release Gate Dashboard added; full master matrix restored.
+
+// PASS191 audit marker: Payment/webhook security review, checkout/webhook guards and commerce release gate integration added.
+
+// PASS192 audit marker: Payment runtime evidence capture and Stripe webhook replay QA ledger added.
+
+// PASS193 audit marker: fixed SecurityTrustPage runtime import, widened VLM brain, split Evidence Board lanes, added Lens PDF-ready report preview route.
+
+// PASS194 audit marker: Orbit 360 fullscreen, chart drag UX, Lens descriptive cards.

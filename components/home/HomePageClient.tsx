@@ -191,7 +191,8 @@ function homeCopy(locale: string) {
 }
 
 export default function HomePageClient() {
-  const copy = homeCopy(useLocale());
+  const locale = useLocale();
+  const copy = homeCopy(locale);
   const { pillars, flow, clothingFirstAtelier, launchReality, shieldRails } = copy;
 
   return (

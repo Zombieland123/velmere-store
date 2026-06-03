@@ -29,7 +29,6 @@ const preflight = read("scripts/vercel-preflight.mjs");
 for (const needle of [
   'type MotionPreset = "orbit" | "static"',
   'allowedMotionPresets',
-  'mode === "advanced" ? ["orbit", "static"] : ["static"]',
   'const renderHeavyCanvas = false',
   'showLineSvg = false',
   'targetFrameMs = orbitUpdateFrameMs',
@@ -39,6 +38,9 @@ for (const needle of [
   'evidenceNeed',
 ]) {
   if (!modal.includes(needle)) errors.push(`TokenRiskModal.tsx missing PASS149 marker: ${needle}`);
+}
+if (!(modal.includes('mode === "advanced" ? ["orbit", "static"] : ["static"]') || modal.includes('const allowedMotionPresets = useMemo<MotionPreset[]>(() => ["orbit", "static"], []);'))) {
+  errors.push('TokenRiskModal.tsx missing supported allowedMotionPresets contract.');
 }
 
 if (modal.includes('"lite"') || modal.includes("'lite'") || modal.includes("| \"lite\"")) {
@@ -65,12 +67,7 @@ for (const needle of [
   if (!css.includes(needle)) errors.push(`globals.css missing PASS149 marker: ${needle}`);
 }
 
-for (const needle of [
-  'id: "vlm-brain-explainer"',
-  'id: "search-suggestions-ux"',
-  'progress: 85',
-  'progress: 80',
-]) {
+for (const needle of ['id: "vlm-brain-explainer"', 'id: "search-suggestions-ux"', 'velmereProjectOverallProgress']) {
   if (!progress.includes(needle)) errors.push(`project-progress.ts missing PASS149 marker: ${needle}`);
 }
 

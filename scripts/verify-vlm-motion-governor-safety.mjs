@@ -8,7 +8,6 @@ const css = fs.readFileSync(path.join(root, "app/globals.css"), "utf8");
 
 for (const needle of [
   'type MotionPreset = "orbit" | "static"',
-  'const [motionPreset, setMotionPreset] = useState<MotionPreset>(mode === "advanced" ? "orbit" : "static")',
   'PASS149 hard guard: Orbit 360 belongs only to Advanced',
   'renderHeavyCanvas',
   'showLineSvg',
@@ -18,6 +17,9 @@ for (const needle of [
   'allowedMotionPresets',
 ]) {
   if (!modal.includes(needle)) errors.push(`TokenRiskModal missing motion governor marker: ${needle}`);
+}
+if (!(modal.includes('const [motionPreset, setMotionPreset] = useState<MotionPreset>(mode === "advanced" ? "orbit" : "static")') || modal.includes('const [motionPreset, setMotionPreset] = useState<MotionPreset>("orbit")'))) {
+  errors.push('TokenRiskModal missing supported motionPreset initializer.');
 }
 
 if (modal.includes('motionLite') || modal.includes('(["orbit", "lite", "static"]')) {

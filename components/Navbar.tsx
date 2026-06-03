@@ -29,6 +29,7 @@ const navLabels = {
     contact: "Contact",
     shield: "Shield",
     research: "Research Lab",
+    security: "Security",
   },
   pl: {
     collection: "Kolekcja",
@@ -44,6 +45,7 @@ const navLabels = {
     contact: "Kontakt",
     shield: "Shield",
     research: "Research Lab",
+    security: "Security",
   },
   de: {
     collection: "Kollektion",
@@ -59,6 +61,7 @@ const navLabels = {
     contact: "Kontakt",
     shield: "Shield",
     research: "Research Lab",
+    security: "Sicherheit",
   },
 } as const;
 
@@ -238,6 +241,7 @@ export default function Navbar() {
     { href: "/vlm-token", label: labels.vlm },
     { href: "/square", label: labels.square },
     { href: "/community", label: labels.community },
+    { href: "/security", label: labels.security },
   ];
 
   return (
@@ -268,7 +272,7 @@ export default function Navbar() {
 
           <nav
             aria-label="Primary navigation"
-            className="relative z-[9] ml-3 mr-auto hidden max-w-[32rem] shrink items-center gap-1 overflow-hidden 2xl:flex"
+            className="relative z-[9] ml-3 mr-auto hidden max-w-[38rem] shrink items-center gap-1 overflow-hidden 2xl:flex"
           >
             {desktopPrimaryLinks.map((link) => (
               <Link
@@ -536,6 +540,7 @@ export default function Navbar() {
                       links: [
                         { href: "/vlm-token", label: labels.vlm },
                         { href: "/market-integrity", label: labels.shield },
+                        { href: "/security", label: labels.security },
                         { href: "/research-lab", label: labels.research },
                         { href: "/token-agreement", label: "Token agreement" },
                       ],

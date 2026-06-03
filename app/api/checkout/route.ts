@@ -5,6 +5,7 @@ import { getCheckoutReadiness } from "@/lib/checkout/config";
 import { createOrderDraft, markCheckoutStarted, type OrderLineItem } from "@/lib/orders/order-store";
 import { formatMoney, getLocalizedString, getProductBySlugOrId, isProductCustomerPurchasable } from "@/lib/products/catalog";
 import { getStripeServerClient } from "@/lib/stripe/server";
+import { validateCheckoutRequestBoundary } from "@/lib/security/payment-webhook-guard";
 
 export const runtime = "nodejs";
 
@@ -46,6 +47,9 @@ function compactMetadataValue(value: unknown, max = 500) {
 }
 
 export async function POST(req: Request) {
+  const paymentGuard = validateCheckoutRequestBoundary(req);
+  if (!paymentGuard.ok) return paymentGuard.response;
+
   const readiness = getCheckoutReadiness();
   if (readiness.mode !== "stripe" || !readiness.enabled) {
     return jsonError("Checkout is disabled until Stripe and store readiness are configured.", 503, readiness.reasons);

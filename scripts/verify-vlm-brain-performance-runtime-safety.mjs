@@ -52,13 +52,8 @@ for (const needle of [
   if (!css.includes(needle)) errors.push(`globals.css missing PASS150 runtime marker: ${needle}`);
 }
 
-for (const needle of [
-  'id: "vlm-brain-performance-runtime"',
-  'progress: 85',
-  'progress: 77',
-  'progress: 71',
-]) {
-  if (!progress.includes(needle)) errors.push(`project-progress.ts missing PASS150 progress marker: ${needle}`);
+for (const needle of ['id: "vlm-brain-performance-runtime"', 'velmereProjectOverallProgress', 'vlm-visual-brain"', 'launch-safety"']) {
+  if (!progress.includes(needle)) errors.push(`project-progress.ts missing runtime progress marker: ${needle}`);
 }
 
 if (!preflight.includes("VLM brain performance runtime guard")) {

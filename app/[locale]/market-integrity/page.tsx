@@ -4,6 +4,11 @@ import { notFound } from "next/navigation";
 import MarketIntegrityClient from "@/components/market-integrity/MarketIntegrityClient";
 import ProductionDataBackbonePanel from "@/components/launch/ProductionDataBackbonePanel";
 import StorageAdapterReadinessPanel from "@/components/launch/StorageAdapterReadinessPanel";
+import MarketIntegritySourceReadinessPanel from "@/components/market-integrity/MarketIntegritySourceReadinessPanel";
+import SourceSnapshotLedgerPanel from "@/components/market-integrity/SourceSnapshotLedgerPanel";
+import ContractLensPanel from "@/components/market-integrity/ContractLensPanel";
+import OsintQueuePanel from "@/components/market-integrity/OsintQueuePanel";
+import RealBrowserQaPanel from "@/components/launch/RealBrowserQaPanel";
 import { marketIntegrityDemoResults } from "@/lib/market-integrity/demo-tokens";
 import { buildVelmereMetadata, SUPPORTED_LOCALES } from "@/lib/seo/metadata";
 
@@ -25,6 +30,11 @@ export default function MarketIntegrityPage({ params: { locale } }: { params: { 
       <MarketIntegrityClient demoResults={marketIntegrityDemoResults} />
       <ProductionDataBackbonePanel locale={locale} surface="shield" />
       <StorageAdapterReadinessPanel locale={locale} surface="shield" />
+      <MarketIntegritySourceReadinessPanel locale={locale} />
+      <SourceSnapshotLedgerPanel locale={locale} />
+      <ContractLensPanel locale={locale} />
+      <OsintQueuePanel locale={locale} />
+      <RealBrowserQaPanel locale={locale} />
     </>
   );
 }

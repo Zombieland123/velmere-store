@@ -204,6 +204,811 @@ try {
   errors.push(`Evidence export manifest production guard failed: ${error instanceof Error ? error.message : String(error)}`);
 }
 
+// PASS194 Orbit 360 modal cleanup + Lens descriptive cards guard
+try {
+  const tokenRiskModalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const marketClientSource = read("components/market-integrity/MarketIntegrityClient.tsx");
+  const lensRouterSource = read("components/search/VelmereLensCommandRouter.tsx");
+  const cssSource = read("app/globals.css");
+  const matrixSource = read("VELMERE_PASS194_FULL_MASTER_PROGRESS_MATRIX.md");
+  for (const needle of ["Math.round(deltaX / 10)", "Evidence Board hidden for now", "setActiveCommand(\"deck\")", "shield-vlm-detail-panel-popup", "shield-mode-guide-popup", "shield-source-spine-panel hidden"]) {
+    if (!tokenRiskModalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS194 modal marker ${needle}.`);
+  }
+  for (const needle of ["PASS194 · full-screen Orbit 360 hotfix", ".shield-vlm-detail-panel-popup", ".shield-mode-guide-popup", ".shield-vlm-motion-toggle-mini button:not(.is-active)", ".vlcr-action-row"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing PASS194 CSS marker ${needle}.`);
+  }
+  for (const needle of ["id?: string", "name?: string", "knownTokenLogo(symbol, id, name)", "<TokenAvatar image={item.image} symbol={item.symbol} id={item.id} name={item.name} />"]) {
+    if (!marketClientSource.includes(needle)) errors.push(`components/market-integrity/MarketIntegrityClient.tsx: missing PASS194 logo marker ${needle}.`);
+  }
+  for (const needle of ["Lens cards are descriptive only", "Wyszukiwarka Velmère zbiera token", "Kapsuła raportu Velmère"]) {
+    if (!lensRouterSource.includes(needle)) errors.push(`components/search/VelmereLensCommandRouter.tsx: missing PASS194 Lens marker ${needle}.`);
+  }
+  if (lensRouterSource.includes("<Link href={route.href}") || lensRouterSource.includes("<a href={route.reportHref}")) errors.push("components/search/VelmereLensCommandRouter.tsx: PASS194 Lens cards still render action buttons.");
+  for (const needle of ["Token chart drag UX", "Token modal mode info popup", "VLM mode return-to-chart", "Selected tile popup readability", "Lens card clutter", "Całość launch-ready"]) {
+    if (!matrixSource.includes(needle)) errors.push(`VELMERE_PASS194_FULL_MASTER_PROGRESS_MATRIX.md: missing full matrix area ${needle}.`);
+  }
+} catch (error) {
+  errors.push(`PASS194 Orbit360/modal/Lens polish guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass194-orbit360-modal-lens-polish-safety.mjs
+// PASS194
+
+// PASS193 VLM/Lens/security runtime hotfix guard
+try {
+  const securityTrustPageSource = read("components/security/SecurityTrustPage.tsx");
+  const tokenRiskModalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const marketClientSource = read("components/market-integrity/MarketIntegrityClient.tsx");
+  const lensRouterSource = read("components/search/VelmereLensCommandRouter.tsx");
+  const lensRouteMapSource = read("lib/search/velmere-lens-route-map.ts");
+  const lensReportRouteSource = read("app/api/search/lens-report/route.ts");
+  const cssSource = read("app/globals.css");
+  const matrixSource = read("VELMERE_PASS193_FULL_MASTER_PROGRESS_MATRIX.md");
+  for (const needle of ["import SecurityOperationsChecklistPanel", "<SecurityOperationsChecklistPanel locale={safeLocale} />"]) {
+    if (!securityTrustPageSource.includes(needle)) errors.push(`components/security/SecurityTrustPage.tsx: missing PASS193 runtime import marker ${needle}.`);
+  }
+  for (const needle of ["orbitZoom", "handleOrbitWheel", "shield-vlm-zoom-controls", "--vlm-static-transform", "translate(-8%, -50%)", "translate(-92%, -50%)"]) {
+    if (!tokenRiskModalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS193 VLM marker ${needle}.`);
+  }
+  for (const needle of ["PASS193 · VLM Brain viewport expansion", ".shield-vlm-zoom-controls", ".shield-vlm-static-stage", ".vlcr-report-preview", ".shield-token-search-suggest-panel"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing PASS193 CSS marker ${needle}.`);
+  }
+  for (const needle of ["solana", "bonk", "shield-suggestion-token-avatar", "token suggestions · logo aware"]) {
+    if (!marketClientSource.includes(needle)) errors.push(`components/market-integrity/MarketIntegrityClient.tsx: missing PASS193 logo marker ${needle}.`);
+  }
+  for (const needle of ["reportHref", "reportTitle", "mode=shield", "mode=contract", "source_ledger"]) {
+    if (!lensRouteMapSource.includes(needle)) errors.push(`lib/search/velmere-lens-route-map.ts: missing PASS193 route/report marker ${needle}.`);
+  }
+  for (const needle of ["vlcr-action-row", "vlcr-report-preview", "c.previewBody", "route.reportHref"]) {
+    if (!lensRouterSource.includes(needle)) errors.push(`components/search/VelmereLensCommandRouter.tsx: missing PASS193 report UI marker ${needle}.`);
+  }
+  for (const needle of ["velmere-lens", "PDF-ready evidence note", "content-disposition", "not a safety certificate", "escapeHtml"]) {
+    if (!lensReportRouteSource.includes(needle)) errors.push(`app/api/search/lens-report/route.ts: missing PASS193 report route marker ${needle}.`);
+  }
+  for (const needle of ["SecurityOperationsChecklistPanel runtime hotfix", "VLM Brain window containment", "Evidence Board split lanes", "Velmère Lens report preview", "Search suggestions logo fallback", "Całość launch-ready"]) {
+    if (!matrixSource.includes(needle)) errors.push(`VELMERE_PASS193_FULL_MASTER_PROGRESS_MATRIX.md: missing PASS193 full matrix area ${needle}.`);
+  }
+} catch (error) {
+  errors.push(`PASS193 VLM/Lens/security hotfix guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass193-vlm-lens-security-hotfix-safety.mjs
+// PASS193
+
+// PASS192 payment runtime evidence capture + Stripe webhook replay QA ledger guard
+try {
+  const paymentEvidenceSource = read("lib/security/payment-runtime-evidence.ts");
+  const stripeReplaySource = read("lib/security/stripe-webhook-replay-qa.ts");
+  const evidenceRouteSource = read("app/api/security/payment-runtime-evidence/route.ts");
+  const replayRouteSource = read("app/api/security/stripe-webhook-replay-qa/route.ts");
+  const paymentReviewSource = read("lib/security/payment-webhook-security.ts");
+  const releaseGateSource = read("lib/security/security-release-gate.ts");
+  const runtimeQaSource = read("lib/security/security-runtime-qa.ts");
+  const readinessRouteSource = read("app/api/security/readiness/route.ts");
+  const exportRouteSource = read("app/api/security/export/route.ts");
+  const operationsRouteSource = read("app/api/security/operations-checklist/route.ts");
+  const abuseRouteSource = read("app/api/security/abuse-shield/route.ts");
+  const securityConsoleSource = read("components/admin/SecurityConsolePanel.tsx");
+  const evidenceDocSource = read("docs/security/PAYMENT_RUNTIME_EVIDENCE_CAPTURE.md");
+  const replayDocSource = read("docs/security/STRIPE_WEBHOOK_REPLAY_QA_LEDGER.md");
+  const matrixSource = read("VELMERE_PASS192_FULL_MASTER_PROGRESS_MATRIX.md");
+  for (const needle of ["PaymentRuntimeEvidenceRecord", "recordPaymentRuntimeEvidence", "buildPaymentRuntimeEvidenceSnapshot", "cleanText", "redacted-card-like"]) {
+    if (!paymentEvidenceSource.includes(needle)) errors.push(`lib/security/payment-runtime-evidence.ts: missing PASS192 evidence marker ${needle}.`);
+  }
+  for (const needle of ["stripeWebhookReplayScenarios", "recordStripeWebhookReplayEvidence", "buildStripeWebhookReplayQaSnapshot", "duplicate-replay", "unsupported-signed-event"]) {
+    if (!stripeReplaySource.includes(needle)) errors.push(`lib/security/stripe-webhook-replay-qa.ts: missing PASS192 replay marker ${needle}.`);
+  }
+  for (const source of [evidenceRouteSource, replayRouteSource]) {
+    for (const needle of ["applyApiAbuseShield", "verifySecurityAdminToken", "security:events", "payloadTooLarge", "POST", "GET"]) {
+      if (!source.includes(needle)) errors.push(`PASS192 admin-gated payment evidence/replay route missing ${needle}.`);
+    }
+  }
+  for (const needle of ["buildPaymentRuntimeEvidenceSnapshot", "buildStripeWebhookReplayQaSnapshot", "runtimeEvidence", "replayQa"]) {
+    if (!paymentReviewSource.includes(needle)) errors.push(`lib/security/payment-webhook-security.ts: missing PASS192 marker ${needle}.`);
+  }
+  for (const needle of ["buildPaymentRuntimeEvidenceSnapshot", "buildStripeWebhookReplayQaSnapshot", "paymentRuntimeEvidence", "stripeWebhookReplayQa", "paymentEvidenceProgress"]) {
+    if (!releaseGateSource.includes(needle)) errors.push(`lib/security/security-release-gate.ts: missing PASS192 marker ${needle}.`);
+  }
+  for (const needle of ["payment-runtime-evidence-api", "stripe-webhook-replay-qa-ledger", "paymentRuntimeEvidence", "stripeWebhookReplayQa"]) {
+    if (!runtimeQaSource.includes(needle)) errors.push(`lib/security/security-runtime-qa.ts: missing PASS192 marker ${needle}.`);
+  }
+  for (const needle of ["paymentRuntimeEvidence", "stripeWebhookReplayQa", "buildPaymentRuntimeEvidenceSnapshot", "buildStripeWebhookReplayQaSnapshot"]) {
+    if (!readinessRouteSource.includes(needle)) errors.push(`app/api/security/readiness/route.ts: missing PASS192 marker ${needle}.`);
+    if (!exportRouteSource.includes(needle)) errors.push(`app/api/security/export/route.ts: missing PASS192 marker ${needle}.`);
+    if (!operationsRouteSource.includes(needle)) errors.push(`app/api/security/operations-checklist/route.ts: missing PASS192 marker ${needle}.`);
+    if (!abuseRouteSource.includes(needle)) errors.push(`app/api/security/abuse-shield/route.ts: missing PASS192 marker ${needle}.`);
+  }
+  for (const needle of ["buildPaymentRuntimeEvidenceSnapshot", "buildStripeWebhookReplayQaSnapshot", "/api/security/payment-runtime-evidence", "/api/security/stripe-webhook-replay-qa"]) {
+    if (!securityConsoleSource.includes(needle)) errors.push(`components/admin/SecurityConsolePanel.tsx: missing PASS192 console marker ${needle}.`);
+  }
+  for (const needle of ["Payment Runtime Evidence Capture", "No raw", "safe POST payload"]) {
+    if (!evidenceDocSource.includes(needle)) errors.push(`docs/security/PAYMENT_RUNTIME_EVIDENCE_CAPTURE.md: missing marker ${needle}.`);
+  }
+  for (const needle of ["Stripe Webhook Replay QA Ledger", "Duplicate webhook replay", "Unsupported signed event"]) {
+    if (!replayDocSource.includes(needle)) errors.push(`docs/security/STRIPE_WEBHOOK_REPLAY_QA_LEDGER.md: missing marker ${needle}.`);
+  }
+  for (const needle of ["Payment runtime evidence capture", "Stripe webhook replay QA ledger", "Payment/webhook security", "Całość launch-ready"]) {
+    if (!matrixSource.includes(needle)) errors.push(`VELMERE_PASS192_FULL_MASTER_PROGRESS_MATRIX.md: missing full matrix area ${needle}.`);
+  }
+} catch (error) {
+  errors.push(`PASS192 payment runtime evidence/replay QA guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass192-payment-runtime-evidence-replay-qa-safety.mjs
+// PASS192
+
+// PASS191 payment/webhook security review + commerce release gate integration guard
+try {
+  const paymentGuardSource = read("lib/security/payment-webhook-guard.ts");
+  const paymentReviewSource = read("lib/security/payment-webhook-security.ts");
+  const checkoutRouteSource = read("app/api/checkout/route.ts");
+  const stripeWebhookRouteSource = read("app/api/stripe/webhook/route.ts");
+  const paymentReviewRouteSource = read("app/api/security/payment-webhook-review/route.ts");
+  const releaseGateSource = read("lib/security/security-release-gate.ts");
+  const runtimeQaSource = read("lib/security/security-runtime-qa.ts");
+  const readinessRouteSource = read("app/api/security/readiness/route.ts");
+  const exportRouteSource = read("app/api/security/export/route.ts");
+  const operationsRouteSource = read("app/api/security/operations-checklist/route.ts");
+  const abuseRouteSource = read("app/api/security/abuse-shield/route.ts");
+  const securityConsoleSource = read("components/admin/SecurityConsolePanel.tsx");
+  const paymentDocSource = read("docs/security/PAYMENT_WEBHOOK_SECURITY_REVIEW.md");
+  const matrixSource = read("VELMERE_PASS191_FULL_MASTER_PROGRESS_MATRIX.md");
+  for (const needle of ["validateCheckoutRequestBoundary", "validateStripeWebhookBoundary", "paymentWebhookGuardReadiness", "Checkout expects application/json", "Webhook payload is too large"]) {
+    if (!paymentGuardSource.includes(needle)) errors.push(`lib/security/payment-webhook-guard.ts: missing PASS191 guard marker ${needle}.`);
+  }
+  for (const needle of ["buildPaymentWebhookSecuritySnapshot", "signed-webhook", "webhook-idempotency", "order-persistence", "refund-support"]) {
+    if (!paymentReviewSource.includes(needle)) errors.push(`lib/security/payment-webhook-security.ts: missing PASS191 review marker ${needle}.`);
+  }
+  for (const needle of ["validateCheckoutRequestBoundary", "paymentGuard"]) {
+    if (!checkoutRouteSource.includes(needle)) errors.push(`app/api/checkout/route.ts: missing PASS191 checkout marker ${needle}.`);
+  }
+  for (const needle of ["validateStripeWebhookBoundary", "SUPPORTED_STRIPE_WEBHOOK_EVENTS", "unsupported: true", "constructEvent"]) {
+    if (!stripeWebhookRouteSource.includes(needle)) errors.push(`app/api/stripe/webhook/route.ts: missing PASS191 webhook marker ${needle}.`);
+  }
+  for (const needle of ["applyApiAbuseShield", "verifySecurityAdminToken", "buildPaymentWebhookSecuritySnapshot", "security:events"]) {
+    if (!paymentReviewRouteSource.includes(needle)) errors.push(`app/api/security/payment-webhook-review/route.ts: missing PASS191 route marker ${needle}.`);
+  }
+  for (const needle of ["buildPaymentWebhookSecuritySnapshot", "paymentWebhookSecurity", "payment-webhook-review"]) {
+    if (!releaseGateSource.includes(needle)) errors.push(`lib/security/security-release-gate.ts: missing PASS191 release marker ${needle}.`);
+  }
+  for (const needle of ["buildPaymentWebhookSecuritySnapshot", "payment-webhook-review-api", "stripe-webhook-guard", "paymentWebhookSecurity"]) {
+    if (!runtimeQaSource.includes(needle)) errors.push(`lib/security/security-runtime-qa.ts: missing PASS191 runtime QA marker ${needle}.`);
+  }
+  for (const needle of ["paymentWebhookSecurity", "buildPaymentWebhookSecuritySnapshot"]) {
+    if (!readinessRouteSource.includes(needle)) errors.push(`app/api/security/readiness/route.ts: missing PASS191 payment marker ${needle}.`);
+    if (!exportRouteSource.includes(needle)) errors.push(`app/api/security/export/route.ts: missing PASS191 payment marker ${needle}.`);
+    if (!operationsRouteSource.includes(needle)) errors.push(`app/api/security/operations-checklist/route.ts: missing PASS191 payment marker ${needle}.`);
+    if (!abuseRouteSource.includes(needle)) errors.push(`app/api/security/abuse-shield/route.ts: missing PASS191 payment marker ${needle}.`);
+  }
+  for (const needle of ["buildPaymentWebhookSecuritySnapshot", "/api/security/payment-webhook-review", "paymentWebhook.averageProgress"]) {
+    if (!securityConsoleSource.includes(needle)) errors.push(`components/admin/SecurityConsolePanel.tsx: missing PASS191 console marker ${needle}.`);
+  }
+  for (const needle of ["Checkout payload", "Stripe webhook", "Duplicate webhook event", "Do not export card data"]) {
+    if (!paymentDocSource.includes(needle)) errors.push(`docs/security/PAYMENT_WEBHOOK_SECURITY_REVIEW.md: missing marker ${needle}.`);
+  }
+  for (const needle of ["Payment/webhook security", "Payment checkout request boundary", "Stripe webhook request boundary", "Commerce/order/payment readiness", "Całość launch-ready"]) {
+    if (!matrixSource.includes(needle)) errors.push(`VELMERE_PASS191_FULL_MASTER_PROGRESS_MATRIX.md: missing full matrix area ${needle}.`);
+  }
+} catch (error) {
+  errors.push(`PASS191 payment/webhook security guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass191-payment-webhook-security-safety.mjs
+// PASS191
+
+// PASS190 runtime QA result capture + security release gate dashboard guard
+try {
+  const runtimeQaSource = read("lib/security/security-runtime-qa.ts");
+  const releaseGateSource = read("lib/security/security-release-gate.ts");
+  const runtimeQaRouteSource = read("app/api/security/runtime-qa/route.ts");
+  const releaseGateRouteSource = read("app/api/security/release-gate/route.ts");
+  const readinessRouteSource = read("app/api/security/readiness/route.ts");
+  const exportRouteSource = read("app/api/security/export/route.ts");
+  const operationsRouteSource = read("app/api/security/operations-checklist/route.ts");
+  const securityConsoleSource = read("components/admin/SecurityConsolePanel.tsx");
+  const qaDocSource = read("docs/security/SECURITY_RUNTIME_QA_RESULT_CAPTURE.md");
+  const releaseDocSource = read("docs/security/SECURITY_RELEASE_GATE_DASHBOARD.md");
+  const matrixSource = read("VELMERE_PASS190_FULL_MASTER_PROGRESS_MATRIX.md");
+  for (const needle of ["RuntimeQaCheck", "runtimeQaChecks", "buildSecurityRuntimeQaSnapshot", "admin-api-deny-by-default", "export-redaction", "release-gate-signoff"]) {
+    if (!runtimeQaSource.includes(needle)) errors.push(`lib/security/security-runtime-qa.ts: missing PASS190 runtime QA marker ${needle}.`);
+  }
+  for (const needle of ["SecurityReleaseGateItem", "buildSecurityReleaseGateSnapshot", "payment-webhook-review", "security_release_gate_dashboard"]) {
+    if (!releaseGateSource.includes(needle)) errors.push(`lib/security/security-release-gate.ts: missing PASS190 release gate marker ${needle}.`);
+  }
+  for (const source of [runtimeQaRouteSource, releaseGateRouteSource]) {
+    for (const needle of ["applyApiAbuseShield", "verifySecurityAdminToken", "security:events", "securityAdminGate", "operator"]) {
+      if (!source.includes(needle)) errors.push(`PASS190 gated security route missing ${needle}.`);
+    }
+  }
+  for (const needle of ["runtimeQa", "releaseGate", "buildSecurityRuntimeQaSnapshot", "buildSecurityReleaseGateSnapshot"]) {
+    if (!readinessRouteSource.includes(needle)) errors.push(`app/api/security/readiness/route.ts: missing PASS190 marker ${needle}.`);
+    if (!exportRouteSource.includes(needle)) errors.push(`app/api/security/export/route.ts: missing PASS190 marker ${needle}.`);
+    if (!operationsRouteSource.includes(needle)) errors.push(`app/api/security/operations-checklist/route.ts: missing PASS190 marker ${needle}.`);
+  }
+  for (const needle of ["buildSecurityRuntimeQaSnapshot", "buildSecurityReleaseGateSnapshot", "/api/security/runtime-qa", "/api/security/release-gate", "releaseItems.map"]) {
+    if (!securityConsoleSource.includes(needle)) errors.push(`components/admin/SecurityConsolePanel.tsx: missing PASS190 console marker ${needle}.`);
+  }
+  for (const needle of ["/api/security/export", "No raw IP", "Vercel firewall logs", "npm run verify:shield-all"]) {
+    if (!qaDocSource.includes(needle)) errors.push(`docs/security/SECURITY_RUNTIME_QA_RESULT_CAPTURE.md: missing marker ${needle}.`);
+  }
+  for (const needle of ["Security Release Gate Dashboard", "Payment/webhook", "Vercel envs", "WAF"]) {
+    if (!releaseDocSource.includes(needle)) errors.push(`docs/security/SECURITY_RELEASE_GATE_DASHBOARD.md: missing marker ${needle}.`);
+  }
+  for (const needle of ["Security release gate dashboard", "Security runtime QA result capture", "Payment/webhook security", "Source adapters / live feeds", "VLM AI risk brain", "Całość launch-ready"]) {
+    if (!matrixSource.includes(needle)) errors.push(`VELMERE_PASS190_FULL_MASTER_PROGRESS_MATRIX.md: missing full matrix area ${needle}.`);
+  }
+} catch (error) {
+  errors.push(`PASS190 runtime QA/release gate guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass190-runtime-qa-release-gate-safety.mjs
+// PASS190
+
+// PASS189 security nav/footer integration + Vercel env/WAF/runtime QA checklist guard
+try {
+  const operationsChecklistSource = read("lib/security/security-operations-checklist.ts");
+  const operationsPanelSource = read("components/security/SecurityOperationsChecklistPanel.tsx");
+  const securityPageSource = read("components/security/SecurityTrustPage.tsx");
+  const operationsApiSource = read("app/api/security/operations-checklist/route.ts");
+  const navbarSource = read("components/Navbar.tsx");
+  const footerSource = read("components/Footer.tsx");
+  const cssSource = read("app/globals.css");
+  const envDocSource = read("docs/security/VERCEL_ENV_SECURITY_CHECKLIST.md");
+  const wafDocSource = read("docs/security/VERCEL_WAF_RULES_DRAFT.md");
+  const qaDocSource = read("docs/security/SECURITY_RUNTIME_QA_CHECKLIST.md");
+  const matrixSource = read("VELMERE_PASS189_FULL_PROGRESS_MATRIX.md");
+  for (const needle of ["securityChecklistItems", "wafRuleDrafts", "buildSecurityOperationsChecklistSnapshot", "VELMERE_SECURITY_ADMIN_TOKEN_SHA256", "runtime_qa"]) {
+    if (!operationsChecklistSource.includes(needle)) errors.push(`lib/security/security-operations-checklist.ts: missing PASS189 checklist marker ${needle}.`);
+  }
+  for (const needle of ["SecurityOperationsChecklistPanel", "buildSecurityOperationsChecklistSnapshot", "WAF drafts"]) {
+    if (!operationsPanelSource.includes(needle)) errors.push(`components/security/SecurityOperationsChecklistPanel.tsx: missing PASS189 panel marker ${needle}.`);
+  }
+  for (const needle of ["SecurityOperationsChecklistPanel", "<SecurityOperationsChecklistPanel locale={safeLocale} />"]) {
+    if (!securityPageSource.includes(needle)) errors.push(`components/security/SecurityTrustPage.tsx: missing PASS189 page marker ${needle}.`);
+  }
+  for (const needle of ["applyApiAbuseShield", "buildSecurityOperationsChecklistSnapshot", "buildSecurityReadinessSnapshot"]) {
+    if (!operationsApiSource.includes(needle)) errors.push(`app/api/security/operations-checklist/route.ts: missing PASS189 API marker ${needle}.`);
+  }
+  for (const needle of ["security: \"Security\"", "security: \"Sicherheit\"", "labels.security", "href: \"/security\""]) {
+    if (!navbarSource.includes(needle)) errors.push(`components/Navbar.tsx: missing PASS189 security nav marker ${needle}.`);
+  }
+  for (const needle of ["{ href: \"/security\", label: \"Security\" }", "Velmère Security means layered protection", "Security Velmère to warstwy ochrony", "Velmère Security bedeutet Schutzschichten"]) {
+    if (!footerSource.includes(needle)) errors.push(`components/Footer.tsx: missing PASS189 footer marker ${needle}.`);
+  }
+  for (const needle of ["PASS189 · Security operations checklist", ".vso-shell", ".vso-card", ".vso-status"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing PASS189 CSS marker ${needle}.`);
+  }
+  for (const needle of ["UPSTASH_REDIS_REST_URL", "VELMERE_SECURITY_ADMIN_TOKEN_SHA256", "GET /api/security/readiness"]) {
+    if (!envDocSource.includes(needle)) errors.push(`docs/security/VERCEL_ENV_SECURITY_CHECKLIST.md: missing marker ${needle}.`);
+  }
+  for (const needle of ["Block scanner paths", "Rate-limit public API", "Protect admin/security exports"]) {
+    if (!wafDocSource.includes(needle)) errors.push(`docs/security/VERCEL_WAF_RULES_DRAFT.md: missing marker ${needle}.`);
+  }
+  for (const needle of ["/security", "/admin/security", "/api/security/export", "No raw IP"]) {
+    if (!qaDocSource.includes(needle)) errors.push(`docs/security/SECURITY_RUNTIME_QA_CHECKLIST.md: missing marker ${needle}.`);
+  }
+  for (const needle of ["Security operations checklist", "Vercel env checklist", "Vercel WAF rules draft", "Security nav/footer integration", "Całość launch-ready"]) {
+    if (!matrixSource.includes(needle)) errors.push(`VELMERE_PASS189_FULL_PROGRESS_MATRIX.md: missing full matrix area ${needle}.`);
+  }
+} catch (error) {
+  errors.push(`PASS189 security nav/footer/Vercel WAF checklist guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass189-security-nav-footer-vercel-waf-checklist-safety.mjs
+// PASS189
+
+// PASS188 security trust copy + public security page overclaim guard
+try {
+  const securityTrustCopySource = read("lib/security/security-trust-copy.ts");
+  const securityTrustPageSource = read("components/security/SecurityTrustPage.tsx");
+  const securityRouteSource = read("app/[locale]/security/page.tsx");
+  const securityTrustApiSource = read("app/api/security/trust/route.ts");
+  const cssSource = read("app/globals.css");
+  const matrixSource = read("VELMERE_PASS188_FULL_PROGRESS_MATRIX.md");
+  for (const needle of ["securityTrustForbiddenClaims", "securityTrustPillars", "securityTrustRoadmap", "buildSecurityTrustSnapshot", "security-first"]) {
+    if (!securityTrustCopySource.includes(needle)) errors.push(`lib/security/security-trust-copy.ts: missing PASS188 marker ${needle}.`);
+  }
+  for (const needle of ["SecurityTrustPage", "buildSecurityTrustSnapshot", "securityTrustPillars", "Production boundary"]) {
+    if (!securityTrustPageSource.includes(needle)) errors.push(`components/security/SecurityTrustPage.tsx: missing PASS188 page marker ${needle}.`);
+  }
+  for (const needle of ["Velmère Security", "SecurityTrustPage", "metadata"]) {
+    if (!securityRouteSource.includes(needle)) errors.push(`app/[locale]/security/page.tsx: missing PASS188 route marker ${needle}.`);
+  }
+  for (const needle of ["applyApiAbuseShield", "buildSecurityTrustSnapshot", "buildSecurityReadinessSnapshot", "security-trust"]) {
+    if (!securityTrustApiSource.includes(needle)) errors.push(`app/api/security/trust/route.ts: missing PASS188 API marker ${needle}.`);
+  }
+  for (const needle of ["PASS188 · Velmère Security Trust public surface", ".vst-hero", ".vst-card", ".vst-roadmap"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing PASS188 CSS marker ${needle}.`);
+  }
+  for (const needle of ["Security public trust page", "Security overclaim safety", "Brand trust / credibility", "Całość launch-ready"]) {
+    if (!matrixSource.includes(needle)) errors.push(`VELMERE_PASS188_FULL_PROGRESS_MATRIX.md: missing full matrix area ${needle}.`);
+  }
+  const publicSecuritySurface = `${securityTrustPageSource}\n${securityRouteSource}\n${securityTrustApiSource}`.toLowerCase();
+  for (const forbidden of ["najlepsze zabezpieczenia świata", "nie do zhakowania", "gwarantowane bezpieczeństwo", "100% secure", "unhackable", "hack proof", "world's best security", "best security in the world", "military-grade security", "bank-level guaranteed"]) {
+    if (publicSecuritySurface.includes(forbidden)) errors.push(`PASS188 public security overclaim remains: ${forbidden}.`);
+  }
+} catch (error) {
+  errors.push(`PASS188 security trust copy/public page guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass188-security-trust-copy-public-page-safety.mjs
+// PASS188
+
+// PASS187 durable security event append + admin read audit guard
+try {
+  const eventAppendSource = read("lib/security/security-event-append-adapter.ts");
+  const adminAuditSource = read("lib/security/security-admin-audit.ts");
+  const eventLedgerSource = read("lib/security/security-event-ledger.ts");
+  const adminAuthSource = read("lib/security/security-admin-auth.ts");
+  const eventStoreSource = read("lib/security/security-event-store-contract.ts");
+  const adminAuditRouteSource = read("app/api/security/admin-audit/route.ts");
+  const eventStoreRouteSource = read("app/api/security/event-store/route.ts");
+  const exportRouteSource = read("app/api/security/export/route.ts");
+  const readinessRouteSource = read("app/api/security/readiness/route.ts");
+  const abuseRouteSource = read("app/api/security/abuse-shield/route.ts");
+  const securityConsoleSource = read("components/admin/SecurityConsolePanel.tsx");
+  const matrixSource = read("VELMERE_PASS187_FULL_PROGRESS_MATRIX.md");
+  for (const needle of ["appendSecurityEventBestEffort", "buildSecurityEventAppendReadiness", "VELMERE_SECURITY_EVENT_UPSTASH_KEY", "LPUSH", "LTRIM", "safeRecord"]) {
+    if (!eventAppendSource.includes(needle)) errors.push(`lib/security/security-event-append-adapter.ts: missing PASS187 append marker ${needle}.`);
+  }
+  for (const needle of ["SecurityAdminAuditRecord", "recordSecurityAdminAudit", "buildSecurityAdminAuditSnapshot", "security_export_read", "security_event_read"]) {
+    if (!adminAuditSource.includes(needle)) errors.push(`lib/security/security-admin-audit.ts: missing PASS187 admin audit marker ${needle}.`);
+  }
+  for (const needle of ["appendSecurityEventBestEffort", "appendAdapter", "durableStorageReady"]) {
+    if (!eventLedgerSource.includes(needle)) errors.push(`lib/security/security-event-ledger.ts: missing PASS187 ledger append marker ${needle}.`);
+  }
+  for (const needle of ["recordSecurityAdminAudit", "not_configured", "denied", "allowed"]) {
+    if (!adminAuthSource.includes(needle)) errors.push(`lib/security/security-admin-auth.ts: missing PASS187 auth audit marker ${needle}.`);
+  }
+  for (const needle of ["buildSecurityEventAppendReadiness", "appendAdapter"]) {
+    if (!eventStoreSource.includes(needle)) errors.push(`lib/security/security-event-store-contract.ts: missing PASS187 store append marker ${needle}.`);
+    if (!eventStoreRouteSource.includes(needle)) errors.push(`app/api/security/event-store/route.ts: missing PASS187 store route marker ${needle}.`);
+  }
+  for (const needle of ["verifySecurityAdminToken", "security:events", "buildSecurityAdminAuditSnapshot", "listSecurityAdminAuditEvents"]) {
+    if (!adminAuditRouteSource.includes(needle)) errors.push(`app/api/security/admin-audit/route.ts: missing PASS187 admin-audit route marker ${needle}.`);
+  }
+  for (const needle of ["eventAppendAdapter", "securityAdminAudit", "buildSecurityEventAppendReadiness", "buildSecurityAdminAuditSnapshot"]) {
+    if (!exportRouteSource.includes(needle)) errors.push(`app/api/security/export/route.ts: missing PASS187 export marker ${needle}.`);
+    if (!readinessRouteSource.includes(needle)) errors.push(`app/api/security/readiness/route.ts: missing PASS187 readiness marker ${needle}.`);
+    if (!abuseRouteSource.includes(needle)) errors.push(`app/api/security/abuse-shield/route.ts: missing PASS187 abuse marker ${needle}.`);
+  }
+  for (const needle of ["buildSecurityEventAppendReadiness", "buildSecurityAdminAuditSnapshot", "/api/security/admin-audit"]) {
+    if (!securityConsoleSource.includes(needle)) errors.push(`components/admin/SecurityConsolePanel.tsx: missing PASS187 console marker ${needle}.`);
+  }
+  for (const needle of ["Security event append adapter", "Security admin audit", "Całość launch-ready"]) {
+    if (!matrixSource.includes(needle)) errors.push(`VELMERE_PASS187_FULL_PROGRESS_MATRIX.md: missing full matrix area ${needle}.`);
+  }
+} catch (error) {
+  errors.push(`PASS187 durable security event append/admin audit guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass187-durable-event-append-admin-audit-safety.mjs
+// PASS187
+
+// PASS186 security admin auth gate + event store contract guard
+try {
+  const securityAdminAuthSource = read("lib/security/security-admin-auth.ts");
+  const eventStoreContractSource = read("lib/security/security-event-store-contract.ts");
+  const lockedPanelSource = read("components/admin/SecurityConsoleLockedPanel.tsx");
+  const securityConsoleSource = read("components/admin/SecurityConsolePanel.tsx");
+  const adminSecurityPageSource = read("app/[locale]/admin/security/page.tsx");
+  const eventsRouteSource = read("app/api/security/events/route.ts");
+  const alertsRouteSource = read("app/api/security/alerts/route.ts");
+  const exportRouteSource = read("app/api/security/export/route.ts");
+  const eventStoreRouteSource = read("app/api/security/event-store/route.ts");
+  const readinessRouteSource = read("app/api/security/readiness/route.ts");
+  const abuseRouteSource = read("app/api/security/abuse-shield/route.ts");
+  const matrixSource = read("VELMERE_PASS186_FULL_PROGRESS_MATRIX.md");
+  for (const needle of ["verifySecurityAdminToken", "VELMERE_SECURITY_ADMIN_TOKEN_SHA256", "x-velmere-security-admin-token", "timingSafeEqual", "security_admin_token_required", "consoleVisible"]) {
+    if (!securityAdminAuthSource.includes(needle)) errors.push(`lib/security/security-admin-auth.ts: missing PASS186 admin auth marker ${needle}.`);
+  }
+  for (const needle of ["securityEventStoreContract", "buildSecurityEventStoreSnapshot", "durable-append-contract", "retention-policy"]) {
+    if (!eventStoreContractSource.includes(needle)) errors.push(`lib/security/security-event-store-contract.ts: missing PASS186 store marker ${needle}.`);
+  }
+  for (const needle of ["SecurityConsoleLockedPanel", "buildSecurityAdminGateReadiness"]) {
+    if (!lockedPanelSource.includes(needle)) errors.push(`components/admin/SecurityConsoleLockedPanel.tsx: missing PASS186 locked marker ${needle}.`);
+  }
+  for (const needle of ["buildSecurityAdminGateReadiness", "buildSecurityEventStoreSnapshot", "/api/security/event-store"]) {
+    if (!securityConsoleSource.includes(needle)) errors.push(`components/admin/SecurityConsolePanel.tsx: missing PASS186 console marker ${needle}.`);
+  }
+  for (const needle of ["SecurityConsoleLockedPanel", "buildSecurityAdminGateReadiness", "!gate.consoleVisible"]) {
+    if (!adminSecurityPageSource.includes(needle)) errors.push(`app/[locale]/admin/security/page.tsx: missing PASS186 route gate marker ${needle}.`);
+  }
+  for (const needle of ["verifySecurityAdminToken", "security:events", "applyApiAbuseShield"]) {
+    if (!eventsRouteSource.includes(needle)) errors.push(`app/api/security/events/route.ts: missing PASS186 API gate marker ${needle}.`);
+    if (!eventStoreRouteSource.includes(needle)) errors.push(`app/api/security/event-store/route.ts: missing PASS186 event-store gate marker ${needle}.`);
+  }
+  for (const needle of ["verifySecurityAdminToken", "security:alerts", "applyApiAbuseShield"]) {
+    if (!alertsRouteSource.includes(needle)) errors.push(`app/api/security/alerts/route.ts: missing PASS186 alerts gate marker ${needle}.`);
+  }
+  for (const needle of ["verifySecurityAdminToken", "security:export", "applyApiAbuseShield"]) {
+    if (!exportRouteSource.includes(needle)) errors.push(`app/api/security/export/route.ts: missing PASS186 export gate marker ${needle}.`);
+  }
+  for (const needle of ["securityAdminGate", "buildSecurityAdminGateReadiness", "eventStore", "buildSecurityEventStoreSnapshot"]) {
+    if (!readinessRouteSource.includes(needle)) errors.push(`app/api/security/readiness/route.ts: missing PASS186 marker ${needle}.`);
+    if (!abuseRouteSource.includes(needle)) errors.push(`app/api/security/abuse-shield/route.ts: missing PASS186 marker ${needle}.`);
+  }
+  for (const needle of ["Security admin API gate", "Security event store contract", "Security locked-state UX", "Całość launch-ready"]) {
+    if (!matrixSource.includes(needle)) errors.push(`VELMERE_PASS186_FULL_PROGRESS_MATRIX.md: missing full matrix area ${needle}.`);
+  }
+} catch (error) {
+  errors.push(`PASS186 security admin auth/event store guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass186-admin-auth-event-store-contract-safety.mjs
+// PASS186
+
+// PASS185 admin security console + alert rules + Vercel sweep guard
+try {
+  const securityAlertRulesSource = read("lib/security/security-alert-rules.ts");
+  const securityConsoleSource = read("components/admin/SecurityConsolePanel.tsx");
+  const adminSecurityPageSource = read("app/[locale]/admin/security/page.tsx");
+  const alertsRouteSource = read("app/api/security/alerts/route.ts");
+  const exportRouteSource = read("app/api/security/export/route.ts");
+  const readinessRouteSource = read("app/api/security/readiness/route.ts");
+  const abuseRouteSource = read("app/api/security/abuse-shield/route.ts");
+  const matrixSource = read("VELMERE_PASS185_FULL_PROGRESS_MATRIX.md");
+  for (const needle of ["SecurityAlertRule", "evaluateSecurityAlertRules", "buildSecurityAlertSnapshot", "waf_not_configured"]) {
+    if (!securityAlertRulesSource.includes(needle)) errors.push(`lib/security/security-alert-rules.ts: missing PASS185 alert marker ${needle}.`);
+  }
+  for (const needle of ["SecurityConsolePanel", "buildSecurityAlertSnapshot", "buildSecurityEventLedgerSnapshot", "asc-shell"]) {
+    if (!securityConsoleSource.includes(needle) && !read("app/globals.css").includes(needle)) errors.push(`components/admin/SecurityConsolePanel.tsx: missing PASS185 console marker ${needle}.`);
+  }
+  for (const needle of ["Velmère Admin Security Console", "robots", "index: false", "SecurityConsolePanel"]) {
+    if (!adminSecurityPageSource.includes(needle)) errors.push(`app/[locale]/admin/security/page.tsx: missing PASS185 admin route marker ${needle}.`);
+  }
+  for (const needle of ["applyApiAbuseShield", "buildSecurityAlertSnapshot", "securityJson"]) {
+    if (!alertsRouteSource.includes(needle)) errors.push(`app/api/security/alerts/route.ts: missing PASS185 alerts marker ${needle}.`);
+  }
+  for (const needle of ["security_export_safe_preview", "buildSecurityAlertSnapshot", "buildSecurityEventLedgerSnapshot", "no raw IP addresses", "content-disposition"]) {
+    if (!exportRouteSource.includes(needle)) errors.push(`app/api/security/export/route.ts: missing PASS185 export marker ${needle}.`);
+  }
+  for (const needle of ["alertRules", "buildSecurityAlertSnapshot"]) {
+    if (!readinessRouteSource.includes(needle)) errors.push(`app/api/security/readiness/route.ts: missing PASS185 alert marker ${needle}.`);
+    if (!abuseRouteSource.includes(needle)) errors.push(`app/api/security/abuse-shield/route.ts: missing PASS185 alert marker ${needle}.`);
+  }
+  for (const needle of ["Vercel potential error sweep", "Admin security console", "Security alert rules", "Security safe export", "Całość launch-ready"]) {
+    if (!matrixSource.includes(needle)) errors.push(`VELMERE_PASS185_FULL_PROGRESS_MATRIX.md: missing full matrix area ${needle}.`);
+  }
+} catch (error) {
+  errors.push(`PASS185 admin security console / Vercel sweep guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass185-admin-security-console-vercel-sweep-safety.mjs
+// PASS185
+
+// PASS184 Upstash REST adapter + security event ledger guard
+try {
+  const durableRateLimitSource = read("lib/security/durable-rate-limit.ts");
+  const securityEventLedgerSource = read("lib/security/security-event-ledger.ts");
+  const apiAbuseShieldSource = read("lib/security/api-abuse-shield.ts");
+  const securityEventsRouteSource = read("app/api/security/events/route.ts");
+  const readinessRouteSource = read("app/api/security/readiness/route.ts");
+  const abuseRouteSource = read("app/api/security/abuse-shield/route.ts");
+  const matrixSource = read("VELMERE_PASS184_FULL_PROGRESS_MATRIX.md");
+  for (const needle of ["upstash_rest", "upstash_fallback_memory", "/pipeline", "UPSTASH_REDIS_REST_URL", "providerError", "upstashRestAdapter"]) {
+    if (!durableRateLimitSource.includes(needle)) errors.push(`lib/security/durable-rate-limit.ts: missing PASS184 Upstash marker ${needle}.`);
+  }
+  for (const needle of ["SecurityEventRecord", "recordSecurityEvent", "buildSecurityEventLedgerSnapshot", "clientFingerprint", "in_memory_security_event_ledger"]) {
+    if (!securityEventLedgerSource.includes(needle)) errors.push(`lib/security/security-event-ledger.ts: missing PASS184 ledger marker ${needle}.`);
+  }
+  for (const needle of ["recordSecurityEvent", "abuse_blocked", "rate_limited", "suspicious_allowed", "provider_fallback"]) {
+    if (!apiAbuseShieldSource.includes(needle)) errors.push(`lib/security/api-abuse-shield.ts: missing PASS184 event marker ${needle}.`);
+  }
+  for (const needle of ["buildSecurityEventLedgerSnapshot", "listSecurityEvents", "filtered"]) {
+    if (!securityEventsRouteSource.includes(needle)) errors.push(`app/api/security/events/route.ts: missing PASS184 events route marker ${needle}.`);
+  }
+  for (const needle of ["securityEventLedger", "buildSecurityEventLedgerSnapshot"]) {
+    if (!readinessRouteSource.includes(needle)) errors.push(`app/api/security/readiness/route.ts: missing PASS184 ledger marker ${needle}.`);
+    if (!abuseRouteSource.includes(needle)) errors.push(`app/api/security/abuse-shield/route.ts: missing PASS184 ledger marker ${needle}.`);
+  }
+  for (const needle of ["Upstash/Redis adapter", "Security event ledger", "Monitoring / alerting readiness", "Całość launch-ready"]) {
+    if (!matrixSource.includes(needle)) errors.push(`VELMERE_PASS184_FULL_PROGRESS_MATRIX.md: missing full matrix area ${needle}.`);
+  }
+} catch (error) {
+  errors.push(`PASS184 Upstash/security event ledger guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass184-upstash-security-event-ledger-safety.mjs
+// PASS184
+
+// PASS183 durable rate-limit + API abuse shield guard
+try {
+  const durableRateLimitSource = read("lib/security/durable-rate-limit.ts");
+  const apiAbuseShieldSource = read("lib/security/api-abuse-shield.ts");
+  const abuseRouteSource = read("app/api/security/abuse-shield/route.ts");
+  const readinessRouteSource = read("app/api/security/readiness/route.ts");
+  const marketSearchRouteSource = read("app/api/market-integrity/search/route.ts");
+  const marketAnalyzeRouteSource = read("app/api/market-integrity/analyze/route.ts");
+  const iconRouteSource = read("app/api/market-integrity/icon/route.ts");
+  for (const needle of ["applyDurableRateLimit", "buildDurableRateLimitReadiness", "UPSTASH_REDIS_REST_URL", "memoryFallback"]) {
+    if (!durableRateLimitSource.includes(needle)) errors.push(`lib/security/durable-rate-limit.ts: missing PASS183 marker ${needle}.`);
+  }
+  for (const needle of ["applyApiAbuseShield", "evaluateAbuseSignals", "scanner_like_user_agent", "abuse_shield_blocked", "abuseShieldResponseMeta"]) {
+    if (!apiAbuseShieldSource.includes(needle)) errors.push(`lib/security/api-abuse-shield.ts: missing PASS183 marker ${needle}.`);
+  }
+  for (const needle of ["api_abuse_shield_preview", "buildDurableRateLimitReadiness", "distributed rate-limit store"]) {
+    if (!abuseRouteSource.includes(needle)) errors.push(`app/api/security/abuse-shield/route.ts: missing PASS183 marker ${needle}.`);
+  }
+  for (const needle of ["applyApiAbuseShield", "abuseShieldResponseMeta"]) {
+    if (!marketSearchRouteSource.includes(needle)) errors.push(`app/api/market-integrity/search/route.ts: missing PASS183 abuse shield marker ${needle}.`);
+    if (!marketAnalyzeRouteSource.includes(needle)) errors.push(`app/api/market-integrity/analyze/route.ts: missing PASS183 abuse shield marker ${needle}.`);
+  }
+  for (const needle of ["applyApiAbuseShield", "token-icon-proxy", "url.protocol !== \"https:\""]) {
+    if (!iconRouteSource.includes(needle)) errors.push(`app/api/market-integrity/icon/route.ts: missing PASS183 icon shield marker ${needle}.`);
+  }
+  for (const needle of ["buildDurableRateLimitReadiness", "abuseShieldResponseMeta"]) {
+    if (!readinessRouteSource.includes(needle)) errors.push(`app/api/security/readiness/route.ts: missing PASS183 readiness marker ${needle}.`);
+  }
+} catch (error) {
+  errors.push(`PASS183 durable rate-limit / API abuse shield guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass183-durable-rate-limit-abuse-shield-safety.mjs
+// PASS183
+
+// PASS182 security hardening guard
+try {
+  const nextConfigSource = read("next.config.mjs");
+  const securityHeadersSource = read("lib/security/http-security.mjs");
+  const apiGuardSource = read("lib/security/api-guard.ts");
+  const readinessRouteSource = read("app/api/security/readiness/route.ts");
+  const marketSearchRouteSource = read("app/api/market-integrity/search/route.ts");
+  const marketAnalyzeRouteSource = read("app/api/market-integrity/analyze/route.ts");
+  const iconRouteSource = read("app/api/market-integrity/icon/route.ts");
+  for (const needle of ["buildSecurityHeaders", "Content-Security-Policy", "Strict-Transport-Security", "Cross-Origin-Opener-Policy", "Permissions-Policy"]) {
+    if (!securityHeadersSource.includes(needle) && !nextConfigSource.includes(needle)) errors.push(`PASS182 security header marker missing: ${needle}.`);
+  }
+  if (!nextConfigSource.includes("buildSecurityHeaders({ isDev })")) errors.push("next.config.mjs: PASS182 centralized security headers not wired.");
+  for (const needle of ["securityJson", "applySoftRateLimit", "sanitizeBoundedParam", "rejectOversizedUrl"]) {
+    if (!apiGuardSource.includes(needle)) errors.push(`lib/security/api-guard.ts: missing PASS182 marker ${needle}.`);
+    const wrappedByPass183 = needle !== "securityJson" && marketSearchRouteSource.includes("applyApiAbuseShield") && marketAnalyzeRouteSource.includes("applyApiAbuseShield") && read("lib/security/api-abuse-shield.ts").includes(needle);
+    if (!wrappedByPass183) {
+      if (!marketSearchRouteSource.includes(needle)) errors.push(`app/api/market-integrity/search/route.ts: missing PASS182 guard ${needle}.`);
+      if (!marketAnalyzeRouteSource.includes(needle)) errors.push(`app/api/market-integrity/analyze/route.ts: missing PASS182 guard ${needle}.`);
+    }
+  }
+  for (const needle of ["buildSecurityReadinessSnapshot", "security_headers_api_guard_preview", "no-store"]) {
+    if (!readinessRouteSource.includes(needle) && !read("lib/security/security-readiness.ts").includes(needle)) errors.push(`app/api/security/readiness/route.ts: missing PASS182 readiness marker ${needle}.`);
+  }
+  for (const needle of ["url.protocol !== \"https:\"", "url.username", "url.password", "url.port", "contentType.toLowerCase().startsWith(\"image/\")", "body.byteLength > 600_000"]) {
+    if (!iconRouteSource.includes(needle)) errors.push(`app/api/market-integrity/icon/route.ts: missing PASS182 icon proxy hardening marker ${needle}.`);
+  }
+} catch (error) {
+  errors.push(`PASS182 security hardening guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass182-security-hardening-safety.mjs
+// PASS182
+
+// PASS180 Contract Lens + OSINT Queue foundations guard
+try {
+  const contractLensSource = read("lib/market-integrity/contract-lens-contract.ts");
+  const osintQueueSource = read("lib/market-integrity/osint-queue-contract.ts");
+  const contractRouteSource = read("app/api/market-integrity/contract-lens/route.ts");
+  const osintRouteSource = read("app/api/market-integrity/osint-queue/route.ts");
+  const marketPageSource = read("app/[locale]/market-integrity/page.tsx");
+  for (const needle of ["ContractLensSignalId", "owner_control", "proxy_upgrade", "createContractLensPreview"]) {
+    if (!contractLensSource.includes(needle)) errors.push(`lib/market-integrity/contract-lens-contract.ts: missing PASS180 marker ${needle}.`);
+  }
+  for (const needle of ["OsintQueueItem", "blockedClaims", "createOsintQueuePreview", "safe paraphrase"]) {
+    if (!osintQueueSource.includes(needle)) errors.push(`lib/market-integrity/osint-queue-contract.ts: missing PASS180 marker ${needle}.`);
+  }
+  for (const needle of ["contract_lens_preview_only", "externalFetchPerformed: false", "server-only analyzer output"]) {
+    if (!contractRouteSource.includes(needle)) errors.push(`app/api/market-integrity/contract-lens/route.ts: missing PASS180 route marker ${needle}.`);
+  }
+  for (const needle of ["osint_queue_preview_only", "externalFetchPerformed: false", "safe paraphrase"]) {
+    if (!osintRouteSource.includes(needle)) errors.push(`app/api/market-integrity/osint-queue/route.ts: missing PASS180 route marker ${needle}.`);
+  }
+  for (const needle of ["ContractLensPanel", "OsintQueuePanel"]) {
+    if (!marketPageSource.includes(needle)) errors.push(`app/[locale]/market-integrity/page.tsx: missing PASS180 panel ${needle}.`);
+  }
+} catch (error) {
+  errors.push(`PASS180 Contract Lens / OSINT Queue guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass180-contract-lens-osint-queue-safety.mjs
+// PASS180
+
+// PASS179 Velmère Lens router + full matrix guard
+try {
+  const lensMapSource = read("lib/search/velmere-lens-route-map.ts");
+  const lensRouterSource = read("components/search/VelmereLensCommandRouter.tsx");
+  const searchClientSource = read("components/search/VelmereIntelligenceSearchClient.tsx");
+  const lensRouteSource = read("app/api/search/lens-route/route.ts");
+  const matrixSource = read("VELMERE_PASS179_FULL_PROGRESS_MATRIX.md");
+  for (const needle of ["velmereLensRoutes", "contract_lens", "osint_queue", "source_ledger"]) {
+    if (!lensMapSource.includes(needle)) errors.push(`lib/search/velmere-lens-route-map.ts: missing PASS179 marker ${needle}.`);
+  }
+  for (const needle of ["VelmereLensCommandRouter", "Lens does not replace Shield", "Lens nie zastępuje Shielda"]) {
+    if (!lensRouterSource.includes(needle)) errors.push(`components/search/VelmereLensCommandRouter.tsx: missing PASS179 router marker ${needle}.`);
+  }
+  for (const needle of ["VelmereLensCommandRouter", "Velmère Lens", "Legacy guard marker: Velmère Intelligence Search"]) {
+    if (!searchClientSource.includes(needle)) errors.push(`components/search/VelmereIntelligenceSearchClient.tsx: missing PASS179 Lens marker ${needle}.`);
+  }
+  for (const needle of ["velmere_lens_route_preview", "does not replace full Shield analysis", "no-store"]) {
+    if (!lensRouteSource.includes(needle)) errors.push(`app/api/search/lens-route/route.ts: missing PASS179 route marker ${needle}.`);
+  }
+  for (const needle of ["Velmère Lens / Search", "Contract lens readiness", "OSINT queue / analyst workflow", "Całość launch-ready"]) {
+    if (!matrixSource.includes(needle)) errors.push(`VELMERE_PASS179_FULL_PROGRESS_MATRIX.md: missing full matrix area ${needle}.`);
+  }
+} catch (error) {
+  errors.push(`PASS179 Lens router/full matrix guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass179-lens-router-full-matrix-safety.mjs
+// PASS179
+
+// PASS178 token metadata cache/provider readiness guard
+try {
+  const metadataCacheSource = read("lib/search/token-metadata-cache.ts");
+  const metadataRouteSource = read("app/api/search/token-metadata/route.ts");
+  const metadataPanelSource = read("components/search/TokenMetadataProviderPanel.tsx");
+  const searchPageSource = read("app/[locale]/search/page.tsx");
+  for (const needle of ["TokenMetadataProvider", "curatedTokenMetadata", "createTokenMetadataCacheSnapshot", "externalFetchPerformed: false"]) {
+    if (!metadataCacheSource.includes(needle)) errors.push(`lib/search/token-metadata-cache.ts: missing PASS178 marker ${needle}.`);
+  }
+  for (const needle of ["token_metadata_cache_preview", "performs no external provider fetch", "no-store"]) {
+    if (!metadataRouteSource.includes(needle)) errors.push(`app/api/search/token-metadata/route.ts: missing PASS178 route marker ${needle}.`);
+  }
+  for (const needle of ["TokenMetadataProviderPanel", "getTokenMetadataProviderSummary", "tokenMetadataProviders"]) {
+    if (!metadataPanelSource.includes(needle)) errors.push(`components/search/TokenMetadataProviderPanel.tsx: missing PASS178 panel marker ${needle}.`);
+  }
+  if (!searchPageSource.includes("TokenMetadataProviderPanel")) errors.push("app/[locale]/search/page.tsx: missing PASS178 TokenMetadataProviderPanel.");
+} catch (error) {
+  errors.push(`PASS178 token metadata cache guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass178-token-metadata-cache-safety.mjs
+// PASS178
+
+// PASS177 live search adapter + Shield query state guard
+try {
+  const adapterSource = read("lib/search/live-search-adapter-skeleton.ts");
+  const liveRouteSource = read("app/api/search/live-preview/route.ts");
+  const searchContractSource = read("lib/search/intelligence-search-contract.ts");
+  const searchClientSource = read("components/search/VelmereIntelligenceSearchClient.tsx");
+  const shieldClientSource = read("components/market-integrity/MarketIntegrityClient.tsx");
+  for (const needle of ["VelmereLiveSearchAdapter", "createLiveSearchAdapterPreview", "externalFetchPerformed: false"]) {
+    if (!adapterSource.includes(needle)) errors.push(`lib/search/live-search-adapter-skeleton.ts: missing PASS177 marker ${needle}.`);
+  }
+  for (const needle of ["live_search_adapter_preview_only", "does not fetch public web or OSINT sources", "no-store"]) {
+    if (!liveRouteSource.includes(needle)) errors.push(`app/api/search/live-preview/route.ts: missing PASS177 safety marker ${needle}.`);
+  }
+  for (const needle of ["avatarImage?: string", "assets.coingecko.com"]) {
+    if (!searchContractSource.includes(needle)) errors.push(`lib/search/intelligence-search-contract.ts: missing PASS177 logo marker ${needle}.`);
+  }
+  for (const needle of ["result.avatarImage", "vis-live-adapter-note"]) {
+    if (!searchClientSource.includes(needle)) errors.push(`components/search/VelmereIntelligenceSearchClient.tsx: missing PASS177 UI marker ${needle}.`);
+  }
+  for (const needle of ["routeParams.get(\"asset\")", "routeParams.get(\"query\")", "velmere-search", "cleanRouteScan"]) {
+    if (!shieldClientSource.includes(needle)) errors.push(`components/market-integrity/MarketIntegrityClient.tsx: missing PASS177 query bridge marker ${needle}.`);
+  }
+} catch (error) {
+  errors.push(`PASS177 live search / Shield query guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass177-live-search-shield-query-safety.mjs
+// PASS177
+
+// PASS176 Search bridge + discovery capsules guard
+try {
+  const searchContractSource = read("lib/search/intelligence-search-contract.ts");
+  const searchClientSource = read("components/search/VelmereIntelligenceSearchClient.tsx");
+  const bridgeRouteSource = read("app/api/search/bridge/route.ts");
+  const discoveryRailSource = read("components/search/VelmereSearchDiscoveryRail.tsx");
+  for (const needle of ["VelmereShieldBridge", "buildVelmereShieldBridge", "full_shield_analysis", "avatarLabel"]) {
+    if (!searchContractSource.includes(needle)) errors.push(`lib/search/intelligence-search-contract.ts: missing PASS176 marker ${needle}.`);
+  }
+  for (const needle of ["VelmereSearchDiscoveryRail", "vis-bridge-box", "result.bridge?.href"]) {
+    if (!searchClientSource.includes(needle)) errors.push(`components/search/VelmereIntelligenceSearchClient.tsx: missing PASS176 marker ${needle}.`);
+  }
+  for (const needle of ["search_to_shield_bridge_preview", "storageWritePerformed: false", "does not create a final risk verdict"]) {
+    if (!bridgeRouteSource.includes(needle)) errors.push(`app/api/search/bridge/route.ts: missing PASS176 safety marker ${needle}.`);
+  }
+  for (const needle of ["Velmère discovery layer", "Narrative radar", "Source gap map", "VLM capsule"]) {
+    if (!discoveryRailSource.includes(needle)) errors.push(`components/search/VelmereSearchDiscoveryRail.tsx: missing PASS176 discovery marker ${needle}.`);
+  }
+} catch (error) {
+  errors.push(`PASS176 search bridge/discovery guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass176-search-bridge-discovery-safety.mjs
+// PASS176
+
+// PASS175 Velmère Intelligence Search guard
+try {
+  const searchPageSource = read("app/[locale]/search/page.tsx");
+  const searchClientSource = read("components/search/VelmereIntelligenceSearchClient.tsx");
+  const searchRouteSource = read("app/api/search/route.ts");
+  const searchContractSource = read("lib/search/intelligence-search-contract.ts");
+  for (const needle of ["VelmereIntelligenceSearchClient", "Velmère Intelligence Search"]) {
+    if (!searchPageSource.includes(needle) && !searchClientSource.includes(needle)) errors.push(`search page/client: missing PASS175 marker ${needle}.`);
+  }
+  for (const needle of ["VelmereSearchResult", "searchVelmereIntelligence", "shieldHref", "missingData", "nextOperatorStep"]) {
+    if (!searchContractSource.includes(needle)) errors.push(`lib/search/intelligence-search-contract.ts: missing PASS175 marker ${needle}.`);
+  }
+  for (const needle of ["velmere_intelligence_search_preview", "sanitizeSearchInput", "no-store"]) {
+    if (!searchRouteSource.includes(needle)) errors.push(`app/api/search/route.ts: missing PASS175 safety marker ${needle}.`);
+  }
+} catch (error) {
+  errors.push(`PASS175 intelligence search guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass175-intelligence-search-safety.mjs
+// PASS175
+
+// PASS174 source cache + snapshot ledger guard
+try {
+  const runtimeSource = read("lib/market-integrity/source-adapter-runtime.ts");
+  const routeSource = read("app/api/market-integrity/source-snapshot/route.ts");
+  const pageSource = read("app/[locale]/market-integrity/page.tsx");
+  for (const needle of ["SourceAdapterEnvelope", "redactSourcePayload", "getSourceCacheDecision", "createDemoSourceSnapshotBundle"]) {
+    if (!runtimeSource.includes(needle)) errors.push(`lib/market-integrity/source-adapter-runtime.ts: missing PASS174 marker ${needle}.`);
+  }
+  for (const needle of ["source_snapshot_preview_only", "storageWritePerformed: false", "no-store"]) {
+    if (!routeSource.includes(needle)) errors.push(`app/api/market-integrity/source-snapshot/route.ts: missing PASS174 safety marker ${needle}.`);
+  }
+  if (!pageSource.includes("SourceSnapshotLedgerPanel")) errors.push("app/[locale]/market-integrity/page.tsx: missing PASS174 SourceSnapshotLedgerPanel.");
+} catch (error) {
+  errors.push(`PASS174 source cache/snapshot guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass174-source-cache-snapshot-ledger-safety.mjs
+// PASS174
+
+// PASS173 real browser QA + market source readiness guard
+try {
+  const contractSource = read("lib/market-integrity/live-source-adapter-contract.ts");
+  const marketPageSource = read("app/[locale]/market-integrity/page.tsx");
+  const routeSource = read("app/api/market-integrity/source-readiness/route.ts");
+  for (const needle of ["marketIntegritySourceFreshnessRules", "targetTtlSeconds", "staleAfterSeconds", "mustNeverClaim"]) {
+    if (!contractSource.includes(needle)) errors.push(`lib/market-integrity/live-source-adapter-contract.ts: missing PASS173 marker ${needle}.`);
+  }
+  for (const needle of ["MarketIntegritySourceReadinessPanel", "RealBrowserQaPanel"]) {
+    if (!marketPageSource.includes(needle)) errors.push(`app/[locale]/market-integrity/page.tsx: missing PASS173 panel ${needle}.`);
+  }
+  for (const needle of ["source_readiness_preview_only", "storageWritePerformed", "no-store"]) {
+    if (!routeSource.includes(needle)) errors.push(`app/api/market-integrity/source-readiness/route.ts: missing PASS173 safety marker ${needle}.`);
+  }
+} catch (error) {
+  errors.push(`PASS173 browser/source readiness guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass173-browser-source-readiness-safety.mjs
+// PASS173
+
+// PASS172 board density + renderer contract guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  const rendererContract = read("lib/launch/vlm-brain-renderer-contract.ts");
+  for (const needle of ["boardDensity", "shield-vlm-static-density-${boardDensity}", "sparsePositions"]) {
+    if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS172 marker ${needle}.`);
+  }
+  for (const needle of ["PASS172 · evidence board sparse/focused density polish", ".shield-vlm-static-density-sparse", ".shield-vlm-static-density-focused"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing PASS172 CSS marker ${needle}.`);
+  }
+  for (const needle of ["dom_orbit_360", "dom_evidence_board", "webgl_prototype", "getVlmBrainRendererSummary"]) {
+    if (!rendererContract.includes(needle)) errors.push(`lib/launch/vlm-brain-renderer-contract.ts: missing renderer contract marker ${needle}.`);
+  }
+} catch (error) {
+  errors.push(`PASS172 board density/renderer guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-vlm-brain-board-density-renderer-contract-safety.mjs
+
+// PASS171 evidence board focus + WebGL prototype lane guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  const webglSource = read("components/market-integrity/VlmBrainWebGLPrototype.tsx");
+  for (const needle of ["shield-vlm-board-mode", "staticBoardRingName", "shield-vlm-static-map-rings"]) {
+    if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS171 marker ${needle}.`);
+  }
+  for (const needle of ["PASS171 · evidence board focus polish", ".shield-vlm-board-mode .shield-vlm-dom-core", ".shield-vlm-static-map-ring-a"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing PASS171 CSS marker ${needle}.`);
+  }
+  for (const needle of ["PASS171 WebGL-ready lane", "canvas.getContext(\"webgl\"", "data-webgl-prototype=\"vlm-brain\""]) {
+    if (!webglSource.includes(needle)) errors.push(`components/market-integrity/VlmBrainWebGLPrototype.tsx: missing PASS171 WebGL marker ${needle}.`);
+  }
+} catch (error) {
+  errors.push(`PASS171 board/WebGL guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-vlm-brain-board-focus-webgl-lane-safety.mjs
+
+// PASS170 unified orbit/board production guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  for (const needle of ["const allowedMotionPresets = useMemo<MotionPreset[]>(() => [\"orbit\", \"static\"], []);", "const [motionPreset, setMotionPreset] = useState<MotionPreset>(\"orbit\");", "shield-vlm-static-stage", "staticBoardTileStyle", "supportsOrbit360 = true"]) {
+    if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS170 marker ${needle}.`);
+  }
+  for (const needle of ["PASS170 · unified Orbit 360 + full-screen evidence board", ".shield-vlm-static-stage", ".shield-vlm-static-card"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing PASS170 CSS marker ${needle}.`);
+  }
+} catch (error) {
+  errors.push(`PASS170 unified orbit/board guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
 // Evidence report production guard
 try {
   const evidenceSource = read("lib/market-integrity/evidence-report.ts");
@@ -347,7 +1152,7 @@ try {
   if (!footerSource.includes("function footerCopy(locale: string)") || !footerSource.includes("useLocale()")) {
     errors.push("components/Footer.tsx: footer must use locale-aware copy.");
   }
-  if (!homeSource.includes("function homeCopy(locale: string)") || !homeSource.includes("const copy = homeCopy(useLocale())")) {
+  if (!homeSource.includes("function homeCopy(locale: string)") || !(homeSource.includes("const copy = homeCopy(useLocale())") || homeSource.includes("const copy = homeCopy(locale)"))) {
     errors.push("components/home/HomePageClient.tsx: homepage must use locale-aware copy.");
   }
   for (const needle of ["const pageCopy = useMemo", "const atlasNodes = useMemo", "const commandRoomCards = useMemo", "const brainImportLanes = useMemo"]) {
@@ -1161,6 +1966,26 @@ try {
   }
 } catch (error) {
   errors.push(`PASS168 VLM brain polish guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+
+// PASS169 home locale runtime guard
+try {
+  const homeSource = read("components/home/HomePageClient.tsx");
+  if (!homeSource.includes("const locale = useLocale();")) {
+    errors.push("components/home/HomePageClient.tsx: missing scoped const locale = useLocale(); for Home readiness panels.");
+  }
+  if (!homeSource.includes("const copy = homeCopy(locale);")) {
+    errors.push("components/home/HomePageClient.tsx: must use homeCopy(locale), not inline useLocale(), so locale is available in JSX.");
+  }
+  if (!homeSource.includes("<FullSurfaceReadinessIndex locale={locale} surface=\"home\" />")) {
+    errors.push("components/home/HomePageClient.tsx: missing scoped locale prop for FullSurfaceReadinessIndex.");
+  }
+  if (homeSource.includes("homeCopy(useLocale())")) {
+    errors.push("components/home/HomePageClient.tsx: homeCopy(useLocale()) can cause locale to be unavailable for later JSX.");
+  }
+} catch (error) {
+  errors.push(`PASS169 home locale runtime guard failed: ${error instanceof Error ? error.message : String(error)}`);
 }
 
 

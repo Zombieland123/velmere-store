@@ -17,6 +17,7 @@ function footerCopy(locale: string) {
         { href: "/clothing", label: "Ubrania" },
         { href: "/vlm-token", label: "Dostęp VLM" },
         { href: "/research-lab", label: "Research Lab" },
+        { href: "/security", label: "Security" },
         { href: "/square", label: "Velmère Square" },
         { href: "/lookbook", label: "Lookbook" },
         { href: "/community", label: "Community" },
@@ -35,6 +36,7 @@ function footerCopy(locale: string) {
         "Nigdy nie wpisuj seed phrase.",
         "Ceny, podatki, koszty dostawy i prawa zwrotu są pokazywane przed checkoutem.",
         "Prawa konsumenta pozostają bez zmian.",
+        "Security Velmère to warstwy ochrony i ciągłe wzmacnianie, nie obietnica braku ryzyka.",
       ],
     };
   }
@@ -52,6 +54,7 @@ function footerCopy(locale: string) {
         { href: "/clothing", label: "Kleidung" },
         { href: "/vlm-token", label: "VLM Access" },
         { href: "/research-lab", label: "Research Lab" },
+        { href: "/security", label: "Security" },
         { href: "/square", label: "Velmère Square" },
         { href: "/lookbook", label: "Lookbook" },
         { href: "/community", label: "Community" },
@@ -70,6 +73,7 @@ function footerCopy(locale: string) {
         "Gib niemals deine Seed Phrase ein.",
         "Preise, Steuern, Versandkosten und Rückgaberechte werden vor dem Checkout angezeigt.",
         "Verbraucherrechte bleiben unberührt.",
+        "Velmère Security bedeutet Schutzschichten und kontinuierliche Härtung, kein risikofreies Versprechen.",
       ],
     };
   }
@@ -104,6 +108,7 @@ function footerCopy(locale: string) {
       "Never enter your seed phrase.",
       "Prices, taxes, delivery costs and return rights are shown before checkout.",
       "Consumer rights remain unaffected.",
+      "Velmère Security means layered protection and continuous hardening, not a risk-free promise.",
     ],
   };
 }

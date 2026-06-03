@@ -50,7 +50,7 @@ for (const bad of [
 }
 
 const home = read("components/home/HomePageClient.tsx");
-if (!home.includes("function homeCopy(locale: string)") || !home.includes("const copy = homeCopy(useLocale())")) {
+if (!home.includes("function homeCopy(locale: string)") || !(home.includes("const copy = homeCopy(useLocale())") || home.includes("const copy = homeCopy(locale)"))) {
   errors.push("Home page must use locale-aware homeCopy.");
 }
 if (home.includes("Enter quietly. Own the room.") && !home.includes("heroTitle: \"Enter quietly. Own the room.\"")) {
