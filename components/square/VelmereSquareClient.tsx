@@ -225,12 +225,86 @@ const copy = {
     loginRequired: "Login erforderlich, bevor du in Square postest.",
     commentLocked: "Kommentare werden nach Login freigeschaltet.",
     modalKicker: "VELMÈRE / SIGNAL-THREAD",
+    modesKicker: "Square Betriebsmodi",
+    modesTitle: "Community ohne Chaos.",
+    modesBody: "Square soll wie ein kuratierter Signalraum wirken: lesbare öffentliche Posts, geschütztes Publishing und ruhige Moderation, bevor etwas öffentlich wird.",
+    modes: [
+      { label: "Lesen", value: "öffentlich", body: "Gäste können öffentliche Posts, Drops und Archiv-Notizen ohne Wallet-Druck lesen." },
+      { label: "Posten", value: "geschützt", body: "Publishing ist Account-gated und moderation-first, damit Square nicht zu Spam wird." },
+      { label: "Member-Räume", value: "gesperrt", body: "Private Räume, Rewards und tiefere Community-Signale öffnen nur über verifizierte Access-Rails." },
+    ],
+    trustKicker: "Vertrauen und Moderation",
+    trustTitle: "Square braucht Signal, nicht Lärm.",
+    trustBody: "Jede öffentliche Interaktion soll kuratiert wirken: kein Wallet-Druck, keine Spam-Mechanik, kein Finanz-Hype und keine unsicheren DM-Funnels.",
+    trustRails: [
+      "Lesen für Gäste bleibt öffentlich und reibungslos.",
+      "Publishing bleibt Account-gated und moderation-first.",
+      "Member-Räume bleiben access-gated und fragen nie nach Seed Phrases.",
+      "Markt- oder Token-Talk wird in Shield-Sprache geroutet: Anomalie, Review, Unsicherheit.",
+    ],
     rooms: {
       drop: "Drop-Quest",
       style: "Style-Arena",
       archive: "Archiv-Rätsel",
       chat: "Member-Chat",
     },
+  },
+} as const;
+
+const squareLaunchCopy = {
+  en: {
+    kicker: "Square launch routing",
+    title: "Every post needs a lane before it becomes noise.",
+    body: "The public feed stays readable, member access stays protected and token/market talk is routed into Shield language before it can create hype.",
+    steps: [
+      { label: "Public feed", value: "readable", body: "Approved posts, drops and archive notes stay visible without forcing a wallet connection." },
+      { label: "Moderation queue", value: "manual", body: "New posts and comments can remain pending until rules, reports and rate limits are production wired." },
+      { label: "Member rooms", value: "access gated", body: "Private rewards and deeper threads require verified account access, never seed phrases." },
+      { label: "Shield routing", value: "safe language", body: "Risk or token claims are converted into anomaly/review/missing-source wording." },
+    ],
+    checklistTitle: "Square release checklist",
+    checklist: [
+      { label: "Guest reading", value: "ready" },
+      { label: "Account publishing", value: "guarded" },
+      { label: "Spam/rate limits", value: "next" },
+      { label: "Member rooms", value: "locked" },
+    ],
+  },
+  pl: {
+    kicker: "routing startowy Square",
+    title: "Każdy post musi mieć tor, zanim zrobi się szum.",
+    body: "Feed publiczny zostaje czytelny, dostęp memberów jest chroniony, a rozmowy o tokenach/rynku przechodzą przez język Shield zanim stworzą hype.",
+    steps: [
+      { label: "Feed publiczny", value: "czytelny", body: "Zatwierdzone posty, dropy i notatki archiwum są widoczne bez wymuszania portfela." },
+      { label: "Kolejka moderacji", value: "manualna", body: "Nowe posty i komentarze mogą zostać pending, dopóki reguły, zgłoszenia i limity nie są produkcyjnie podłączone." },
+      { label: "Pokoje memberów", value: "access gated", body: "Prywatne nagrody i głębsze wątki wymagają zweryfikowanego konta, nigdy seed phrase." },
+      { label: "Routing Shield", value: "bezpieczny język", body: "Ryzykowne lub tokenowe claimy są zmieniane w język: anomalia, review, brak źródła." },
+    ],
+    checklistTitle: "Checklist startu Square",
+    checklist: [
+      { label: "Czytanie gościa", value: "gotowe" },
+      { label: "Publikacja konta", value: "chronione" },
+      { label: "Spam/rate limit", value: "następne" },
+      { label: "Pokoje memberów", value: "locked" },
+    ],
+  },
+  de: {
+    kicker: "Square Launch Routing",
+    title: "Jeder Post braucht eine Spur, bevor er Lärm wird.",
+    body: "Der öffentliche Feed bleibt lesbar, Member Access bleibt geschützt und Markt-/Token-Talk wird in Shield-Sprache geroutet, bevor Hype entsteht.",
+    steps: [
+      { label: "Public Feed", value: "lesbar", body: "Genehmigte Posts, Drops und Archiv-Notizen bleiben sichtbar, ohne Wallet-Verbindung zu erzwingen." },
+      { label: "Moderationsqueue", value: "manuell", body: "Neue Posts und Kommentare können pending bleiben, bis Regeln, Reports und Rate Limits produktiv angebunden sind." },
+      { label: "Member-Räume", value: "access gated", body: "Private Rewards und tiefere Threads brauchen verifizierten Account-Zugang, nie Seed Phrases." },
+      { label: "Shield Routing", value: "sichere Sprache", body: "Riskante oder tokenbezogene Claims werden in Anomalie-, Review- und Missing-Source-Sprache übersetzt." },
+    ],
+    checklistTitle: "Square Release Checklist",
+    checklist: [
+      { label: "Gast-Lesen", value: "ready" },
+      { label: "Account-Posting", value: "guarded" },
+      { label: "Spam/Rate Limits", value: "next" },
+      { label: "Member-Räume", value: "locked" },
+    ],
   },
 } as const;
 
@@ -248,6 +322,7 @@ export default function VelmereSquareClient() {
   const t = useTranslations("Square");
   const locale = useLocale() as "pl" | "en" | "de";
   const text = copy[locale] ?? copy.en;
+  const launchText = squareLaunchCopy[locale] ?? squareLaunchCopy.en;
   const walletUi = useWalletUiStore();
   const { authenticated } = useVelmereAuth();
 
@@ -626,6 +701,28 @@ export default function VelmereSquareClient() {
             </div>
           </div>
 
+          <div className="rounded-[1.55rem] border border-white/[0.10] bg-[#101012] p-5 md:p-6">
+            <div className="grid gap-5 lg:grid-cols-[0.78fr_1.22fr] lg:items-start">
+              <div>
+                <p className="font-mono text-[10px] font-black uppercase tracking-[0.22em] text-[#d4af37]">{launchText.kicker}</p>
+                <h2 className="mt-3 font-serif text-3xl leading-none text-white md:text-4xl">{launchText.title}</h2>
+                <p className="mt-4 text-sm leading-7 text-white/[0.60]">{launchText.body}</p>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {launchText.steps.map((step, index) => (
+                  <div key={step.label} className="rounded-2xl border border-white/[0.075] bg-black/[0.22] p-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="font-mono text-[9px] font-black uppercase tracking-[0.18em] text-white/[0.32]">0{index + 1}</p>
+                      <span className="rounded-full border border-[#d4af37]/[0.22] bg-[#d4af37]/[0.08] px-2.5 py-1 font-mono text-[8px] uppercase tracking-[0.13em] text-[#d4af37]">{step.value}</span>
+                    </div>
+                    <h3 className="mt-3 text-sm font-semibold text-white/[0.82]">{step.label}</h3>
+                    <p className="mt-2 text-xs leading-6 text-white/[0.52]">{step.body}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
           <div className="grid gap-3 sm:grid-cols-3">
             {squareStats.map(({ label, value, icon: Icon }) => (
               <div key={label} className="rounded-[1.25rem] border border-white/[0.10] bg-[#1A1A1C] p-4 shadow-[0_18px_70px_rgba(0,0,0,0.26)]">
@@ -826,6 +923,20 @@ export default function VelmereSquareClient() {
                 <Award className="mt-1 h-4 w-4 text-[#d4af37]" />
                 {text.rightThree}
               </p>
+            </div>
+          </section>
+
+          <section className="rounded-[1.25rem] border border-[#d4af37]/[0.16] bg-[#d4af37]/[0.035] p-5">
+            <p className="font-sans text-[10px] font-black uppercase tracking-[0.24em] text-[#d4af37]">
+              {launchText.checklistTitle}
+            </p>
+            <div className="mt-4 space-y-3">
+              {launchText.checklist.map((item) => (
+                <div key={item.label} className="flex items-center justify-between gap-3 rounded-2xl border border-white/[0.08] bg-black/[0.22] px-3 py-3">
+                  <span className="text-xs font-semibold text-white/[0.58]">{item.label}</span>
+                  <span className="rounded-full border border-white/[0.10] bg-white/[0.035] px-2.5 py-1 font-mono text-[8px] uppercase tracking-[0.13em] text-white/[0.42]">{item.value}</span>
+                </div>
+              ))}
             </div>
           </section>
         </aside>

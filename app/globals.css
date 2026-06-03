@@ -4083,3 +4083,1844 @@
     animation: none !important;
   }
 }
+
+/* PASS152 — Vercel evidence export fix + Shield containment + side-drawer UX */
+@layer components {
+  .shield-token-chart-card,
+  .shield-token-action-panel,
+  .shield-popup-chart,
+  .shield-investigator-section > div,
+  .shield-evidence-report-draft,
+  .shield-evidence-section-card,
+  .shield-source-ledger-card,
+  .shield-vlm-compact-rail,
+  .shield-vlm-detail-panel-side,
+  .shield-vlm-detail-panel-solid {
+    isolation: isolate;
+    overflow: hidden;
+    background-clip: padding-box;
+  }
+
+  .shield-token-action-panel {
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.045), 0 18px 58px rgba(0,0,0,0.30) !important;
+  }
+
+  .shield-analysis-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 2.65rem;
+    gap: 0.55rem;
+    align-items: stretch;
+  }
+
+  .shield-analysis-row .shield-analysis-button {
+    min-width: 0;
+    overflow: hidden;
+    clip-path: inset(0 round 1.15rem);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.045) !important;
+  }
+
+  .shield-analysis-info-button {
+    display: inline-flex;
+    min-height: 100%;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1.05rem;
+    border: 1px solid rgba(200,169,106,0.18);
+    background: linear-gradient(145deg, rgba(200,169,106,0.090), rgba(0,0,0,0.30));
+    color: rgba(200,169,106,0.92);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.74rem;
+    font-weight: 900;
+    transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+  }
+
+  .shield-analysis-info-button:hover {
+    transform: translateY(-1px);
+    border-color: rgba(200,169,106,0.38);
+    background: rgba(200,169,106,0.13);
+  }
+
+  .shield-analysis-info-button-cyan {
+    border-color: rgba(34,211,238,0.18);
+    background: linear-gradient(145deg, rgba(34,211,238,0.075), rgba(0,0,0,0.30));
+    color: rgba(165,243,252,0.92);
+  }
+
+  .shield-analysis-info-button-cyan:hover {
+    border-color: rgba(34,211,238,0.38);
+    background: rgba(34,211,238,0.11);
+  }
+
+  .shield-mode-guide-card {
+    margin-top: 0.9rem;
+    border-radius: 1.15rem;
+    border: 1px solid rgba(200,169,106,0.16);
+    background: linear-gradient(145deg, rgba(10,12,16,0.96), rgba(0,0,0,0.90));
+    padding: 0.95rem;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.045);
+    overflow: hidden;
+  }
+
+  .shield-mode-guide-card-muted {
+    border-color: rgba(255,255,255,0.08);
+    background: rgba(0,0,0,0.22);
+  }
+
+  .shield-mode-guide-close {
+    width: 1.8rem;
+    height: 1.8rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.10);
+    color: rgba(255,255,255,0.54);
+    background: rgba(255,255,255,0.035);
+  }
+
+  .shield-mode-guide-chip {
+    display: block;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.032);
+    padding: 0.55rem 0.75rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.58);
+  }
+
+  .shield-vlm-topbar > .min-w-0,
+  .shield-vlm-motion-stack,
+  .shield-vlm-orbit-status {
+    display: none !important;
+  }
+
+  .shield-vlm-topbar {
+    justify-content: flex-end !important;
+    pointer-events: none;
+  }
+
+  .shield-vlm-topbar > button {
+    pointer-events: auto;
+  }
+
+  .shield-vlm-read-card,
+  .shield-vlm-read-card-advanced,
+  .shield-vlm-compact-rail .shield-vlm-read-card {
+    border-color: rgba(200,169,106,0.16) !important;
+    background:
+      linear-gradient(120deg, rgba(255,255,255,0.040), transparent 32%, rgba(200,169,106,0.028)),
+      linear-gradient(145deg, rgba(8,10,14,0.985), rgba(0,0,0,0.955)) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.055), 0 10px 26px rgba(0,0,0,0.34) !important;
+    clip-path: inset(0 round 1rem);
+    overflow: hidden !important;
+    animation-name: shieldVlmSideCardIn;
+    animation-duration: 740ms;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    animation-fill-mode: both;
+  }
+
+  .shield-vlm-read-card-cyan,
+  .shield-vlm-read-card-green,
+  .shield-vlm-read-card-red {
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.055), 0 10px 26px rgba(0,0,0,0.34) !important;
+  }
+
+  .shield-vlm-read-card::after,
+  .shield-vlm-read-card-advanced::after,
+  .shield-vlm-read-card-scan {
+    contain: paint;
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .shield-vlm-read-card-active,
+  .shield-vlm-read-card-advanced.shield-vlm-read-card-active {
+    border-color: rgba(34,211,238,0.30) !important;
+    background:
+      linear-gradient(120deg, rgba(34,211,238,0.080), transparent 42%, rgba(200,169,106,0.035)),
+      linear-gradient(145deg, rgba(8,12,16,0.995), rgba(0,0,0,0.975)) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.070), 0 14px 34px rgba(0,0,0,0.44) !important;
+  }
+
+  .shield-vlm-compact-rail {
+    right: clamp(1rem, 2vw, 2rem);
+    left: auto;
+    top: clamp(7.2rem, 13vh, 8.8rem);
+    bottom: clamp(1rem, 2vh, 1.4rem);
+    width: min(49rem, 50vw);
+    max-height: none;
+    border-color: rgba(200,169,106,0.12);
+    background: linear-gradient(145deg, rgba(4,6,9,0.84), rgba(0,0,0,0.64));
+    backdrop-filter: none !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.045), 0 18px 64px rgba(0,0,0,0.42) !important;
+  }
+
+  .shield-vlm-compact-rail .grid {
+    gap: 0.58rem;
+  }
+
+  .shield-vlm-detail-dismiss-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 74;
+    cursor: default;
+    border: 0;
+    background: rgba(0,0,0,0.10);
+  }
+
+  .shield-vlm-detail-panel-side {
+    z-index: 82 !important;
+    right: clamp(1.2rem, 2.4vw, 2.4rem);
+    top: clamp(7.2rem, 12vh, 8.8rem);
+    width: min(28rem, calc(100vw - 2rem));
+    max-height: min(66dvh, 36rem);
+    border-color: rgba(200,169,106,0.22) !important;
+    background: linear-gradient(145deg, rgba(5,7,12,0.998), rgba(0,0,0,0.995)) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.060), 0 22px 72px rgba(0,0,0,0.68) !important;
+    animation: shieldVlmDetailSlideIn 280ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .shield-source-ledger-missing,
+  .shield-source-ledger-fallback,
+  .shield-source-ledger-blocked,
+  .shield-source-ledger-required {
+    border-color: rgba(200,169,106,0.16) !important;
+    background: rgba(200,169,106,0.040) !important;
+    color: rgba(255,255,255,0.64);
+  }
+
+  .shield-evidence-section-ready,
+  .shield-evidence-section-review,
+  .shield-evidence-section-blocked {
+    border-color: rgba(200,169,106,0.13) !important;
+    background: rgba(255,255,255,0.026) !important;
+  }
+}
+
+@keyframes shieldVlmSideCardIn {
+  from {
+    opacity: 0;
+    transform: translate3d(1.6rem, 0, 0) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes shieldVlmDetailSlideIn {
+  from {
+    opacity: 0;
+    transform: translate3d(1.2rem, 0, 0) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@media (max-width: 980px) {
+  .shield-vlm-compact-rail {
+    left: max(0.75rem, env(safe-area-inset-left));
+    right: max(0.75rem, env(safe-area-inset-right));
+    top: auto;
+    bottom: max(0.75rem, env(safe-area-inset-bottom));
+    width: auto;
+    max-height: min(52dvh, 30rem);
+  }
+
+  .shield-vlm-detail-panel-side {
+    left: 50%;
+    right: auto;
+    top: auto;
+    bottom: max(0.75rem, env(safe-area-inset-bottom));
+    width: min(28rem, calc(100vw - 1.4rem));
+    max-height: min(56dvh, 28rem);
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes shieldVlmDetailSlideUp {
+  from { opacity: 0; transform: translate3d(-50%, 1rem, 0) scale(0.985); }
+  to { opacity: 1; transform: translate3d(-50%, 0, 0) scale(1); }
+}
+
+@media (max-width: 980px) {
+  .shield-vlm-detail-panel-side {
+    animation: shieldVlmDetailSlideUp 280ms cubic-bezier(0.16, 1, 0.3, 1) both !important;
+  }
+}
+
+/* PASS153 · Shield containment + premium side drawers */
+.shield-map-panel,
+.shield-map-atlas-card,
+.shield-map-neural-nexus,
+.shield-map-cyber-brief,
+.shield-map-psychology,
+.shield-map-launch-score,
+.shield-map-command-room,
+.shield-map-radar-board,
+.shield-map-launch-bridge,
+.shield-map-source-trust,
+.shield-map-evidence-export,
+.shield-map-boundary,
+.shield-map-copilot,
+.shield-map-review-deck,
+.shield-map-interaction-stability,
+.shield-map-runtime-health,
+.shield-map-operator-focus,
+.shield-token-popup-shell,
+.shield-token-chart-card,
+.shield-token-action-panel,
+.shield-vlm-sequence-overlay,
+.shield-vlm-compact-rail,
+.shield-vlm-detail-panel-side,
+.shield-vlm-detail-panel-solid,
+.shield-mode-guide-card {
+  isolation: isolate;
+  contain: paint;
+  overflow: hidden;
+}
+
+.shield-map-panel::before,
+.shield-map-panel::after,
+.shield-map-neural-nexus::before,
+.shield-map-neural-nexus::after,
+.shield-map-cyber-brief::before,
+.shield-map-cyber-brief::after,
+.shield-map-launch-bridge::before,
+.shield-map-launch-bridge::after,
+.shield-token-popup-shell::before,
+.shield-token-popup-shell::after,
+.shield-token-chart-card::before,
+.shield-token-chart-card::after,
+.shield-token-action-panel::before,
+.shield-token-action-panel::after {
+  pointer-events: none !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  opacity: min(0.75, var(--shield-glow-opacity, 0.75));
+}
+
+.shield-token-metric-grid-hidden {
+  display: none !important;
+}
+
+.shield-analysis-row {
+  position: relative;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: stretch !important;
+}
+
+.shield-analysis-row .shield-analysis-button {
+  min-height: 4.35rem;
+  border-radius: 1.05rem !important;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.060), rgba(255,255,255,0.018) 44%, rgba(0,0,0,0.30)),
+    radial-gradient(circle at 88% 28%, rgba(200,169,106,0.095), transparent 38%) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.07), 0 14px 42px rgba(0,0,0,0.28) !important;
+}
+
+.shield-analysis-row .shield-analysis-button:hover,
+.shield-analysis-row .shield-analysis-button:focus-visible {
+  transform: translate3d(0, -1px, 0);
+  border-color: rgba(200,169,106,0.34) !important;
+  background:
+    linear-gradient(135deg, rgba(200,169,106,0.095), rgba(255,255,255,0.030) 46%, rgba(0,0,0,0.26)),
+    radial-gradient(circle at 88% 28%, rgba(34,211,238,0.080), transparent 38%) !important;
+}
+
+.shield-analysis-info-button {
+  min-width: 3.4rem !important;
+  height: auto !important;
+  padding: 0.5rem 0.72rem !important;
+  border-radius: 1.05rem !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 0.56rem !important;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(200,169,106,0.88) !important;
+  background: linear-gradient(180deg, rgba(200,169,106,0.105), rgba(0,0,0,0.34)) !important;
+  border: 1px solid rgba(200,169,106,0.20) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06) !important;
+}
+
+.shield-analysis-info-button:hover,
+.shield-analysis-info-button:focus-visible {
+  color: rgba(255,255,255,0.92) !important;
+  border-color: rgba(34,211,238,0.34) !important;
+  background: linear-gradient(180deg, rgba(34,211,238,0.10), rgba(0,0,0,0.34)) !important;
+}
+
+.shield-mode-guide-dismiss-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 99998;
+  cursor: default;
+  background: transparent;
+}
+
+.shield-mode-guide-card-open {
+  position: relative;
+  z-index: 99999;
+  border-color: rgba(200,169,106,0.26) !important;
+  background:
+    linear-gradient(145deg, rgba(8,10,14,0.995), rgba(0,0,0,0.985)) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.07), 0 22px 80px rgba(0,0,0,0.58) !important;
+  animation: shieldModeGuideFromRight 240ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.shield-mode-guide-card-muted {
+  background: rgba(0,0,0,0.22) !important;
+}
+
+.shield-vlm-compact-rail {
+  right: clamp(1rem, 3vw, 2.8rem) !important;
+  left: auto !important;
+  width: min(34rem, calc(100vw - 2rem)) !important;
+  max-height: min(72dvh, 43rem) !important;
+  border-color: rgba(200,169,106,0.18) !important;
+  background: linear-gradient(145deg, rgba(5,7,12,0.990), rgba(0,0,0,0.982)) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.055), 0 28px 90px rgba(0,0,0,0.60) !important;
+}
+
+.shield-vlm-compact-rail .shield-vlm-read-card,
+.shield-vlm-static-board .shield-vlm-read-card {
+  position: relative;
+  min-height: 4.55rem !important;
+  padding: 0.82rem 1rem 0.78rem 1.05rem !important;
+  border-radius: 1rem !important;
+  border-color: rgba(200,169,106,0.16) !important;
+  background:
+    linear-gradient(105deg, rgba(255,255,255,0.070), rgba(255,255,255,0.028) 35%, rgba(0,0,0,0.36) 100%),
+    radial-gradient(circle at 0% 45%, rgba(34,211,238,0.090), transparent 36%) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 36px rgba(0,0,0,0.32) !important;
+  transform: translateZ(0);
+  animation: shieldVlmRailTileFromRight 460ms cubic-bezier(0.16, 1, 0.3, 1) both !important;
+}
+
+.shield-vlm-compact-rail .shield-vlm-read-card::before,
+.shield-vlm-static-board .shield-vlm-read-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0.18rem;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(200,169,106,0.92), rgba(34,211,238,0.55));
+  opacity: 0.75;
+}
+
+.shield-vlm-compact-rail .shield-vlm-read-card:hover,
+.shield-vlm-static-board .shield-vlm-read-card:hover,
+.shield-vlm-compact-rail .shield-vlm-read-card-active,
+.shield-vlm-static-board .shield-vlm-read-card-active {
+  transform: translate3d(-0.28rem, 0, 0) scale(1.006) !important;
+  border-color: rgba(34,211,238,0.34) !important;
+  background:
+    linear-gradient(105deg, rgba(34,211,238,0.105), rgba(255,255,255,0.035) 39%, rgba(0,0,0,0.34) 100%),
+    radial-gradient(circle at 0% 45%, rgba(200,169,106,0.110), transparent 36%) !important;
+}
+
+.shield-vlm-read-card-cyan,
+.shield-vlm-read-card-green,
+.shield-vlm-read-card-red {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.055), 0 10px 36px rgba(0,0,0,0.30) !important;
+}
+
+.shield-vlm-read-card::after,
+.shield-vlm-read-card-advanced::after,
+.shield-vlm-read-card-scan {
+  opacity: 0.22 !important;
+  filter: none !important;
+}
+
+.shield-vlm-detail-panel-side,
+.shield-vlm-detail-panel-solid {
+  width: min(30rem, calc(100vw - 2rem)) !important;
+  border-radius: 1.35rem !important;
+  border-color: rgba(200,169,106,0.26) !important;
+  background:
+    linear-gradient(145deg, rgba(6,8,12,0.998), rgba(0,0,0,0.992) 68%, rgba(9,11,15,0.998)) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 26px 95px rgba(0,0,0,0.72) !important;
+}
+
+.shield-vlm-detail-dismiss-layer {
+  background: rgba(0,0,0,0.16) !important;
+  backdrop-filter: none !important;
+}
+
+@keyframes shieldVlmRailTileFromRight {
+  from {
+    opacity: 0;
+    transform: translate3d(1.2rem, 0, 0) scale(0.988);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes shieldModeGuideFromRight {
+  from {
+    opacity: 0;
+    transform: translate3d(0.8rem, 0, 0) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@media (max-width: 980px) {
+  .shield-vlm-compact-rail {
+    right: max(0.75rem, env(safe-area-inset-right)) !important;
+    left: max(0.75rem, env(safe-area-inset-left)) !important;
+    bottom: max(0.75rem, env(safe-area-inset-bottom)) !important;
+    width: auto !important;
+    max-height: min(56dvh, 32rem) !important;
+  }
+
+  .shield-analysis-row {
+    grid-template-columns: minmax(0, 1fr) 3rem !important;
+  }
+
+  .shield-analysis-info-button {
+    min-width: 3rem !important;
+    padding-inline: 0.45rem !important;
+    letter-spacing: 0.10em;
+  }
+}
+
+/* PASS154 · hard containment + premium VLM card/readout polish */
+.shield-map-panel,
+.shield-map-atlas-card,
+.shield-map-neural-nexus,
+.shield-map-cyber-brief,
+.shield-map-psychology,
+.shield-map-launch-score,
+.shield-map-command-room,
+.shield-map-radar-board,
+.shield-map-launch-bridge,
+.shield-map-source-trust,
+.shield-map-evidence-export,
+.shield-map-boundary,
+.shield-map-copilot,
+.shield-map-review-deck,
+.shield-map-interaction-stability,
+.shield-map-runtime-health,
+.shield-map-operator-focus,
+.shield-map-command-card,
+.shield-map-boundary-card,
+.shield-map-launch-card,
+.shield-map-source-card,
+.shield-map-export-card,
+.shield-map-runtime-card,
+.shield-map-focus-card,
+.shield-map-interaction-card,
+.shield-map-review-card,
+.shield-investigator-section,
+.shield-investigator-protocol-card,
+.shield-investigator-contract-panel,
+.shield-loss-prevention-panel,
+.shield-investor-protection-card,
+.shield-trust-psych-card,
+.shield-evidence-report-draft,
+.shield-token-popup-shell,
+.shield-token-chart-card,
+.shield-token-action-panel,
+.shield-popup-chart,
+.shield-vlm-sequence-overlay,
+.shield-vlm-compact-rail,
+.shield-vlm-detail-panel-side,
+.shield-vlm-detail-panel-solid,
+.shield-mode-guide-card {
+  overflow: clip !important;
+  overflow-clip-margin: 0 !important;
+  clip-path: inset(0 round inherit);
+  isolation: isolate;
+  contain: layout paint style;
+}
+
+.shield-map-panel *,
+.shield-map-neural-nexus *,
+.shield-map-cyber-brief *,
+.shield-map-launch-bridge *,
+.shield-map-source-trust *,
+.shield-map-evidence-export *,
+.shield-token-popup-shell *,
+.shield-vlm-sequence-overlay * {
+  min-width: 0;
+}
+
+.shield-map-panel::before,
+.shield-map-panel::after,
+.shield-map-atlas-card::before,
+.shield-map-atlas-card::after,
+.shield-map-neural-nexus::before,
+.shield-map-neural-nexus::after,
+.shield-map-cyber-brief::before,
+.shield-map-cyber-brief::after,
+.shield-map-launch-bridge::before,
+.shield-map-launch-bridge::after,
+.shield-map-source-trust::before,
+.shield-map-source-trust::after,
+.shield-map-evidence-export::before,
+.shield-map-evidence-export::after,
+.shield-map-runtime-health::before,
+.shield-map-runtime-health::after,
+.shield-map-review-deck::before,
+.shield-map-review-deck::after,
+.shield-token-popup-shell::before,
+.shield-token-popup-shell::after,
+.shield-token-chart-card::before,
+.shield-token-chart-card::after,
+.shield-token-action-panel::before,
+.shield-token-action-panel::after {
+  inset: 0 !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  transform: none !important;
+  filter: none !important;
+  opacity: 0.48 !important;
+  pointer-events: none !important;
+  contain: paint !important;
+}
+
+.shield-vlm-compact-rail {
+  padding: 0.86rem !important;
+  border-radius: 1.45rem !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.018)),
+    linear-gradient(145deg, rgba(4,6,10,0.995), rgba(0,0,0,0.985)) !important;
+}
+
+.shield-vlm-compact-rail .grid {
+  gap: 0.7rem !important;
+}
+
+.shield-vlm-compact-rail .shield-vlm-read-card,
+.shield-vlm-static-board .shield-vlm-read-card {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "label value" "hint value";
+  align-items: center;
+  column-gap: 0.7rem;
+  min-height: 4.85rem !important;
+  border-radius: 1.08rem !important;
+  border: 1px solid rgba(200,169,106,0.18) !important;
+  background:
+    linear-gradient(90deg, rgba(200,169,106,0.12), transparent 0.22rem),
+    linear-gradient(135deg, rgba(255,255,255,0.062), rgba(255,255,255,0.018) 45%, rgba(0,0,0,0.38)),
+    radial-gradient(circle at 98% 50%, rgba(34,211,238,0.075), transparent 34%) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.07), 0 12px 38px rgba(0,0,0,0.34) !important;
+}
+
+.shield-vlm-compact-rail .shield-vlm-read-card p:first-of-type,
+.shield-vlm-static-board .shield-vlm-read-card p:first-of-type {
+  grid-area: label;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.shield-vlm-compact-rail .shield-vlm-read-card p:nth-of-type(2),
+.shield-vlm-static-board .shield-vlm-read-card p:nth-of-type(2) {
+  grid-area: value;
+  justify-self: end;
+  max-width: 8.8rem;
+  font-size: 0.96rem !important;
+  letter-spacing: -0.01em;
+}
+
+.shield-vlm-compact-rail .shield-vlm-read-card p:nth-of-type(3),
+.shield-vlm-static-board .shield-vlm-read-card p:nth-of-type(3) {
+  grid-area: hint;
+  max-width: 100%;
+}
+
+.shield-vlm-compact-rail .shield-vlm-read-card:hover,
+.shield-vlm-static-board .shield-vlm-read-card:hover,
+.shield-vlm-compact-rail .shield-vlm-read-card-active,
+.shield-vlm-static-board .shield-vlm-read-card-active {
+  transform: translate3d(-0.34rem, 0, 0) scale(1.004) !important;
+  border-color: rgba(34,211,238,0.36) !important;
+  background:
+    linear-gradient(90deg, rgba(34,211,238,0.26), transparent 0.24rem),
+    linear-gradient(135deg, rgba(34,211,238,0.105), rgba(255,255,255,0.030) 45%, rgba(0,0,0,0.34)),
+    radial-gradient(circle at 98% 50%, rgba(200,169,106,0.095), transparent 34%) !important;
+}
+
+.shield-vlm-read-card::before,
+.shield-vlm-read-card::after,
+.shield-vlm-read-card-scan {
+  inset: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  border-radius: inherit !important;
+  filter: none !important;
+  opacity: 0.16 !important;
+  overflow: hidden !important;
+  contain: paint !important;
+}
+
+.shield-vlm-detail-panel-side,
+.shield-vlm-detail-panel-solid {
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  transform: translateZ(0);
+}
+
+.shield-vlm-detail-panel-side::-webkit-scrollbar,
+.shield-vlm-detail-panel-solid::-webkit-scrollbar {
+  width: 0.45rem;
+}
+
+.shield-vlm-detail-panel-side::-webkit-scrollbar-thumb,
+.shield-vlm-detail-panel-solid::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(200,169,106,0.24);
+}
+
+.shield-vlm-detail-panel-side .rounded-2xl,
+.shield-vlm-detail-panel-solid .rounded-2xl {
+  background-color: rgba(0,0,0,0.86) !important;
+}
+
+.shield-analysis-row {
+  gap: 0.55rem !important;
+}
+
+.shield-analysis-info-button {
+  position: relative;
+  overflow: hidden;
+  align-self: stretch;
+}
+
+.shield-analysis-info-button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255,255,255,0.09), transparent 45%);
+  pointer-events: none;
+}
+
+@media (max-width: 980px) {
+  .shield-vlm-compact-rail .shield-vlm-read-card,
+  .shield-vlm-static-board .shield-vlm-read-card {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "label" "value" "hint";
+  }
+
+  .shield-vlm-compact-rail .shield-vlm-read-card p:nth-of-type(2),
+  .shield-vlm-static-board .shield-vlm-read-card p:nth-of-type(2) {
+    justify-self: start;
+    max-width: 100%;
+  }
+}
+
+/* PASS155 · readable side tiles + always-visible VLM summary disclaimer + stronger clip containment */
+.shield-token-popup-shell,
+.shield-token-chart-card,
+.shield-token-action-panel,
+.shield-vlm-sequence-overlay,
+.shield-vlm-compact-rail,
+.shield-vlm-static-board,
+.shield-vlm-detail-panel-side,
+.shield-vlm-detail-panel-solid,
+.shield-map-panel,
+.shield-map-atlas-card,
+.shield-map-neural-nexus,
+.shield-map-cyber-brief,
+.shield-map-launch-bridge,
+.shield-map-source-trust,
+.shield-map-evidence-export,
+.shield-map-runtime-health,
+.shield-map-review-deck,
+.shield-mode-guide-card,
+.shield-analysis-disclaimer {
+  overflow: hidden !important;
+  overflow-clip-margin: 0 !important;
+  background-clip: padding-box !important;
+  isolation: isolate !important;
+  contain: layout paint style !important;
+}
+
+.shield-token-popup-shell::before,
+.shield-token-popup-shell::after,
+.shield-token-chart-card::before,
+.shield-token-chart-card::after,
+.shield-token-action-panel::before,
+.shield-token-action-panel::after,
+.shield-vlm-sequence-overlay::before,
+.shield-vlm-sequence-overlay::after,
+.shield-map-panel::before,
+.shield-map-panel::after,
+.shield-map-atlas-card::before,
+.shield-map-atlas-card::after,
+.shield-map-neural-nexus::before,
+.shield-map-neural-nexus::after,
+.shield-map-cyber-brief::before,
+.shield-map-cyber-brief::after,
+.shield-map-launch-bridge::before,
+.shield-map-launch-bridge::after,
+.shield-map-source-trust::before,
+.shield-map-source-trust::after,
+.shield-map-evidence-export::before,
+.shield-map-evidence-export::after {
+  inset: 0 !important;
+  transform: none !important;
+  filter: none !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  opacity: min(var(--shield-contained-pseudo-opacity, 0.42), 0.42) !important;
+  pointer-events: none !important;
+  contain: strict !important;
+}
+
+.shield-vlm-compact-rail,
+.shield-vlm-static-board {
+  width: min(35rem, calc(100vw - 2rem)) !important;
+  border: 1px solid rgba(200,169,106,0.18) !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.042), rgba(255,255,255,0.016)),
+    radial-gradient(circle at 100% 0%, rgba(34,211,238,0.090), transparent 32%),
+    linear-gradient(145deg, rgba(5,7,11,0.995), rgba(0,0,0,0.990)) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.060), 0 26px 95px rgba(0,0,0,0.48) !important;
+}
+
+.shield-vlm-compact-rail .grid,
+.shield-vlm-static-board .grid {
+  gap: 0.78rem !important;
+}
+
+.shield-vlm-compact-rail .shield-vlm-read-card,
+.shield-vlm-static-board .shield-vlm-read-card,
+.shield-vlm-tile-deck .shield-vlm-read-card-advanced {
+  position: relative !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  grid-template-areas:
+    "label value"
+    "hint details" !important;
+  align-items: center !important;
+  gap: 0.28rem 0.9rem !important;
+  min-height: 5.05rem !important;
+  padding: 1rem 1.05rem 1rem 1.18rem !important;
+  border-radius: 1.12rem !important;
+  border: 1px solid rgba(200,169,106,0.19) !important;
+  background:
+    linear-gradient(90deg, rgba(200,169,106,0.28), rgba(200,169,106,0.050) 0.35rem, transparent 0.36rem),
+    linear-gradient(135deg, rgba(255,255,255,0.078), rgba(255,255,255,0.020) 45%, rgba(0,0,0,0.40)),
+    radial-gradient(circle at 102% 50%, rgba(34,211,238,0.090), transparent 34%) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.075), 0 12px 34px rgba(0,0,0,0.34) !important;
+  clip-path: inset(0 round 1.12rem) !important;
+  transform: translate3d(0,0,0);
+  transition: transform 190ms ease, border-color 190ms ease, background 190ms ease, box-shadow 190ms ease !important;
+  animation: shieldVlmSideEvidenceCardIn 620ms cubic-bezier(0.16, 1, 0.3, 1) both !important;
+}
+
+.shield-vlm-compact-rail .shield-vlm-read-card p:first-of-type,
+.shield-vlm-static-board .shield-vlm-read-card p:first-of-type,
+.shield-vlm-tile-deck .shield-vlm-read-card-advanced p:first-of-type {
+  grid-area: label !important;
+  font-size: 0.58rem !important;
+  color: rgba(255,255,255,0.42) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.shield-vlm-compact-rail .shield-vlm-read-card p:nth-of-type(2),
+.shield-vlm-static-board .shield-vlm-read-card p:nth-of-type(2),
+.shield-vlm-tile-deck .shield-vlm-read-card-advanced p:nth-of-type(2) {
+  grid-area: value !important;
+  justify-self: end !important;
+  max-width: 10.5rem !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  background: rgba(0,0,0,0.34) !important;
+  padding: 0.34rem 0.62rem !important;
+  font-size: 0.90rem !important;
+  line-height: 1 !important;
+}
+
+.shield-vlm-compact-rail .shield-vlm-read-card p:nth-of-type(3),
+.shield-vlm-static-board .shield-vlm-read-card p:nth-of-type(3),
+.shield-vlm-tile-deck .shield-vlm-read-card-advanced p:nth-of-type(3) {
+  grid-area: hint !important;
+  max-width: 100% !important;
+  color: rgba(200,169,106,0.82) !important;
+}
+
+.shield-vlm-card-detail-pill {
+  grid-area: details;
+  justify-self: end;
+  border-radius: 999px;
+  border: 1px solid rgba(34,211,238,0.16);
+  background: rgba(34,211,238,0.055);
+  padding: 0.36rem 0.58rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 0.52rem;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(165,243,252,0.72);
+}
+
+.shield-vlm-compact-rail .shield-vlm-read-card:hover,
+.shield-vlm-static-board .shield-vlm-read-card:hover,
+.shield-vlm-tile-deck .shield-vlm-read-card-advanced:hover,
+.shield-vlm-compact-rail .shield-vlm-read-card-active,
+.shield-vlm-static-board .shield-vlm-read-card-active,
+.shield-vlm-tile-deck .shield-vlm-read-card-advanced.shield-vlm-read-card-active {
+  transform: translate3d(-0.42rem, 0, 0) scale(1.006) !important;
+  border-color: rgba(34,211,238,0.38) !important;
+  background:
+    linear-gradient(90deg, rgba(34,211,238,0.34), rgba(34,211,238,0.070) 0.36rem, transparent 0.37rem),
+    linear-gradient(135deg, rgba(34,211,238,0.120), rgba(255,255,255,0.032) 45%, rgba(0,0,0,0.34)),
+    radial-gradient(circle at 102% 50%, rgba(200,169,106,0.110), transparent 34%) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.090), 0 18px 48px rgba(0,0,0,0.42) !important;
+}
+
+.shield-vlm-read-card::before,
+.shield-vlm-read-card::after,
+.shield-vlm-read-card-advanced::before,
+.shield-vlm-read-card-advanced::after,
+.shield-vlm-read-card-scan {
+  inset: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  border-radius: inherit !important;
+  filter: none !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  opacity: 0.13 !important;
+  overflow: hidden !important;
+  contain: paint !important;
+  pointer-events: none !important;
+}
+
+.shield-vlm-detail-dismiss-layer {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 29 !important;
+  cursor: pointer !important;
+  background: rgba(0,0,0,0.18) !important;
+}
+
+.shield-vlm-detail-panel-side,
+.shield-vlm-detail-panel-solid {
+  left: auto !important;
+  right: clamp(1rem, 2.2vw, 2.2rem) !important;
+  top: clamp(5.3rem, 10vh, 7.2rem) !important;
+  bottom: auto !important;
+  width: min(31.5rem, calc(100vw - 2rem)) !important;
+  max-height: min(72dvh, 43rem) !important;
+  transform: translate3d(0,0,0) !important;
+  border-radius: 1.45rem !important;
+  animation: shieldVlmSideDrawerIn 280ms cubic-bezier(0.16, 1, 0.3, 1) both !important;
+  z-index: 50 !important;
+}
+
+.shield-analysis-row {
+  position: relative !important;
+  display: block !important;
+}
+
+.shield-analysis-row .shield-analysis-button {
+  width: 100% !important;
+  padding-right: 4.25rem !important;
+}
+
+.shield-analysis-info-button {
+  position: absolute !important;
+  right: 0.65rem !important;
+  top: 50% !important;
+  z-index: 3 !important;
+  min-width: 2.62rem !important;
+  min-height: 2.62rem !important;
+  height: 2.62rem !important;
+  transform: translateY(-50%) !important;
+  border-radius: 0.92rem !important;
+}
+
+.shield-analysis-info-button:hover,
+.shield-analysis-info-button:focus-visible {
+  transform: translateY(calc(-50% - 1px)) !important;
+}
+
+.shield-analysis-disclaimer {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: start;
+  border-radius: 1.05rem;
+  border: 1px solid rgba(200,169,106,0.14);
+  background:
+    linear-gradient(135deg, rgba(200,169,106,0.075), rgba(255,255,255,0.020) 45%, rgba(0,0,0,0.26));
+  padding: 0.85rem 0.9rem;
+}
+
+.shield-analysis-disclaimer span {
+  border-radius: 999px;
+  border: 1px solid rgba(200,169,106,0.22);
+  background: rgba(200,169,106,0.08);
+  padding: 0.28rem 0.45rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 0.55rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  color: rgba(200,169,106,0.88);
+}
+
+.shield-analysis-disclaimer p {
+  margin: 0;
+  font-size: 0.74rem;
+  line-height: 1.65;
+  color: rgba(255,255,255,0.54);
+}
+
+@keyframes shieldVlmSideEvidenceCardIn {
+  0% {
+    opacity: 0;
+    transform: translate3d(1.65rem, 0, 0) scale(0.985);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes shieldVlmSideDrawerIn {
+  0% {
+    opacity: 0;
+    transform: translate3d(1.2rem, 0, 0) scale(0.988);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@media (max-width: 980px) {
+  .shield-vlm-detail-panel-side,
+  .shield-vlm-detail-panel-solid {
+    left: max(0.75rem, env(safe-area-inset-left)) !important;
+    right: max(0.75rem, env(safe-area-inset-right)) !important;
+    top: auto !important;
+    bottom: max(0.75rem, env(safe-area-inset-bottom)) !important;
+    width: auto !important;
+    max-height: min(62dvh, 36rem) !important;
+  }
+
+  .shield-vlm-compact-rail .shield-vlm-read-card,
+  .shield-vlm-static-board .shield-vlm-read-card,
+  .shield-vlm-tile-deck .shield-vlm-read-card-advanced {
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-areas: "label" "value" "hint" "details" !important;
+    padding: 0.9rem !important;
+  }
+
+  .shield-vlm-card-detail-pill,
+  .shield-vlm-compact-rail .shield-vlm-read-card p:nth-of-type(2),
+  .shield-vlm-static-board .shield-vlm-read-card p:nth-of-type(2),
+  .shield-vlm-tile-deck .shield-vlm-read-card-advanced p:nth-of-type(2) {
+    justify-self: start !important;
+  }
+}
+
+/* PASS156 · heavy shield polish: chart cockpit, strict visual containment, better tiles and mobile drawer */
+.shield-modal-backdrop,
+.shield-token-popup-shell {
+  overscroll-behavior: contain !important;
+}
+
+.shield-token-popup-shell {
+  width: min(1180px, calc(100vw - 1.25rem)) !important;
+  max-height: min(92dvh, 860px) !important;
+  overflow: hidden auto !important;
+  scrollbar-gutter: stable both-edges !important;
+  border-color: rgba(200,169,106,0.18) !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.040), rgba(255,255,255,0.014)),
+    radial-gradient(circle at 50% 0%, rgba(200,169,106,0.080), transparent 36%),
+    #070708 !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 30px 120px rgba(0,0,0,0.66) !important;
+}
+
+.shield-token-popup-shell::-webkit-scrollbar,
+.shield-token-action-panel::-webkit-scrollbar,
+.shield-vlm-detail-panel-side::-webkit-scrollbar {
+  width: 8px !important;
+}
+
+.shield-token-popup-shell::-webkit-scrollbar-thumb,
+.shield-token-action-panel::-webkit-scrollbar-thumb,
+.shield-vlm-detail-panel-side::-webkit-scrollbar-thumb {
+  border-radius: 999px !important;
+  background: rgba(200,169,106,0.22) !important;
+}
+
+.shield-token-popup-grid {
+  align-items: start !important;
+}
+
+.shield-token-chart-card,
+.shield-token-action-panel {
+  contain: layout paint style !important;
+  isolation: isolate !important;
+  overflow: clip !important;
+  border-color: rgba(255,255,255,0.095) !important;
+}
+
+.shield-popup-chart-premium {
+  min-height: clamp(19rem, 38vh, 27rem) !important;
+  border: 1px solid rgba(200,169,106,0.14) !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.030), rgba(255,255,255,0.010)),
+    linear-gradient(to right, rgba(255,255,255,0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.028) 1px, transparent 1px),
+    #050507 !important;
+  background-size: auto, 58px 58px, 58px 58px, auto !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 18px 54px rgba(0,0,0,0.38) !important;
+  cursor: crosshair !important;
+  touch-action: none !important;
+}
+
+.shield-popup-chart-toolbar {
+  position: absolute;
+  left: 0.85rem;
+  top: 0.85rem;
+  z-index: 6;
+  display: flex;
+  max-width: calc(100% - 1.7rem);
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: center;
+  pointer-events: none;
+}
+
+.shield-popup-chart-toolbar span,
+.shield-popup-chart-toolbar strong,
+.shield-popup-chart-footer span,
+.shield-popup-chart-guide {
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.09);
+  background: rgba(0,0,0,0.58);
+  padding: 0.42rem 0.62rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 0.58rem;
+  line-height: 1;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.48);
+  backdrop-filter: blur(8px);
+}
+
+.shield-popup-chart-toolbar strong {
+  border-color: rgba(200,169,106,0.20);
+  color: rgba(255,255,255,0.76);
+  background: rgba(200,169,106,0.075);
+}
+
+.shield-popup-chart-guide {
+  position: absolute;
+  right: 0.85rem;
+  bottom: 0.85rem;
+  z-index: 6;
+  color: rgba(200,169,106,0.56);
+  pointer-events: none;
+}
+
+.shield-popup-chart-footer {
+  position: absolute;
+  left: 0.85rem;
+  right: 0.85rem;
+  bottom: 0.85rem;
+  z-index: 5;
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  pointer-events: none;
+}
+
+.shield-popup-chart-footer span {
+  color: rgba(255,255,255,0.42);
+  background: rgba(0,0,0,0.50);
+}
+
+.shield-popup-chart-premium svg {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.shield-vlm-orbit-status {
+  display: none !important;
+}
+
+.shield-vlm-compact-rail,
+.shield-vlm-static-board {
+  max-height: min(72dvh, 41rem) !important;
+  overflow-y: auto !important;
+  padding: 1rem !important;
+  border-radius: 1.45rem !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.014)),
+    linear-gradient(90deg, rgba(200,169,106,0.055), transparent 28%),
+    #050507 !important;
+}
+
+.shield-vlm-compact-rail .shield-vlm-read-card,
+.shield-vlm-static-board .shield-vlm-read-card,
+.shield-vlm-tile-deck .shield-vlm-read-card-advanced {
+  min-height: 5.4rem !important;
+  border-color: rgba(255,255,255,0.115) !important;
+  background:
+    linear-gradient(90deg, rgba(200,169,106,0.42), rgba(200,169,106,0.090) 0.42rem, rgba(0,0,0,0.03) 0.43rem),
+    linear-gradient(135deg, rgba(255,255,255,0.070), rgba(255,255,255,0.018) 52%, rgba(0,0,0,0.50)),
+    #08090b !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.072), 0 10px 28px rgba(0,0,0,0.34) !important;
+}
+
+.shield-vlm-compact-rail .shield-vlm-read-card::before,
+.shield-vlm-static-board .shield-vlm-read-card::before,
+.shield-vlm-tile-deck .shield-vlm-read-card-advanced::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  border-radius: inherit !important;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent) !important;
+  opacity: 0.18 !important;
+  transform: translateX(-40%) !important;
+}
+
+.shield-vlm-compact-rail .shield-vlm-read-card:hover,
+.shield-vlm-static-board .shield-vlm-read-card:hover,
+.shield-vlm-tile-deck .shield-vlm-read-card-advanced:hover,
+.shield-vlm-compact-rail .shield-vlm-read-card-active,
+.shield-vlm-static-board .shield-vlm-read-card-active,
+.shield-vlm-tile-deck .shield-vlm-read-card-advanced.shield-vlm-read-card-active {
+  border-color: rgba(200,169,106,0.38) !important;
+  background:
+    linear-gradient(90deg, rgba(34,211,238,0.42), rgba(34,211,238,0.080) 0.42rem, rgba(0,0,0,0.03) 0.43rem),
+    linear-gradient(135deg, rgba(34,211,238,0.095), rgba(255,255,255,0.026) 52%, rgba(0,0,0,0.42)),
+    #08090b !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.09), 0 14px 34px rgba(0,0,0,0.42) !important;
+}
+
+.shield-vlm-card-detail-pill {
+  min-width: 4.5rem;
+  text-align: center;
+}
+
+.shield-vlm-detail-dismiss-layer {
+  background: rgba(0,0,0,0.34) !important;
+  backdrop-filter: blur(2px) !important;
+}
+
+.shield-vlm-detail-panel-side,
+.shield-vlm-detail-panel-solid {
+  border: 1px solid rgba(200,169,106,0.20) !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.040), rgba(255,255,255,0.014)),
+    radial-gradient(circle at 100% 0%, rgba(34,211,238,0.095), transparent 34%),
+    #06070a !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 32px 110px rgba(0,0,0,0.72) !important;
+  overflow-y: auto !important;
+}
+
+.shield-vlm-detail-panel-side .rounded-2xl,
+.shield-vlm-detail-panel-solid .rounded-2xl {
+  background: rgba(0,0,0,0.70) !important;
+}
+
+.shield-mode-guide-card-open {
+  border-color: rgba(200,169,106,0.20) !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.050), rgba(255,255,255,0.016)),
+    #06070a !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.075), 0 22px 80px rgba(0,0,0,0.62) !important;
+}
+
+.shield-analysis-info-button {
+  border-color: rgba(200,169,106,0.22) !important;
+  background: rgba(200,169,106,0.080) !important;
+  color: rgba(200,169,106,0.86) !important;
+}
+
+.shield-analysis-info-button span {
+  font-size: 0.56rem !important;
+  letter-spacing: 0.10em !important;
+}
+
+.shield-analysis-disclaimer {
+  background:
+    linear-gradient(135deg, rgba(200,169,106,0.085), rgba(255,255,255,0.018) 48%, rgba(0,0,0,0.36)),
+    #06070a !important;
+}
+
+.shield-map-panel,
+.shield-map-atlas-card,
+.shield-map-neural-nexus,
+.shield-map-cyber-brief,
+.shield-map-launch-bridge,
+.shield-map-source-trust,
+.shield-map-evidence-export,
+.shield-map-runtime-health,
+.shield-map-review-deck {
+  clip-path: inset(0 round 1.35rem) !important;
+}
+
+.shield-map-panel *::before,
+.shield-map-panel *::after,
+.shield-token-popup-shell *::before,
+.shield-token-popup-shell *::after {
+  overflow-clip-margin: 0 !important;
+}
+
+@media (max-width: 980px) {
+  .shield-token-popup-shell {
+    width: calc(100vw - 0.75rem) !important;
+    max-height: 94dvh !important;
+    border-radius: 1.35rem !important;
+  }
+
+  .shield-token-popup-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 8 !important;
+    background: rgba(7,7,8,0.94) !important;
+    backdrop-filter: blur(14px) !important;
+  }
+
+  .shield-token-popup-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+  }
+
+  .shield-token-action-panel {
+    position: static !important;
+    max-height: none !important;
+  }
+
+  .shield-popup-chart-premium {
+    min-height: 18.5rem !important;
+  }
+
+  .shield-popup-chart-toolbar {
+    left: 0.55rem;
+    top: 0.55rem;
+    gap: 0.35rem;
+  }
+
+  .shield-popup-chart-toolbar span,
+  .shield-popup-chart-toolbar strong,
+  .shield-popup-chart-footer span,
+  .shield-popup-chart-guide {
+    padding: 0.34rem 0.48rem;
+    font-size: 0.50rem;
+  }
+
+  .shield-popup-chart-guide {
+    display: none !important;
+  }
+
+  .shield-vlm-compact-rail,
+  .shield-vlm-static-board {
+    width: calc(100vw - 1.4rem) !important;
+    max-height: 62dvh !important;
+  }
+
+  .shield-vlm-detail-panel-side,
+  .shield-vlm-detail-panel-solid {
+    max-height: min(68dvh, 35rem) !important;
+    border-radius: 1.22rem !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shield-popup-chart-premium svg,
+  .shield-vlm-read-card,
+  .shield-vlm-read-card-advanced,
+  .shield-mode-guide-card-open {
+    animation: none !important;
+    transition-duration: 1ms !important;
+  }
+}
+
+/* PASS157 · large polish: side-rail VLM readout, no floating-table orbit, harder Shield containment */
+.shield-vlm-sequence-overlay {
+  overflow: clip !important;
+  overflow-clip-margin: 0 !important;
+  contain: layout paint style !important;
+  isolation: isolate !important;
+  background:
+    radial-gradient(circle at 28% 44%, rgba(200,169,106,0.105), transparent 28%),
+    radial-gradient(circle at 46% 48%, rgba(34,211,238,0.080), transparent 30%),
+    linear-gradient(135deg, rgba(5,6,9,0.996), rgba(0,0,0,0.992)) !important;
+}
+
+.shield-vlm-motion-stack,
+.shield-vlm-orbit-status {
+  display: none !important;
+}
+
+.shield-vlm-topbar {
+  max-width: min(100% - 2rem, 62rem) !important;
+  padding-right: min(38rem, 42vw) !important;
+}
+
+.shield-vlm-topbar .min-w-0 > p:not(.shield-vlm-phase-pill) {
+  display: none !important;
+}
+
+.shield-vlm-dom-core {
+  left: clamp(18%, 31vw, 42%) !important;
+  top: 50% !important;
+  width: clamp(8.6rem, 15vw, 13.6rem) !important;
+  height: clamp(8.6rem, 15vw, 13.6rem) !important;
+  filter: drop-shadow(0 0 38px rgba(200,169,106,0.18)) !important;
+}
+
+.shield-vlm-compact-rail,
+.shield-vlm-static-board {
+  position: absolute !important;
+  top: clamp(5.9rem, 10vh, 7.8rem) !important;
+  right: clamp(1rem, 2.3vw, 2.2rem) !important;
+  bottom: clamp(1rem, 2vh, 1.45rem) !important;
+  left: auto !important;
+  width: min(37.5rem, 42vw) !important;
+  max-height: none !important;
+  padding: 1rem !important;
+  border-radius: 1.55rem !important;
+  border: 1px solid rgba(200,169,106,0.20) !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.052), rgba(255,255,255,0.018)),
+    radial-gradient(circle at 100% 0%, rgba(34,211,238,0.070), transparent 30%),
+    linear-gradient(145deg, rgba(4,6,10,0.997), rgba(0,0,0,0.992)) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.075), 0 30px 110px rgba(0,0,0,0.56) !important;
+  overflow: hidden auto !important;
+  overscroll-behavior: contain !important;
+  scrollbar-width: thin !important;
+}
+
+.shield-vlm-rail-header {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  margin: -1rem -1rem 0.75rem;
+  padding: 1rem 1rem 0.85rem !important;
+  border-bottom: 1px solid rgba(255,255,255,0.070);
+  background: linear-gradient(180deg, rgba(4,6,10,0.995), rgba(4,6,10,0.93));
+  backdrop-filter: blur(10px);
+}
+
+.shield-vlm-group-filter button {
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.085);
+  background: rgba(255,255,255,0.032);
+  padding: 0.42rem 0.58rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 0.55rem;
+  font-weight: 850;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.42);
+  transition: border-color 160ms ease, background 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.shield-vlm-group-filter button:hover,
+.shield-vlm-group-filter button.is-active {
+  border-color: rgba(200,169,106,0.34);
+  background: rgba(200,169,106,0.095);
+  color: rgba(200,169,106,0.88);
+  transform: translate3d(0, -1px, 0);
+}
+
+.shield-vlm-compact-rail .grid,
+.shield-vlm-static-board .grid {
+  gap: 0.66rem !important;
+}
+
+.shield-vlm-compact-rail .shield-vlm-read-card,
+.shield-vlm-static-board .shield-vlm-read-card {
+  min-height: 4.45rem !important;
+  padding: 0.85rem 0.95rem 0.82rem 1.05rem !important;
+  border-radius: 1.05rem !important;
+  border: 1px solid rgba(255,255,255,0.095) !important;
+  background:
+    linear-gradient(90deg, rgba(200,169,106,0.36), rgba(200,169,106,0.055) 0.27rem, transparent 0.28rem),
+    linear-gradient(135deg, rgba(255,255,255,0.060), rgba(255,255,255,0.018) 45%, rgba(0,0,0,0.42)),
+    #07090c !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.065), 0 10px 28px rgba(0,0,0,0.28) !important;
+  clip-path: inset(0 round 1.05rem) !important;
+  animation: shieldVlmSideEvidenceCardIn 540ms cubic-bezier(0.16, 1, 0.3, 1) both !important;
+}
+
+.shield-vlm-compact-rail .shield-vlm-read-card:hover,
+.shield-vlm-static-board .shield-vlm-read-card:hover,
+.shield-vlm-compact-rail .shield-vlm-read-card-active,
+.shield-vlm-static-board .shield-vlm-read-card-active {
+  transform: translate3d(-0.30rem, 0, 0) scale(1.004) !important;
+  border-color: rgba(34,211,238,0.32) !important;
+  background:
+    linear-gradient(90deg, rgba(34,211,238,0.34), rgba(34,211,238,0.060) 0.27rem, transparent 0.28rem),
+    linear-gradient(135deg, rgba(34,211,238,0.095), rgba(255,255,255,0.024) 45%, rgba(0,0,0,0.42)),
+    #07090c !important;
+}
+
+.shield-vlm-card-detail-pill {
+  opacity: 0.88 !important;
+  background: rgba(0,0,0,0.34) !important;
+}
+
+.shield-vlm-detail-dismiss-layer {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 45 !important;
+  background: rgba(0,0,0,0.08) !important;
+  backdrop-filter: none !important;
+}
+
+.shield-vlm-detail-panel-side,
+.shield-vlm-detail-panel-solid {
+  z-index: 60 !important;
+  right: clamp(1rem, 2.2vw, 2.2rem) !important;
+  top: clamp(5.9rem, 10vh, 7.8rem) !important;
+  bottom: clamp(1rem, 2vh, 1.45rem) !important;
+  width: min(34.5rem, 40vw) !important;
+  max-height: none !important;
+  border-color: rgba(200,169,106,0.24) !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.048), rgba(255,255,255,0.015)),
+    radial-gradient(circle at 100% 0%, rgba(34,211,238,0.060), transparent 30%),
+    #05070a !important;
+}
+
+.shield-map-panel,
+.shield-map-atlas-card,
+.shield-map-neural-nexus,
+.shield-map-cyber-brief,
+.shield-map-launch-bridge,
+.shield-map-source-trust,
+.shield-map-evidence-export,
+.shield-map-runtime-health,
+.shield-map-review-deck,
+.shield-token-popup-shell,
+.shield-token-chart-card,
+.shield-token-action-panel {
+  overflow: clip !important;
+  overflow-clip-margin: 0 !important;
+  contain: layout paint style !important;
+  isolation: isolate !important;
+}
+
+.shield-map-panel::before,
+.shield-map-panel::after,
+.shield-token-popup-shell::before,
+.shield-token-popup-shell::after,
+.shield-token-chart-card::before,
+.shield-token-chart-card::after,
+.shield-token-action-panel::before,
+.shield-token-action-panel::after {
+  inset: 0 !important;
+  filter: none !important;
+  transform: none !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  opacity: 0.34 !important;
+  overflow: hidden !important;
+  contain: paint !important;
+}
+
+@media (max-width: 1100px) {
+  .shield-vlm-topbar {
+    padding-right: 0 !important;
+  }
+  .shield-vlm-dom-core {
+    left: 50% !important;
+    top: 36% !important;
+    opacity: 0.72;
+  }
+  .shield-vlm-compact-rail,
+  .shield-vlm-static-board {
+    left: max(0.75rem, env(safe-area-inset-left)) !important;
+    right: max(0.75rem, env(safe-area-inset-right)) !important;
+    top: auto !important;
+    bottom: max(0.75rem, env(safe-area-inset-bottom)) !important;
+    width: auto !important;
+    max-height: min(62dvh, 36rem) !important;
+  }
+  .shield-vlm-detail-panel-side,
+  .shield-vlm-detail-panel-solid {
+    left: max(0.75rem, env(safe-area-inset-left)) !important;
+    right: max(0.75rem, env(safe-area-inset-right)) !important;
+    top: auto !important;
+    bottom: max(0.75rem, env(safe-area-inset-bottom)) !important;
+    width: auto !important;
+    max-height: min(68dvh, 38rem) !important;
+  }
+}
+
+@media (max-width: 620px) {
+  .shield-vlm-group-filter button {
+    font-size: 0.50rem;
+    padding: 0.34rem 0.46rem;
+  }
+  .shield-vlm-compact-rail .shield-vlm-read-card,
+  .shield-vlm-static-board .shield-vlm-read-card {
+    min-height: 4rem !important;
+  }
+}
+
+
+/* PASS159 · side guide drawer + advanced brain restore + tighter search/sort UX */
+@layer components {
+  .shield-token-action-panel {
+    position: relative;
+    overflow: visible !important;
+  }
+
+  .shield-mode-guide-dismiss-layer {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 88 !important;
+    background: transparent !important;
+  }
+
+  .shield-mode-guide-drawer {
+    position: fixed !important;
+    top: clamp(7.25rem, 9vh, 8.5rem) !important;
+    right: clamp(1rem, 2vw, 1.8rem) !important;
+    width: min(22rem, calc(100vw - 1.5rem)) !important;
+    max-height: min(70dvh, 34rem) !important;
+    overflow-y: auto !important;
+    z-index: 89 !important;
+    border-radius: 1.25rem !important;
+    border: 1px solid rgba(200,169,106,0.22) !important;
+    background:
+      radial-gradient(circle at 18% 0%, rgba(200,169,106,0.10), transparent 34%),
+      linear-gradient(145deg, rgba(8,10,14,0.985), rgba(0,0,0,0.965)) !important;
+    box-shadow: 0 30px 110px rgba(0,0,0,0.72), inset 0 1px 0 rgba(255,255,255,0.08) !important;
+    backdrop-filter: blur(16px) !important;
+  }
+
+  .shield-mode-guide-drawer::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .shield-mode-guide-drawer::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: rgba(200,169,106,0.22);
+  }
+}
+
+@media (max-width: 980px) {
+  .shield-mode-guide-drawer {
+    left: 50% !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: 0.85rem !important;
+    transform: translateX(-50%) !important;
+    width: min(25rem, calc(100vw - 1rem)) !important;
+    max-height: min(60dvh, 28rem) !important;
+  }
+}
+
+
+/* PASS160 · operator cockpit: left evidence rail + center VLM brain + right detail drawer */
+@layer components {
+  .shield-vlm-sequence-overlay {
+    display: block !important;
+    overflow: clip !important;
+    contain: layout paint style !important;
+    isolation: isolate !important;
+  }
+
+  .shield-vlm-sequence-overlay::before,
+  .shield-vlm-sequence-overlay::after {
+    opacity: 0.26 !important;
+    filter: none !important;
+  }
+
+  .shield-vlm-topbar {
+    z-index: 55 !important;
+  }
+
+  .shield-vlm-dom-core {
+    left: 50% !important;
+    top: 52% !important;
+    width: clamp(9.2rem, 14vw, 14rem) !important;
+    height: clamp(9.2rem, 14vw, 14rem) !important;
+    z-index: 18 !important;
+    filter: drop-shadow(0 0 42px rgba(34,211,238,0.14)) drop-shadow(0 0 34px rgba(200,169,106,0.16)) !important;
+  }
+
+  .shield-vlm-orbital-shell {
+    left: 50% !important;
+    top: 52% !important;
+    width: clamp(16rem, 28vw, 31rem) !important;
+    height: clamp(16rem, 28vw, 31rem) !important;
+    transform: translate3d(-50%, -50%, 0) !important;
+    opacity: 0.42 !important;
+    z-index: 12 !important;
+    pointer-events: none !important;
+  }
+
+  .shield-vlm-compact-rail,
+  .shield-vlm-static-board {
+    position: absolute !important;
+    left: clamp(1rem, 2.1vw, 2rem) !important;
+    right: auto !important;
+    top: clamp(6.3rem, 10vh, 8rem) !important;
+    bottom: clamp(1rem, 2vh, 1.5rem) !important;
+    width: min(31rem, 34vw) !important;
+    max-width: calc(50vw - 7.5rem) !important;
+    max-height: none !important;
+    display: block !important;
+    padding: 0.95rem !important;
+    border-radius: 1.45rem !important;
+    border: 1px solid rgba(200,169,106,0.18) !important;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.014)),
+      radial-gradient(circle at 0% 0%, rgba(200,169,106,0.105), transparent 32%),
+      linear-gradient(145deg, rgba(4,6,10,0.992), rgba(0,0,0,0.982)) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.065), 0 28px 110px rgba(0,0,0,0.58) !important;
+    overflow: hidden auto !important;
+    overscroll-behavior: contain !important;
+    z-index: 42 !important;
+  }
+
+  .shield-vlm-compact-rail .grid,
+  .shield-vlm-static-board .grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 0.62rem !important;
+  }
+
+  .shield-vlm-compact-rail .shield-vlm-read-card,
+  .shield-vlm-static-board .shield-vlm-read-card {
+    transform-origin: left center !important;
+    animation: shieldVlmLeftRailIn 560ms cubic-bezier(0.16, 1, 0.3, 1) both !important;
+  }
+
+  .shield-vlm-detail-panel-side,
+  .shield-vlm-detail-panel-solid {
+    position: absolute !important;
+    left: auto !important;
+    right: clamp(1rem, 2.1vw, 2rem) !important;
+    top: clamp(6.3rem, 10vh, 8rem) !important;
+    bottom: auto !important;
+    width: min(27.5rem, 32vw) !important;
+    max-width: calc(50vw - 7.5rem) !important;
+    max-height: min(72dvh, 39rem) !important;
+    transform: none !important;
+    z-index: 62 !important;
+    background:
+      radial-gradient(circle at 20% 0%, rgba(34,211,238,0.105), transparent 34%),
+      linear-gradient(145deg, rgba(5,7,12,0.995), rgba(0,0,0,0.982)) !important;
+    border-color: rgba(34,211,238,0.20) !important;
+    overflow: hidden auto !important;
+    animation: shieldVlmRightDrawerIn 420ms cubic-bezier(0.16, 1, 0.3, 1) both !important;
+  }
+
+  .shield-vlm-detail-dismiss-layer {
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 50 !important;
+    background: transparent !important;
+  }
+
+  .shield-mode-guide-drawer {
+    right: clamp(1rem, 2vw, 2rem) !important;
+    top: clamp(6.4rem, 10vh, 8rem) !important;
+  }
+
+  .shield-popup-chart-premium,
+  .shield-popup-chart,
+  .shield-map-panel,
+  .shield-map-atlas-card,
+  .shield-token-popup-shell {
+    isolation: isolate !important;
+    overflow: clip !important;
+    overflow-clip-margin: 0 !important;
+  }
+
+  .shield-popup-chart-premium::before,
+  .shield-popup-chart-premium::after,
+  .shield-map-panel::before,
+  .shield-map-panel::after,
+  .shield-token-popup-shell::before,
+  .shield-token-popup-shell::after {
+    opacity: 0.30 !important;
+    filter: none !important;
+  }
+}
+
+@keyframes shieldVlmLeftRailIn {
+  from { opacity: 0; transform: translate3d(-1.2rem, 0, 0) scale(0.985); }
+  to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+}
+
+@keyframes shieldVlmRightDrawerIn {
+  from { opacity: 0; transform: translate3d(1.2rem, 0, 0) scale(0.985); }
+  to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+}
+
+@media (max-width: 1180px) {
+  .shield-vlm-compact-rail,
+  .shield-vlm-static-board {
+    width: min(25rem, 38vw) !important;
+    max-width: calc(50vw - 5.5rem) !important;
+  }
+
+  .shield-vlm-detail-panel-side,
+  .shield-vlm-detail-panel-solid {
+    width: min(24rem, 38vw) !important;
+    max-width: calc(50vw - 5.5rem) !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .shield-vlm-dom-core {
+    top: 35% !important;
+    width: clamp(7.4rem, 26vw, 10rem) !important;
+    height: clamp(7.4rem, 26vw, 10rem) !important;
+  }
+
+  .shield-vlm-orbital-shell {
+    top: 35% !important;
+    width: clamp(13rem, 58vw, 20rem) !important;
+    height: clamp(13rem, 58vw, 20rem) !important;
+  }
+
+  .shield-vlm-compact-rail,
+  .shield-vlm-static-board {
+    left: max(0.75rem, env(safe-area-inset-left)) !important;
+    right: max(0.75rem, env(safe-area-inset-right)) !important;
+    top: auto !important;
+    bottom: max(0.75rem, env(safe-area-inset-bottom)) !important;
+    width: auto !important;
+    max-width: none !important;
+    max-height: 46dvh !important;
+  }
+
+  .shield-vlm-detail-panel-side,
+  .shield-vlm-detail-panel-solid {
+    left: 50% !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: max(0.75rem, env(safe-area-inset-bottom)) !important;
+    width: min(29rem, calc(100vw - 1rem)) !important;
+    max-width: none !important;
+    max-height: 60dvh !important;
+    transform: translateX(-50%) !important;
+  }
+}

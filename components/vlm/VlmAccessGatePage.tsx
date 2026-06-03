@@ -120,13 +120,188 @@ const faqs = [
   ["Is the contract deployed?", "Use the status section on this page as the source of truth. If contract, chain or audit data is missing, it must remain pending until verified."],
 ];
 
-function UtilityDiagram() {
+const vlmDetailCopy = {
+  en: {
+    launchKicker: "VLM launch operating matrix",
+    launchTitle: "Do the boring parts before the beautiful launch.",
+    launchBody: "VLM can look premium only if the status layer stays honest: access rules, wallet safety, contract verification, audit, legal review and Shield routing must be visible before activation.",
+    launchMatrix: [
+      { label: "Access rules", status: "draft", body: "Define who gets Basic, Pro and Advanced without implying profit, resale value or guaranteed future benefit." },
+      { label: "Wallet safety", status: "guarded", body: "Read-only checks first. No seed phrase, no custody, no hidden transaction language." },
+      { label: "Contract/audit", status: "blocked", body: "Contract address, chain, audit and deployment proof stay unpublished until current verification exists." },
+      { label: "Shield routing", status: "active", body: "Any market claim is routed to anomaly, source quality, uncertainty and manual review wording." },
+    ],
+    whatKicker: "What is VLM?",
+    whatTitle: "A private access layer, not a market promise.",
+    whatBody: "VLM is planned as a member access mechanism around drops, Square, archive features and Shield review lanes. It must not be marketed as a financial product, price claim, security, dividend, yield stream or certain future benefit.",
+    utilityKicker: "Utility diagram",
+    utilityTitle: "From access to participation.",
+    utilityFlow: ["Access", "Drops", "Square", "Rewards", "Future Governance"],
+    utilityCards: [
+      { title: "Private access", body: "Eligibility for selected drops, archive previews and member-only Square areas can be checked only after the access layer is verified." },
+      { title: "Archive layer", body: "Members may receive earlier visibility into archive requests, restocks or editorial notes when the layer is active." },
+      { title: "Safety first", body: "Wallet connection must never request a seed phrase. Velmère does not take custody of user assets." },
+    ],
+    tokenomicsKicker: "Tokenomics",
+    tokenomicsTitle: "Plain status only.",
+    tokenomics: [
+      ["Purpose", "Utility and access concept"],
+      ["Sale status", "No public sale enabled in this build"],
+      ["Checkout", "Separated from clothing commerce"],
+      ["Fees", "Only if technically accurate and legally reviewed"],
+      ["Custody", "Non-custodial wallet preview only"],
+      ["Value", "No promise of price, liquidity, listing or future value"],
+    ],
+    contractKicker: "Contract / Chain / Audit Status",
+    contractTitle: "Must be verified.",
+    contractRows: [
+      ["Contract address", "Not published — deployment, verification and audit required"],
+      ["Chain", "Not published — network will be shown after verification"],
+      ["Audit", "Required before activation"],
+      ["Legal review", "Required before any public token functionality"],
+    ],
+    roadmapKicker: "Roadmap",
+    roadmapTitle: "Launch only when ready.",
+    roadmap: [
+      { step: "01", title: "Concept", body: "Define access rules, account separation and legal boundaries." },
+      { step: "02", title: "Review", body: "Complete contract audit, wallet safety copy and qualified legal review." },
+      { step: "03", title: "Private beta", body: "Enable read-only eligibility checks for invited accounts." },
+      { step: "04", title: "Activation", body: "Launch only if technical, legal and operational requirements are verified." },
+    ],
+    riskKicker: "Risk Notice",
+    riskTitle: "VLM is a utility/access concept.",
+    riskBody: "VLM should not be treated as financial advice, a security, a public offer, a price claim, a resale-value claim, a listing claim or a certainty of future access. Features may change, be delayed or never launch. A qualified legal review and technical audit are required before activation.",
+    faqKicker: "FAQ",
+    faqTitle: "Clear answers. No hype.",
+    faqs,
+  },
+  pl: {
+    launchKicker: "matryca startowa VLM",
+    launchTitle: "Najpierw nudne zabezpieczenia, potem piękny launch.",
+    launchBody: "VLM będzie wyglądać premium tylko wtedy, gdy status zostaje uczciwy: zasady dostępu, bezpieczeństwo portfela, weryfikacja kontraktu, audyt, review prawne i routing Shield muszą być widoczne przed aktywacją.",
+    launchMatrix: [
+      { label: "Zasady dostępu", status: "draft", body: "Określić Basic, Pro i Advanced bez sugerowania zysku, odsprzedaży lub gwarantowanej przyszłej korzyści." },
+      { label: "Bezpieczeństwo portfela", status: "guarded", body: "Najpierw odczyt read-only. Bez seed phrase, bez custody, bez ukrytego języka transakcji." },
+      { label: "Kontrakt/audyt", status: "blocked", body: "Adres kontraktu, chain, audyt i deployment proof zostają niepubliczne do aktualnej weryfikacji." },
+      { label: "Routing Shield", status: "active", body: "Każdy claim rynkowy idzie przez język: anomalia, jakość źródła, niepewność i manual review." },
+    ],
+    whatKicker: "Czym jest VLM?",
+    whatTitle: "Prywatna warstwa dostępu, nie obietnica rynkowa.",
+    whatBody: "VLM jest planowany jako mechanizm dostępu memberów do dropów, Square, archiwum i ścieżek review Shield. Nie może być sprzedawany jako produkt finansowy, obietnica ceny, security, dywidenda, yield ani pewna przyszła korzyść.",
+    utilityKicker: "Diagram utility",
+    utilityTitle: "Od dostępu do uczestnictwa.",
+    utilityFlow: ["Dostęp", "Dropy", "Square", "Nagrody", "Future Governance"],
+    utilityCards: [
+      { title: "Prywatny dostęp", body: "Eligibility dla wybranych dropów, podglądów archiwum i pokoi Square można sprawdzać dopiero po weryfikacji warstwy access." },
+      { title: "Warstwa archiwum", body: "Memberzy mogą dostać wcześniejszy podgląd requestów archiwum, restocków albo notatek editorial, gdy warstwa będzie aktywna." },
+      { title: "Najpierw bezpieczeństwo", body: "Połączenie portfela nigdy nie może prosić o seed phrase. Velmère nie trzyma aktywów użytkownika." },
+    ],
+    tokenomicsKicker: "Tokenomics",
+    tokenomicsTitle: "Tylko prosty status.",
+    tokenomics: [
+      ["Cel", "Koncepcja utility i access"],
+      ["Status sprzedaży", "Publiczna sprzedaż nie jest włączona w tym buildzie"],
+      ["Checkout", "Oddzielony od commerce odzieżowego"],
+      ["Opłaty", "Tylko jeśli technicznie prawdziwe i prawnie sprawdzone"],
+      ["Custody", "Wyłącznie nie-custodial podgląd portfela"],
+      ["Wartość", "Bez obietnicy ceny, płynności, listingu lub przyszłej wartości"],
+    ],
+    contractKicker: "Status kontraktu / chain / audytu",
+    contractTitle: "Musi być zweryfikowane.",
+    contractRows: [
+      ["Adres kontraktu", "Niepubliczny — wymagany deployment, weryfikacja i audyt"],
+      ["Chain", "Niepubliczny — sieć pojawi się po weryfikacji"],
+      ["Audyt", "Wymagany przed aktywacją"],
+      ["Review prawne", "Wymagane przed jakąkolwiek publiczną funkcją tokena"],
+    ],
+    roadmapKicker: "Roadmap",
+    roadmapTitle: "Start tylko gdy gotowe.",
+    roadmap: [
+      { step: "01", title: "Koncepcja", body: "Ustalić zasady dostępu, separację konta i granice prawne." },
+      { step: "02", title: "Review", body: "Dokończyć audyt kontraktu, copy wallet safety i kwalifikowane review prawne." },
+      { step: "03", title: "Prywatna beta", body: "Włączyć read-only eligibility checks dla zaproszonych kont." },
+      { step: "04", title: "Aktywacja", body: "Launch tylko po weryfikacji technicznej, prawnej i operacyjnej." },
+    ],
+    riskKicker: "Informacja o ryzyku",
+    riskTitle: "VLM to koncepcja utility/access.",
+    riskBody: "VLM nie powinien być traktowany jako porada finansowa, security, oferta publiczna, obietnica ceny, odsprzedaży, listingu lub pewnego dostępu w przyszłości. Funkcje mogą się zmienić, opóźnić albo nie wystartować. Przed aktywacją wymagane są review prawne i audyt techniczny.",
+    faqKicker: "FAQ",
+    faqTitle: "Jasne odpowiedzi. Bez hype’u.",
+    faqs: [
+      ["Czy VLM to inwestycja?", "Nie. VLM jest pokazany wyłącznie jako koncepcja utility/access. To nie jest porada finansowa, security, oferta publiczna ani obietnica ceny."],
+      ["Czy VLM jest potrzebne do kupowania ubrań?", "Nie. Commerce odzieżowy musi zostać oddzielony. Publiczne przeglądanie i standardowy checkout nie powinny wymagać tokena."],
+      ["Czy Velmère poprosi o seed phrase?", "Nigdy. Połączenie portfela musi być read-only, chyba że portfel jasno pokazuje potwierdzenie transakcji."],
+      ["Czy kontrakt jest wdrożony?", "Sekcja statusu na tej stronie jest źródłem prawdy. Jeśli brakuje kontraktu, chain albo audytu, status zostaje pending."],
+    ],
+  },
+  de: {
+    launchKicker: "VLM Launch Matrix",
+    launchTitle: "Erst die langweiligen Sicherungen, dann der schöne Launch.",
+    launchBody: "VLM kann nur premium wirken, wenn die Status-Ebene ehrlich bleibt: Access-Regeln, Wallet-Sicherheit, Contract-Verifizierung, Audit, Legal Review und Shield Routing müssen vor Aktivierung sichtbar sein.",
+    launchMatrix: [
+      { label: "Access-Regeln", status: "draft", body: "Basic, Pro und Advanced definieren, ohne Gewinn, Wiederverkaufswert oder garantierten Zukunftsnutzen zu suggerieren." },
+      { label: "Wallet-Sicherheit", status: "guarded", body: "Zuerst Read-only Checks. Keine Seed Phrase, keine Custody, keine versteckte Transaktionssprache." },
+      { label: "Contract/Audit", status: "blocked", body: "Contract-Adresse, Chain, Audit und Deployment Proof bleiben unveröffentlicht bis aktuelle Verifizierung vorliegt." },
+      { label: "Shield Routing", status: "active", body: "Jeder Markt-Claim wird zu Anomalie, Source Quality, Unsicherheit und Manual Review geroutet." },
+    ],
+    whatKicker: "Was ist VLM?",
+    whatTitle: "Eine private Access-Ebene, kein Marktversprechen.",
+    whatBody: "VLM ist als Member-Access-Mechanismus rund um Drops, Square, Archiv-Features und Shield Review Lanes geplant. Es darf nicht als Finanzprodukt, Preisversprechen, Security, Dividende, Yield oder sichere zukünftige Leistung vermarktet werden.",
+    utilityKicker: "Utility Diagramm",
+    utilityTitle: "Von Access zu Teilnahme.",
+    utilityFlow: ["Access", "Drops", "Square", "Rewards", "Future Governance"],
+    utilityCards: [
+      { title: "Privater Access", body: "Eligibility für ausgewählte Drops, Archiv-Previews und Member-only Square-Bereiche erst nach Verifizierung der Access-Ebene." },
+      { title: "Archiv-Ebene", body: "Member können früheren Einblick in Archiv-Requests, Restocks oder Editorial Notes erhalten, wenn die Ebene aktiv ist." },
+      { title: "Safety first", body: "Wallet-Verbindung darf nie nach Seed Phrase fragen. Velmère verwahrt keine User Assets." },
+    ],
+    tokenomicsKicker: "Tokenomics",
+    tokenomicsTitle: "Nur klarer Status.",
+    tokenomics: [
+      ["Zweck", "Utility- und Access-Konzept"],
+      ["Sale Status", "Kein Public Sale in diesem Build aktiv"],
+      ["Checkout", "Getrennt vom Clothing Commerce"],
+      ["Fees", "Nur wenn technisch korrekt und rechtlich geprüft"],
+      ["Custody", "Nur non-custodial Wallet Preview"],
+      ["Wert", "Kein Versprechen von Preis, Liquidität, Listing oder Zukunftswert"],
+    ],
+    contractKicker: "Contract / Chain / Audit Status",
+    contractTitle: "Muss verifiziert werden.",
+    contractRows: [
+      ["Contract-Adresse", "Nicht veröffentlicht — Deployment, Verifizierung und Audit erforderlich"],
+      ["Chain", "Nicht veröffentlicht — Netzwerk wird nach Verifizierung angezeigt"],
+      ["Audit", "Vor Aktivierung erforderlich"],
+      ["Legal Review", "Vor jeder öffentlichen Token-Funktion erforderlich"],
+    ],
+    roadmapKicker: "Roadmap",
+    roadmapTitle: "Launch nur wenn bereit.",
+    roadmap: [
+      { step: "01", title: "Konzept", body: "Access-Regeln, Account-Trennung und rechtliche Grenzen definieren." },
+      { step: "02", title: "Review", body: "Contract Audit, Wallet Safety Copy und qualifiziertes Legal Review abschließen." },
+      { step: "03", title: "Private Beta", body: "Read-only Eligibility Checks für eingeladene Accounts aktivieren." },
+      { step: "04", title: "Aktivierung", body: "Launch nur wenn technische, rechtliche und operative Anforderungen verifiziert sind." },
+    ],
+    riskKicker: "Risikohinweis",
+    riskTitle: "VLM ist ein Utility/Access-Konzept.",
+    riskBody: "VLM sollte nicht als Finanzberatung, Security, Public Offer, Preisversprechen, Wiederverkaufsclaim, Listing-Claim oder Sicherheit zukünftigen Access verstanden werden. Features können sich ändern, verzögern oder nie starten. Legal Review und technisches Audit sind vor Aktivierung erforderlich.",
+    faqKicker: "FAQ",
+    faqTitle: "Klare Antworten. Kein Hype.",
+    faqs: [
+      ["Ist VLM eine Investition?", "Nein. VLM wird nur als Utility/Access-Konzept dargestellt. Es ist keine Finanzberatung, Security, Public Offer oder Preisbehauptung."],
+      ["Brauche ich VLM, um Kleidung zu kaufen?", "Nein. Clothing Commerce bleibt getrennt. Öffentliches Browsing und Standard-Checkout sollten keinen Token verlangen."],
+      ["Fragt Velmère nach meiner Seed Phrase?", "Nie. Wallet-Verbindung muss read-only sein, außer dein Wallet zeigt klar eine Transaktionsbestätigung."],
+      ["Ist der Contract deployed?", "Die Status-Sektion auf dieser Seite ist die Quelle der Wahrheit. Wenn Contract, Chain oder Audit fehlen, bleibt der Status pending."],
+    ],
+  },
+} as const;
+
+function UtilityDiagram({ flow }: { flow: readonly string[] }) {
   const prefersReducedMotion = useReducedMotion();
 
   return (
     <div className="rounded-[2rem] border border-white/[0.10] bg-[#0B0B0D] p-4 shadow-velmere-card md:p-6">
       <div className="grid gap-3 md:grid-cols-5">
-        {utilityFlow.map((item, index) => (
+        {flow.map((item, index) => (
           <motion.div
             key={item}
             initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
@@ -137,7 +312,7 @@ function UtilityDiagram() {
           >
             <p className="font-mono text-[9px] uppercase tracking-[0.24em] text-velmere-gold">0{index + 1}</p>
             <p className="mt-4 text-lg text-velmere-ivory">{item}</p>
-            {index < utilityFlow.length - 1 ? (
+            {index < flow.length - 1 ? (
               <ArrowRight className="absolute -right-6 top-1/2 hidden h-4 w-4 -translate-y-1/2 text-white/[0.20] md:block" />
             ) : null}
           </motion.div>
@@ -152,6 +327,7 @@ export default function VlmAccessGatePage() {
   const locale = useLocale() as keyof typeof proHeroCopy;
   const proText = proHeroCopy[locale] ?? proHeroCopy.en;
   const tierText = vlmAccessTiers[locale] ?? vlmAccessTiers.en;
+  const detailText = vlmDetailCopy[locale] ?? vlmDetailCopy.en;
   const { mode, setMode } = useModeStore();
 
   useEffect(() => {
@@ -238,6 +414,29 @@ export default function VlmAccessGatePage() {
         </Reveal>
       </section>
 
+      <section className="luxury-section pb-20">
+        <Reveal className="rounded-[2rem] border border-velmere-gold/[0.14] bg-[linear-gradient(145deg,rgba(212,175,55,0.07),rgba(255,255,255,0.025),rgba(34,211,238,0.04))] p-6 shadow-velmere-card md:p-8">
+          <div className="grid gap-7 lg:grid-cols-[0.72fr_1.28fr] lg:items-start">
+            <div>
+              <p className="velmere-label text-velmere-gold">{detailText.launchKicker}</p>
+              <h2 className="mt-5 font-serif text-4xl leading-[0.94] tracking-[-0.045em] md:text-6xl">{detailText.launchTitle}</h2>
+              <p className="mt-5 text-sm leading-7 text-velmere-grey-soft">{detailText.launchBody}</p>
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              {detailText.launchMatrix.map((item) => (
+                <article key={item.label} className="rounded-[1.45rem] border border-white/[0.085] bg-black/[0.24] p-5">
+                  <div className="flex items-center justify-between gap-3">
+                    <h3 className="text-base font-semibold text-white">{item.label}</h3>
+                    <span className="rounded-full border border-velmere-gold/[0.20] bg-velmere-gold/[0.07] px-3 py-1 font-mono text-[9px] uppercase tracking-[0.14em] text-velmere-gold">{item.status}</span>
+                  </div>
+                  <p className="mt-3 text-xs leading-6 text-white/[0.56]">{item.body}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </Reveal>
+      </section>
+
       {mode === "pro" ? (
         <>
           <section className="luxury-section pb-20">
@@ -256,41 +455,42 @@ export default function VlmAccessGatePage() {
 
       <section id="what-is-vlm" className="luxury-section pb-20">
         <Reveal className="luxury-card">
-          <p className="velmere-label text-velmere-gold">What is VLM?</p>
+          <p className="velmere-label text-velmere-gold">{detailText.whatKicker}</p>
           <div className="mt-5 grid gap-8 md:grid-cols-[0.75fr_1.25fr] md:items-end">
-            <h2 className="font-serif text-4xl leading-[0.94] tracking-[-0.045em] md:text-6xl">A private layer for access.</h2>
-            <p className="text-sm leading-7 text-velmere-grey-soft">
-              VLM is planned as a member access mechanism around drops, Square and archive features. It must not be marketed as a financial product, price claim, security, dividend, yield stream or certain future benefit.
-            </p>
+            <h2 className="font-serif text-4xl leading-[0.94] tracking-[-0.045em] md:text-6xl">{detailText.whatTitle}</h2>
+            <p className="text-sm leading-7 text-velmere-grey-soft">{detailText.whatBody}</p>
           </div>
         </Reveal>
       </section>
 
       <section id="utility" className="luxury-section pb-20">
         <Reveal>
-          <p className="velmere-label text-velmere-gold">Utility diagram</p>
-          <h2 className="mt-4 font-serif text-4xl tracking-[-0.04em] md:text-6xl">From access to participation.</h2>
+          <p className="velmere-label text-velmere-gold">{detailText.utilityKicker}</p>
+          <h2 className="mt-4 font-serif text-4xl tracking-[-0.04em] md:text-6xl">{detailText.utilityTitle}</h2>
         </Reveal>
         <Reveal delay={0.06} className="mt-6">
-          <UtilityDiagram />
+          <UtilityDiagram flow={detailText.utilityFlow} />
         </Reveal>
         <div className="mt-4 grid gap-4 md:grid-cols-3">
-          {utilityCards.map(({ icon: Icon, title, body }, index) => (
+          {detailText.utilityCards.map(({ title, body }, index) => {
+            const Icon = utilityCards[index]?.icon ?? ShieldCheck;
+            return (
             <Reveal key={title} delay={index * 0.04} className="luxury-card transition duration-500 hover:-translate-y-1 hover:border-velmere-gold/[0.25]">
               <Icon className="h-5 w-5 text-velmere-gold" />
               <h3 className="mt-5 text-xl">{title}</h3>
               <p className="mt-3 text-sm leading-7 text-velmere-muted">{body}</p>
             </Reveal>
-          ))}
+            );
+          })}
         </div>
       </section>
 
       <section className="luxury-section grid gap-4 pb-20 lg:grid-cols-2">
         <Reveal className="luxury-card">
-          <p className="velmere-label text-velmere-gold">Tokenomics</p>
-          <h2 className="mt-5 font-serif text-[clamp(2.35rem,5vw,4.75rem)] leading-[0.98] tracking-[-0.035em]">Plain status only.</h2>
+          <p className="velmere-label text-velmere-gold">{detailText.tokenomicsKicker}</p>
+          <h2 className="mt-5 font-serif text-[clamp(2.35rem,5vw,4.75rem)] leading-[0.98] tracking-[-0.035em]">{detailText.tokenomicsTitle}</h2>
           <div className="mt-7 divide-y divide-white/[0.10] overflow-hidden rounded-2xl border border-white/[0.10]">
-            {tokenomics.map(([label, value]) => (
+            {detailText.tokenomics.map(([label, value]) => (
               <div key={label} className="grid gap-2 p-4 sm:grid-cols-[10rem_1fr]">
                 <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/[0.38]">{label}</p>
                 <p className="text-sm leading-6 text-white/[0.70]">{value}</p>
@@ -300,15 +500,10 @@ export default function VlmAccessGatePage() {
         </Reveal>
 
         <Reveal delay={0.08} className="luxury-card">
-          <p className="velmere-label text-velmere-gold">Contract / Chain / Audit Status</p>
-          <h2 className="mt-5 font-serif text-[clamp(2.35rem,5vw,4.75rem)] leading-[0.98] tracking-[-0.035em]">Must be verified.</h2>
+          <p className="velmere-label text-velmere-gold">{detailText.contractKicker}</p>
+          <h2 className="mt-5 font-serif text-[clamp(2.35rem,5vw,4.75rem)] leading-[0.98] tracking-[-0.035em]">{detailText.contractTitle}</h2>
           <div className="mt-7 grid gap-3">
-            {[
-              ["Contract address", "Not published — deployment, verification and audit required"],
-              ["Chain", "Not published — network will be shown after verification"],
-              ["Audit", "Required before activation"],
-              ["Legal review", "Required before any public token functionality"],
-            ].map(([label, value]) => (
+            {detailText.contractRows.map(([label, value]) => (
               <div key={label} className="rounded-2xl border border-white/[0.10] bg-black/[0.24] p-4">
                 <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-velmere-gold">{label}</p>
                 <p className="mt-2 text-sm leading-6 text-white/[0.68]">{value}</p>
@@ -320,11 +515,11 @@ export default function VlmAccessGatePage() {
 
       <section className="luxury-section pb-20">
         <Reveal>
-          <p className="velmere-label text-velmere-gold">Roadmap</p>
-          <h2 className="mt-4 font-serif text-4xl tracking-[-0.04em] md:text-6xl">Launch only when ready.</h2>
+          <p className="velmere-label text-velmere-gold">{detailText.roadmapKicker}</p>
+          <h2 className="mt-4 font-serif text-4xl tracking-[-0.04em] md:text-6xl">{detailText.roadmapTitle}</h2>
         </Reveal>
         <div className="mt-6 grid gap-4 md:grid-cols-4">
-          {roadmap.map((item, index) => (
+          {detailText.roadmap.map((item, index) => (
             <Reveal key={item.step} delay={index * 0.04} className="luxury-card">
               <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-velmere-gold">{item.step}</p>
               <h3 className="mt-5 text-xl">{item.title}</h3>
@@ -339,11 +534,9 @@ export default function VlmAccessGatePage() {
           <div className="flex flex-col gap-5 md:flex-row md:items-start">
             <AlertTriangle className="h-6 w-6 shrink-0 text-velmere-gold" />
             <div>
-              <p className="velmere-label text-velmere-gold">Risk Notice</p>
-              <h2 className="mt-4 font-serif text-3xl tracking-[-0.04em] md:text-5xl">VLM is a utility/access concept.</h2>
-              <p className="mt-5 max-w-4xl text-sm leading-7 text-velmere-grey-soft">
-                VLM should not be treated as financial advice, a security, a public offer, a price claim, a resale-value claim, a listing claim or a certainty of future access. Features may change, be delayed or never launch. A qualified legal review and technical audit are required before activation.
-              </p>
+              <p className="velmere-label text-velmere-gold">{detailText.riskKicker}</p>
+              <h2 className="mt-4 font-serif text-3xl tracking-[-0.04em] md:text-5xl">{detailText.riskTitle}</h2>
+              <p className="mt-5 max-w-4xl text-sm leading-7 text-velmere-grey-soft">{detailText.riskBody}</p>
             </div>
           </div>
         </Reveal>
@@ -351,11 +544,11 @@ export default function VlmAccessGatePage() {
 
       <section className="luxury-section pb-24 md:pb-32">
         <Reveal>
-          <p className="velmere-label text-velmere-gold">FAQ</p>
-          <h2 className="mt-4 font-serif text-4xl tracking-[-0.04em] md:text-6xl">Clear answers. No hype.</h2>
+          <p className="velmere-label text-velmere-gold">{detailText.faqKicker}</p>
+          <h2 className="mt-4 font-serif text-4xl tracking-[-0.04em] md:text-6xl">{detailText.faqTitle}</h2>
         </Reveal>
         <div className="mt-6 grid gap-4 md:grid-cols-2">
-          {faqs.map(([question, answer], index) => (
+          {detailText.faqs.map(([question, answer], index) => (
             <Reveal key={question} delay={index * 0.04} className="luxury-card">
               <HelpCircle className="h-5 w-5 text-velmere-gold" />
               <h3 className="mt-5 text-xl">{question}</h3>

@@ -160,14 +160,15 @@ type InvestigatorLossPrevention = {
 type EvidenceSourceLedgerItem = {
   id: string;
   label: string;
-  mode: "live" | "partial" | "fallback" | "blocked" | "required";
-  body: string;
+  mode: "live" | "partial" | "fallback" | "missing" | "blocked" | "required";
+  body?: string;
+  summary?: string;
 };
 
 type EvidenceReportSection = {
   id: string;
   title: string;
-  status: "confirmed" | "likely" | "unverified" | "red_flag" | "unknown" | "info";
+  status: "confirmed" | "likely" | "unverified" | "red_flag" | "unknown" | "info" | "ready" | "review" | "blocked";
   body: string;
   nextStep?: string;
 };
@@ -640,7 +641,7 @@ export default function ShieldMapClient({
   async function copyEvidenceMarkdown() {
     if (!evidenceReport) return;
     try {
-      await navigator.clipboard.writeText(evidenceReport.markdown);
+      await navigator.clipboard.writeText(evidenceReport.markdown ?? `${evidenceReport.title}\n\n${evidenceReport.warning}`);
       setCopiedEvidence(true);
       window.setTimeout(() => setCopiedEvidence(false), 1800);
     } catch {

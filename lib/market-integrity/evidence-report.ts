@@ -8,6 +8,7 @@ export type ShieldEvidenceSource = {
   label: string;
   mode: ShieldEvidenceSourceMode;
   summary: string;
+  body: string;
 };
 
 export type ShieldEvidenceReportSection = {
@@ -24,12 +25,19 @@ export type ShieldEvidenceReportDraft = {
   generatedAt: string;
   mode: "draft_only";
   exportStatus: "blocked" | "review" | "ready";
+  title: string;
+  subtitle: string;
+  warning: string;
+  blockedBy: string[];
   sourceLedger: ShieldEvidenceSource[];
   sections: ShieldEvidenceReportSection[];
   missingDataAppendix: string[];
   redactionRules: string[];
   legalNote: string;
+  markdown: string;
 };
+
+export type EvidenceReportDraft = ShieldEvidenceReportDraft;
 
 export type ShieldEvidenceExportManifest = {
   schemaVersion: "vlm-shield-evidence-manifest-v1";
@@ -96,7 +104,7 @@ function sourceSummary(result: TokenRiskResult, source: ShieldEvidenceSource): s
 }
 
 function sourceLedger(result: TokenRiskResult): ShieldEvidenceSource[] {
-  const base: Omit<ShieldEvidenceSource, "mode" | "summary">[] = [
+  const base: Omit<ShieldEvidenceSource, "mode" | "summary" | "body">[] = [
     { id: "market", label: "Market identity / price" },
     { id: "candles", label: "Candles / OHLCV" },
     { id: "supply", label: "Supply / FDV / float" },
@@ -108,8 +116,9 @@ function sourceLedger(result: TokenRiskResult): ShieldEvidenceSource[] {
 
   return base.map((item) => {
     const mode = sourceModeFromResult(result, item.id);
-    const source = { ...item, mode, summary: "" };
-    return { ...source, summary: sourceSummary(result, source) };
+    const source: ShieldEvidenceSource = { ...item, mode, summary: "", body: "" };
+    const summary = sourceSummary(result, source);
+    return { ...source, summary, body: summary };
   });
 }
 
@@ -120,6 +129,41 @@ function missingData(result: TokenRiskResult, ledger: ShieldEvidenceSource[]) {
     .map((source) => `${source.label}: ${source.summary}`);
 
   return Array.from(new Set([...explicitLimitations, ...missingSources])).slice(0, 10);
+}
+
+function renderEvidenceMarkdown(draft: Omit<ShieldEvidenceReportDraft, "markdown">): string {
+  const lines = [
+    `# ${draft.title}`,
+    "",
+    draft.subtitle,
+    "",
+    `Report ID: ${draft.reportId}`,
+    `Token: ${draft.symbol}`,
+    `Generated: ${draft.generatedAt}`,
+    `Export status: ${draft.exportStatus}`,
+    "",
+    `> ${draft.warning}`,
+    "",
+    "## Source ledger",
+    ...draft.sourceLedger.map((source) => `- ${source.label}: ${source.mode} — ${source.summary}`),
+    "",
+    "## Sections",
+    ...draft.sections.flatMap((section) => [
+      `### ${section.title} · ${section.status}`,
+      section.body,
+      ...section.items.map((item) => `- ${item}`),
+      "",
+    ]),
+    "## Missing-data appendix",
+    ...(draft.missingDataAppendix.length ? draft.missingDataAppendix.map((item) => `- ${item}`) : ["- No explicit missing-data item was detected in this draft."]),
+    "",
+    "## Redaction rules",
+    ...draft.redactionRules.map((rule) => `- ${rule}`),
+    "",
+    `Legal note: ${draft.legalNote}`,
+  ];
+
+  return lines.join("\n");
 }
 
 function sectionStatus(hasBlockers: boolean, hasMissing: boolean): ShieldEvidenceReportSection["status"] {
@@ -190,12 +234,16 @@ export function buildShieldEvidenceReportDraft(result: TokenRiskResult, caseFile
     },
   ];
 
-  return {
+  const draftWithoutMarkdown: Omit<ShieldEvidenceReportDraft, "markdown"> = {
     reportId,
     symbol: result.token.symbol,
     generatedAt,
     mode: "draft_only",
     exportStatus,
+    title: `${result.token.symbol} Shield evidence draft`,
+    subtitle: `${result.token.name || result.token.symbol} · risk ${result.score}/100 · confidence ${confidence}%`,
+    warning: "Draft summary only. This is an operator review aid, not proof, not a safety certificate and not financial advice.",
+    blockedBy: missing,
     sourceLedger: ledger,
     sections,
     missingDataAppendix: missing,
@@ -206,8 +254,11 @@ export function buildShieldEvidenceReportDraft(result: TokenRiskResult, caseFile
     ],
     legalNote: "Not financial advice. Algorithmic risk flag only. Manual review and current-source verification required.",
   };
+
+  return { ...draftWithoutMarkdown, markdown: renderEvidenceMarkdown(draftWithoutMarkdown) };
 }
 
+export const buildEvidenceReportDraft = buildShieldEvidenceReportDraft;
 
 export function buildShieldEvidenceExportManifest(
   result: TokenRiskResult,

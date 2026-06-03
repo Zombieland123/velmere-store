@@ -105,6 +105,42 @@ const copy = {
   rails: string[];
 }>;
 
+const researchValidationCopy = {
+  pl: {
+    kicker: "validation matrix",
+    title: "Jak to pokazywać, żeby brzmiało mocno, ale uczciwie.",
+    body: "Research Lab ma być miejscem dla hipotez, audytów i replikacji. Najlepsza psychologia zaufania to nie krzyczeć ‘przełom’, tylko pokazać test, limit i następny krok.",
+    rows: [
+      { label: "Dataset", status: "jawny", body: "Zakresy, seed, próbki i wersje testów muszą być opisane tak, żeby ktoś mógł to powtórzyć." },
+      { label: "Benchmark", status: "porównanie", body: "Wynik ma być zestawiony z prostym baseline i klasyczną metodą, nie tylko z własną poprzednią wersją." },
+      { label: "Negative controls", status: "wymagane", body: "Trzeba sprawdzić, czy model nie działa tylko na dobranych oknach albo parametrach." },
+      { label: "Peer review", status: "przed claimem", body: "Bez zewnętrznej replikacji sekcja mówi ‘research’, a nie ‘dowód’." },
+    ],
+  },
+  de: {
+    kicker: "Validation Matrix",
+    title: "Stark zeigen, aber ehrlich bleiben.",
+    body: "Research Lab ist für Hypothesen, Audits und Replikation. Vertrauen entsteht nicht durch ‘Durchbruch’-Sprache, sondern durch Test, Grenze und nächsten Schritt.",
+    rows: [
+      { label: "Dataset", status: "offen", body: "Ranges, Seeds, Samples und Testversionen müssen so beschrieben sein, dass andere es wiederholen können." },
+      { label: "Benchmark", status: "Vergleich", body: "Ergebnis gegen einfachen Baseline und klassische Methode zeigen, nicht nur gegen die eigene vorige Version." },
+      { label: "Negative Controls", status: "erforderlich", body: "Prüfen, ob das Modell nicht nur auf ausgewählten Fenstern oder Parametern funktioniert." },
+      { label: "Peer Review", status: "vor Claim", body: "Ohne externe Replikation heißt die Sektion Research, nicht Beweis." },
+    ],
+  },
+  en: {
+    kicker: "validation matrix",
+    title: "Show the strength without overclaiming it.",
+    body: "Research Lab is for hypotheses, audits and replication. Trust is not built by shouting ‘breakthrough’; it is built by showing the test, the limit and the next step.",
+    rows: [
+      { label: "Dataset", status: "open", body: "Ranges, seeds, samples and test versions must be described so another reviewer can repeat them." },
+      { label: "Benchmark", status: "comparison", body: "Results should be compared with a simple baseline and a classical method, not only with the previous internal version." },
+      { label: "Negative controls", status: "required", body: "Check that the model does not only work on selected windows or tuned parameters." },
+      { label: "Peer review", status: "before claim", body: "Without external replication, the section says research, not proof." },
+    ],
+  },
+} as const;
+
 function normalizeLocale(locale: string): ResearchLocale {
   if (locale === "pl" || locale === "de") return locale;
   return "en";
@@ -121,7 +157,9 @@ export function generateMetadata({ params: { locale } }: { params: { locale: str
 }
 
 export default function ResearchLabPage({ params: { locale } }: { params: { locale: string } }) {
-  const active = copy[normalizeLocale(locale)];
+  const normalizedLocale = normalizeLocale(locale);
+  const active = copy[normalizedLocale];
+  const validation = researchValidationCopy[normalizedLocale];
 
   return (
     <main className="bg-velmere-black text-velmere-ivory">
@@ -165,6 +203,27 @@ export default function ResearchLabPage({ params: { locale } }: { params: { loca
                   {rail}
                 </div>
               ))}
+            </div>
+          </div>
+
+          <div className="mt-6 rounded-[1.9rem] border border-velmere-gold/[0.13] bg-[linear-gradient(145deg,rgba(212,175,55,0.055),rgba(0,0,0,0.24),rgba(34,211,238,0.035))] p-5 md:p-7">
+            <div className="grid gap-6 lg:grid-cols-[0.72fr_1.28fr] lg:items-start">
+              <div>
+                <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-velmere-gold">{validation.kicker}</p>
+                <h2 className="mt-4 font-serif text-3xl leading-none tracking-[-0.04em] text-white md:text-5xl">{validation.title}</h2>
+                <p className="mt-4 text-sm leading-7 text-white/[0.58]">{validation.body}</p>
+              </div>
+              <div className="grid gap-3 md:grid-cols-2">
+                {validation.rows.map((row) => (
+                  <article key={row.label} className="rounded-[1.35rem] border border-white/[0.075] bg-black/[0.24] p-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <h3 className="text-sm font-semibold text-white/[0.82]">{row.label}</h3>
+                      <span className="rounded-full border border-velmere-gold/[0.18] bg-velmere-gold/[0.07] px-2.5 py-1 font-mono text-[8px] uppercase tracking-[0.13em] text-velmere-gold">{row.status}</span>
+                    </div>
+                    <p className="mt-3 text-xs leading-6 text-white/[0.54]">{row.body}</p>
+                  </article>
+                ))}
+              </div>
             </div>
           </div>
         </div>

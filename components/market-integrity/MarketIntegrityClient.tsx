@@ -2,6 +2,7 @@
 
 import {
   Component,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -247,6 +248,8 @@ class ShieldModalErrorBoundary extends Component<
 }
 
 const tabs = ["top", "trending", "watchlist", "highestRisk"] as const;
+type SortDirection = "asc" | "desc";
+
 type MarketSortKey =
   | "rank"
   | "price"
@@ -286,9 +289,39 @@ function proxiedIcon(image?: string) {
   return image;
 }
 
+const knownTokenLogoMap: Record<string, string> = {
+  btc: "https://assets.coingecko.com/coins/images/1/large/bitcoin.png",
+  bitcoin: "https://assets.coingecko.com/coins/images/1/large/bitcoin.png",
+  eth: "https://assets.coingecko.com/coins/images/279/large/ethereum.png",
+  ethereum: "https://assets.coingecko.com/coins/images/279/large/ethereum.png",
+  sol: "https://assets.coingecko.com/coins/images/4128/large/solana.png",
+  solana: "https://assets.coingecko.com/coins/images/4128/large/solana.png",
+  usdc: "https://assets.coingecko.com/coins/images/6319/large/usdc.png",
+  tether: "https://assets.coingecko.com/coins/images/325/large/Tether.png",
+  usdt: "https://assets.coingecko.com/coins/images/325/large/Tether.png",
+  bnb: "https://assets.coingecko.com/coins/images/825/large/bnb-icon2_2x.png",
+  xrp: "https://assets.coingecko.com/coins/images/44/large/xrp-symbol-white-128.png",
+  ada: "https://assets.coingecko.com/coins/images/975/large/cardano.png",
+  doge: "https://assets.coingecko.com/coins/images/5/large/dogecoin.png",
+  avax: "https://assets.coingecko.com/coins/images/12559/large/Avalanche_Circle_RedWhite_Trans.png",
+  link: "https://assets.coingecko.com/coins/images/877/large/chainlink-new-logo.png",
+  matic: "https://assets.coingecko.com/coins/images/4713/large/matic-token-icon.png",
+  near: "https://assets.coingecko.com/coins/images/10365/large/near.jpg",
+};
+
+function knownTokenLogo(symbol?: string, id?: string, name?: string) {
+  const candidates = [symbol, id, name]
+    .filter(Boolean)
+    .map((value) => String(value).trim().toLowerCase());
+  for (const candidate of candidates) {
+    if (knownTokenLogoMap[candidate]) return knownTokenLogoMap[candidate];
+  }
+  return undefined;
+}
+
 function TokenAvatar({ image, symbol }: { image?: string; symbol: string }) {
   const [failed, setFailed] = useState(false);
-  const src = proxiedIcon(image);
+  const src = proxiedIcon(image ?? knownTokenLogo(symbol, symbol, symbol));
   const symbolLabel = symbol.slice(0, 2).toUpperCase();
   if (!src || failed) {
     return (
@@ -373,7 +406,7 @@ const marketSortLabels: Record<MarketSortKey, string> = {
   risk: "risk score",
 };
 
-function sortDirectionCopy(key: MarketSortKey, direction: "asc" | "desc") {
+function sortDirectionCopy(key: MarketSortKey, direction: SortDirection) {
   if (key === "rank")
     return direction === "asc"
       ? "lowest rank first"
@@ -383,6 +416,12 @@ function sortDirectionCopy(key: MarketSortKey, direction: "asc" | "desc") {
   return direction === "desc"
     ? "largest values first"
     : "smallest values first";
+}
+
+function defaultSortStateForTab(tab: (typeof tabs)[number]): { key: MarketSortKey; direction: SortDirection } {
+  if (tab === "highestRisk") return { key: "risk", direction: "desc" };
+  if (tab === "trending") return { key: "change24h", direction: "desc" };
+  return { key: "rank", direction: "asc" };
 }
 
 export default function MarketIntegrityClient({
@@ -409,7 +448,7 @@ export default function MarketIntegrityClient({
   const [marketError, setMarketError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<(typeof tabs)[number]>("top");
   const [sortKey, setSortKey] = useState<MarketSortKey>("rank");
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
   const [sentinelAlerts, setSentinelAlerts] = useState<SentinelAlert[]>([]);
   const [caseInbox, setCaseInbox] = useState<SentinelAlert[]>([]);
   const [activeCaseId, setActiveCaseId] = useState<string | null>(null);
@@ -606,7 +645,7 @@ export default function MarketIntegrityClient({
       active = false;
       window.clearTimeout(timer);
     };
-  }, [marketRows, query, sourceCooldownActive]);
+  }, [findLocalSuggestions, query, sourceCooldownActive]);
 
   useEffect(() => {
     function handleOutsidePointer(event: PointerEvent) {
@@ -693,16 +732,14 @@ export default function MarketIntegrityClient({
     ? `${result["token"].symbol} · ${t(`badges.${result.badge}`)} · ${result.score}/100`
     : "";
 
-  function toSuggestion(row: MarketIntegrityRow): Suggestion {
-    return {
-      id: row.id,
-      symbol: row.symbol,
-      name: row.name,
-      image: row.image,
-      rank: row.rank,
-      sourceMode: "local",
-    };
-  }
+  const toSuggestion = useCallback((row: MarketIntegrityRow): Suggestion => ({
+    id: row.id,
+    symbol: row.symbol,
+    name: row.name,
+    image: row.image ?? knownTokenLogo(row.symbol, row.id, row.name),
+    rank: row.rank,
+    sourceMode: "local",
+  }), []);
 
   function findLocalMarketMatch(value: string) {
     const clean = value.trim().toLowerCase();
@@ -715,7 +752,7 @@ export default function MarketIntegrityClient({
     );
   }
 
-  function findLocalSuggestions(value: string) {
+  const findLocalSuggestions = useCallback((value: string) => {
     const clean = value.trim().toLowerCase();
     if (!clean) return [];
     return marketRows
@@ -740,7 +777,7 @@ export default function MarketIntegrityClient({
       })
       .slice(0, 6)
       .map(toSuggestion);
-  }
+  }, [marketRows, toSuggestion]);
 
   function mergeSuggestions(localItems: Suggestion[], remoteItems: Suggestion[]) {
     const seen = new Set<string>();
@@ -758,7 +795,7 @@ export default function MarketIntegrityClient({
         localLookup.get(item.name.toLowerCase());
       const mergedItem: Suggestion = {
         ...item,
-        image: item.image ?? localMeta?.image,
+        image: item.image ?? localMeta?.image ?? knownTokenLogo(item.symbol, item.id, item.name),
         rank: item.rank ?? localMeta?.rank,
         name: item.name || localMeta?.name || item.symbol,
         sourceMode: localMeta ? "merged" : item.sourceMode ?? "live",
@@ -914,31 +951,24 @@ export default function MarketIntegrityClient({
 
   function selectTab(tab: (typeof tabs)[number]) {
     setActiveTab(tab);
-    if (tab === "highestRisk") {
-      setSortKey("risk");
-      setSortDirection("desc");
-      return;
-    }
-    if (tab === "trending") {
-      setSortKey("change24h");
-      setSortDirection("desc");
-      return;
-    }
-    if (tab === "top") {
-      setSortKey("rank");
-      setSortDirection("asc");
-    }
+    const fallback = defaultSortStateForTab(tab);
+    setSortKey(fallback.key);
+    setSortDirection(fallback.direction);
   }
 
   function updateSort(nextKey: MarketSortKey) {
-    setSortKey((current) => {
-      if (current === nextKey) {
-        setSortDirection((direction) => (direction === "asc" ? "desc" : "asc"));
-        return current;
-      }
+    const fallback = defaultSortStateForTab(activeTab);
+    if (sortKey !== nextKey) {
+      setSortKey(nextKey);
       setSortDirection(nextKey === "rank" ? "asc" : "desc");
-      return nextKey;
-    });
+      return;
+    }
+    if (sortDirection === "desc") {
+      setSortDirection("asc");
+      return;
+    }
+    setSortKey(fallback.key);
+    setSortDirection(fallback.direction);
   }
 
   function SortHeader({
@@ -955,8 +985,8 @@ export default function MarketIntegrityClient({
       <button
         type="button"
         onClick={() => updateSort(sort)}
-        aria-label={`Sort by ${label}. ${active ? sortDirectionCopy(sort, sortDirection) : "Click once for primary direction, click again to reverse."}`}
-        title={`Sort by ${label} · ${active ? sortDirectionCopy(sort, sortDirection) : "click twice to reverse"}`}
+        aria-label={`Sort by ${label}. ${active ? sortDirectionCopy(sort, sortDirection) : "Click once for gainers or largest values, click again for losers or smallest values, click a third time to reset."}`}
+        title={`Sort by ${label} · ${active ? sortDirectionCopy(sort, sortDirection) : "3-state cycle: desc → asc → reset"}`}
         className={`inline-flex items-center gap-1.5 transition hover:text-white ${align === "right" ? "justify-end" : "justify-start"} ${active ? "text-velmere-gold" : "text-white/[0.38]"}`}
       >
         {label}
