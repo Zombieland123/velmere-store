@@ -21,7 +21,7 @@ export async function GET(request: Request) {
     const memory = recordSingleResult(result);
     const ledger = memory?.lastSnapshot ? await persistRiskSnapshots([memory.lastSnapshot]) : undefined;
     const id = result.token.marketId ?? result.token.tokenAddress ?? result.token.symbol;
-    const history = await getPersistentRiskHistory(id, 144);
+    const history = await getPersistentRiskHistory(id);
     const brain = buildRiskBrain(result, history);
 
     return NextResponse.json({
@@ -31,6 +31,23 @@ export async function GET(request: Request) {
       ledger,
       history,
       brain,
+      pass425: brain.pass425,
+        pass427: brain.pass427,
+        pass428: brain.pass428,
+        pass429: brain.pass429,
+        pass430: brain.pass430,
+        pass431: brain.pass431,
+        pass432: brain.pass432,
+        pass433: brain.pass433,
+        pass434: brain.pass434,
+        pass435: brain.pass435,
+        pass436: brain.pass436,
+        pass437: brain.pass437,
+        pass438: brain.pass438,
+        pass439: brain.pass439,
+        pass440: brain.pass440,
+        pass441: brain.pass441,
+        pass442: brain.pass442,
       generatedAt: new Date().toISOString(),
     });
   } catch (error) {

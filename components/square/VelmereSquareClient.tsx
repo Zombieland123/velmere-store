@@ -318,7 +318,7 @@ function shortAddress(address?: string) {
   return `${address.slice(0, 6)}…${address.slice(-4)}`;
 }
 
-export default function VelmereSquareClient() {
+export default function VelmereSquareClient({ publicTrim = "" }: { publicTrim?: string } = {}) {
   const t = useTranslations("Square");
   const locale = useLocale() as "pl" | "en" | "de";
   const text = copy[locale] ?? copy.en;
@@ -577,7 +577,7 @@ export default function VelmereSquareClient() {
   }
 
   return (
-    <main className="relative min-h-[100dvh] overflow-x-hidden bg-[#0A0A0C] pb-28 pt-24 text-[#FFFFF0]">
+    <main className="relative min-h-[100dvh] overflow-x-hidden bg-[#0A0A0C] pb-28 pt-24 text-[#FFFFF0]" data-pass315-square-trim={publicTrim} data-pass318-public-storefront-focus="square">
       <div className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(circle_at_8%_18%,rgba(212,175,55,0.065),transparent_26%),radial-gradient(circle_at_88%_12%,rgba(255,255,255,0.04),transparent_25%)]" />
       <div className="relative z-[1] mx-auto grid w-full max-w-none gap-5 px-4 sm:px-6 lg:grid-cols-[18rem_minmax(0,1fr)_20rem] xl:px-10 2xl:px-16">
         <aside className="space-y-4 lg:self-start">
@@ -666,61 +666,9 @@ export default function VelmereSquareClient() {
             </div>
           </motion.div>
 
-          <div className="grid gap-3 lg:grid-cols-[0.72fr_1.28fr]">
-            <div className="rounded-[1.5rem] border border-white/[0.10] bg-[#101012] p-5 md:p-6">
-              <p className="font-mono text-[10px] font-black uppercase tracking-[0.22em] text-[#d4af37]">{text.modesKicker}</p>
-              <h2 className="mt-4 font-serif text-3xl leading-none text-white md:text-4xl">{text.modesTitle}</h2>
-              <p className="mt-4 text-sm leading-7 text-white/[0.62]">{text.modesBody}</p>
-            </div>
-            <div className="grid gap-3 sm:grid-cols-3">
-              {text.modes.map((item, index) => (
-                <div key={item.label} className="rounded-[1.35rem] border border-white/[0.08] bg-white/[0.025] p-4">
-                  <p className="font-mono text-[9px] font-black uppercase tracking-[0.2em] text-white/[0.30]">0{index + 1}</p>
-                  <h3 className="mt-4 text-lg text-white">{item.label}</h3>
-                  <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.14em] text-[#d4af37]">{item.value}</p>
-                  <p className="mt-3 text-xs leading-6 text-white/[0.54]">{item.body}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="rounded-[1.55rem] border border-[#d4af37]/[0.12] bg-[#d4af37]/[0.035] p-5 md:p-6">
-            <div className="grid gap-5 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
-              <div>
-                <p className="font-mono text-[10px] font-black uppercase tracking-[0.22em] text-[#d4af37]">{text.trustKicker}</p>
-                <h2 className="mt-3 font-serif text-3xl leading-none text-white md:text-4xl">{text.trustTitle}</h2>
-                <p className="mt-4 text-sm leading-7 text-white/[0.60]">{text.trustBody}</p>
-              </div>
-              <div className="grid gap-3 sm:grid-cols-2">
-                {text.trustRails.map((rail) => (
-                  <div key={rail} className="rounded-2xl border border-white/[0.075] bg-black/[0.20] p-4 text-xs leading-6 text-white/[0.56]">
-                    {rail}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className="rounded-[1.55rem] border border-white/[0.10] bg-[#101012] p-5 md:p-6">
-            <div className="grid gap-5 lg:grid-cols-[0.78fr_1.22fr] lg:items-start">
-              <div>
-                <p className="font-mono text-[10px] font-black uppercase tracking-[0.22em] text-[#d4af37]">{launchText.kicker}</p>
-                <h2 className="mt-3 font-serif text-3xl leading-none text-white md:text-4xl">{launchText.title}</h2>
-                <p className="mt-4 text-sm leading-7 text-white/[0.60]">{launchText.body}</p>
-              </div>
-              <div className="grid gap-3 sm:grid-cols-2">
-                {launchText.steps.map((step, index) => (
-                  <div key={step.label} className="rounded-2xl border border-white/[0.075] bg-black/[0.22] p-4">
-                    <div className="flex items-center justify-between gap-3">
-                      <p className="font-mono text-[9px] font-black uppercase tracking-[0.18em] text-white/[0.32]">0{index + 1}</p>
-                      <span className="rounded-full border border-[#d4af37]/[0.22] bg-[#d4af37]/[0.08] px-2.5 py-1 font-mono text-[8px] uppercase tracking-[0.13em] text-[#d4af37]">{step.value}</span>
-                    </div>
-                    <h3 className="mt-3 text-sm font-semibold text-white/[0.82]">{step.label}</h3>
-                    <p className="mt-2 text-xs leading-6 text-white/[0.52]">{step.body}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
+          <div className="pass315-square-feed-brief rounded-[1.35rem] border border-[#d4af37]/[0.14] bg-[#d4af37]/[0.045] p-4 md:p-5" data-pass315-square-public-brief="true">
+            <p className="font-mono text-[9px] font-black uppercase tracking-[0.18em] text-[#d4af37]">Public Square</p>
+            <p className="mt-2 text-sm leading-7 text-white/[0.62]">Czytaj spokojny feed dropów i notatek. Publikacja oraz pokoje memberów zostają zablokowane do czasu konta, moderacji i bezpiecznych reguł.</p>
           </div>
 
           <div className="grid gap-3 sm:grid-cols-3">

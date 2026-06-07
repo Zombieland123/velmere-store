@@ -1,5 +1,6 @@
 import type { MarketIntegrityRow } from "./coingecko";
 import type { MarketRiskSnapshot } from "./market-memory";
+import { getPass423RetentionPolicy, pass423PruneRiskHistory, pass423SelectAnalysisWindow } from "./pass423-long-term-memory-spine";
 
 export type LedgerMode = "supabase" | "memory";
 
@@ -62,7 +63,7 @@ function persistToMemory(snapshots: MarketRiskSnapshot[]): LedgerWriteResult {
     const history = store.snapshots.get(snapshot.id) ?? [];
     const alreadyExists = history.some((item) => item.timestamp === snapshot.timestamp);
     if (alreadyExists) continue;
-    store.snapshots.set(snapshot.id, [...history, snapshot].slice(-288));
+    store.snapshots.set(snapshot.id, pass423PruneRiskHistory([...history, snapshot]));
     stored += 1;
   }
 
@@ -151,7 +152,7 @@ export async function persistRiskSnapshots(snapshots: MarketRiskSnapshot[]): Pro
   return persistToSupabase(snapshots);
 }
 
-export async function getPersistentRiskHistory(id: string, limit = 144): Promise<MarketRiskSnapshot[]> {
+export async function getPersistentRiskHistory(id: string, limit = getPass423RetentionPolicy().analysisWindowSnapshots): Promise<MarketRiskSnapshot[]> {
   const clean = id.trim();
   if (!clean) return [];
   const config = getSupabaseConfig();
@@ -160,8 +161,8 @@ export async function getPersistentRiskHistory(id: string, limit = 144): Promise
     try {
       const params = new URLSearchParams({
         asset_id: `eq.${clean}`,
-        order: "observed_at.asc",
-        limit: String(Math.min(Math.max(limit, 1), 500)),
+        order: "observed_at.desc",
+        limit: String(Math.min(Math.max(limit, 1), getPass423RetentionPolicy().maxSnapshotsPerAsset)),
       });
       const response = await fetch(`${config.url}/rest/v1/market_integrity_snapshots?${params.toString()}`, {
         headers: {
@@ -187,7 +188,7 @@ export async function getPersistentRiskHistory(id: string, limit = 144): Promise
           dominant_agent?: string | null;
           confidence?: number | null;
         }>;
-        return rows.map((row) => row.raw_snapshot ?? {
+        return pass423SelectAnalysisWindow(rows.map((row) => row.raw_snapshot ?? {
           id: row.asset_id,
           symbol: row.symbol,
           name: row.name,
@@ -200,7 +201,7 @@ export async function getPersistentRiskHistory(id: string, limit = 144): Promise
           signalCount: row.signal_count ?? 0,
           dominantAgent: row.dominant_agent ?? undefined,
           confidence: row.confidence ?? undefined,
-        });
+        }), getPass423RetentionPolicy()).sort((a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp));
       }
     } catch {
       // Fall back to memory below.
@@ -208,7 +209,7 @@ export async function getPersistentRiskHistory(id: string, limit = 144): Promise
   }
 
   const store = getStore();
-  return (store.snapshots.get(clean) ?? []).slice(-limit);
+  return pass423SelectAnalysisWindow((store.snapshots.get(clean) ?? []).slice(-limit), getPass423RetentionPolicy());
 }
 
 export async function getRiskLedgerStatus() {
@@ -222,6 +223,8 @@ export async function getRiskLedgerStatus() {
 
   return {
     mode: getSupabaseConfig() ? "supabase" as const : "memory" as const,
+    pass423Retention: getPass423RetentionPolicy(),
+    longTermStorage: getSupabaseConfig() ? "durable_years_ready" as const : "runtime_mirror_only" as const,
     lastPersistAt: store.lastPersistAt,
     lastError: store.lastError,
     trackedAssets: histories.length,

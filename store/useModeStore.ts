@@ -13,6 +13,14 @@ type ModeSnapshot = {
   toggleMode: () => void;
 };
 
+const noop = () => undefined;
+const serverSnapshot: ModeSnapshot = {
+  mode: "basic",
+  isProMode: false,
+  setMode: noop,
+  toggleMode: noop,
+};
+
 let currentMode: InterfaceMode = "basic";
 let currentSnapshot: ModeSnapshot;
 const listeners = new Set<() => void>();
@@ -69,12 +77,7 @@ function getSnapshot(): ModeSnapshot {
 }
 
 function getServerSnapshot(): ModeSnapshot {
-  return {
-    mode: "basic",
-    isProMode: false,
-    setMode: () => undefined,
-    toggleMode: () => undefined,
-  };
+  return serverSnapshot;
 }
 
 export function useModeStore() {

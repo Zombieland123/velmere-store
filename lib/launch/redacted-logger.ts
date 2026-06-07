@@ -1,3 +1,4 @@
+import { pass449RedactForLedger } from "@/lib/market-integrity/pass449-architecture-dark-matter-guard";
 export type RedactionSeverity = "low" | "medium" | "high";
 
 export type RedactionResult = {
@@ -26,8 +27,17 @@ function maxSeverity(a: RedactionSeverity, b: RedactionSeverity): RedactionSever
   return severityRank(a) >= severityRank(b) ? a : b;
 }
 
+function safeSerializeForRedaction(value: unknown) {
+  try {
+    return JSON.stringify(value);
+  } catch {
+    return "[unserializable]";
+  }
+}
+
 export function redactOperatorLogValue(input: unknown): RedactionResult {
-  let value = typeof input === "string" ? input : JSON.stringify(input, null, 2);
+  const schemaRedacted = pass449RedactForLedger(input);
+  let value = typeof schemaRedacted === "string" ? schemaRedacted : (JSON.stringify(schemaRedacted, null, 2) ?? String(schemaRedacted));
   let redactedCount = 0;
   let severity: RedactionSeverity = "low";
   const markers = new Set<string>();
@@ -40,6 +50,12 @@ export function redactOperatorLogValue(input: unknown): RedactionResult {
       const prefix = match.includes(":") ? match.split(":")[0] : rule.marker;
       return `${prefix}:[redacted]`;
     });
+  }
+
+  if (safeSerializeForRedaction(input) !== safeSerializeForRedaction(schemaRedacted)) {
+    redactedCount += 1;
+    markers.add("pass449-schema-envelope");
+    severity = maxSeverity(severity, "medium");
   }
 
   return { value, redactedCount, severity, markers: Array.from(markers).sort() };

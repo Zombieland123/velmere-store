@@ -239,7 +239,6 @@ export default function Navbar() {
   const desktopPrimaryLinks = [
     { href: "/clothing", label: labels.collection },
     { href: "/vlm-token", label: labels.vlm },
-    { href: "/square", label: labels.square },
     { href: "/community", label: labels.community },
     { href: "/security", label: labels.security },
   ];
@@ -593,8 +592,8 @@ export default function Navbar() {
                     Wallet safety
                   </p>
                   <p className="mt-3 text-xs leading-6 text-white/[0.46]">
-                    VLM is an access layer, not an investment. Never enter your
-                    seed phrase.
+                    Connect with a wallet signature. Never enter your seed phrase
+                    or private key.
                   </p>
                 </div>
 

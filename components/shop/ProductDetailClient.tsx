@@ -23,6 +23,13 @@ import {
   isProductCustomerPurchasable,
 } from "@/lib/products/catalog";
 import { buildProductProviderTruthSnapshot } from "@/lib/launch/provider-truth-ledger";
+import { buildPublicCommerceTrimGate } from "@/lib/market-integrity/public-commerce-trim-gate";
+import { buildPublicFirstPurchaseFlowGate } from "@/lib/market-integrity/public-first-purchase-flow-gate";
+import { buildPublicAtelierTrustRibbonGate } from "@/lib/market-integrity/public-atelier-trust-ribbon-gate";
+import { buildPublicCopyPolishGate } from "@/lib/market-integrity/public-copy-polish-gate";
+import { buildPublicProductPathwayReceiptGate } from "@/lib/market-integrity/public-product-pathway-receipt-gate";
+import { buildPublicProvenanceDropConciergeGate } from "@/lib/market-integrity/public-provenance-drop-concierge-gate";
+import { buildPublicSizeConfidenceConciergeGate } from "@/lib/market-integrity/public-size-confidence-concierge-gate";
 
 const MEASUREMENTS = [
   { size: "S", chest: "112 cm", length: "66 cm", shoulders: "58 cm" },
@@ -35,14 +42,14 @@ function productDetailCopy(locale: string) {
   if (locale === "pl") {
     return {
       constructionTitle: "Materiał / Konstrukcja",
-      launchNoteTitle: "Notatka launch-control",
-      providerSnapshotTitle: "Provider / SKU truth",
-      providerSnapshotBody: "Checkout zostaje zablokowany, dopóki provider, SKU, warianty, dostawa i zwrot nie mają potwierdzonego źródła.",
-      providerMissing: "Braki",
-      providerSource: "Source mode",
-      launchKicker: "kontrola przed zakupem",
-      launchTitle: "Najpierw rozmiar, materiał, dostawa i zwrot.",
-      launchBody: "Zakup odzieży zostaje oddzielony od VLM. Przed płatnością użytkownik musi widzieć cenę, wariant, dostawę, koszty, zwrot i prawa konsumenta.",
+      launchNoteTitle: "Status dropu",
+      providerSnapshotTitle: "Status produktu",
+      providerSnapshotBody: "Produkt jest w trybie preview. Sprzedaż otworzy się dopiero, gdy rozmiary, dostawa i zwroty będą jasno potwierdzone.",
+      providerMissing: "Operator review",
+      providerSource: "Status",
+      launchKicker: "przed zakupem",
+      launchTitle: "Rozmiar, materiał i dostawa — jasno.",
+      launchBody: "Zakup odzieży jest prosty: najpierw produkt, potem rozmiar, dostawa i zwrot. VLM zostaje opcjonalnym benefitem, nie warunkiem zakupu.",
       rails: [
         { label: "Rozmiar", body: "Tabela mierzy produkt, nie ciało. Porównaj z bluzą, którą już nosisz." },
         { label: "Care", body: "Pierz na zimno, na lewej stronie. Suszenie na powietrzu chroni nadruk i formę." },
@@ -59,14 +66,14 @@ function productDetailCopy(locale: string) {
   if (locale === "de") {
     return {
       constructionTitle: "Material / Konstruktion",
-      launchNoteTitle: "Launch-Control Notiz",
-      providerSnapshotTitle: "Provider / SKU Truth",
-      providerSnapshotBody: "Checkout bleibt gesperrt, bis Provider, SKU, Varianten, Versand und Rückgabe durch Quellen bestätigt sind.",
-      providerMissing: "Fehlend",
-      providerSource: "Source Mode",
-      launchKicker: "Kontrolle vor Kauf",
-      launchTitle: "Erst Größe, Material, Lieferung und Rückgabe.",
-      launchBody: "Clothing Checkout bleibt von VLM getrennt. Vor Zahlung müssen Preis, Variante, Lieferung, Kosten, Rückgabe und Verbraucherrechte sichtbar sein.",
+      launchNoteTitle: "Drop Status",
+      providerSnapshotTitle: "Produktstatus",
+      providerSnapshotBody: "Dieses Produkt ist im Preview-Modus. Verkauf öffnet erst, wenn Größen, Lieferung und Rückgaben klar bestätigt sind.",
+      providerMissing: "Operator Review",
+      providerSource: "Status",
+      launchKicker: "vor dem Kauf",
+      launchTitle: "Größe, Material und Lieferung — klar.",
+      launchBody: "Clothing bleibt einfach: Produkt zuerst, dann Größe, Lieferung und Rückgabe. VLM bleibt optionaler Vorteil, keine Kaufbedingung.",
       rails: [
         { label: "Größe", body: "Die Tabelle misst das Produkt, nicht den Körper. Vergleiche mit einem Hoodie, den du bereits trägst." },
         { label: "Pflege", body: "Kalt und auf links waschen. Lufttrocknung schützt Druck und Form." },
@@ -82,14 +89,14 @@ function productDetailCopy(locale: string) {
   }
   return {
     constructionTitle: "Material / Construction",
-    launchNoteTitle: "Launch-control note",
-    providerSnapshotTitle: "Provider / SKU truth",
-    providerSnapshotBody: "Checkout stays blocked until provider, SKU, variants, delivery and returns are source-confirmed.",
-    providerMissing: "Missing",
-    providerSource: "Source mode",
-    launchKicker: "pre-purchase control",
-    launchTitle: "Size, material, delivery and returns first.",
-    launchBody: "Clothing checkout stays separated from VLM. Before payment, the user must see price, variant, delivery, costs, returns and consumer rights.",
+    launchNoteTitle: "Drop status",
+    providerSnapshotTitle: "Product status",
+    providerSnapshotBody: "This product is in preview mode. Sale opens only after size, delivery and returns are clearly confirmed.",
+    providerMissing: "Operator review",
+    providerSource: "Status",
+    launchKicker: "before purchase",
+    launchTitle: "Size, material and delivery — clearly.",
+    launchBody: "Clothing stays simple: product first, then size, delivery and returns. VLM remains optional, never a purchase condition.",
     rails: [
       { label: "Size", body: "The table measures the garment, not the body. Compare it with a hoodie you already wear." },
       { label: "Care", body: "Wash cold and inside out. Air drying protects print and shape." },
@@ -188,7 +195,7 @@ export default function ProductDetailPage({
 
   if (!product) {
     return (
-      <main className="min-h-[100dvh] bg-velmere-black pb-28 text-white">
+      <main className="min-h-[100dvh] bg-velmere-black pb-28 text-white" data-pass316-public-commerce-trim="product" data-pass318-public-storefront-focus="product" data-pass319-public-first-purchase-flow="product" data-pass320-public-atelier-trust-ribbon="product" data-pass321-public-copy-polish="product" data-pass322-public-product-pathway-receipt="product" data-pass323-public-provenance-drop-concierge="product" data-pass324-public-size-confidence-concierge="product">
         <LuxurySection className="py-28 md:py-36">
           <div className="mx-auto max-w-3xl text-center">
             <p className="luxury-kicker text-velmere-gold/[0.80]">
@@ -219,6 +226,92 @@ export default function ProductDetailPage({
     ) ?? null;
   const purchasable = isProductCustomerPurchasable(selectedProduct);
   const providerSnapshot = buildProductProviderTruthSnapshot(selectedProduct);
+  const publicCommerceTrimGate = buildPublicCommerceTrimGate({ surface: "product", products: [selectedProduct], productSnapshot: providerSnapshot });
+  const firstPurchaseFlow = buildPublicFirstPurchaseFlowGate({
+    surface: "product",
+    selectedSize: Boolean(selectedVariant),
+    checkoutReady: purchasable,
+    waitlistReady: !purchasable,
+    dppTraceabilityReady: providerSnapshot.score >= 52,
+    productProofScore: providerSnapshot.score,
+    sourceConfidence: publicCommerceTrimGate.customerProofScore,
+    liveWindowSeconds: purchasable ? 540 : 300,
+    walletRequired: false,
+    scarcityPressure: 0,
+    copyDensity: "minimal",
+  });
+  const atelierTrustRibbon = buildPublicAtelierTrustRibbonGate({
+    surface: "product",
+    fitProofVisible: Boolean(selectedVariant),
+    materialProofVisible: Boolean(selectedProduct.truth),
+    deliveryPromiseReady: purchasable,
+    returnRightsVisible: true,
+    checkoutReady: purchasable,
+    walletRequired: false,
+    dppTraceabilityScore: providerSnapshot.score,
+    sourceFreshnessSeconds: purchasable ? 540 : 300,
+    scarcityPressure: 0,
+    operatorCopyVisible: false,
+  });
+  const publicCopyPolish = buildPublicCopyPolishGate({
+    surface: "product",
+    passLabelsVisible: 0,
+    rawScoresVisible: 0,
+    operatorTermsVisible: 0,
+    walletPressure: false,
+    checkoutReady: purchasable,
+    fitPathVisible: Boolean(selectedVariant),
+    deliveryReturnVisible: true,
+    dppTraceabilityScore: atelierTrustRibbon.customerTrustScore,
+    mexcFreshnessSeconds: purchasable ? 540 : 300,
+    scarcityPressure: 0,
+  });
+  const productPathwayReceipt = buildPublicProductPathwayReceiptGate({
+    surface: "product",
+    productVisible: true,
+    fitGuideVisible: Boolean(selectedVariant),
+    materialVisible: Boolean(selectedProduct.truth),
+    deliveryReturnVisible: true,
+    checkoutReady: purchasable,
+    waitlistReady: !purchasable,
+    walletRequired: false,
+    operatorNoiseItems: 0,
+    copyBlocksVisible: 1,
+    mexcFreshnessSeconds: purchasable ? 540 : 300,
+    dppTraceabilityScore: atelierTrustRibbon.customerTrustScore,
+    scarcityPressure: 0,
+  });
+  const provenanceDropConcierge = buildPublicProvenanceDropConciergeGate({
+    surface: "product",
+    productPathVisible: true,
+    fitVisible: Boolean(selectedVariant),
+    materialVisible: Boolean(selectedProduct.truth),
+    deliveryReturnVisible: true,
+    checkoutReady: purchasable,
+    waitlistReady: !purchasable,
+    walletRequired: false,
+    mexcLiveWindowSeconds: purchasable ? 540 : 300,
+    dppTraceabilityScore: atelierTrustRibbon.customerTrustScore,
+    receiptReady: purchasable,
+    operatorNoiseItems: 0,
+    scarcityPressure: 0,
+  });
+  const sizeConfidenceConcierge = buildPublicSizeConfidenceConciergeGate({
+    surface: "product",
+    garmentMeasurementsVisible: productMeasurements.length > 0,
+    selectedSize: Boolean(selectedVariant),
+    materialCareVisible: Boolean(selectedProduct.truth),
+    deliveryReturnVisible: true,
+    checkoutReady: purchasable,
+    waitlistReady: !purchasable,
+    walletRequired: false,
+    bodyComparisonCopyVisible: false,
+    mexcLiveWindowSeconds: purchasable ? 540 : 300,
+    dppProductInfoScore: atelierTrustRibbon.customerTrustScore,
+    operatorNoiseItems: 0,
+    scarcityPressure: 0,
+  });
+
   const title = getLocalizedString(selectedProduct.title, locale);
   const externalOnly =
     selectedProduct.fulfilmentMode === "external_link" &&
@@ -283,7 +376,7 @@ export default function ProductDetailPage({
           : productT("productComingSoon");
 
   return (
-    <main className="min-h-[100dvh] bg-velmere-black pb-28 text-white">
+    <main className="min-h-[100dvh] bg-velmere-black pb-28 text-white" data-pass316-public-commerce-trim="product" data-pass318-public-storefront-focus="product" data-pass319-public-first-purchase-flow="product" data-pass320-public-atelier-trust-ribbon="product" data-pass321-public-copy-polish="product" data-pass322-public-product-pathway-receipt="product" data-pass323-public-provenance-drop-concierge="product" data-pass324-public-size-confidence-concierge="product">
       <LuxurySection className="max-w-none py-24 md:py-32">
         <Link
           href="/shop"
@@ -395,26 +488,106 @@ export default function ProductDetailPage({
                     <p className="mt-3 text-sm leading-7 text-white/[0.58]">{detailCopy.providerSnapshotBody}</p>
                   </div>
                   <span className="shrink-0 rounded-full border border-white/[0.10] bg-black/[0.18] px-3 py-1 font-mono text-[9px] uppercase tracking-[0.14em] text-white/[0.50]">
-                    {providerSnapshot.score}/100
+                    {publicCopyPolish.statusLine}
                   </span>
                 </div>
-                <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                  <div className="rounded-lg border border-white/[0.08] bg-black/[0.18] p-3">
-                    <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-white/[0.34]">provider</p>
-                    <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.12em] text-white/[0.66]">{selectedProduct.provider} · {providerSnapshot.providerMode}</p>
-                  </div>
-                  <div className="rounded-lg border border-white/[0.08] bg-black/[0.18] p-3">
-                    <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-white/[0.34]">{detailCopy.providerSource}</p>
-                    <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.12em] text-white/[0.66]">{providerSnapshot.sourceMode} · {providerSnapshot.status.replaceAll("_", " ")}</p>
-                  </div>
+                <div className="mt-4 grid gap-2 sm:grid-cols-3" data-pass316-product-customer-signals="true">
+                  {publicCommerceTrimGate.customerSignals.map((signal) => (
+                    <span key={signal} className="rounded-lg border border-white/[0.08] bg-black/[0.18] p-3 font-mono text-[9px] uppercase tracking-[0.14em] text-white/[0.54]">{signal}</span>
+                  ))}
                 </div>
-                {providerSnapshot.missing.length ? (
-                  <p className="mt-3 rounded-lg border border-white/[0.08] bg-black/[0.18] p-3 font-mono text-[9px] uppercase tracking-[0.12em] text-white/[0.42]">
-                    {detailCopy.providerMissing}: {providerSnapshot.missing.join(" · ")}
-                  </p>
-                ) : null}
               </div>
 
+
+              <div className="mt-4 rounded-xl border border-velmere-gold/[0.14] bg-[linear-gradient(135deg,rgba(212,175,55,0.065),rgba(0,0,0,0.18))] p-4" data-pass322-product-pathway-receipt="true">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-velmere-gold/[0.82]">Atelier product receipt</p>
+                    <p className="mt-3 text-sm leading-7 text-white/[0.60]">{productPathwayReceipt.headline}</p>
+                    <p className="mt-2 text-xs leading-6 text-white/[0.46]">{productPathwayReceipt.customerLine}</p>
+                  </div>
+                  <span className="shrink-0 rounded-full border border-white/[0.10] bg-black/[0.18] px-3 py-1 font-mono text-[9px] uppercase tracking-[0.14em] text-white/[0.50]">
+                    {productPathwayReceipt.pathwayMode.replace("_", " ")}
+                  </span>
+                </div>
+                <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                  {productPathwayReceipt.receiptSteps.map((step) => (
+                    <span key={step} className="rounded-lg border border-white/[0.08] bg-black/[0.18] p-3 font-mono text-[9px] uppercase tracking-[0.14em] text-white/[0.54]">{step}</span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-4 rounded-xl border border-white/[0.10] bg-[linear-gradient(135deg,rgba(255,255,255,0.04),rgba(212,175,55,0.045),rgba(0,0,0,0.18))] p-4" data-pass323-product-provenance-drop-concierge="true">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-velmere-gold/[0.82]">Provenance concierge</p>
+                    <p className="mt-3 text-sm leading-7 text-white/[0.60]">{provenanceDropConcierge.headline}</p>
+                    <p className="mt-2 text-xs leading-6 text-white/[0.46]">{provenanceDropConcierge.customerLine}</p>
+                  </div>
+                  <span className="shrink-0 rounded-full border border-white/[0.10] bg-black/[0.18] px-3 py-1 font-mono text-[9px] uppercase tracking-[0.14em] text-white/[0.50]">
+                    {provenanceDropConcierge.eliteStatus.replace("_", " ")}
+                  </span>
+                </div>
+                <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                  {provenanceDropConcierge.conciergeSteps.map((step) => (
+                    <span key={step} className="rounded-lg border border-white/[0.08] bg-black/[0.18] p-3 font-mono text-[9px] uppercase tracking-[0.14em] text-white/[0.54]">{step}</span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-4 rounded-xl border border-white/[0.10] bg-white/[0.035] p-4" data-pass319-product-purchase-constellation="true">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-velmere-gold/[0.82]">Quiet first purchase</p>
+                    <p className="mt-3 text-sm leading-7 text-white/[0.58]">Choose fit first. Checkout or waitlist stays calm until delivery, returns and proof are ready.</p>
+                  </div>
+                  <span className="shrink-0 rounded-full border border-white/[0.10] bg-black/[0.18] px-3 py-1 font-mono text-[9px] uppercase tracking-[0.14em] text-white/[0.50]">
+                    {publicCopyPolish.publicMode.replace("_", " ")}
+                  </span>
+                </div>
+                <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                  {firstPurchaseFlow.customerSteps.slice(0, 4).map((step) => (
+                    <span key={step} className="rounded-lg border border-white/[0.08] bg-black/[0.18] p-3 font-mono text-[9px] uppercase tracking-[0.14em] text-white/[0.54]">{step}</span>
+                  ))}
+                </div>
+                <p className="mt-3 font-mono text-[9px] uppercase tracking-[0.14em] text-white/[0.38]">{publicCopyPolish.statusLine}</p>
+              </div>
+
+
+              <div className="mt-4 rounded-xl border border-velmere-gold/[0.14] bg-[linear-gradient(135deg,rgba(212,175,55,0.06),rgba(255,255,255,0.025))] p-4" data-pass320-product-trust-ribbon="true">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-velmere-gold/[0.82]">Atelier trust ribbon</p>
+                    <p className="mt-3 text-sm leading-7 text-white/[0.58]">{atelierTrustRibbon.customerCopy}</p>
+                  </div>
+                  <span className="shrink-0 rounded-full border border-white/[0.10] bg-black/[0.18] px-3 py-1 font-mono text-[9px] uppercase tracking-[0.14em] text-white/[0.50]">
+                    {publicCopyPolish.publicMode.replace("_", " ")}
+                  </span>
+                </div>
+                <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                  {atelierTrustRibbon.ribbonSteps.map((step) => (
+                    <span key={step} className="rounded-lg border border-white/[0.08] bg-black/[0.18] p-3 font-mono text-[9px] uppercase tracking-[0.14em] text-white/[0.54]">{step}</span>
+                  ))}
+                </div>
+                <p className="mt-3 font-mono text-[9px] uppercase tracking-[0.14em] text-white/[0.38]">{publicCopyPolish.statusLine}</p>
+              </div>
+
+              <div className="mt-4 rounded-xl border border-white/[0.08] bg-black/[0.20] p-4" data-pass321-product-copy-polish="true">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-velmere-gold/[0.82]">Concierge proof whisper</p>
+                    <p className="mt-3 text-sm leading-7 text-white/[0.58]">{publicCopyPolish.brief}</p>
+                  </div>
+                  <span className="shrink-0 rounded-full border border-white/[0.10] bg-black/[0.18] px-3 py-1 font-mono text-[9px] uppercase tracking-[0.14em] text-white/[0.50]">
+                    {publicCopyPolish.publicMode.replace("_", " ")}
+                  </span>
+                </div>
+                <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                  {publicCopyPolish.badges.map((badge) => (
+                    <span key={badge} className="rounded-lg border border-white/[0.08] bg-black/[0.18] p-3 font-mono text-[9px] uppercase tracking-[0.14em] text-white/[0.54]">{badge}</span>
+                  ))}
+                </div>
+              </div>
               <div className="mt-8">
                 <div className="mb-4 flex items-center justify-between gap-4">
                   <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/[0.72]">

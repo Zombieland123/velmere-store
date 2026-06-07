@@ -32,7 +32,7 @@ function footerCopy(locale: string) {
         { href: "/contact", label: "Kontakt" },
       ],
       microcopy: [
-        "VLM jest warstwą dostępu, nie inwestycją.",
+        "VLM otwiera prywatny dostęp do narzędzi, dropów i Research Lab.",
         "Nigdy nie wpisuj seed phrase.",
         "Ceny, podatki, koszty dostawy i prawa zwrotu są pokazywane przed checkoutem.",
         "Prawa konsumenta pozostają bez zmian.",
@@ -69,7 +69,7 @@ function footerCopy(locale: string) {
         { href: "/contact", label: "Kontakt" },
       ],
       microcopy: [
-        "VLM ist eine Access-Ebene, keine Investition.",
+        "VLM öffnet privaten Zugang zu Tools, Drops und Research Lab.",
         "Gib niemals deine Seed Phrase ein.",
         "Preise, Steuern, Versandkosten und Rückgaberechte werden vor dem Checkout angezeigt.",
         "Verbraucherrechte bleiben unberührt.",
@@ -104,7 +104,7 @@ function footerCopy(locale: string) {
       { href: "/contact", label: "Contact" },
     ],
     microcopy: [
-      "VLM is an access layer, not an investment.",
+      "VLM unlocks private access to tools, drops and Research Lab.",
       "Never enter your seed phrase.",
       "Prices, taxes, delivery costs and return rights are shown before checkout.",
       "Consumer rights remain unaffected.",

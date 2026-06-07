@@ -21,14 +21,24 @@ export async function GET(request: Request) {
 
   const { searchParams } = new URL(request.url);
   const query = searchParams.get("query")?.trim();
+  const localeCandidate = searchParams.get("locale")?.trim();
+  const locale =
+    localeCandidate === "de" || localeCandidate === "en"
+      ? localeCandidate
+      : "pl";
 
   if (!query) {
     return NextResponse.json<ErrorPayload>({ mode: "error", error: "Missing query" }, { status: 400, headers });
   }
 
   try {
-    const marketRow = await searchCoinGeckoMarket(query);
-    const result = marketRow?.result ?? await analyzeDexScreenerToken(query);
+    let result: Awaited<ReturnType<typeof analyzeDexScreenerToken>>;
+    try {
+      const marketRow = await searchCoinGeckoMarket(query);
+      result = marketRow?.result ?? (await analyzeDexScreenerToken(query));
+    } catch {
+      result = await analyzeDexScreenerToken(query);
+    }
     const id = result.token.marketId ?? result.token.tokenAddress ?? result.token.symbol;
     const history = await getPersistentRiskHistory(id, 144);
     const investigator = buildVlmShieldInvestigator(result);
@@ -43,6 +53,15 @@ export async function GET(request: Request) {
       result,
       history,
       generatedAt: new Date().toISOString(),
+      engine: {
+        marketData: "live",
+        riskEngine: "connected",
+        generativeNarrative: process.env.VELMERE_ANGEL_PROVIDER
+          ? "configured"
+          : "not_configured",
+        webOsint: "not_connected",
+        locale,
+      },
       note: "This endpoint prepares the VLM Shield Investigator protocol and current market-data context. Full OSINT verdict still requires current web search against the provided queries.",
       guardrails: { remaining: rateLimit.remaining, resetAt: rateLimit.resetAt },
     }, { headers });

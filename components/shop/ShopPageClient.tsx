@@ -12,6 +12,14 @@ import { fadeUp } from "@/lib/motion";
 import { trackVelmereEvent } from "@/lib/analytics";
 import { getVisibleProducts } from "@/lib/products/catalog";
 import { buildCommerceLaunchAudit } from "@/lib/products/launch-readiness";
+import { buildPublicCommerceTrimGate } from "@/lib/market-integrity/public-commerce-trim-gate";
+import { buildPublicStorefrontFocusGate } from "@/lib/market-integrity/public-storefront-focus-gate";
+import { buildPublicFirstPurchaseFlowGate } from "@/lib/market-integrity/public-first-purchase-flow-gate";
+import { buildPublicAtelierTrustRibbonGate } from "@/lib/market-integrity/public-atelier-trust-ribbon-gate";
+import { buildPublicCopyPolishGate } from "@/lib/market-integrity/public-copy-polish-gate";
+import { buildPublicProductPathwayReceiptGate } from "@/lib/market-integrity/public-product-pathway-receipt-gate";
+import { buildPublicProvenanceDropConciergeGate } from "@/lib/market-integrity/public-provenance-drop-concierge-gate";
+import { buildPublicSizeConfidenceConciergeGate } from "@/lib/market-integrity/public-size-confidence-concierge-gate";
 
 const matrixSlots = ["Archive cut", "Drop reserve"];
 
@@ -33,23 +41,23 @@ function matrixCopy(locale: string, category: string | null) {
   if (locale === "pl") {
     return {
       label: isWomen ? "Kolekcja damska" : category === "men" ? "Kolekcja męska" : "Clothing",
-      title: isWomen ? "Spokojna selekcja damska." : category === "men" ? "Spokojna selekcja męska." : "Clothing jako prosty lejek zakupowy.",
-      body: "Produkt zostaje pierwszy: krój, materiał, rozmiar, dostawa i zwrot. VLM działa jako opcjonalny benefit, nie jako blokada zakupu.",
+      title: isWomen ? "Spokojna selekcja damska." : category === "men" ? "Spokojna selekcja męska." : "Velmère lookbook.",
+      body: "Duże kadry, czyste karty, rozmiar i cena. VLM zostaje tłem, nie przeszkodą w zakupie.",
       locked: "Slot przyszłego dropu",
     };
   }
   if (locale === "de") {
     return {
       label: isWomen ? "Womenswear" : category === "men" ? "Menswear" : "Clothing",
-      title: isWomen ? "Womenswear als ruhige Auswahl." : category === "men" ? "Menswear als ruhige Auswahl." : "Clothing als klarer Kauf-Funnel.",
-      body: "Das Produkt bleibt zuerst: Schnitt, Material, Größe, Lieferung und Rückgabe. VLM ist ein optionaler Vorteil, keine Kaufbarriere.",
+      title: isWomen ? "Womenswear als ruhige Auswahl." : category === "men" ? "Menswear als ruhige Auswahl." : "Velmère Lookbook.",
+      body: "Große Bilder, klare Karten, Größe und Preis. VLM bleibt im Hintergrund, keine Kaufbarriere.",
       locked: "Slot für kommenden Drop",
     };
   }
   return {
     label: isWomen ? "Womenswear" : category === "men" ? "Menswear" : "Clothing",
-    title: isWomen ? "Womenswear as a quiet selection." : category === "men" ? "Menswear as a quiet selection." : "Clothing as a clean commerce funnel.",
-    body: "Product stays first: cut, material, size, delivery and returns. VLM remains an optional benefit, never a purchase barrier.",
+    title: isWomen ? "Womenswear as a quiet selection." : category === "men" ? "Menswear as a quiet selection." : "Velmère lookbook.",
+    body: "Large frames, clean cards, size and price. VLM stays in the background, never a purchase barrier.",
     locked: "Future drop slot",
   };
 }
@@ -68,9 +76,9 @@ function commerceCopy(locale: string) {
       digitalKicker: "digital layer",
       digitalTitle: "VLM nie blokuje zakupu.",
       digitalBody: "Warstwa cyfrowa może dawać dostęp, archive notes i community, ale clothing commerce zostaje oddzielony od tokena i portfela.",
-      readinessKicker: "launch control",
-      readinessTitle: "Sklep nie udaje gotowości.",
-      readinessBody: "Ta warstwa pokazuje stan realnego commerce: które produkty są tylko preview, czy checkout jest zamknięty i co blokuje sprzedaż publiczną.",
+      readinessKicker: "status sklepu",
+      readinessTitle: "Spokojny preview przed sprzedażą.",
+      readinessBody: "Klient widzi produkty, materiał, rozmiar i status dropu. Szczegółowy audit commerce zostaje po stronie operatora.",
       readinessCards: {
         total: "Produkty",
         preview: "Preview",
@@ -78,7 +86,7 @@ function commerceCopy(locale: string) {
         blocked: "Blokady",
         score: "Readiness",
       },
-      issueTitle: "Najważniejsze blokady",
+      issueTitle: "Status operatora",
       noIssues: "Brak aktywnych blokad w audycie.",
     };
   }
@@ -95,9 +103,9 @@ function commerceCopy(locale: string) {
       digitalKicker: "digital layer",
       digitalTitle: "VLM blockiert keinen Kauf.",
       digitalBody: "Die digitale Ebene kann Access, Archive Notes und Community geben, bleibt aber vom Clothing Checkout getrennt.",
-      readinessKicker: "launch control",
-      readinessTitle: "Der Shop täuscht keine Bereitschaft vor.",
-      readinessBody: "Diese Ebene zeigt den echten Commerce-Status: welche Produkte nur Preview sind, ob Checkout geschlossen ist und was den Public Launch blockiert.",
+      readinessKicker: "Shop Status",
+      readinessTitle: "Ruhige Preview vor Verkauf.",
+      readinessBody: "Kunden sehen Produkt, Material, Größe und Drop-Status. Der tiefe Commerce-Audit bleibt operatorseitig.",
       readinessCards: {
         total: "Produkte",
         preview: "Preview",
@@ -105,7 +113,7 @@ function commerceCopy(locale: string) {
         blocked: "Blocker",
         score: "Readiness",
       },
-      issueTitle: "Wichtigste Blocker",
+      issueTitle: "Operator-Status",
       noIssues: "Keine aktiven Blocker im Audit.",
     };
   }
@@ -121,9 +129,9 @@ function commerceCopy(locale: string) {
     digitalKicker: "digital layer",
     digitalTitle: "VLM never blocks purchase.",
     digitalBody: "The digital layer can provide access, archive notes and community, but it stays separated from clothing checkout.",
-    readinessKicker: "launch control",
-    readinessTitle: "The store does not pretend to be ready.",
-    readinessBody: "This layer shows the real commerce state: which products are preview-only, whether checkout is closed and what blocks a public sale.",
+    readinessKicker: "store status",
+    readinessTitle: "A calm preview before sale.",
+    readinessBody: "Customers see product, material, size and drop status. The deep commerce audit stays on operator surfaces.",
     readinessCards: {
       total: "Products",
       preview: "Preview",
@@ -131,7 +139,7 @@ function commerceCopy(locale: string) {
       blocked: "Blockers",
       score: "Readiness",
     },
-    issueTitle: "Top blockers",
+    issueTitle: "Operator status",
     noIssues: "No active blockers in the audit.",
   };
 }
@@ -157,7 +165,104 @@ export default function ShopPage() {
   const visibleSlots = [...products, ...matrixSlots].slice(0, products.length + 2);
   const matrix = matrixCopy(locale, category);
   const commerce = commerceCopy(locale);
+
   const launchAudit = useMemo(() => buildCommerceLaunchAudit(products), [products]);
+  const publicCommerceTrimGate = useMemo(() => buildPublicCommerceTrimGate({ surface: "shop", products, launchAudit }), [launchAudit, products]);
+  const storefrontFocusGate = useMemo(() => buildPublicStorefrontFocusGate({
+    surface: "shop",
+    operatorPanelsPresent: 0,
+    primaryCtaCount: 1,
+    walletRequired: false,
+    checkoutReady: launchAudit.purchasable > 0,
+    pdfPreviewReady: false,
+    evidenceMode: "operator",
+    copyDensity: "minimal",
+  }), [launchAudit.purchasable]);
+  const firstPurchaseFlow = useMemo(() => buildPublicFirstPurchaseFlowGate({
+    surface: "shop",
+    selectedSize: false,
+    checkoutReady: launchAudit.purchasable > 0,
+    waitlistReady: true,
+    dppTraceabilityReady: true,
+    productProofScore: launchAudit.averageScore,
+    sourceConfidence: 70,
+    liveWindowSeconds: 520,
+    walletRequired: false,
+    scarcityPressure: 0,
+    copyDensity: "minimal",
+  }), [launchAudit.averageScore, launchAudit.purchasable]);
+  const atelierTrustRibbon = useMemo(() => buildPublicAtelierTrustRibbonGate({
+    surface: "shop",
+    fitProofVisible: true,
+    materialProofVisible: true,
+    deliveryPromiseReady: launchAudit.purchasable > 0,
+    returnRightsVisible: true,
+    checkoutReady: launchAudit.purchasable > 0,
+    walletRequired: false,
+    dppTraceabilityScore: launchAudit.averageScore,
+    sourceFreshnessSeconds: 520,
+    scarcityPressure: 0,
+    operatorCopyVisible: false,
+  }), [launchAudit.averageScore, launchAudit.purchasable]);
+  const publicCopyPolish = useMemo(() => buildPublicCopyPolishGate({
+    surface: "shop",
+    passLabelsVisible: 0,
+    rawScoresVisible: 0,
+    operatorTermsVisible: 0,
+    walletPressure: false,
+    checkoutReady: launchAudit.purchasable > 0,
+    fitPathVisible: true,
+    deliveryReturnVisible: true,
+    dppTraceabilityScore: atelierTrustRibbon.customerTrustScore,
+    mexcFreshnessSeconds: 520,
+    scarcityPressure: 0,
+  }), [atelierTrustRibbon.customerTrustScore, launchAudit.purchasable]);
+  const productPathwayReceipt = useMemo(() => buildPublicProductPathwayReceiptGate({
+    surface: "shop",
+    productVisible: products.length > 0,
+    fitGuideVisible: true,
+    materialVisible: true,
+    deliveryReturnVisible: true,
+    checkoutReady: launchAudit.purchasable > 0,
+    waitlistReady: true,
+    walletRequired: false,
+    operatorNoiseItems: 0,
+    copyBlocksVisible: 1,
+    mexcFreshnessSeconds: 520,
+    dppTraceabilityScore: atelierTrustRibbon.customerTrustScore,
+    scarcityPressure: 0,
+  }), [atelierTrustRibbon.customerTrustScore, launchAudit.purchasable, products.length]);
+  const provenanceDropConcierge = useMemo(() => buildPublicProvenanceDropConciergeGate({
+    surface: "shop",
+    productPathVisible: products.length > 0,
+    fitVisible: true,
+    materialVisible: true,
+    deliveryReturnVisible: true,
+    checkoutReady: launchAudit.purchasable > 0,
+    waitlistReady: true,
+    walletRequired: false,
+    mexcLiveWindowSeconds: 520,
+    dppTraceabilityScore: atelierTrustRibbon.customerTrustScore,
+    receiptReady: launchAudit.purchasable > 0,
+    operatorNoiseItems: 0,
+    scarcityPressure: 0,
+  }), [atelierTrustRibbon.customerTrustScore, launchAudit.purchasable, products.length]);
+  const sizeConfidenceConcierge = useMemo(() => buildPublicSizeConfidenceConciergeGate({
+    surface: "shop",
+    garmentMeasurementsVisible: true,
+    selectedSize: false,
+    materialCareVisible: true,
+    deliveryReturnVisible: true,
+    checkoutReady: false,
+    waitlistReady: true,
+    walletRequired: false,
+    bodyComparisonCopyVisible: false,
+    mexcLiveWindowSeconds: 540,
+    dppProductInfoScore: atelierTrustRibbon.customerTrustScore,
+    operatorNoiseItems: 0,
+    scarcityPressure: 0,
+  }), [atelierTrustRibbon.customerTrustScore]);
+
 
   useEffect(() => {
     trackVelmereEvent("clothing_view", { category: category ?? "all", sort });
@@ -177,14 +282,13 @@ export default function ShopPage() {
   ];
 
   return (
-    <main className="min-h-[100dvh] bg-velmere-black text-white">
+    <main className="min-h-[100dvh] bg-velmere-black text-white" data-pass316-public-commerce-trim="shop" data-pass318-public-storefront-focus="shop" data-pass319-public-first-purchase-flow="shop" data-pass320-public-atelier-trust-ribbon="shop" data-pass321-public-copy-polish="shop" data-pass322-public-product-pathway-receipt="shop" data-pass323-public-provenance-drop-concierge="shop" data-pass324-public-size-confidence-concierge="shop" data-pass326-lookbook-collection="true" data-pass327-lookbook-trim="true">
       <LuxurySection className="py-28 md:py-36">
         <div className="mb-10 grid gap-8 lg:grid-cols-12 lg:items-end">
           <div className="max-w-3xl lg:col-span-8">
             <p className="luxury-kicker text-velmere-gold/[0.80]">{matrix.label}</p>
             <h1 className="mt-6 font-serif text-5xl leading-none text-white md:text-7xl">{matrix.title}</h1>
             <p className="mt-6 text-sm leading-7 text-white/[0.62] md:text-base">{matrix.body}</p>
-            <p className="mt-4 max-w-2xl text-sm leading-7 text-white/[0.48]">{t("intro")}</p>
           </div>
           <div className="grid gap-2 lg:col-span-4">
             {funnelNotes.map(({ icon: Icon, label }) => (
@@ -211,6 +315,12 @@ export default function ShopPage() {
                 </Link>
               );
             })}
+            <Link
+              href="/lookbook"
+              className="inline-flex min-h-11 items-center rounded-full border border-white/[0.12] px-4 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/[0.58] transition-colors hover:border-white/[0.25] hover:text-white"
+            >
+              Lookbook
+            </Link>
           </div>
           <div className="flex flex-wrap gap-2 md:justify-end">
             {sortLinks.map((item) => {
@@ -229,71 +339,11 @@ export default function ShopPage() {
           </div>
         </div>
 
-        <div className="mb-8 grid gap-4 lg:grid-cols-[0.72fr_1.28fr]">
-          <div className="rounded-[1.5rem] border border-velmere-gold/[0.14] bg-velmere-gold/[0.045] p-5 md:p-6">
-            <p className="font-mono text-[10px] font-black uppercase tracking-[0.22em] text-velmere-gold">{commerce.kicker}</p>
-            <h2 className="mt-4 font-serif text-3xl leading-none text-white md:text-4xl">{commerce.title}</h2>
-            <p className="mt-4 text-sm leading-7 text-white/[0.60]">{commerce.body}</p>
-          </div>
-          <div className="grid gap-3 md:grid-cols-3">
-            {commerce.rails.map((item) => (
-              <div key={item.label} className="rounded-[1.25rem] border border-white/[0.08] bg-white/[0.025] p-4">
-                <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-velmere-gold">{item.label}</p>
-                <p className="mt-3 text-xs leading-6 text-white/[0.54]">{item.body}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="mb-8 rounded-[1.5rem] border border-cyan-200/[0.10] bg-cyan-300/[0.035] p-5 md:p-6">
-          <div className="grid gap-4 md:grid-cols-[0.35fr_0.65fr] md:items-center">
-            <div>
-              <p className="font-mono text-[10px] font-black uppercase tracking-[0.22em] text-cyan-100/[0.72]">{commerce.digitalKicker}</p>
-              <h2 className="mt-3 font-serif text-2xl text-white md:text-3xl">{commerce.digitalTitle}</h2>
-            </div>
-            <p className="text-sm leading-7 text-white/[0.58]">{commerce.digitalBody}</p>
-          </div>
-        </div>
-
-        <div className="mb-8 rounded-[1.5rem] border border-white/[0.10] bg-white/[0.030] p-5 md:p-6">
-          <div className="grid gap-5 lg:grid-cols-[0.48fr_0.52fr] lg:items-start">
-            <div>
-              <p className="font-mono text-[10px] font-black uppercase tracking-[0.22em] text-velmere-gold">{commerce.readinessKicker}</p>
-              <h2 className="mt-3 font-serif text-3xl leading-none text-white md:text-4xl">{commerce.readinessTitle}</h2>
-              <p className="mt-4 text-sm leading-7 text-white/[0.58]">{commerce.readinessBody}</p>
-            </div>
-            <div className="grid gap-3 sm:grid-cols-5">
-              {[
-                [commerce.readinessCards.total, launchAudit.total],
-                [commerce.readinessCards.preview, launchAudit.preview],
-                [commerce.readinessCards.purchasable, launchAudit.purchasable],
-                [commerce.readinessCards.blocked, launchAudit.blocked],
-                [commerce.readinessCards.score, `${launchAudit.averageScore}%`],
-              ].map(([label, value]) => (
-                <div key={label} className="rounded-[1.1rem] border border-white/[0.08] bg-black/[0.22] p-3">
-                  <p className="font-mono text-[8px] uppercase tracking-[0.14em] text-white/[0.38]">{label}</p>
-                  <p className="mt-2 font-serif text-2xl text-white">{value}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="mt-5 rounded-[1.2rem] border border-white/[0.08] bg-black/[0.18] p-4">
-            <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-              <p className="font-mono text-[9px] font-black uppercase tracking-[0.18em] text-white/[0.50]">{commerce.issueTitle}</p>
-              <p className="max-w-2xl text-xs leading-6 text-white/[0.42]">
-                {launchAudit.topIssues.length > 0
-                  ? launchAudit.topIssues.map((item) => item.label).join(" · ")
-                  : commerce.noIssues}
-              </p>
-            </div>
-          </div>
-        </div>
-
         <motion.div
           initial="hidden"
           animate="show"
           variants={{ hidden: {}, show: { transition: { staggerChildren: 0.055 } } }}
-          className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:gap-5"
+          className="velmere-lookbook-grid grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3 xl:gap-7"
         >
           {visibleSlots.map((slot, index) => {
             const product = typeof slot === "string" ? undefined : slot;

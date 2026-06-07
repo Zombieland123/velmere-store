@@ -1,4 +1,10 @@
-export type VelmereSearchMode = "all" | "token" | "contract" | "velmere" | "osint";
+export type VelmereSearchMode =
+  | "all"
+  | "token"
+  | "market"
+  | "contract"
+  | "velmere"
+  | "osint";
 export type VelmereSearchSourceMode = "table" | "live" | "live_table" | "fallback" | "missing";
 export type VelmereSearchRiskTone = "calm" | "review" | "elevated" | "blocked";
 
@@ -19,11 +25,96 @@ export type VelmereShieldBridge = {
   note: string;
 };
 
+export type VelmereMarketSnapshot = {
+  assetClass?: "crypto" | "stock" | "etf" | "real_estate" | "exchange_equity";
+  currency?: string;
+  price?: number;
+  marketCap?: number;
+  fdv?: number;
+  volume24h?: number;
+  change1h?: number;
+  change24h?: number;
+  change7d?: number;
+  high24h?: number;
+  low24h?: number;
+  circulatingSupply?: number;
+  totalSupply?: number;
+  maxSupply?: number;
+  observedAt?: string;
+  liquidityLabel?: string;
+  slippage10k?: number;
+  depthLabel?: string;
+  holderConcentrationLabel?: string;
+  unlockLabel?: string;
+  venueHealthLabel?: string;
+  venueAssetSymbol?: string;
+  venuePrimary?: string;
+  venueSecondary?: string;
+  venuePrimaryQuoteCurrency?: "USD" | "USDT" | "USDC" | "EUR" | "UNKNOWN";
+  venueSecondaryQuoteCurrency?: "USD" | "USDT" | "USDC" | "EUR" | "UNKNOWN";
+  venueQuoteBasisState?: "same_quote" | "fiat_stable_proxy" | "stable_stable_proxy" | "unsupported";
+  venueQuoteBasisPenalty?: number;
+  venuePairResolutionState?: "canonical" | "candidate" | "unsupported";
+  venuePairResolutionNote?: string;
+  venueReferencePrice?: number;
+  venueSecondaryPrice?: number;
+  venueComparisonState?: "aligned" | "watch" | "divergent" | "stale" | "single_source" | "unavailable";
+  venueDivergenceBps?: number;
+  venueSpreadDeltaBps?: number;
+  venueFreshnessDeltaSeconds?: number;
+  venueHealthScore?: number;
+  venueConfidenceCap?: number;
+  venueEvidenceNote?: string;
+  fundamentalState?: "source_bound" | "partial" | "stale" | "source_required";
+  fundamentalQualityScore?: number;
+  fundamentalConfidenceCap?: number;
+  fundamentalFilingDate?: string;
+  fundamentalFilingUrl?: string;
+  fundamentalFilingForm?: string;
+  fundamentalSecState?:
+    | "sec_aligned"
+    | "sec_partial"
+    | "sec_divergent"
+    | "sec_required";
+  fundamentalSecCoverage?: number;
+  fundamentalFilingAgeDays?: number;
+  fundamentalReportedPeriodEnd?: string;
+  fundamentalFreeCashFlowTtm?: number;
+  fundamentalNetDebtToEbitda?: number;
+  fundamentalCurrentRatio?: number;
+  fundamentalRevenueTtm?: number;
+  fundamentalProfitMargin?: number;
+  fundamentalPeRatio?: number;
+  fundamentalExpenseRatio?: number;
+  fundamentalNetAssets?: number;
+  fundamentalTopHoldings?: string[];
+  providerState?:
+    | "source_bound"
+    | "not_configured"
+    | "rate_limited"
+    | "provider_error"
+    | "unsupported";
+  providerFunctions?: string[];
+  providerExchange?: string;
+  etfTop10Concentration?: number;
+  etfEffectiveHoldings?: number;
+  etfBenchmarkSymbol?: string;
+  etfOverlapPercent?: number;
+  fundamentalBoundary?: string;
+  anomalyLabel?: string;
+};
+
 export type VelmereSearchResult = {
   id: string;
   title: string;
   symbol?: string;
-  category: "token" | "contract" | "velmere" | "osint" | "document";
+  category:
+    | "token"
+    | "market"
+    | "contract"
+    | "velmere"
+    | "osint"
+    | "document";
   tone: VelmereSearchRiskTone;
   summary: string;
   whyItMatters: string;
@@ -37,11 +128,13 @@ export type VelmereSearchResult = {
   bridge?: VelmereShieldBridge;
   sources: VelmereSearchSource[];
   chips: string[];
+  marketSnapshot?: VelmereMarketSnapshot;
 };
 
 export const velmereSearchModeLabels = {
   all: "All",
   token: "Tokens",
+  market: "Markets",
   contract: "Contracts",
   velmere: "Velmère",
   osint: "OSINT",
@@ -53,12 +146,14 @@ export function buildVelmereShieldBridge(query: string, assetId?: string): Velme
   params.set(assetId ? "asset" : "query", queryKey);
   params.set("from", "velmere-search");
   params.set("view", "full");
+  params.set("handoff", "pass453");
+  params.set("source", "lens-pdf");
   return {
     href: `/market-integrity?${params.toString()}`,
     queryKey,
     origin: "velmere_search",
     mode: "full_shield_analysis",
-    note: "Search-to-Shield bridge: short result opens the full Velmère Shield analysis surface.",
+    note: "PASS453 Search-to-Shield handoff: Browser, PDF and Shield open the same source-bound asset route.",
   };
 }
 
@@ -107,6 +202,87 @@ const tokenSeed: VelmereSearchResult[] = [
     ],
     chips: ["baseline", "volume quality", "source freshness"],
   },
+
+  {
+    id: "basic-attention-token",
+    title: "Basic Attention Token",
+    symbol: "BAT",
+    category: "token",
+    tone: "review",
+    summary: "Attention-market token. The short readout separates price movement, liquidity, browser/attention narrative and source freshness before confidence rises.",
+    whyItMatters: "Narrative tokens can look clean when only price is visible; Shield keeps liquidity, venue depth and second-source agreement visible.",
+    missingData: ["fresh BAT venue depth", "second-source price comparison", "attention/narrative source freshness"],
+    nextOperatorStep: "Open Shield and verify BAT market data with venue depth and second-source divergence before stronger copy.",
+    sourceMode: "live_table",
+    sourceConfidence: 58,
+    shieldHref: buildVelmereShieldBridge("BAT", "basic-attention-token").href,
+    avatarLabel: "BAT",
+    avatarImage: "https://assets.coingecko.com/coins/images/677/large/basic-attention-token.png",
+    bridge: buildVelmereShieldBridge("BAT", "basic-attention-token"),
+    sources: [
+      { id: "local-table", label: "Velmère table", mode: "table", freshness: "cached", confidence: 54, note: "attention token context" },
+      { id: "coingecko-ready", label: "CoinGecko logo/market lane", mode: "fallback", freshness: "preview", confidence: 58, note: "enriched by live search when available" },
+    ],
+    chips: ["attention asset", "source freshness", "second source"],
+  },
+  {
+    id: "binancecoin",
+    title: "BNB",
+    symbol: "BNB",
+    category: "token",
+    tone: "review",
+    summary: "Exchange-linked large-cap asset. The short readout separates token context from venue-health context, then asks for depth, reserve and second-source checks.",
+    whyItMatters: "Exchange-linked assets can mix market movement, venue confidence and broad crypto sentiment, so Shield keeps those lanes separate.",
+    missingData: ["fresh BNB venue depth", "second-source orderbook comparison", "exchange-health adapter state"],
+    nextOperatorStep: "Open Cross-Asset Shield and compare Binance/MEXC venue lanes before raising confidence.",
+    sourceMode: "live_table",
+    sourceConfidence: 63,
+    shieldHref: buildVelmereShieldBridge("BNB", "binancecoin").href,
+    avatarLabel: "BNB",
+    avatarImage: "https://assets.coingecko.com/coins/images/825/large/bnb-icon2_2x.png",
+    bridge: buildVelmereShieldBridge("BNB", "binancecoin"),
+    sources: [
+      { id: "local-table", label: "Velmère table", mode: "table", freshness: "cached", confidence: 60, note: "exchange-linked token context" },
+      { id: "cross-asset", label: "Cross-Asset Shield", mode: "fallback", freshness: "preview", confidence: 55, note: "venue-health adapter planned" },
+    ],
+    chips: ["exchange asset", "venue context", "second source"],
+  },
+  {
+    id: "bittensor",
+    title: "Bittensor",
+    symbol: "TAO",
+    category: "token",
+    tone: "review",
+    summary: "AI-sector asset. The short readout keeps volatility, social attention and source freshness separate before any public confidence copy.",
+    whyItMatters: "Sector narratives can heat up quickly; Shield treats attention as context, not proof.",
+    missingData: ["fresh venue depth", "second-source price comparison", "social/source freshness"],
+    nextOperatorStep: "Run Shield review and compare market depth with the second-source matrix.",
+    sourceMode: "table",
+    sourceConfidence: 52,
+    shieldHref: buildVelmereShieldBridge("TAO", "bittensor").href,
+    avatarLabel: "TAO",
+    bridge: buildVelmereShieldBridge("TAO", "bittensor"),
+    sources: [{ id: "local-table", label: "Velmère table", mode: "table", freshness: "cached", confidence: 52, note: "sector context" }],
+    chips: ["AI sector", "source rhythm", "volatility"],
+  },
+  {
+    id: "bonk",
+    title: "Bonk",
+    symbol: "BONK",
+    category: "token",
+    tone: "elevated",
+    summary: "High-attention meme asset. The short readout focuses on hype filter, liquidity quality and source freshness instead of trend chasing.",
+    whyItMatters: "Meme assets can move faster than available evidence; missing depth or holder data should reduce confidence.",
+    missingData: ["fresh holder snapshot", "orderbook depth by venue", "social source ledger"],
+    nextOperatorStep: "Use Shield to review liquidity, holder distribution and second-source agreement before any stronger wording.",
+    sourceMode: "table",
+    sourceConfidence: 41,
+    shieldHref: buildVelmereShieldBridge("BONK", "bonk").href,
+    avatarLabel: "BONK",
+    bridge: buildVelmereShieldBridge("BONK", "bonk"),
+    sources: [{ id: "local-table", label: "Velmère table", mode: "table", freshness: "cached", confidence: 41, note: "meme asset context" }],
+    chips: ["meme asset", "hype filter", "liquidity review"],
+  },
   {
     id: "ethereum",
     title: "Ethereum",
@@ -153,6 +329,28 @@ const tokenSeed: VelmereSearchResult[] = [
 ];
 
 const velmereSeed: VelmereSearchResult[] = [
+
+  {
+    id: "tether",
+    title: "Tether",
+    symbol: "USDT",
+    category: "token",
+    tone: "review",
+    summary: "Stablecoin-style asset. The short readout keeps peg behavior, reserve/disclosure freshness and venue liquidity separate from ordinary token momentum.",
+    whyItMatters: "Stable assets can look quiet while source, reserve or peg evidence still needs a current timestamp.",
+    missingData: ["fresh peg deviation feed", "reserve/disclosure timestamp", "venue liquidity split"],
+    nextOperatorStep: "Open Shield and review peg context, issuer/source quality and exchange depth before stronger copy.",
+    sourceMode: "live_table",
+    sourceConfidence: 59,
+    shieldHref: buildVelmereShieldBridge("USDT", "tether").href,
+    avatarLabel: "USDT",
+    avatarImage: "https://assets.coingecko.com/coins/images/325/large/Tether.png",
+    bridge: buildVelmereShieldBridge("USDT", "tether"),
+    sources: [
+      { id: "local-table", label: "Velmère table", mode: "table", freshness: "cached", confidence: 59, note: "stablecoin context" },
+    ],
+    chips: ["stablecoin", "peg context", "reserve timestamp"],
+  },
   {
     id: "velmere-shield",
     title: "Velmère Shield",
@@ -193,6 +391,28 @@ export function normalizeSearchQuery(query: string) {
   return query.trim().replace(/\s+/g, " ").slice(0, 96);
 }
 
+function scoreVelmereSearchResult(item: VelmereSearchResult, query: string) {
+  const clean = query.trim().toLowerCase();
+  if (!clean) return 10;
+  const symbol = (item.symbol ?? "").toLowerCase();
+  const title = item.title.toLowerCase();
+  const id = item.id.toLowerCase();
+  const chips = item.chips.join(" ").toLowerCase();
+  const summary = item.summary.toLowerCase();
+  const titleWords = title.split(/[^a-z0-9]+/).filter(Boolean);
+
+  if (symbol === clean) return 0;
+  if (id === clean) return 1;
+  if (title === clean) return 2;
+  if (symbol.startsWith(clean)) return 3;
+  if (titleWords.some((word) => word.startsWith(clean))) return 4;
+  if (id.startsWith(clean)) return 5;
+  if (clean.length >= 4 && title.includes(clean)) return 7;
+  if (clean.length >= 4 && chips.includes(clean)) return 8;
+  if (clean.length >= 4 && summary.includes(clean)) return 9;
+  return Number.POSITIVE_INFINITY;
+}
+
 export function buildFallbackResult(query: string): VelmereSearchResult {
   const clean = normalizeSearchQuery(query) || "unknown asset";
   return {
@@ -229,14 +449,26 @@ export function searchVelmereIntelligence(query: string, mode: VelmereSearchMode
     };
   }
 
-  const terms = clean.toLowerCase().split(" ");
-  const filtered = all.filter((item) => {
-    if (mode !== "all" && item.category !== mode && !(mode === "contract" && item.category === "token")) return false;
-    const haystack = `${item.title} ${item.symbol ?? ""} ${item.category} ${item.chips.join(" ")} ${item.summary}`.toLowerCase();
-    return terms.every((term) => haystack.includes(term) || (item.symbol ?? "").toLowerCase().startsWith(term));
-  });
+  const scored = all
+    .filter((item) => {
+      if (mode !== "all" && item.category !== mode && !(mode === "contract" && item.category === "token")) return false;
+      return Number.isFinite(scoreVelmereSearchResult(item, clean));
+    })
+    .map((item) => ({ item, score: scoreVelmereSearchResult(item, clean) }))
+    .sort((a, b) =>
+      a.score - b.score ||
+      b.item.sourceConfidence - a.item.sourceConfidence,
+    );
 
-  const results = filtered.length ? filtered : [buildFallbackResult(clean)];
+  // PASS359: exact symbol/id/name queries are single-result by design.
+  // This stops ETH from returning Tether/other substring matches in the Lens result list.
+  const bestScore = scored[0]?.score ?? Number.POSITIVE_INFINITY;
+  const results = scored.length
+    ? bestScore <= 2
+      ? [scored[0].item]
+      : scored.map(({ item }) => item)
+    : [buildFallbackResult(clean)];
+
   return {
     query: clean,
     mode,

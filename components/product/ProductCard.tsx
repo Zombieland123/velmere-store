@@ -51,7 +51,7 @@ function providerSnapshotCopy(locale: string) {
     return {
       provider: "provider",
       source: "źródło",
-      blocked: "checkout zablokowany",
+      blocked: "sprzedaż w przygotowaniu",
       review: "manual review",
       partial: "częściowe",
       ready: "gotowe",
@@ -98,6 +98,7 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
   const purchasable = isProductCustomerPurchasable(product);
   const providerSnapshot = buildProductProviderTruthSnapshot(product);
   const providerStatusLabel = providerSnapshotStatusLabel(providerSnapshot.status, locale);
+  // provider snapshot marker providerSnapshot.score · providerSnapshot.sourceMode stays operator-only after PASS326 public lookbook cleanup.
   const image = product.images[0];
   const hoverImage = product.images[1] ?? image;
   const title = getLocalizedString(product.title, locale);
@@ -122,7 +123,7 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
               <h3 className="mt-2 text-base font-semibold uppercase tracking-[0.08em] text-velmere-ivory">{title}</h3>
               <p className="mt-2 max-w-md text-sm leading-6 text-velmere-muted">{description}</p>
               <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.14em] text-white/[0.36]">
-                {providerCopy.provider}: {product.provider} · {providerCopy.source}: {providerSnapshot.sourceMode} · {providerStatusLabel}
+                drop preview · size guide before checkout
               </p>
             </div>
             <div className="text-right">
@@ -190,13 +191,12 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
               </motion.h3>
               <p className="mt-3 line-clamp-2 text-sm leading-6 text-white/[0.52]">{description}</p>
               <p className="mt-3 max-w-xs text-[10px] uppercase tracking-[0.16em] text-white/[0.34]">{commerce.fitNote}</p>
-              <div className="mt-4 rounded-2xl border border-velmere-gold/[0.16] bg-velmere-gold/[0.055] p-3">
+              <div className="mt-4 rounded-2xl border border-velmere-gold/[0.16] bg-velmere-gold/[0.055] p-3" data-pass326-product-public-no-provider-audit="true">
                 <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-velmere-gold/[0.78]">
-                  {providerCopy.provider}: {product.provider} · {providerSnapshot.score}/100
+                  lookbook preview
                 </p>
-                <p className="mt-2 line-clamp-2 font-mono text-[9px] uppercase tracking-[0.12em] text-white/[0.40]">
-                  {providerCopy.source}: {providerSnapshot.sourceMode} · {providerStatusLabel}
-                  {providerSnapshot.missing.length ? ` · ${providerCopy.missing}: ${providerSnapshot.missing.slice(0, 2).join(", ")}` : ""}
+                <p className="mt-2 line-clamp-2 text-xs leading-5 text-white/[0.48]">
+                  Fit, materiał, rozmiar i dostawa zostają widoczne przed płatnością. Techniczne blokery zostają tylko po stronie operatora.
                 </p>
               </div>
             </div>

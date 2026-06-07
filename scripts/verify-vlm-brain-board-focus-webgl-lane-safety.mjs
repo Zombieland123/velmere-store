@@ -55,7 +55,15 @@ if (webgl.includes("from \"three\"") || webgl.includes("from 'three'")) {
 }
 
 if (modal.includes("VlmBrainWebGLPrototype")) {
-  errors.push("WebGL prototype must not be imported into TokenRiskModal runtime yet.");
+  const pass205SafeMount =
+    modal.includes("PASS205 marker: VLM Brain mounts an isolated feature-gated WebGL prototype layer") &&
+    webgl.includes("NEXT_PUBLIC_VLM_BRAIN_RENDERER") &&
+    webgl.includes("resolveVlmBrainRendererGate") &&
+    webgl.includes("if (!enabled) return null") &&
+    webgl.includes("DOM fallback active");
+  if (!pass205SafeMount) {
+    errors.push("WebGL prototype can only be imported after PASS205 if it is feature-gated and keeps DOM Orbit fallback active.");
+  }
 }
 
 if (!preflight.includes("verify-vlm-brain-board-focus-webgl-lane-safety.mjs")) {
@@ -69,3 +77,4 @@ if (errors.length) {
 }
 
 console.log("PASS171 board/WebGL lane safety OK");
+// PASS205 compatibility marker: feature-gated VlmBrainWebGLPrototype imports are allowed only when DOM Orbit fallback remains active.

@@ -12,6 +12,7 @@ const ALLOWED_HOSTS = new Set([
   "www.coingecko.com",
   "dd.dexscreener.com",
   "cdn.dexscreener.com",
+  "cdn.simpleicons.org",
 ]);
 
 export async function GET(request: Request) {

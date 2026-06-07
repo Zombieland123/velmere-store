@@ -38,6 +38,10 @@ function getSnapshot() {
   return snapshot;
 }
 
+function getServerSnapshot() {
+  return defaultSnapshot;
+}
+
 export function setWalletUiSnapshot(next: Partial<WalletUiSnapshot>) {
   snapshot = { ...snapshot, ...next };
   emit();
@@ -49,6 +53,5 @@ export function clearWalletUiSnapshot() {
 }
 
 export function useWalletUiStore() {
-  return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
-

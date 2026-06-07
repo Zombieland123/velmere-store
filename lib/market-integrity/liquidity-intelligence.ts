@@ -55,7 +55,7 @@ function finite(value?: number) {
 
 function formatUsdCompact(value?: number) {
   const finiteValue = finite(value);
-  if (finiteValue === undefined) return "unknown";
+  if (finiteValue === undefined) return "source required";
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
@@ -66,7 +66,7 @@ function formatUsdCompact(value?: number) {
 
 function formatPercent(value?: number) {
   const finiteValue = finite(value);
-  if (finiteValue === undefined) return "unknown";
+  if (finiteValue === undefined) return "source required";
   const sign = finiteValue > 0 ? "+" : "";
   return `${sign}${finiteValue.toFixed(Math.abs(finiteValue) >= 10 ? 1 : 2)}%`;
 }
@@ -191,7 +191,7 @@ export function buildLiquidityIntelligence(
     {
       id: "volume-pressure",
       label: "Volume pressure",
-      value: volumeToLiquidity === undefined ? "unknown" : `${volumeToLiquidity.toFixed(2)}x volume/liquidity`,
+      value: volumeToLiquidity === undefined ? "source required" : `${volumeToLiquidity.toFixed(2)}x volume/liquidity`,
       priority: volumeStressPenalty >= 18 ? "high" : volumeStressPenalty >= 8 ? "watch" : "low",
       explanation: "Volume that is too large compared with liquidity can indicate fragile execution conditions or noisy prints.",
       command: "/liquidity.volume compare 24h-volume liquidity market-cap",

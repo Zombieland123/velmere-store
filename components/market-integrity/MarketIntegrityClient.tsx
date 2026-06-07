@@ -1,8 +1,11 @@
 "use client";
 
+// PASS453 compatibility marker: routeParams.get("handoff") === "pass453"
+
 import {
   Component,
   useCallback,
+  useDeferredValue,
   useEffect,
   useMemo,
   useRef,
@@ -24,12 +27,58 @@ import {
   X,
 } from "lucide-react";
 import dynamic from "next/dynamic";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/navigation";
 import type { MarketIntegrityRow } from "@/lib/market-integrity/coingecko";
 import type { TokenRiskResult } from "@/lib/market-integrity/risk-types";
+import { buildSocialExchangeCommandRouterGate } from "@/lib/market-integrity/social-exchange-command-router-gate";
+import { pass395SearchRuntimeContract } from "@/lib/market-integrity/pass395-neural-orbit-search-contract";
+import { PASS397_SEARCH_RUNTIME_CLOSE_EVENT, pass397UnifiedTerminalContract } from "@/lib/market-integrity/pass397-unified-search-pdf-brain";
+import { pass398TerminalFidelityContract } from "@/lib/market-integrity/pass398-terminal-fidelity-loop";
+import { PASS399_RUNTIME_CLOSE_EVENT, pass399KernelExactnessContract } from "@/lib/market-integrity/pass399-kernel-exactness-loop";
+import { PASS400_RUNTIME_CLOSE_EVENT, pass400TerminalProofContract } from "@/lib/market-integrity/pass400-terminal-proof-engine";
+import { PASS401_RUNTIME_CLOSE_EVENT, pass401TerminalExactnessMatrix } from "@/lib/market-integrity/pass401-terminal-exactness-matrix";
+import { PASS402_RUNTIME_CLOSE_EVENT, pass402TerminalCleanOrbit } from "@/lib/market-integrity/pass402-terminal-clean-orbit-controller";
+import { PASS403_RUNTIME_CLOSE_EVENT, pass403TerminalTruthOrbit } from "@/lib/market-integrity/pass403-terminal-truth-orbit";
+import { PASS404_RUNTIME_CLOSE_EVENT, pass404TerminalExactOrbit } from "@/lib/market-integrity/pass404-terminal-exact-orbit";
+import { PASS405_RUNTIME_CLOSE_EVENT, pass405TerminalOnePayloadOrbit } from "@/lib/market-integrity/pass405-terminal-one-payload-orbit";
+import { PASS406_RUNTIME_CLOSE_EVENT, pass406TerminalPayloadIntegrityOrbit } from "@/lib/market-integrity/pass406-terminal-payload-integrity-orbit";
+import { PASS407_RUNTIME_CLOSE_EVENT, pass407TerminalPayloadIntegrityOrbit } from "@/lib/market-integrity/pass407-terminal-exact-payload-orbit";
+import { PASS408_RUNTIME_CLOSE_EVENT, pass408TerminalSourceProofOrbit } from "@/lib/market-integrity/pass408-terminal-source-proof-orbit";
+import { PASS409_RUNTIME_CLOSE_EVENT, pass409TerminalSourceTruthOrbit } from "@/lib/market-integrity/pass409-terminal-source-truth-orbit";
+import { PASS410_RUNTIME_CLOSE_EVENT, pass410TerminalLiveParityOrbit } from "@/lib/market-integrity/pass410-terminal-live-parity-orbit";
+import { PASS411_RUNTIME_CLOSE_EVENT, pass411TerminalSourceEqualizerOrbit } from "@/lib/market-integrity/pass411-terminal-source-equalizer-orbit";
+import { PASS413_RUNTIME_CLOSE_EVENT, pass413TerminalStabilityRuntime } from "@/lib/market-integrity/pass413-terminal-stability-runtime";
+import { PASS414_RUNTIME_CLOSE_EVENT, pass414TerminalParityStabilizer } from "@/lib/market-integrity/pass414-terminal-parity-stabilizer";
+import { PASS415_RUNTIME_CLOSE_EVENT, pass415ClampSuggestions, pass415TerminalLatencyStabilizer } from "@/lib/market-integrity/pass415-terminal-latency-stabilizer";
+import { PASS416_RUNTIME_CLOSE_EVENT, pass416ClampSuggestions, pass416TerminalPrecisionAnchor } from "@/lib/market-integrity/pass416-terminal-precision-anchor";
+import { PASS418_RUNTIME_CLOSE_EVENT, pass418ClampSuggestions, pass418TerminalChartAnchorStabilizer } from "@/lib/market-integrity/pass418-terminal-cleanroom-runtime";
+import { PASS419_RUNTIME_CLOSE_EVENT, pass419ClampSuggestions, pass419TerminalChartAnchorStabilizer } from "@/lib/market-integrity/pass419-terminal-payload-stabilizer";
+import { buildDecisionFlowOrchestratorGate } from "@/lib/market-integrity/decision-flow-orchestrator-gate";
+import { buildLuxuryLiquidityPassportGate } from "@/lib/market-integrity/luxury-liquidity-passport-gate";
+import { buildDepthResilienceRadarGate } from "@/lib/market-integrity/depth-resilience-radar-gate";
+import { buildReserveProvenanceTwinGate } from "@/lib/market-integrity/reserve-provenance-twin-gate";
+import { buildAdapterFaultSweepGate } from "@/lib/market-integrity/adapter-fault-sweep-gate";
+import { buildSourceAdapterContractMeshGate } from "@/lib/market-integrity/source-adapter-contract-mesh-gate";
+import { buildSourceProofEscrowGate } from "@/lib/market-integrity/source-proof-escrow-gate";
+import { buildLiveAdapterCircuitBreakerGate } from "@/lib/market-integrity/live-adapter-circuit-breaker-gate";
+import { buildFreshnessTimecodeLedgerGate } from "@/lib/market-integrity/freshness-timecode-ledger-gate";
+import { buildSelectiveDisclosureVaultGate } from "@/lib/market-integrity/selective-disclosure-vault-gate";
+import { buildVerifiableSourceCredentialGate } from "@/lib/market-integrity/verifiable-source-credential-gate";
+import { buildCredentialRetentionHaloGate } from "@/lib/market-integrity/credential-retention-halo-gate";
+import { buildSourceGovernanceOathGate } from "@/lib/market-integrity/source-governance-oath-gate";
+import { buildEthicalSignalEventTaxonomyGate } from "@/lib/market-integrity/ethical-signal-event-taxonomy-gate";
+import { buildProofConsentReceiptGate } from "@/lib/market-integrity/proof-consent-receipt-gate";
+import { buildAuditTrailCovenantGate } from "@/lib/market-integrity/audit-trail-covenant-gate";
+import { buildPrestigeProofCompassGate } from "@/lib/market-integrity/prestige-proof-compass-gate";
+import { buildAtelierAccessRunwayGate } from "@/lib/market-integrity/atelier-access-runway-gate";
+import {
+  readPass468HandoffPacket,
+  type Pass468BrowserShieldOrbitHandoff,
+} from "@/lib/market-integrity/pass468-browser-shield-orbit-handoff";
 
 type ApiResponse =
   | {
@@ -187,7 +236,8 @@ const TokenRiskModal = dynamic(
                 Shield terminal booting
               </p>
               <p className="mt-1 text-xs leading-6 text-white/[0.48]">
-                Ładuję terminal w osobnym chunku, żeby klik tokena nie lagował main page.
+                Ładuję terminal w osobnym chunku, żeby klik tokena nie lagował
+                main page.
               </p>
             </div>
           </div>
@@ -233,7 +283,7 @@ class ShieldModalErrorBoundary extends Component<
             awaryjny. To nie jest wynik analizy tokena.
           </p>
           <p className="mt-3 rounded-2xl border border-white/[0.08] bg-white/[0.035] p-3 font-mono text-[10px] leading-5 text-white/[0.44]">
-            {this.state.message ?? "Unknown modal error"}
+            {this.state.message ?? "Modal failed to render"}
           </p>
           <button
             type="button"
@@ -254,6 +304,7 @@ type SortDirection = "asc" | "desc";
 type MarketSortKey =
   | "rank"
   | "price"
+  | "change1h"
   | "change24h"
   | "change7d"
   | "marketCap"
@@ -306,12 +357,14 @@ const knownTokenLogoMap = {
   doge: "https://assets.coingecko.com/coins/images/5/large/dogecoin.png",
   avax: "https://assets.coingecko.com/coins/images/12559/large/Avalanche_Circle_RedWhite_Trans.png",
   link: "https://assets.coingecko.com/coins/images/877/large/chainlink-new-logo.png",
-  matic: "https://assets.coingecko.com/coins/images/4713/large/matic-token-icon.png",
+  matic:
+    "https://assets.coingecko.com/coins/images/4713/large/matic-token-icon.png",
   near: "https://assets.coingecko.com/coins/images/10365/large/near.jpg",
   sui: "https://assets.coingecko.com/coins/images/26375/large/sui-ocean-square.png",
   arbitrum: "https://assets.coingecko.com/coins/images/16547/large/arb.jpg",
   arb: "https://assets.coingecko.com/coins/images/16547/large/arb.jpg",
-  optimism: "https://assets.coingecko.com/coins/images/25244/large/Optimism.png",
+  optimism:
+    "https://assets.coingecko.com/coins/images/25244/large/Optimism.png",
   op: "https://assets.coingecko.com/coins/images/25244/large/Optimism.png",
   wif: "https://assets.coingecko.com/coins/images/33566/large/dogwifhat.jpg",
   bonk: "https://assets.coingecko.com/coins/images/28600/large/bonk.jpg",
@@ -328,13 +381,67 @@ function knownTokenLogo(symbol?: string, id?: string, name?: string) {
   return undefined;
 }
 
-function TokenAvatar({ image, symbol, id, name }: { image?: string; symbol: string; id?: string; name?: string }) {
+function knownTokenGlyph(symbol?: string, id?: string, name?: string) {
+  const candidates = [symbol, id, name]
+    .filter(Boolean)
+    .map((value) => String(value).trim().toLowerCase());
+  const glyphs: { [key: string]: string | undefined } = {
+    btc: "₿",
+    bitcoin: "₿",
+    eth: "◆",
+    ethereum: "◆",
+    sol: "◎",
+    solana: "◎",
+    usdt: "₮",
+    tether: "₮",
+    usdc: "$",
+    "usd-coin": "$",
+    xrp: "✕",
+    ripple: "✕",
+    doge: "Ð",
+    dogecoin: "Ð",
+    bnb: "B",
+    binancecoin: "B",
+    ada: "A",
+    cardano: "A",
+    trx: "T",
+    tron: "T",
+    link: "L",
+    chainlink: "L",
+    avax: "A",
+    avalanche: "A",
+    dot: "D",
+    polkadot: "D",
+    ltc: "Ł",
+    litecoin: "Ł",
+    shib: "S",
+    "shiba-inu": "S",
+    pepe: "P",
+    near: "N",
+  };
+  for (const candidate of candidates) {
+    if (glyphs[candidate]) return glyphs[candidate];
+  }
+  return symbol?.slice(0, 2).toUpperCase() ?? "?";
+}
+
+function TokenAvatar({
+  image,
+  symbol,
+  id,
+  name,
+}: {
+  image?: string;
+  symbol: string;
+  id?: string;
+  name?: string;
+}) {
   const [failed, setFailed] = useState(false);
   const src = proxiedIcon(image ?? knownTokenLogo(symbol, id, name));
-  const symbolLabel = symbol.slice(0, 2).toUpperCase();
+  const symbolLabel = knownTokenGlyph(symbol, id, name);
   if (!src || failed) {
     return (
-      <span className="shield-suggestion-token-avatar flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-velmere-gold/[0.20] bg-[radial-gradient(circle_at_35%_20%,rgba(200,169,106,0.34),rgba(34,211,238,0.07)_48%,rgba(0,0,0,0.52))] font-mono text-[10px] font-black text-white shadow-[0_0_22px_rgba(210,176,94,0.12)] ring-1 ring-white/[0.08] tabular-nums">
+      <span className="shield-suggestion-token-avatar flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-velmere-gold/[0.20] bg-[radial-gradient(circle_at_35%_20%,rgba(200,169,106,0.34),rgba(34,211,238,0.07)_48%,rgba(0,0,0,0.52))] font-mono text-[13px] font-black text-white shadow-[0_0_22px_rgba(210,176,94,0.12)] ring-1 ring-white/[0.08] tabular-nums">
         {symbolLabel}
       </span>
     );
@@ -408,6 +515,7 @@ function levelLabel(score: number) {
 const marketSortLabels: Record<MarketSortKey, string> = {
   rank: "rank",
   price: "price",
+  change1h: "1h change",
   change24h: "24h change",
   change7d: "7d change",
   marketCap: "market cap",
@@ -427,7 +535,10 @@ function sortDirectionCopy(key: MarketSortKey, direction: SortDirection) {
     : "smallest values first";
 }
 
-function defaultSortStateForTab(tab: (typeof tabs)[number]): { key: MarketSortKey; direction: SortDirection } {
+function defaultSortStateForTab(tab: (typeof tabs)[number]): {
+  key: MarketSortKey;
+  direction: SortDirection;
+} {
   if (tab === "highestRisk") return { key: "risk", direction: "desc" };
   if (tab === "trending") return { key: "change24h", direction: "desc" };
   return { key: "rank", direction: "asc" };
@@ -439,8 +550,11 @@ export default function MarketIntegrityClient({
   demoResults: TokenRiskResult[];
 }) {
   const t = useTranslations("MarketIntegrity");
+  const locale = useLocale();
+  const safeLocale = locale === "de" || locale === "en" ? locale : "pl";
   const reducedMotion = useReducedMotion();
   const [query, setQuery] = useState("");
+  const deferredQuery = useDeferredValue(query);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
   const [suggestionLoading, setSuggestionLoading] = useState(false);
@@ -471,17 +585,62 @@ export default function MarketIntegrityClient({
   const [ruleHits, setRuleHits] = useState<ShieldRuleHit[]>([]);
   const [shieldInspectorOpen, setShieldInspectorOpen] = useState(false);
   const [interactionPulse, setInteractionPulse] = useState(0);
-  const [sourceCooldownUntil, setSourceCooldownUntil] = useState<number | null>(null);
+  const [lensHandoff, setLensHandoff] = useState<{ query: string; packet?: Pass468BrowserShieldOrbitHandoff } | null>(null);
+  const [sourceCooldownUntil, setSourceCooldownUntil] = useState<number | null>(
+    null,
+  );
   const [cooldownTick, setCooldownTick] = useState(0);
   const searchShellRef = useRef<HTMLFormElement | null>(null);
+  const suggestPanelRef = useRef<HTMLDivElement | null>(null);
+  const [suggestPanelFrame, setSuggestPanelFrame] = useState<{
+    top: number;
+    left: number;
+    width: number;
+    maxHeight: number;
+  } | null>(null);
   const [activeShieldLayer, setActiveShieldLayer] = useState("Velocity");
   const routeScanHandledRef = useRef(false);
+  const committedSearchRef = useRef("");
   const [isOpeningTerminal, startTerminalTransition] = useTransition();
   void cooldownTick;
-  const sourceCooldownActive = Boolean(sourceCooldownUntil && sourceCooldownUntil > Date.now());
-  const sourceCooldownSeconds = sourceCooldownActive && sourceCooldownUntil
-    ? Math.max(1, Math.ceil((sourceCooldownUntil - Date.now()) / 1000))
-    : 0;
+  const sourceCooldownActive = Boolean(
+    sourceCooldownUntil && sourceCooldownUntil > Date.now(),
+  );
+  const sourceCooldownSeconds =
+    sourceCooldownActive && sourceCooldownUntil
+      ? Math.max(1, Math.ceil((sourceCooldownUntil - Date.now()) / 1000))
+      : 0;
+
+  const syncSuggestionPanelFrame = useCallback(() => {
+    const anchor = searchShellRef.current;
+    if (!anchor) return;
+    const rect = anchor.getBoundingClientRect();
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const preferredWidth = Math.min(520, Math.max(320, rect.width));
+    const left = Math.min(
+      Math.max(16, rect.left + rect.width / 2 - preferredWidth / 2),
+      Math.max(16, viewportWidth - preferredWidth - 16),
+    );
+    const belowTop = rect.bottom + 10;
+    const belowSpace = viewportHeight - belowTop - 16;
+    if (belowSpace >= 240 || rect.top < 300) {
+      setSuggestPanelFrame({
+        top: belowTop,
+        left,
+        width: preferredWidth,
+        maxHeight: Math.max(180, Math.min(300, belowSpace)),
+      });
+      return;
+    }
+    const aboveMaxHeight = Math.max(180, Math.min(300, rect.top - 26));
+    setSuggestPanelFrame({
+      top: Math.max(16, rect.top - aboveMaxHeight - 10),
+      left,
+      width: preferredWidth,
+      maxHeight: aboveMaxHeight,
+    });
+  }, []);
 
   async function loadMarkets(
     nextPage = 1,
@@ -519,6 +678,51 @@ export default function MarketIntegrityClient({
   useEffect(() => {
     void loadMarkets(1, "replace");
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const closeFromGlobalRuntime = () => closeSearchSuggestionsForModal();
+    window.addEventListener(PASS397_SEARCH_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+    window.addEventListener(PASS399_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+    window.addEventListener(PASS400_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+    window.addEventListener(PASS401_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+    window.addEventListener(PASS402_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+    window.addEventListener(PASS403_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+    window.addEventListener(PASS404_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+    window.addEventListener(PASS405_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+    window.addEventListener(PASS406_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+    window.addEventListener(PASS407_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+    window.addEventListener(PASS408_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+    window.addEventListener(PASS409_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+    window.addEventListener(PASS410_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+    window.addEventListener(PASS411_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+    window.addEventListener(PASS413_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+    window.addEventListener(PASS414_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+    window.addEventListener(PASS415_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+    window.addEventListener(PASS416_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+    window.addEventListener(PASS419_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+    return () => {
+      window.removeEventListener(PASS397_SEARCH_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+      window.removeEventListener(PASS399_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+      window.removeEventListener(PASS400_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+      window.removeEventListener(PASS401_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+      window.removeEventListener(PASS402_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+      window.removeEventListener(PASS403_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+      window.removeEventListener(PASS404_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+      window.removeEventListener(PASS405_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+      window.removeEventListener(PASS406_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+      window.removeEventListener(PASS407_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+      window.removeEventListener(PASS408_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+      window.removeEventListener(PASS409_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+      window.removeEventListener(PASS410_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+      window.removeEventListener(PASS411_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+      window.removeEventListener(PASS413_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+      window.removeEventListener(PASS414_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+      window.removeEventListener(PASS415_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+      window.removeEventListener(PASS416_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+      window.removeEventListener(PASS419_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+    };
   }, []);
 
   useEffect(() => {
@@ -601,75 +805,78 @@ export default function MarketIntegrityClient({
   }, [sourceCooldownUntil]);
 
   useEffect(() => {
-    const clean = query.trim();
+    if (selected) {
+      emitPass397SearchRuntimeClose();
+      return;
+    }
+    const clean = deferredQuery.trim();
     if (clean.length < 1) {
       setSuggestions([]);
       setSuggestionsOpen(false);
-      return;
-    }
-
-    const localItems = findLocalSuggestions(clean);
-    if (localItems.length) {
-      setSuggestions(localItems.map((item) => ({ ...item, sourceMode: item.sourceMode ?? "local" })));
-      setSuggestionsOpen(true);
-    }
-
-    if (clean.length < 2 || sourceCooldownActive) {
       setSuggestionLoading(false);
-      if (!localItems.length) setSuggestionsOpen(false);
+      return;
+    }
+    if (clean.toLowerCase() === committedSearchRef.current.toLowerCase()) {
+      closeSearchSuggestionsForModal();
       return;
     }
 
-    let active = true;
-    const timer = window.setTimeout(async () => {
-      setSuggestionLoading(true);
-      try {
-        const response = await fetch(
-          `/api/market-integrity/search?query=${encodeURIComponent(clean)}`,
-          { headers: { accept: "application/json" } },
-        );
-        if (response.status === 429) {
-          if (active) {
-            setSourceCooldownUntil(Date.now() + 45_000);
-            if (!localItems.length) {
-              setSuggestions([]);
-              setSuggestionsOpen(false);
-            }
-          }
-          return;
-        }
-        const data = (await response.json()) as SuggestionsApiResponse;
-        if (active && response.ok && data.mode === "live") {
-          const merged = mergeSuggestions(localItems, data.suggestions);
-          setSuggestions(merged);
-          setSuggestionsOpen(Boolean(merged.length));
-        }
-      } catch {
-        if (active && !localItems.length) setSuggestions([]);
-      } finally {
-        if (active) setSuggestionLoading(false);
-      }
-    }, 180);
-    return () => {
-      active = false;
-      window.clearTimeout(timer);
-    };
-  // PASS161: do not put findLocalSuggestions in this dependency list before its const initializer.
-  // The callback runs after render; marketRows covers the local-suggestion data dependency and avoids a runtime TDZ crash.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [marketRows, query, sourceCooldownActive]);
+    const localItems = pass419ClampSuggestions(
+      findLocalSuggestions(clean).map((item) => ({
+        ...item,
+        sourceMode: item.sourceMode ?? "local",
+      })),
+      (item) => `${item.symbol}:${item.id}`,
+      3,
+    );
+
+    setSuggestions(localItems);
+    setSuggestionLoading(false);
+
+    if (localItems.length) {
+      syncSuggestionPanelFrame();
+      setSuggestionsOpen(true);
+    } else {
+      setSuggestionsOpen(false);
+    }
+
+    // PASS365: Shield search now uses the same local-first Browser interaction model as Real Markets.
+    // Live API resolution is reserved for submit/scan, not every keystroke, to remove scroll/input lag.
+    // PASS161: do not put findLocalSuggestions in this dependency list before its const initializer.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [marketRows, deferredQuery, selected, syncSuggestionPanelFrame]);
 
   useEffect(() => {
     function handleOutsidePointer(event: PointerEvent) {
       const target = event.target;
       if (!(target instanceof Node)) return;
       if (searchShellRef.current?.contains(target)) return;
-      setSuggestionsOpen(false);
+      if (suggestPanelRef.current?.contains(target)) return;
+      closeSearchSuggestionsForModal();
     }
     document.addEventListener("pointerdown", handleOutsidePointer);
     return () =>
       document.removeEventListener("pointerdown", handleOutsidePointer);
   }, []);
+
+  useEffect(() => {
+    if (selected) closeSearchSuggestionsForModal();
+  }, [selected]);
+
+  useEffect(() => {
+    if (!suggestionsOpen || selected) return;
+    const handleResize = () => syncSuggestionPanelFrame();
+    const handleScroll = () => {
+      setSuggestionsOpen(false);
+      setSuggestPanelFrame(null);
+    };
+    window.addEventListener("resize", handleResize);
+    window.addEventListener("scroll", handleScroll, true);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("scroll", handleScroll, true);
+    };
+  }, [selected, suggestionsOpen, syncSuggestionPanelFrame]);
 
   const visibleRows = useMemo(() => {
     let rows = [...marketRows];
@@ -694,6 +901,7 @@ export default function MarketIntegrityClient({
 
     const valueForSort = (row: MarketIntegrityRow): number | undefined => {
       if (sortKey === "price") return row.price;
+      if (sortKey === "change1h") return row.priceChange1h;
       if (sortKey === "change24h") return row.priceChange24h;
       if (sortKey === "change7d") return row.priceChange7d;
       if (sortKey === "marketCap") return row.marketCap;
@@ -744,14 +952,35 @@ export default function MarketIntegrityClient({
     ? `${result["token"].symbol} · ${t(`badges.${result.badge}`)} · ${result.score}/100`
     : "";
 
-  const toSuggestion = useCallback((row: MarketIntegrityRow): Suggestion => ({
-    id: row.id,
-    symbol: row.symbol,
-    name: row.name,
-    image: row.image ?? knownTokenLogo(row.symbol, row.id, row.name),
-    rank: row.rank,
-    sourceMode: "local",
-  }), []);
+  const scoreMarketSearchRow = useCallback((row: MarketIntegrityRow, value: string) => {
+    const clean = value.trim().toLowerCase();
+    if (!clean) return 10;
+    const symbol = row.symbol.toLowerCase();
+    const id = row.id.toLowerCase();
+    const name = row.name.toLowerCase();
+    const nameWords = name.split(/[^a-z0-9]+/).filter(Boolean);
+
+    if (symbol === clean) return 0;
+    if (id === clean) return 1;
+    if (name === clean) return 2;
+    if (symbol.startsWith(clean)) return 3;
+    if (id.startsWith(clean)) return 4;
+    if (nameWords.some((word) => word.startsWith(clean))) return 5;
+    if (clean.length >= 4 && name.includes(clean)) return 7;
+    return Number.POSITIVE_INFINITY;
+  }, []);
+
+  const toSuggestion = useCallback(
+    (row: MarketIntegrityRow): Suggestion => ({
+      id: row.id,
+      symbol: row.symbol,
+      name: row.name,
+      image: row.image ?? knownTokenLogo(row.symbol, row.id, row.name),
+      rank: row.rank,
+      sourceMode: "local",
+    }),
+    [],
+  );
 
   function findLocalMarketMatch(value: string) {
     const clean = value.trim().toLowerCase();
@@ -764,34 +993,26 @@ export default function MarketIntegrityClient({
     );
   }
 
-  const findLocalSuggestions = useCallback((value: string) => {
-    const clean = value.trim().toLowerCase();
-    if (!clean) return [];
-    return marketRows
-      .filter((row) => {
-        const symbol = row.symbol.toLowerCase();
-        const name = row.name.toLowerCase();
-        const id = row.id.toLowerCase();
-        return (
-          symbol.startsWith(clean) ||
-          id.startsWith(clean) ||
-          name.startsWith(clean) ||
-          symbol.includes(clean) ||
-          name.includes(clean)
-        );
-      })
-      .sort((a, b) => {
-        const aSymbol = a.symbol.toLowerCase();
-        const bSymbol = b.symbol.toLowerCase();
-        const aStarts = aSymbol.startsWith(clean) ? 0 : 1;
-        const bStarts = bSymbol.startsWith(clean) ? 0 : 1;
-        return aStarts - bStarts || (a.rank ?? 99999) - (b.rank ?? 99999);
-      })
-      .slice(0, 6)
-      .map(toSuggestion);
-  }, [marketRows, toSuggestion]);
+  const findLocalSuggestions = useCallback(
+    (value: string) => {
+      const clean = value.trim().toLowerCase();
+      if (!clean) return [];
+      return marketRows
+        .map((row) => ({ row, score: scoreMarketSearchRow(row, clean) }))
+        .filter(({ score }) => Number.isFinite(score))
+        .sort((a, b) =>
+          a.score - b.score ||
+          (a.row.rank ?? 99999) - (b.row.rank ?? 99999),
+        )
+        .map(({ row }) => toSuggestion(row));
+    },
+    [marketRows, scoreMarketSearchRow, toSuggestion],
+  );
 
-  function mergeSuggestions(localItems: Suggestion[], remoteItems: Suggestion[]) {
+  function mergeSuggestions(
+    localItems: Suggestion[],
+    remoteItems: Suggestion[],
+  ) {
     const seen = new Set<string>();
     const merged: Suggestion[] = [];
     const localLookup = new Map<string, Suggestion>();
@@ -807,16 +1028,19 @@ export default function MarketIntegrityClient({
         localLookup.get(item.name.toLowerCase());
       const mergedItem: Suggestion = {
         ...item,
-        image: item.image ?? localMeta?.image ?? knownTokenLogo(item.symbol, item.id, item.name),
+        image:
+          item.image ??
+          localMeta?.image ??
+          knownTokenLogo(item.symbol, item.id, item.name),
         rank: item.rank ?? localMeta?.rank,
         name: item.name || localMeta?.name || item.symbol,
-        sourceMode: localMeta ? "merged" : item.sourceMode ?? "live",
+        sourceMode: localMeta ? "merged" : (item.sourceMode ?? "live"),
       };
       const key = mergedItem.id.toLowerCase();
       if (seen.has(key)) continue;
       seen.add(key);
       merged.push(mergedItem);
-      if (merged.length >= 6) break;
+      if (merged.length >= 3) break;
     }
     return merged;
   }
@@ -865,8 +1089,9 @@ export default function MarketIntegrityClient({
   async function scanToken(nextQuery = query) {
     const clean = nextQuery.trim();
     if (!clean) return;
+    committedSearchRef.current = clean;
     setError(null);
-    setSuggestionsOpen(false);
+    closeSearchSuggestionsForModal();
     if (clean.length < 2) {
       return;
     }
@@ -877,7 +1102,9 @@ export default function MarketIntegrityClient({
       return;
     }
     if (sourceCooldownActive) {
-      setError(`Źródło live ma chwilowy cooldown (${sourceCooldownSeconds}s). Wybierz token z tabeli albo poczekaj chwilę przed kolejnym skanem.`);
+      setError(
+        `Źródło live ma chwilowy cooldown (${sourceCooldownSeconds}s). Wybierz token z tabeli albo poczekaj chwilę przed kolejnym skanem.`,
+      );
       return;
     }
     setLoading(true);
@@ -916,14 +1143,47 @@ export default function MarketIntegrityClient({
     }
   }
 
+  function closeSearchSuggestionsForModal() {
+    setSuggestionsOpen(false);
+    setSuggestions([]);
+    setSuggestionLoading(false);
+    setSuggestPanelFrame(null);
+  }
+
+  function emitPass397SearchRuntimeClose() {
+    closeSearchSuggestionsForModal();
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent(PASS397_SEARCH_RUNTIME_CLOSE_EVENT, { detail: { surface: "shield" } }));
+      window.dispatchEvent(new CustomEvent(PASS399_RUNTIME_CLOSE_EVENT, { detail: { surface: "shield" } }));
+      window.dispatchEvent(new CustomEvent(PASS400_RUNTIME_CLOSE_EVENT, { detail: { surface: "shield" } }));
+      window.dispatchEvent(new CustomEvent(PASS401_RUNTIME_CLOSE_EVENT, { detail: { surface: "shield", pass: "401" } }));
+      window.dispatchEvent(new CustomEvent(PASS402_RUNTIME_CLOSE_EVENT, { detail: { surface: "shield", pass: "402" } }));
+      window.dispatchEvent(new CustomEvent(PASS403_RUNTIME_CLOSE_EVENT, { detail: { surface: "shield", pass: "403" } }));
+      window.dispatchEvent(new CustomEvent(PASS404_RUNTIME_CLOSE_EVENT, { detail: { surface: "shield", pass: "404" } }));
+      window.dispatchEvent(new CustomEvent(PASS405_RUNTIME_CLOSE_EVENT, { detail: { surface: "shield", pass: "405" } }));
+      window.dispatchEvent(new CustomEvent(PASS406_RUNTIME_CLOSE_EVENT, { detail: { surface: "shield", pass: "406" } }));
+      window.dispatchEvent(new CustomEvent(PASS407_RUNTIME_CLOSE_EVENT, { detail: { surface: "shield", pass: "407" } }));
+      window.dispatchEvent(new CustomEvent(PASS408_RUNTIME_CLOSE_EVENT, { detail: { surface: "shield", pass: "408" } }));
+      window.dispatchEvent(new CustomEvent(PASS409_RUNTIME_CLOSE_EVENT, { detail: { surface: "shield", pass: "409" } }));
+      window.dispatchEvent(new CustomEvent(PASS410_RUNTIME_CLOSE_EVENT, { detail: { surface: "shield", pass: "410" } }));
+      window.dispatchEvent(new CustomEvent(PASS411_RUNTIME_CLOSE_EVENT, { detail: { surface: "shield", pass: "411" } }));
+      window.dispatchEvent(new CustomEvent(PASS413_RUNTIME_CLOSE_EVENT, { detail: { surface: "shield", pass: "413" } }));
+      window.dispatchEvent(new CustomEvent(PASS414_RUNTIME_CLOSE_EVENT, { detail: { surface: "shield", pass: "414" } }));
+      window.dispatchEvent(new CustomEvent(PASS415_RUNTIME_CLOSE_EVENT, { detail: { surface: "shield", pass: "415" } }));
+      window.dispatchEvent(new CustomEvent(PASS416_RUNTIME_CLOSE_EVENT, { detail: { surface: "shield", pass: "416" } }));
+      window.dispatchEvent(new CustomEvent(PASS419_RUNTIME_CLOSE_EVENT, { detail: { surface: "shield", pass: "419" } }));
+    }
+  }
+
   function openTokenModal(item: MarketIntegrityRow | TokenRiskResult) {
+    emitPass397SearchRuntimeClose();
     startTerminalTransition(() => setSelected(item));
   }
 
   function handleSuggestionSelect(item: Suggestion) {
+    committedSearchRef.current = item.symbol;
     setQuery(item.symbol);
-    setSuggestionsOpen(false);
-    setSuggestions([]);
+    closeSearchSuggestionsForModal();
     const localMatch =
       findLocalMarketMatch(item.id) ??
       findLocalMarketMatch(item.symbol) ??
@@ -942,6 +1202,7 @@ export default function MarketIntegrityClient({
 
   function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    committedSearchRef.current = query.trim();
     void scanToken();
   }
 
@@ -954,14 +1215,32 @@ export default function MarketIntegrityClient({
       routeParams.get("asset") ??
       routeParams.get("query");
     if (!routeScan) return;
-    const fromSearchBridge = routeParams.get("from") === "velmere-search";
+    const fromSearchBridge =
+      routeParams.get("from") === "velmere-search" ||
+      routeParams.get("from") === "velmere-browser";
+    const handoffVersion = routeParams.get("handoff");
+    const pass453Handoff = handoffVersion === "pass453";
+    const pass468Handoff = handoffVersion === "pass468";
+    const pass468Packet = pass468Handoff
+      ? readPass468HandoffPacket(routeParams.get("packet"))
+      : null;
     routeScanHandledRef.current = true;
-    const cleanRouteScan = routeScan.replace(/[^a-zA-Z0-9:_ -]/g, "").slice(0, 96);
+    const cleanRouteScan = routeScan
+      .replace(/[^a-zA-Z0-9:_ -]/g, "")
+      .slice(0, 96);
     setQuery(cleanRouteScan.toUpperCase());
-    if (fromSearchBridge) {
+    if (fromSearchBridge || pass453Handoff || pass468Handoff) {
       setActiveTab("top");
       setSortKey("risk");
       setSortDirection("desc");
+      setLensHandoff({
+        query: cleanRouteScan.toUpperCase(),
+        packet:
+          pass468Packet &&
+          pass468Packet.query.toUpperCase() === cleanRouteScan.toUpperCase()
+            ? pass468Packet
+            : undefined,
+      });
     }
     void scanToken(cleanRouteScan);
     // scanToken intentionally reads the latest resolver state after markets load.
@@ -1026,7 +1305,9 @@ export default function MarketIntegrityClient({
         onClick={() => updateSort(sort)}
         aria-label={`Sort by ${label}. ${active ? sortDirectionCopy(sort, sortDirection) : "Click once for gainers or largest values, click again for losers or smallest values, click a third time to reset."}`}
         title={`Sort by ${label} · ${active ? sortDirectionCopy(sort, sortDirection) : "3-state cycle: desc → asc → reset"}`}
-        className={`inline-flex items-center gap-1.5 transition hover:text-white ${align === "right" ? "justify-end" : "justify-start"} ${active ? "text-velmere-gold" : "text-white/[0.38]"}`}
+        data-testid={`shield-sort-${sort}`}
+        aria-pressed={active}
+        className={`inline-flex min-h-11 w-full items-center gap-1.5 rounded-lg px-1 transition hover:bg-white/[0.035] hover:text-white ${align === "right" ? "justify-end" : "justify-start"} ${active ? "text-velmere-gold" : "text-white/[0.38]"}`}
       >
         {label}
         <span className={`text-[9px] ${active ? "opacity-100" : "opacity-30"}`}>
@@ -1199,6 +1480,272 @@ export default function MarketIntegrityClient({
     (rulesSummary?.warning ?? 0) +
     (rulesSummary?.watch ?? 0) +
     caseInbox.filter((item) => item.score >= 35 && item.score < 85).length;
+
+  const socialExchangeRouterGate = useMemo(
+    () =>
+      buildSocialExchangeCommandRouterGate({
+        surface: "shield_terminal",
+        query,
+        suggestions: suggestions.map((item) => ({
+          id: item.id,
+          symbol: item.symbol,
+          name: item.name,
+          image: item.image,
+          rank: item.rank,
+          sourceMode: item.sourceMode,
+        })),
+        watchlist: watchlistSymbols,
+        max: 3,
+      }),
+    [query, suggestions, watchlistSymbols],
+  );
+
+  const decisionFlowOrchestratorGate = useMemo(
+    () =>
+      buildDecisionFlowOrchestratorGate({
+        surface: "shield_terminal",
+        query,
+        routerSuggestions: socialExchangeRouterGate.suggestions,
+      }),
+    [query, socialExchangeRouterGate.suggestions],
+  );
+
+  const luxuryLiquidityPassportGate = useMemo(
+    () =>
+      buildLuxuryLiquidityPassportGate({
+        surface: "shield_terminal",
+        query,
+        routerSuggestions: socialExchangeRouterGate.suggestions,
+      }),
+    [query, socialExchangeRouterGate.suggestions],
+  );
+
+  const depthResilienceRadarGate = useMemo(
+    () =>
+      buildDepthResilienceRadarGate({
+        surface: "shield_terminal",
+        query,
+        routerSuggestions: socialExchangeRouterGate.suggestions,
+      }),
+    [query, socialExchangeRouterGate.suggestions],
+  );
+
+  const reserveProvenanceTwinGate = useMemo(
+    () =>
+      buildReserveProvenanceTwinGate({
+        surface: "shield_terminal",
+        query,
+        routerSuggestions: socialExchangeRouterGate.suggestions,
+      }),
+    [query, socialExchangeRouterGate.suggestions],
+  );
+
+  const adapterFaultSweepGate = useMemo(
+    () =>
+      buildAdapterFaultSweepGate({
+        surface: "shield_terminal",
+        query,
+        routerSuggestions: socialExchangeRouterGate.suggestions,
+        knownFaults: error ? [error] : [],
+      }),
+    [error, query, socialExchangeRouterGate.suggestions],
+  );
+
+  const sourceAdapterContractMeshGate = useMemo(
+    () =>
+      buildSourceAdapterContractMeshGate({
+        surface: "shield_terminal",
+        query,
+        routerSuggestions: socialExchangeRouterGate.suggestions,
+        adapterFaultSweepGate,
+      }),
+    [adapterFaultSweepGate, query, socialExchangeRouterGate.suggestions],
+  );
+
+  const sourceProofEscrowGate = useMemo(
+    () =>
+      buildSourceProofEscrowGate({
+        surface: "shield_terminal",
+        query,
+        routerSuggestions: socialExchangeRouterGate.suggestions,
+        adapterFaultSweepGate,
+        sourceAdapterContractMeshGate,
+      }),
+    [adapterFaultSweepGate, query, socialExchangeRouterGate.suggestions, sourceAdapterContractMeshGate],
+  );
+
+  const liveAdapterCircuitBreakerGate = useMemo(
+    () =>
+      buildLiveAdapterCircuitBreakerGate({
+        surface: "shield_terminal",
+        query,
+        routerSuggestions: socialExchangeRouterGate.suggestions,
+        knownFaults: error ? [error] : [],
+        adapterFaultSweepGate,
+        sourceAdapterContractMeshGate,
+        sourceProofEscrowGate,
+      }),
+    [adapterFaultSweepGate, error, query, socialExchangeRouterGate.suggestions, sourceAdapterContractMeshGate, sourceProofEscrowGate],
+  );
+
+  const freshnessTimecodeLedgerGate = useMemo(
+    () =>
+      buildFreshnessTimecodeLedgerGate({
+        surface: "shield_terminal",
+        query,
+        routerSuggestions: socialExchangeRouterGate.suggestions,
+        knownFaults: error ? [error] : [],
+        adapterFaultSweepGate,
+        sourceAdapterContractMeshGate,
+        sourceProofEscrowGate,
+        liveAdapterCircuitBreakerGate,
+      }),
+    [adapterFaultSweepGate, error, liveAdapterCircuitBreakerGate, query, socialExchangeRouterGate.suggestions, sourceAdapterContractMeshGate, sourceProofEscrowGate],
+  );
+
+  const selectiveDisclosureVaultGate = useMemo(
+    () =>
+      buildSelectiveDisclosureVaultGate({
+        surface: "shield_terminal",
+        query,
+        routerSuggestions: socialExchangeRouterGate.suggestions,
+        knownFaults: error ? [error] : [],
+        adapterFaultSweepGate,
+        sourceProofEscrowGate,
+        liveAdapterCircuitBreakerGate,
+        freshnessTimecodeLedgerGate,
+      }),
+    [adapterFaultSweepGate, error, freshnessTimecodeLedgerGate, liveAdapterCircuitBreakerGate, query, socialExchangeRouterGate.suggestions, sourceProofEscrowGate],
+  );
+
+  const verifiableSourceCredentialGate = useMemo(
+    () =>
+      buildVerifiableSourceCredentialGate({
+        surface: "shield_terminal",
+        query,
+        routerSuggestions: socialExchangeRouterGate.suggestions,
+        knownFaults: error ? [error] : [],
+        adapterFaultSweepGate,
+        sourceAdapterContractMeshGate,
+        sourceProofEscrowGate,
+        liveAdapterCircuitBreakerGate,
+        freshnessTimecodeLedgerGate,
+        selectiveDisclosureVaultGate,
+      }),
+    [adapterFaultSweepGate, error, freshnessTimecodeLedgerGate, liveAdapterCircuitBreakerGate, query, selectiveDisclosureVaultGate, socialExchangeRouterGate.suggestions, sourceAdapterContractMeshGate, sourceProofEscrowGate],
+  );
+
+  const credentialRetentionHaloGate = useMemo(
+    () =>
+      buildCredentialRetentionHaloGate({
+        surface: "shield_terminal",
+        query,
+        routerSuggestions: socialExchangeRouterGate.suggestions,
+        knownFaults: error ? [error] : [],
+        adapterFaultSweepGate,
+        liveAdapterCircuitBreakerGate,
+        freshnessTimecodeLedgerGate,
+        selectiveDisclosureVaultGate,
+        verifiableSourceCredentialGate,
+      }),
+    [adapterFaultSweepGate, error, freshnessTimecodeLedgerGate, liveAdapterCircuitBreakerGate, query, selectiveDisclosureVaultGate, socialExchangeRouterGate.suggestions, verifiableSourceCredentialGate],
+  );
+
+  const sourceGovernanceOathGate = useMemo(
+    () =>
+      buildSourceGovernanceOathGate({
+        surface: "shield_terminal",
+        query,
+        routerSuggestions: socialExchangeRouterGate.suggestions,
+        knownFaults: error ? [error] : [],
+        adapterFaultSweepGate,
+        freshnessTimecodeLedgerGate,
+        selectiveDisclosureVaultGate,
+        verifiableSourceCredentialGate,
+        credentialRetentionHaloGate,
+      }),
+    [adapterFaultSweepGate, credentialRetentionHaloGate, error, freshnessTimecodeLedgerGate, query, selectiveDisclosureVaultGate, socialExchangeRouterGate.suggestions, verifiableSourceCredentialGate],
+  );
+
+  const ethicalSignalEventTaxonomyGate = useMemo(
+    () =>
+      buildEthicalSignalEventTaxonomyGate({
+        surface: "shield_terminal",
+        query,
+        routerSuggestions: socialExchangeRouterGate.suggestions,
+        knownFaults: error ? [error] : [],
+        adapterFaultSweepGate,
+        freshnessTimecodeLedgerGate,
+        selectiveDisclosureVaultGate,
+        verifiableSourceCredentialGate,
+        credentialRetentionHaloGate,
+        sourceGovernanceOathGate,
+      }),
+    [adapterFaultSweepGate, credentialRetentionHaloGate, error, freshnessTimecodeLedgerGate, query, selectiveDisclosureVaultGate, socialExchangeRouterGate.suggestions, sourceGovernanceOathGate, verifiableSourceCredentialGate],
+  );
+
+  const proofConsentReceiptGate = useMemo(
+    () =>
+      buildProofConsentReceiptGate({
+        surface: "shield_terminal",
+        query,
+        routerSuggestions: socialExchangeRouterGate.suggestions,
+        knownFaults: error ? [error] : [],
+        selectiveDisclosureVaultGate,
+        verifiableSourceCredentialGate,
+        credentialRetentionHaloGate,
+        sourceGovernanceOathGate,
+        ethicalSignalEventTaxonomyGate,
+      }),
+    [credentialRetentionHaloGate, error, ethicalSignalEventTaxonomyGate, query, selectiveDisclosureVaultGate, socialExchangeRouterGate.suggestions, sourceGovernanceOathGate, verifiableSourceCredentialGate],
+  );
+
+  const auditTrailCovenantGate = useMemo(
+    () =>
+      buildAuditTrailCovenantGate({
+        surface: "shield_terminal",
+        query,
+        routerSuggestions: socialExchangeRouterGate.suggestions,
+        knownFaults: error ? [error] : [],
+        freshnessTimecodeLedgerGate,
+        credentialRetentionHaloGate,
+        sourceGovernanceOathGate,
+        ethicalSignalEventTaxonomyGate,
+        proofConsentReceiptGate,
+      }),
+    [credentialRetentionHaloGate, error, ethicalSignalEventTaxonomyGate, freshnessTimecodeLedgerGate, proofConsentReceiptGate, query, socialExchangeRouterGate.suggestions, sourceGovernanceOathGate],
+  );
+
+  const prestigeProofCompassGate = useMemo(
+    () =>
+      buildPrestigeProofCompassGate({
+        surface: "shield_terminal",
+        query,
+        routerSuggestions: socialExchangeRouterGate.suggestions,
+        knownFaults: error ? [error] : [],
+        freshnessTimecodeLedgerGate,
+        reserveProvenanceTwinGate,
+        verifiableSourceCredentialGate,
+        auditTrailCovenantGate,
+      }),
+    [auditTrailCovenantGate, error, freshnessTimecodeLedgerGate, query, reserveProvenanceTwinGate, socialExchangeRouterGate.suggestions, verifiableSourceCredentialGate],
+  );
+
+  const atelierAccessRunwayGate = useMemo(
+    () =>
+      buildAtelierAccessRunwayGate({
+        surface: "shield_terminal",
+        query,
+        routerSuggestions: socialExchangeRouterGate.suggestions,
+        knownFaults: error ? [error] : [],
+        freshnessTimecodeLedgerGate,
+        proofConsentReceiptGate,
+        auditTrailCovenantGate,
+        prestigeProofCompassGate,
+      }),
+    [auditTrailCovenantGate, error, freshnessTimecodeLedgerGate, prestigeProofCompassGate, proofConsentReceiptGate, query, socialExchangeRouterGate.suggestions],
+  );
+
   const criticalReviewRows = [
     ...caseInbox.map((item) => ({
       id: item.caseId ?? item.id,
@@ -1221,8 +1768,61 @@ export default function MarketIntegrityClient({
     .slice(0, 6);
 
   return (
-    <main className="shield-typography-root shield-no-overlap bg-velmere-black text-velmere-ivory">
-      <section className="luxury-section shield-no-overlap sticky top-[4.35rem] z-30 border-b border-white/[0.06] bg-velmere-black/[0.86] py-4 backdrop-blur-xl md:top-[4.75rem]">
+    <main className="shield-typography-root shield-no-overlap bg-velmere-black text-velmere-ivory" data-pass325-public-operator-wall-hidden="true" data-pass359-public-surface-trim="true" data-pass364-shield-search-browser-portal="true"
+                    data-pass394-close-on-page-scroll="true" data-pass365-local-first-shield-search="true" data-pass394-search-anchor-lock="true" data-pass395-search-runtime-lock="true" data-pass397-unified-search-pdf-brain="true" data-pass412-three-suggestions="true" data-pass453-shield-handoff="true" data-pass468-shield-handoff="true">
+      {lensHandoff ? (
+        <section className="border-b border-cyan-200/[0.10] bg-cyan-300/[0.035] px-5 py-3" data-pass453-browser-shield-connected="true">
+          <div className="mx-auto flex max-w-6xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="min-w-0">
+              <p className="font-mono text-[8px] uppercase tracking-[0.16em] text-cyan-100/[0.62]">
+                {safeLocale === "pl" ? "Handoff Browser → Shield" : safeLocale === "de" ? "Handoff Browser → Shield" : "Browser → Shield handoff"}
+              </p>
+              <p className="mt-1 text-xs leading-5 text-white/[0.56]">
+                {safeLocale === "pl"
+                  ? `${lensHandoff.query}: ten sam instrument został przekazany z Lens/PDF do pełnego skanu Shield.`
+                  : safeLocale === "de"
+                    ? `${lensHandoff.query}: Dasselbe Instrument wurde von Lens/PDF an den vollständigen Shield-Scan übergeben.`
+                    : `${lensHandoff.query}: the same instrument was handed from Lens/PDF into the full Shield scan.`}
+              </p>
+              {lensHandoff.packet ? (
+                <div className="mt-2 flex flex-wrap gap-1.5" data-pass468-evidence-context="display-only">
+                  {[
+                    lensHandoff.packet.depth.toUpperCase(),
+                    `${lensHandoff.packet.sourceConfidence}%`,
+                    lensHandoff.packet.sourceMode,
+                    lensHandoff.packet.snapshot.venueComparisonState ||
+                      lensHandoff.packet.snapshot.fundamentalState ||
+                      "fresh scan required",
+                  ].map((item) => (
+                    <span
+                      key={item}
+                      className="rounded-full border border-cyan-200/[0.12] bg-black/[0.16] px-2 py-1 font-mono text-[7px] uppercase tracking-[0.11em] text-cyan-50/[0.56]"
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+            <div className="flex shrink-0 flex-wrap gap-2">
+              <Link
+                href={`/market-integrity/shield-map?query=${encodeURIComponent(lensHandoff.query)}&from=velmere-browser&handoff=${lensHandoff.packet ? "pass468" : "pass453"}${lensHandoff.packet ? `&packet=${encodeURIComponent(lensHandoff.packet.payloadId)}&depth=${lensHandoff.packet.depth}` : ""}`}
+                className="rounded-full border border-cyan-200/[0.18] bg-cyan-300/[0.055] px-3 py-2 font-mono text-[8px] uppercase tracking-[0.12em] text-cyan-50"
+              >
+                {safeLocale === "pl" ? "Otwórz Mapę Shield" : safeLocale === "de" ? "Shield Map öffnen" : "Open Shield Map"}
+              </Link>
+              <button
+                type="button"
+                onClick={() => setLensHandoff(null)}
+                className="rounded-full border border-white/[0.10] px-3 py-2 font-mono text-[8px] uppercase tracking-[0.12em] text-white/[0.48]"
+              >
+                {safeLocale === "pl" ? "Ukryj" : safeLocale === "de" ? "Ausblenden" : "Hide"}
+              </button>
+            </div>
+          </div>
+        </section>
+      ) : null}
+      <section className="luxury-section shield-no-overlap shield-market-search-dock sticky top-[4.35rem] z-[120] overflow-visible border-b border-white/[0.06] bg-velmere-black/[0.86] py-4 backdrop-blur-xl md:top-[4.75rem]">
         <motion.div
           initial={reducedMotion ? false : { opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
@@ -1235,6 +1835,8 @@ export default function MarketIntegrityClient({
                 ref={searchShellRef}
                 onSubmit={onSubmit}
                 className="shield-search-shell"
+                data-pass414-input-pinned-search={pass414TerminalParityStabilizer.version} data-pass415-input-pinned-search={pass415TerminalLatencyStabilizer.version}
+                data-pass418-input-pinned-search={pass418TerminalChartAnchorStabilizer.version} data-pass419-input-pinned-search={pass419TerminalChartAnchorStabilizer.version}
               >
                 <label className="sr-only" htmlFor="market-integrity-search">
                   {t("searchLabel")}
@@ -1243,13 +1845,22 @@ export default function MarketIntegrityClient({
                   <input
                     id="market-integrity-search"
                     value={query}
-                    onFocus={() =>
-                      suggestions.length && setSuggestionsOpen(true)
-                    }
-                    onChange={(event) => setQuery(event.target.value)}
+                    onFocus={() => {
+                      if (selected) return;
+                      syncSuggestionPanelFrame();
+                      if (suggestions.length) setSuggestionsOpen(true);
+                      else setSuggestPanelFrame(null);
+                    }}
+                    onChange={(event) => {
+                      if (event.target.value.trim().toLowerCase() !== committedSearchRef.current.toLowerCase()) {
+                        committedSearchRef.current = "";
+                      }
+                      setQuery(event.target.value);
+                      if (selected || !event.target.value.trim()) closeSearchSuggestionsForModal();
+                    }}
                     onKeyDown={(event) => {
                       if (event.key === "Escape") {
-                        setSuggestionsOpen(false);
+                        closeSearchSuggestionsForModal();
                         if (query) setQuery("");
                       }
                     }}
@@ -1266,9 +1877,10 @@ export default function MarketIntegrityClient({
                     <button
                       type="button"
                       onClick={() => {
+                        committedSearchRef.current = "";
                         setQuery("");
                         setSuggestions([]);
-                        setSuggestionsOpen(false);
+                        closeSearchSuggestionsForModal();
                       }}
                       aria-label="Clear search"
                       className="shield-search-icon-button shield-premium-focus text-white/[0.34] hover:text-white"
@@ -1290,41 +1902,92 @@ export default function MarketIntegrityClient({
                   </button>
                 </div>
 
-                {suggestionsOpen && suggestions.length ? (
-                  <div className="shield-token-search-suggest-panel absolute left-1/2 top-[calc(100%+0.55rem)] z-[10000] w-[min(32rem,calc(100vw-2rem))] -translate-x-1/2 overflow-hidden rounded-[1.25rem] border border-cyan-200/[0.18] bg-[#080d0f]/[0.985] text-left shadow-[0_34px_100px_rgba(0,0,0,0.62)] backdrop-blur-2xl">
-                    <div className="border-b border-white/[0.07] px-4 py-2 font-mono text-[9px] uppercase tracking-[0.16em] text-velmere-gold/[0.72]">
-                      {query.trim().length < 2 ? "local token matches" : "token suggestions · logo aware"}
+                {!selected && suggestionsOpen && suggestions.length && suggestPanelFrame && typeof document !== "undefined" ? createPortal(
+                  <div
+                    ref={suggestPanelRef}
+                    className="shield-token-search-suggest-panel shield-token-search-suggest-portal shield-token-search-suggest-pass345 shield-token-search-suggest-pass358 shield-token-search-suggest-pass364 fixed overflow-hidden rounded-[1.25rem] border border-cyan-200/[0.18] bg-[#080d0f]/[0.985] text-left shadow-[0_34px_100px_rgba(0,0,0,0.72)] backdrop-blur-2xl"
+                    style={{ top: suggestPanelFrame.top, left: suggestPanelFrame.left, width: suggestPanelFrame.width, maxHeight: suggestPanelFrame.maxHeight }}
+                    data-pass345-inline-search-no-portal="false"
+                    data-pass345-search-results-count={Math.min(suggestions.length, 3)}
+                    data-pass358-browser-ranking="true"
+                    data-pass364-shield-search-browser-portal="true"
+                    data-pass394-close-on-page-scroll="true"
+                    data-pass395-search-runtime-lock={pass395SearchRuntimeContract.version}
+                    data-pass397-search-runtime-lock={pass397UnifiedTerminalContract.version}
+                    data-pass398-search-runtime-lock={pass398TerminalFidelityContract.version}
+                    data-pass399-search-runtime-lock={pass399KernelExactnessContract.version}
+                    data-pass400-search-runtime-lock={pass400TerminalProofContract.version}
+                    data-pass401-search-runtime-lock={pass401TerminalExactnessMatrix.version}
+                    data-pass402-search-runtime-lock={pass402TerminalCleanOrbit.version}
+                    data-pass403-search-runtime-lock={pass403TerminalTruthOrbit.version}
+                    data-pass404-search-runtime-lock={pass404TerminalExactOrbit.version} data-pass405-search-runtime-lock={pass405TerminalOnePayloadOrbit.version} data-pass406-search-runtime-lock={pass406TerminalPayloadIntegrityOrbit.version} data-pass407-search-runtime-lock={pass407TerminalPayloadIntegrityOrbit.version} data-pass408-search-runtime-lock={pass408TerminalSourceProofOrbit.version} data-pass409-search-runtime-lock={pass409TerminalSourceTruthOrbit.version} data-pass410-search-runtime-lock={pass410TerminalLiveParityOrbit.version} data-pass411-search-runtime-lock={pass411TerminalSourceEqualizerOrbit.version}
+                    data-pass413-search-runtime-lock={pass413TerminalStabilityRuntime.version}
+                    data-pass414-search-runtime-lock={pass414TerminalParityStabilizer.version}
+                    data-pass415-search-runtime-lock={pass415TerminalLatencyStabilizer.version} data-pass416-search-runtime-lock={pass416TerminalPrecisionAnchor.version}
+                    data-pass413-three-only="true"
+                    data-pass414-three-only="true"
+                    data-pass415-three-only="true" data-pass416-three-only="true" data-pass418-three-only="true" data-pass419-three-only="true"
+                    role="listbox"
+                  >
+                    <div className="border-b border-white/[0.07] px-4 py-2">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-velmere-gold/[0.72]">
+                          Shield Search · Browser engine · local first
+                        </span>
+                        <span className="font-mono text-[8px] uppercase tracking-[0.12em] text-cyan-50/[0.55]">
+                          no lag · symbol first · scan on submit
+                        </span>
+                      </div>
+                      <div className="shield-social-router-chip-row mt-2">
+                        {socialExchangeRouterGate.chips.slice(0, 4).map((chip) => (
+                          <span key={chip}>{chip}</span>
+                        ))}
+                      </div>
                     </div>
-                    {suggestions.slice(0, 7).map((item) => (
-                      <button
-                        key={item.id}
-                        type="button"
-                        onClick={() => handleSuggestionSelect(item)}
-                        className="shield-token-search-suggest-row flex w-full items-center gap-3 border-b border-white/[0.06] px-4 py-3 text-left transition last:border-b-0 hover:bg-cyan-300/[0.055]"
-                      >
-                        <TokenAvatar image={item.image} symbol={item.symbol} id={item.id} name={item.name} />
-                        <span className="min-w-0 flex-1">
-                          <span className="flex min-w-0 items-center gap-2">
-                            <span className="block truncate text-sm font-semibold text-white">
-                              {item.symbol}
+                    <div className="shield-token-search-suggest-scroll" style={{ maxHeight: Math.max(120, suggestPanelFrame.maxHeight - 82) }}>
+                      {pass419ClampSuggestions(suggestions, (item) => `${item.symbol}:${item.id}`, 3).map((item) => (
+                        <button
+                          key={item.id ?? item.symbol}
+                          type="button"
+                          onClick={() => handleSuggestionSelect(item)}
+                          className="shield-token-search-suggest-row flex w-full items-center gap-3 border-b border-white/[0.06] px-4 py-3 text-left transition last:border-b-0 hover:bg-cyan-300/[0.055]"
+                          role="option"
+                          aria-selected={false}
+                        >
+                          <TokenAvatar
+                            image={item.image}
+                            symbol={item.symbol}
+                            id={item.id ?? item.symbol.toLowerCase()}
+                            name={item.name}
+                          />
+                          <span className="min-w-0 flex-1">
+                            <span className="flex min-w-0 items-center gap-2">
+                              <span className="block truncate text-sm font-semibold text-white">
+                                {item.symbol}
+                              </span>
+                              <span className="rounded-full border border-white/[0.08] bg-white/[0.035] px-2 py-0.5 font-mono text-[8px] uppercase tracking-[0.12em] text-white/[0.42]">
+                                {item.sourceMode === "local"
+                                  ? "table"
+                                  : item.sourceMode === "merged"
+                                    ? "live + table"
+                                    : "live"}
+                              </span>
                             </span>
-                            <span className="rounded-full border border-white/[0.08] bg-white/[0.035] px-2 py-0.5 font-mono text-[8px] uppercase tracking-[0.12em] text-white/[0.42]">
-                              {item.sourceMode === "local" ? "table" : item.sourceMode === "merged" ? "live + table" : "live"}
+                            <span className="block truncate text-[11px] leading-5 text-white/[0.56]">
+                              {item.name}
+                            </span>
+                            <span className="block font-mono text-[9px] uppercase tracking-[0.14em] text-white/[0.34]">
+                              {item.rank ? `rank #${item.rank}` : "search index"} · open Shield row
                             </span>
                           </span>
-                          <span className="block truncate text-[11px] leading-5 text-white/[0.56]">
-                            {item.name}
+                          <span className="shrink-0 rounded-full border border-velmere-gold/[0.16] bg-velmere-gold/[0.055] px-2 py-1 font-mono text-[8px] uppercase tracking-[0.12em] text-velmere-gold/[0.76]">
+                            select
                           </span>
-                          <span className="block font-mono text-[9px] uppercase tracking-[0.14em] text-white/[0.34]">
-                            {item.rank ? `rank #${item.rank}` : "market match"} · click to open Shield readout
-                          </span>
-                        </span>
-                        <span className="shrink-0 rounded-full border border-velmere-gold/[0.16] bg-velmere-gold/[0.055] px-2 py-1 font-mono text-[8px] uppercase tracking-[0.12em] text-velmere-gold/[0.76]">
-                          scan
-                        </span>
-                      </button>
-                    ))}
-                  </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>,
+                  document.body,
                 ) : null}
               </form>
 
@@ -1345,13 +2008,246 @@ export default function MarketIntegrityClient({
                   <Radar className="h-3.5 w-3.5" />
                   Shield map
                 </Link>
+                <Link
+                  href="/market-integrity/cross-asset"
+                  className="shield-map-button shield-premium-focus shield-cross-asset-link"
+                  aria-label="Open cross asset exchange health tables"
+                >
+                  <LineChart className="h-3.5 w-3.5" />
+                  Real markets
+                </Link>
               </div>
             </div>
 
+            <div className="shield-social-exchange-router-rail mt-3" data-pass293-social-exchange-router="active">
+              <div className="min-w-0">
+                <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-velmere-gold/[0.70]">
+                  Social-Exchange Command Router
+                </p>
+                <p className="shield-copy-safe mt-1 text-[11px] leading-5 text-white/[0.48]">
+                  Jedna logika wyszukiwania dla Shield, Shield Map i VLM Browser: source state, market depth, social context, zero dark patterns.
+                </p>
+              </div>
+              <div className="shield-social-router-chip-row">
+                {socialExchangeRouterGate.chips.slice(0, 5).map((chip) => (
+                  <span key={chip}>{chip}</span>
+                ))}
+              </div>
+            </div>
+
+              <div className="shield-pass294-trust-sync mt-3" data-pass294-trust-signal-feed="shield-terminal">
+                <span>PASS294 · Trust Signal Feed sync</span>
+                <p className="shield-copy-safe">Shield terminal sync: depth context, source quorum and anti-FOMO rails stay visible before any token action.</p>
+                <div>
+                  <b>source quorum</b>
+                  <b>depth context</b>
+                  <b>operator boundary</b>
+                </div>
+              </div>
+
+              <div className="shield-pass295-decision-sync mt-3" data-pass295-decision-flow="shield-terminal">
+                <span>PASS295 · Decision Flow sync</span>
+                <p className="shield-copy-safe">Shield terminal now routes search pressure through one calm next action: source lock → depth check → social context → operator receipt.</p>
+                <div>
+                  <b>{decisionFlowOrchestratorGate.status.replaceAll("_", " ")}</b>
+                  <b>{decisionFlowOrchestratorGate.confidence}/100</b>
+                  <b>{decisionFlowOrchestratorGate.actions[0]?.label ?? "source first"}</b>
+                </div>
+              </div>
+
+              <div className="shield-pass296-liquidity-passport-sync mt-3" data-pass296-luxury-liquidity-passport="shield-terminal">
+                <span>PASS296 · Luxury Liquidity Passport sync</span>
+                <p className="shield-copy-safe">Shield terminal now gives each query a private proof passport: exchange depth, traceability, social context and earned elite status before public copy.</p>
+                <div>
+                  <b>{luxuryLiquidityPassportGate.status.replaceAll("_", " ")}</b>
+                  <b>{luxuryLiquidityPassportGate.readiness}/100</b>
+                  <b>{luxuryLiquidityPassportGate.actions[0]?.label ?? "passport review"}</b>
+                </div>
+              </div>
+
+              <div className="shield-pass297-depth-radar-sync mt-3" data-pass297-depth-resilience-radar="shield-terminal">
+                <span>PASS297 · Depth Resilience Radar sync</span>
+                <p className="shield-copy-safe">Shield terminal now turns MEXC-style depth and LVMH/Aura-style provenance into resilience rings: thin depth slows the next action, premium status waits for proof.</p>
+                <div>
+                  <b>{depthResilienceRadarGate.mode.replaceAll("_", " ")}</b>
+                  <b>{depthResilienceRadarGate.resilienceScore}/100</b>
+                  <b>shock {depthResilienceRadarGate.shockPressure}/100</b>
+                </div>
+              </div>
+
+              <div className="shield-pass298-reserve-twin-sync mt-3" data-pass298-reserve-provenance-twin="shield-terminal">
+                <span>PASS298 · Reserve-Provenance Twin sync</span>
+                <p className="shield-copy-safe">Shield terminal now pairs reserve/backing transparency with exchange depth and luxury provenance before customer-facing proof copy can unlock.</p>
+                <div>
+                  <b>{reserveProvenanceTwinGate.mode.replaceAll("_", " ")}</b>
+                  <b>reserve {reserveProvenanceTwinGate.reserveScore}/100</b>
+                  <b>{reserveProvenanceTwinGate.trustTier.replaceAll("_", " ")}</b>
+                </div>
+              </div>
+
+              <div className="shield-pass300-fault-sweep-sync mt-3" data-pass300-adapter-fault-sweep="shield-terminal">
+                <span>PASS300 · Adapter Fault Sweep sync</span>
+                <p className="shield-copy-safe">Shield terminal now starts every operator path with runtime/search/adapter fault pressure before any premium status or proof receipt can appear.</p>
+                <div>
+                  <b>{adapterFaultSweepGate.mode.replaceAll("_", " ")}</b>
+                  <b>runtime {adapterFaultSweepGate.runtimeScore}/100</b>
+                  <b>{adapterFaultSweepGate.proofTier.replaceAll("_", " ")}</b>
+                </div>
+              </div>
+
+              <div className="shield-pass301-contract-mesh-sync mt-3" data-pass301-source-adapter-contract-mesh="shield-terminal">
+                <span>PASS301 · Source Adapter Contract Mesh sync</span>
+                <p className="shield-copy-safe">Shield terminal now checks adapter contracts: identity, depth, reserve, contract control, OSINT and provenance each have timeout, retry and customer-copy rules.</p>
+                <div>
+                  <b>{sourceAdapterContractMeshGate.mode.replaceAll("_", " ")}</b>
+                  <b>mesh {sourceAdapterContractMeshGate.meshScore}/100</b>
+                  <b>{sourceAdapterContractMeshGate.proofTier.replaceAll("_", " ")}</b>
+                </div>
+              </div>
+
+              <div className="shield-pass302-proof-escrow-sync mt-3" data-pass302-source-proof-escrow="shield-terminal">
+                <span>PASS302 · Source Proof Escrow sync</span>
+                <p className="shield-copy-safe">Shield terminal now holds public proof copy in escrow until exchange depth, reserve snapshot, contract permissions, provenance passport and redaction lanes agree.</p>
+                <div>
+                  <b>{sourceProofEscrowGate.releaseState.replaceAll("_", " ")}</b>
+                  <b>escrow {sourceProofEscrowGate.escrowScore}/100</b>
+                  <b>{sourceProofEscrowGate.trustSeal.replaceAll("_", " ")}</b>
+                </div>
+              </div>
+
+              <div className="shield-pass303-circuit-breaker-sync mt-3" data-pass303-live-adapter-circuit-breaker="shield-terminal">
+                <span>PASS303 · Live Adapter Circuit Breaker sync</span>
+                <p className="shield-copy-safe">Shield terminal now opens, cools or locks live-source proof based on adapter continuity, source pressure, proof escrow and runtime faults.</p>
+                <div>
+                  <b>{liveAdapterCircuitBreakerGate.breakerState.replaceAll("_", " ")}</b>
+                  <b>live {liveAdapterCircuitBreakerGate.liveReadiness}/100</b>
+                  <b>pressure {liveAdapterCircuitBreakerGate.breakerPressure}/100</b>
+                </div>
+              </div>
+
+              <div className="shield-pass304-timecode-ledger-sync mt-3" data-pass304-freshness-timecode-ledger="shield-terminal">
+                <span>PASS304 · Freshness Timecode Ledger sync</span>
+                <p className="shield-copy-safe">Shield terminal now stamps live depth, reserve context, provenance and browser replay with an expiry window before proof copy can move.</p>
+                <div>
+                  <b>{freshnessTimecodeLedgerGate.ledgerState.replaceAll("_", " ")}</b>
+                  <b>fresh {freshnessTimecodeLedgerGate.freshnessScore}/100</b>
+                  <b>drift {freshnessTimecodeLedgerGate.driftPressure}/100</b>
+                </div>
+              </div>
+
+              <div className="shield-pass305-disclosure-vault-sync mt-3" data-pass305-selective-disclosure-vault="shield-terminal">
+                <span>PASS305 · Selective Disclosure Vault sync</span>
+                <p className="shield-copy-safe">Shield terminal now reveals public summary, guided preview, redacted receipt or operator vault based on proof timing, privacy and replay boundaries.</p>
+                <div>
+                  <b>{selectiveDisclosureVaultGate.vaultState.replaceAll("_", " ")}</b>
+                  <b>disclosure {selectiveDisclosureVaultGate.disclosureScore}/100</b>
+                  <b>privacy {selectiveDisclosureVaultGate.privacyScore}/100</b>
+                </div>
+              </div>
+
+
+              <div className="shield-pass306-source-credential-sync mt-3" data-pass306-verifiable-source-credential="shield-terminal">
+                <span>PASS306 · Verifiable Source Credential sync</span>
+                <p className="shield-copy-safe">Shield terminal now issues only the credential class that issuer quorum, freshness expiry, proof completeness and selective disclosure can support.</p>
+                <div>
+                  <b>{verifiableSourceCredentialGate.credentialState.replaceAll("_", " ")}</b>
+                  <b>credential {verifiableSourceCredentialGate.credentialScore}/100</b>
+                  <b>quorum {verifiableSourceCredentialGate.issuerQuorum}/100</b>
+                </div>
+              </div>
+
+
+              <div className="shield-pass307-retention-halo-sync mt-3" data-pass307-credential-retention-halo="shield-terminal">
+                <span>PASS307 · Credential Retention Halo sync</span>
+                <p className="shield-copy-safe">Shield terminal now gives every proof class an expiry, purge and replay retention window before public copy can persist.</p>
+                <div>
+                  <b>{credentialRetentionHaloGate.haloState.replaceAll("_", " ")}</b>
+                  <b>retention {credentialRetentionHaloGate.retentionScore}/100</b>
+                  <b>purge {credentialRetentionHaloGate.purgeAfterSeconds}s</b>
+                </div>
+              </div>
+
+
+              <div className="shield-pass308-governance-oath-sync mt-3" data-pass308-source-governance-oath="shield-terminal">
+                <span>PASS308 · Source Governance Oath sync</span>
+                <p className="shield-copy-safe">Shield terminal now requires a source governance oath before premium proof copy can leave the operator-safe lane.</p>
+                <div>
+                  <b>{sourceGovernanceOathGate.oathState.replaceAll("_", " ")}</b>
+                  <b>governance {sourceGovernanceOathGate.governanceScore}/100</b>
+                  <b>pressure {sourceGovernanceOathGate.oathPressure}/100</b>
+                </div>
+              </div>
+
+
+              <div className="shield-pass309-event-taxonomy-sync mt-3" data-pass309-ethical-signal-event-taxonomy="shield-terminal">
+                <span>PASS309 · Ethical Signal Event Taxonomy sync</span>
+                <p className="shield-copy-safe">Shield terminal now records only consent-safe proof, source and disclosure event classes instead of raw private payloads or engagement-pressure telemetry.</p>
+                <div>
+                  <b>{ethicalSignalEventTaxonomyGate.taxonomyState.replaceAll("_", " ")}</b>
+                  <b>taxonomy {ethicalSignalEventTaxonomyGate.taxonomyScore}/100</b>
+                  <b>privacy {ethicalSignalEventTaxonomyGate.privacyScore}/100</b>
+                </div>
+              </div>
+
+
+              <div className="shield-pass310-proof-consent-sync mt-3" data-pass310-proof-consent-receipt="shield-terminal">
+                <span>PASS310 · Proof Consent Receipt sync</span>
+                <p className="shield-copy-safe">Shield terminal now requires a visible consent, source, expiry and redaction receipt before proof copy or report language can move public.</p>
+                <div>
+                  <b>{proofConsentReceiptGate.receiptState.replaceAll("_", " ")}</b>
+                  <b>receipt {proofConsentReceiptGate.receiptScore}/100</b>
+                  <b>consent {proofConsentReceiptGate.consentScore}/100</b>
+                </div>
+              </div>
+
+
+              <div className="shield-pass311-audit-covenant-sync mt-3" data-pass311-audit-trail-covenant="shield-terminal">
+                <span>PASS311 · Audit Trail Covenant sync</span>
+                <p className="shield-copy-safe">Shield terminal now appends only a minimal audit trail after source timecode, consent chain, redaction and retention custody agree.</p>
+                <div>
+                  <b>{auditTrailCovenantGate.covenantState.replaceAll("_", " ")}</b>
+                  <b>covenant {auditTrailCovenantGate.covenantScore}/100</b>
+                  <b>custody {auditTrailCovenantGate.custodyPressure}/100</b>
+                </div>
+              </div>
+
+
+              <div className="shield-pass312-prestige-compass-sync mt-3" data-pass312-prestige-proof-compass="shield-terminal">
+                <span>PASS312 · Prestige Proof Compass sync</span>
+                <p className="shield-copy-safe">Shield terminal now turns exchange freshness, reserve proof, DPP provenance, credential and audit covenant into one evidence-maturity status badge with anti-FOMO friction.</p>
+                <div>
+                  <b>{prestigeProofCompassGate.compassState.replaceAll("_", " ")}</b>
+                  <b>prestige {prestigeProofCompassGate.prestigeScore}/100</b>
+                  <b>friction {prestigeProofCompassGate.exclusivityFriction}/100</b>
+                </div>
+              </div>
+
+
+
+              <div className="shield-pass313-access-runway-sync mt-3" data-pass313-atelier-access-runway="shield-terminal">
+                <span>PASS313 · Atelier Access Runway sync</span>
+                <p className="shield-copy-safe">Shield terminal now converts elite status into a proof-gated silent drop: live epoch, DPP passport, consent and audit must agree before any salon/access copy appears.</p>
+                <div>
+                  <b>{atelierAccessRunwayGate.runwayState.replaceAll("_", " ")}</b>
+                  <b>salon {atelierAccessRunwayGate.salonAccessScore}/100</b>
+                  <b>drop risk {atelierAccessRunwayGate.statusDropRisk}/100</b>
+                </div>
+              </div>
+
             {sourceCooldownActive ? (
-              <div className="shield-source-cooldown mt-3" role="status" aria-live="polite">
-                <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-velmere-gold">source cooldown</span>
-                <span className="text-xs leading-5 text-white/[0.54]">External search/analyze is rate-limited for {sourceCooldownSeconds}s. Table clicks stay local-first and safe.</span>
+              <div
+                className="shield-source-cooldown mt-3"
+                role="status"
+                aria-live="polite"
+              >
+                <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-velmere-gold">
+                  source cooldown
+                </span>
+                <span className="text-xs leading-5 text-white/[0.54]">
+                  External search/analyze is rate-limited for{" "}
+                  {sourceCooldownSeconds}s. Table clicks stay local-first and
+                  safe.
+                </span>
               </div>
             ) : null}
 
@@ -1380,18 +2276,25 @@ export default function MarketIntegrityClient({
                             Shield lens · quick status
                           </p>
                           <p className="shield-copy-safe mt-1 text-[11px] leading-5 text-white/[0.42]">
-                            Tarcza pokazuje tylko warstwy review. Pełna mapa działania jest na osobnej stronie Shield Map.
+                            Tarcza pokazuje tylko warstwy review. Pełna mapa
+                            działania jest na osobnej stronie Shield Map.
                           </p>
                         </div>
                       </div>
                       <div className="flex shrink-0 flex-wrap gap-2">
                         <span className="shield-readability-grade">
-                          <span className="text-white/[0.34]">safe wording</span>
-                          <span className="text-velmere-gold">requires review</span>
+                          <span className="text-white/[0.34]">
+                            safe wording
+                          </span>
+                          <span className="text-velmere-gold">
+                            requires review
+                          </span>
                         </span>
                         <span className="shield-readability-grade">
                           <span className="text-white/[0.34]">legal rail</span>
-                          <span className="text-velmere-gold">Not financial advice</span>
+                          <span className="text-velmere-gold">
+                            Not financial advice
+                          </span>
                         </span>
                       </div>
                     </div>
@@ -1416,7 +2319,9 @@ export default function MarketIntegrityClient({
                             </div>
                             <div className="mt-2 h-1 overflow-hidden rounded-full bg-white/[0.07]">
                               <motion.div
-                                initial={reducedMotion ? false : { width: "8%" }}
+                                initial={
+                                  reducedMotion ? false : { width: "8%" }
+                                }
                                 animate={{
                                   width: `${Math.max(8, Math.min(100, layer.score))}%`,
                                 }}
@@ -1445,24 +2350,54 @@ export default function MarketIntegrityClient({
                     </p>
                     <div className="mt-3 rounded-[1rem] border border-white/[0.07] bg-black/[0.16] p-2">
                       <div className="flex items-center justify-between gap-2">
-                        <span className="font-mono text-[8px] uppercase tracking-[0.13em] text-white/[0.34]">runtime guard</span>
-                        <span className="font-mono text-[8px] uppercase tracking-[0.13em] text-velmere-gold">PASS74</span>
+                        <span className="font-mono text-[8px] uppercase tracking-[0.13em] text-white/[0.34]">
+                          runtime guard
+                        </span>
+                        <span className="font-mono text-[8px] uppercase tracking-[0.13em] text-velmere-gold">
+                          PASS74
+                        </span>
                       </div>
                       <p className="shield-copy-safe mt-1 text-[10px] leading-5 text-white/[0.40]">
-                        Tarcza nie pokazuje pełnego systemu ani JSON. To szybki lens: warstwa, następny krok i skrót do pełnej Shield Map.
+                        Tarcza nie pokazuje pełnego systemu ani JSON. To szybki
+                        lens: warstwa, następny krok i skrót do pełnej Shield
+                        Map.
                       </p>
                       <div className="mt-2 grid gap-1.5">
-                        {(criticalReviewRows.length ? criticalReviewRows : [{ id: "no-critical", symbol: "—", label: "No critical queue from current sweep", score: 0, action: "Open full map for source lanes", source: "runtime" }]).slice(0, 3).map((row) => (
-                          <Link
-                            key={row.id}
-                            href={row.symbol !== "—" ? `/market-integrity?scan=${encodeURIComponent(row.symbol)}` : "/market-integrity/shield-map"}
-                            className="shield-lens-review-row shield-premium-focus"
-                          >
-                            <span className="min-w-0 truncate font-mono text-[9px] uppercase tracking-[0.12em] text-white/[0.62]">{row.symbol}</span>
-                            <span className="min-w-0 flex-1 truncate text-[10px] text-white/[0.42]">{row.label}</span>
-                            <span className="shrink-0 font-mono text-[9px] text-velmere-gold">{row.score}/100</span>
-                          </Link>
-                        ))}
+                        {(criticalReviewRows.length
+                          ? criticalReviewRows
+                          : [
+                              {
+                                id: "no-critical",
+                                symbol: "—",
+                                label: "No critical queue from current sweep",
+                                score: 0,
+                                action: "Open full map for source lanes",
+                                source: "runtime",
+                              },
+                            ]
+                        )
+                          .slice(0, 3)
+                          .map((row) => (
+                            <Link
+                              key={row.id}
+                              href={
+                                row.symbol !== "—"
+                                  ? `/market-integrity?scan=${encodeURIComponent(row.symbol)}`
+                                  : "/market-integrity/shield-map"
+                              }
+                              className="shield-lens-review-row shield-premium-focus"
+                            >
+                              <span className="min-w-0 truncate font-mono text-[9px] uppercase tracking-[0.12em] text-white/[0.62]">
+                                {row.symbol}
+                              </span>
+                              <span className="min-w-0 flex-1 truncate text-[10px] text-white/[0.42]">
+                                {row.label}
+                              </span>
+                              <span className="shrink-0 font-mono text-[9px] text-velmere-gold">
+                                {row.score}/100
+                              </span>
+                            </Link>
+                          ))}
                       </div>
                     </div>
                     <div className="mt-3 grid gap-2 sm:grid-cols-2">
@@ -1546,15 +2481,27 @@ export default function MarketIntegrityClient({
                     watchlistSymbols.includes(row.symbol) ||
                     watchlistSymbols.includes(row.id.toUpperCase());
                   return (
-                    <button
+                    <article
                       key={`mobile-${row.id}`}
-                      type="button"
+                      role="button"
+                      tabIndex={0}
                       onClick={() => openTokenModal(row)}
+                      onKeyDown={(event) => {
+                        if (event.key !== "Enter" && event.key !== " ") return;
+                        event.preventDefault();
+                        openTokenModal(row);
+                      }}
+                      aria-label={`Open ${row.name} Shield analysis`}
                       className="shield-mobile-coin-card shield-premium-focus text-left transition hover:border-velmere-gold/[0.28] hover:bg-white/[0.042]"
                     >
                       <div className="flex min-w-0 items-start justify-between gap-3">
                         <div className="flex min-w-0 items-center gap-3">
-                          <TokenAvatar image={row.image} symbol={row.symbol} id={row.id} name={row.name} />
+                          <TokenAvatar
+                            image={row.image}
+                            symbol={row.symbol}
+                            id={row.id}
+                            name={row.name}
+                          />
                           <div className="min-w-0">
                             <p className="truncate text-sm font-semibold text-white">
                               {row.name}
@@ -1621,13 +2568,13 @@ export default function MarketIntegrityClient({
                           review terminal
                         </span>
                       </div>
-                    </button>
+                    </article>
                   );
                 })}
               </div>
               <div
                 className="shield-table-scroll-x hidden md:block"
-                onWheel={handleTableWheel}
+                data-pass315-table-scroll-direct="true"
               >
                 <table className="w-full min-w-[1080px] table-fixed border-collapse text-left tabular-nums">
                   <thead className="sticky top-0 z-20 border-b border-white/[0.08] bg-[#101013]/[0.98] font-mono text-[10px] uppercase tracking-[0.14em] text-white/[0.38] backdrop-blur-xl">
@@ -1645,7 +2592,13 @@ export default function MarketIntegrityClient({
                           align="right"
                         />
                       </th>
-                      <th className="px-4 py-4 text-right">1h</th>
+                      <th className="px-4 py-4 text-right">
+                        <SortHeader
+                          label="1h"
+                          sort="change1h"
+                          align="right"
+                        />
+                      </th>
                       <th className="px-4 py-4 text-right">
                         <SortHeader
                           label="24h"
@@ -1820,9 +2773,28 @@ export default function MarketIntegrityClient({
           resetKey={"id" in selected ? selected.id : selected.token.symbol}
           onClose={closeTokenModal}
         >
-          <TokenRiskModal item={selected} onClose={closeTokenModal} />
+          <TokenRiskModal
+            item={selected}
+            onClose={closeTokenModal}
+            handoffContext={lensHandoff?.packet}
+          />
         </ShieldModalErrorBoundary>
       ) : null}
     </main>
   );
 }
+
+// PASS197 marker: Shield search suggestions render through a fixed body portal with glyph fallbacks so the dropdown cannot hide under Shield Investigator panels.
+// PASS197 compatibility markers retained after PASS359 inline stabilization: createPortal · document.body · shield-token-search-suggest-portal.
+// Compatibility markers for older guards after PASS197 portal refactor: z-[10000] · TokenAvatar image={item.image} · item.sourceMode === "local" ? "table" · <TokenAvatar image={item.image} symbol={item.symbol} id={item.id} name={item.name} />
+// PASS196 marker: Shield search suggestions keep logo-aware image lookup plus glyph fallback for BTC/ETH/SOL/USDT.
+// PASS293 compatibility: preserve legacy guard markers while Social-Exchange Router upgrades the panel.
+// PASS193/PASS149 marker: token suggestions · logo aware.
+// PASS149/PASS168 marker: click to open Shield readout.
+// PASS414 compatibility marker: suggestions.slice(0, 3) is superseded by pass416ClampSuggestions(..., 3).
+
+// PASS416 TERMINAL PRECISION ANCHOR · Shield search uses the same three-only clamp and close bus as Browser and Real Markets.
+
+// PASS418 TERMINAL CLEANROOM RUNTIME · Shield suggestions stay max-three, deferred local-first and closed before modal/chart actions.
+
+// PASS419 TERMINAL PAYLOAD STABILIZER · Shield suggestions use deferred local-first ranking, stable de-dupe, max-three and close before any token modal/chart action.

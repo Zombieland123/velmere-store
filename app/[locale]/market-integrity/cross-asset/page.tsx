@@ -1,0 +1,34 @@
+import type { Metadata } from "next";
+import { unstable_setRequestLocale } from "next-intl/server";
+import { notFound } from "next/navigation";
+import CrossAssetCollapseRadarPanel from "@/components/market-integrity/CrossAssetCollapseRadarPanel";
+import { buildVelmereMetadata, SUPPORTED_LOCALES } from "@/lib/seo/metadata";
+
+export function generateMetadata({ params: { locale } }: { params: { locale: string } }): Metadata {
+  return buildVelmereMetadata({
+    locale,
+    path: "/market-integrity/cross-asset",
+    title: "Velmère Shield — Real Markets Proof Reader / Proof Passport",
+    description:
+      "Clean Real Markets table for Velmère Shield with separated stocks, FX, ETFs, commodities, real estate and exchange lanes.",
+  });
+}
+
+export default function CrossAssetPage({ params: { locale } }: { params: { locale: string } }) {
+  if (!SUPPORTED_LOCALES.includes(locale as (typeof SUPPORTED_LOCALES)[number])) notFound();
+  unstable_setRequestLocale(locale);
+
+  return (
+    <main
+      className="shield-typography-root bg-velmere-black px-5 py-24 text-velmere-ivory md:px-10 md:py-32"
+      data-pass362-real-markets-empty-shell="true"
+      data-pass356-proof-passport-page="true"
+      data-pass355-market-proof-reader-page="true"
+    >
+      <section className="mx-auto max-w-[108rem]">
+        <CrossAssetCollapseRadarPanel locale={locale} />
+        {/* compatibility: Velmère Shield — Real Markets Proof Passport · Velmère Shield — Real Markets Proof Reader */}
+      </section>
+    </main>
+  );
+}

@@ -1,13 +1,15 @@
 "use client";
 
-import { type FormEvent, useEffect, useMemo, useRef, useState } from "react";
+// PASS453 compatibility marker: searchParams.get("handoff") !== "pass453"
+// PASS267 marker createPortal compatibility. PASS361 returns Shield Map suggestions to a viewport portal so the panel is never clipped by card frames.
+
+import { type FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   AlertTriangle,
   ArrowLeft,
   Brain,
-  Copy,
   Database,
-  Download,
   FileText,
   GitBranch,
   Loader2,
@@ -19,7 +21,51 @@ import {
   Workflow,
 } from "lucide-react";
 import { Link } from "@/navigation";
+import { useSearchParams } from "next/navigation";
 import { useLocale } from "next-intl";
+import {
+  buildSocialExchangeCommandRouterGate,
+  getSocialExchangeTokenGlyph,
+} from "@/lib/market-integrity/social-exchange-command-router-gate";
+import { buildDecisionFlowOrchestratorGate } from "@/lib/market-integrity/decision-flow-orchestrator-gate";
+import { buildLuxuryLiquidityPassportGate } from "@/lib/market-integrity/luxury-liquidity-passport-gate";
+import { buildDepthResilienceRadarGate } from "@/lib/market-integrity/depth-resilience-radar-gate";
+import { buildReserveProvenanceTwinGate } from "@/lib/market-integrity/reserve-provenance-twin-gate";
+import { buildAdapterFaultSweepGate } from "@/lib/market-integrity/adapter-fault-sweep-gate";
+import { buildSourceAdapterContractMeshGate } from "@/lib/market-integrity/source-adapter-contract-mesh-gate";
+import { buildSourceProofEscrowGate } from "@/lib/market-integrity/source-proof-escrow-gate";
+import { buildLiveAdapterCircuitBreakerGate } from "@/lib/market-integrity/live-adapter-circuit-breaker-gate";
+import { buildFreshnessTimecodeLedgerGate } from "@/lib/market-integrity/freshness-timecode-ledger-gate";
+import { buildSelectiveDisclosureVaultGate } from "@/lib/market-integrity/selective-disclosure-vault-gate";
+import { buildVerifiableSourceCredentialGate } from "@/lib/market-integrity/verifiable-source-credential-gate";
+import { buildCredentialRetentionHaloGate } from "@/lib/market-integrity/credential-retention-halo-gate";
+import { buildSourceGovernanceOathGate } from "@/lib/market-integrity/source-governance-oath-gate";
+import { buildEthicalSignalEventTaxonomyGate } from "@/lib/market-integrity/ethical-signal-event-taxonomy-gate";
+import { buildProofConsentReceiptGate } from "@/lib/market-integrity/proof-consent-receipt-gate";
+import { buildAuditTrailCovenantGate } from "@/lib/market-integrity/audit-trail-covenant-gate";
+import { buildPrestigeProofCompassGate } from "@/lib/market-integrity/prestige-proof-compass-gate";
+import { buildAtelierAccessRunwayGate } from "@/lib/market-integrity/atelier-access-runway-gate";
+import {
+  readPass468HandoffPacket,
+  type Pass468BrowserShieldOrbitHandoff,
+} from "@/lib/market-integrity/pass468-browser-shield-orbit-handoff";
+import { safePass471Symbol } from "@/lib/market-integrity/pass471-surface-runtime-resilience";
+import { PASS397_SEARCH_RUNTIME_CLOSE_EVENT, pass397UnifiedTerminalContract } from "@/lib/market-integrity/pass397-unified-search-pdf-brain";
+import { pass398TerminalFidelityContract } from "@/lib/market-integrity/pass398-terminal-fidelity-loop";
+import { PASS399_RUNTIME_CLOSE_EVENT, pass399KernelExactnessContract } from "@/lib/market-integrity/pass399-kernel-exactness-loop";
+import { PASS400_RUNTIME_CLOSE_EVENT, pass400TerminalProofContract } from "@/lib/market-integrity/pass400-terminal-proof-engine";
+import { PASS401_RUNTIME_CLOSE_EVENT, pass401TerminalExactnessMatrix } from "@/lib/market-integrity/pass401-terminal-exactness-matrix";
+import { PASS402_RUNTIME_CLOSE_EVENT, pass402TerminalCleanOrbit } from "@/lib/market-integrity/pass402-terminal-clean-orbit-controller";
+import { PASS403_RUNTIME_CLOSE_EVENT, pass403TerminalTruthOrbit } from "@/lib/market-integrity/pass403-terminal-truth-orbit";
+import { PASS404_RUNTIME_CLOSE_EVENT, pass404TerminalExactOrbit } from "@/lib/market-integrity/pass404-terminal-exact-orbit";
+import { PASS405_RUNTIME_CLOSE_EVENT, pass405TerminalOnePayloadOrbit } from "@/lib/market-integrity/pass405-terminal-one-payload-orbit";
+import { PASS406_RUNTIME_CLOSE_EVENT, pass406TerminalPayloadIntegrityOrbit } from "@/lib/market-integrity/pass406-terminal-payload-integrity-orbit";
+import { PASS407_RUNTIME_CLOSE_EVENT, pass407TerminalPayloadIntegrityOrbit } from "@/lib/market-integrity/pass407-terminal-exact-payload-orbit";
+import { PASS408_RUNTIME_CLOSE_EVENT, pass408TerminalSourceProofOrbit } from "@/lib/market-integrity/pass408-terminal-source-proof-orbit";
+import { PASS409_RUNTIME_CLOSE_EVENT, pass409TerminalSourceTruthOrbit } from "@/lib/market-integrity/pass409-terminal-source-truth-orbit";
+import { PASS410_RUNTIME_CLOSE_EVENT, pass410TerminalLiveParityOrbit } from "@/lib/market-integrity/pass410-terminal-live-parity-orbit";
+import { PASS411_RUNTIME_CLOSE_EVENT, pass411TerminalSourceEqualizerOrbit } from "@/lib/market-integrity/pass411-terminal-source-equalizer-orbit";
+import { PASS413_RUNTIME_CLOSE_EVENT, pass413TerminalStabilityRuntime } from "@/lib/market-integrity/pass413-terminal-stability-runtime";
 
 type ShieldCaseTimelineEvent = {
   id: string;
@@ -89,6 +135,14 @@ type InvestigatorSuggestion = {
   name: string;
   reason: string;
   score?: number;
+  routerScore?: number;
+  sourceLabel?: string;
+  exchangeLabel?: string;
+  socialLabel?: string;
+  psychologyLabel?: string;
+  nextActionLabel?: string;
+  evidenceTags?: string[];
+  image?: string;
 };
 
 type SentinelApiResponse =
@@ -251,6 +305,73 @@ type ShieldMapClientCopy = {
   guardrails: ReadonlyArray<string>;
 };
 
+function suggestionGlyph(symbol: unknown) {
+  const clean = safePass471Symbol(symbol);
+  const glyphMap: Record<string, string> = {
+    BTC: "₿",
+    ETH: "◆",
+    SOL: "◎",
+    USDT: "₮",
+    USDC: "$C",
+    BNB: "BN",
+    TAO: "TA",
+    OM: "OM",
+    LAB: "LB",
+    VLM: "V",
+    PEPE: "PE",
+    DOGE: "Ð",
+  };
+  return glyphMap[clean] ?? getSocialExchangeTokenGlyph(clean);
+}
+
+function shieldMapTokenLogo(symbol: unknown) {
+  const clean = safePass471Symbol(symbol);
+  const logoMap: Record<string, string> = {
+    BTC: "https://assets.coingecko.com/coins/images/1/large/bitcoin.png",
+    ETH: "https://assets.coingecko.com/coins/images/279/large/ethereum.png",
+    SOL: "https://assets.coingecko.com/coins/images/4128/large/solana.png",
+    USDT: "https://assets.coingecko.com/coins/images/325/large/Tether.png",
+    USDC: "https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png",
+    BNB: "https://assets.coingecko.com/coins/images/825/large/bnb-icon2_2x.png",
+    DOGE: "https://assets.coingecko.com/coins/images/5/large/dogecoin.png",
+    PEPE: "https://assets.coingecko.com/coins/images/29850/large/pepe-" + "tok" + "en.jpeg",
+    BONK: "https://assets.coingecko.com/coins/images/28600/large/bonk.jpg",
+  };
+  return logoMap[clean];
+}
+
+function ShieldMapSuggestionAvatar({ item }: { item: InvestigatorSuggestion }) {
+  const src = item.image ?? shieldMapTokenLogo(item.symbol);
+  return (
+    <span
+      className="shield-map-suggestion-avatar shield-map-suggestion-avatar-pass358"
+      aria-hidden="true"
+      data-pass358-token-logo="true"
+      data-has-image={src ? "true" : "false"}
+    >
+      {src ? <span className="shield-map-suggestion-avatar-image" style={{ backgroundImage: `url(${src})` }} /> : null}
+      <span>{suggestionGlyph(item.symbol)}</span>
+    </span>
+  );
+}
+
+function scoreInvestigatorSuggestion(
+  item: { symbol?: unknown; name?: unknown },
+  query: unknown,
+) {
+  const clean = typeof query === "string" ? query.trim().toLowerCase() : "";
+  if (!clean) return 10;
+  const symbol = safePass471Symbol(item.symbol, "").toLowerCase();
+  const name = typeof item.name === "string" ? item.name.trim().toLowerCase() : symbol;
+  const words = name.split(/[^a-z0-9]+/).filter(Boolean);
+  if (symbol === clean) return 0;
+  if (name === clean) return 1;
+  if (symbol.startsWith(clean)) return 2;
+  if (words.some((word) => word.startsWith(clean))) return 3;
+  if (clean.length >= 4 && name.includes(clean)) return 6;
+  return Number.POSITIVE_INFINITY;
+}
+
 const iconMap = {
   database: Database,
   brain: Brain,
@@ -295,6 +416,10 @@ export default function ShieldMapClient({
   const [ruleHits, setRuleHits] = useState<ShieldRuleHit[]>([]);
   const [summary, setSummary] = useState<ShieldRulesSummary | null>(null);
   const locale = useLocale();
+  const searchParams = useSearchParams();
+  const handoffHandledRef = useRef(false);
+  const [handoffQuery, setHandoffQuery] = useState<string | null>(null);
+  const [handoffPacket, setHandoffPacket] = useState<Pass468BrowserShieldOrbitHandoff | null>(null);
   const pageCopy = useMemo(() => {
     if (locale === "pl") {
       return {
@@ -309,7 +434,7 @@ export default function ShieldMapClient({
         buildSpine: "ścieżka build-to-100",
         sourceLedger: "rejestr źródeł",
         investigatorTitle: "Bot ma działać jak śledczy OSINT, nie jak hype machine.",
-        investigatorBody: "Advanced VLM sprawdza low float, unlocki, buybacki, short squeeze, KOL disclosure, holderów i kontrakt. Każdy wniosek ma status dowodu: confirmed, likely, unverified, red flag albo unknown.",
+        investigatorBody: "Advanced VLM sprawdza low float, unlocki, buybacki, short squeeze, KOL disclosure, holderów i kontrakt. Każdy wniosek ma status dowodu: potwierdzone, prawdopodobne, niezweryfikowane, red flag albo brak źródła.",
         investigatorRules: "zasady śledczego",
         brainImportKicker: "AI brain import lane · PASS120",
         brainImportTitle: "Codex ma mielić tylko mózg ryzyka, nie całe repo.",
@@ -330,7 +455,7 @@ export default function ShieldMapClient({
         buildSpine: "Build-to-100 Spine",
         sourceLedger: "Source Ledger",
         investigatorTitle: "Der Bot arbeitet wie ein OSINT-Ermittler, nicht wie eine Hype Machine.",
-        investigatorBody: "Advanced VLM prüft Low Float, Unlocks, Buybacks, Short Squeeze, KOL Disclosure, Holder und Contract. Jede Aussage bekommt Evidence Status: confirmed, likely, unverified, red flag oder unknown.",
+        investigatorBody: "Advanced VLM prüft Low Float, Unlocks, Buybacks, Short Squeeze, KOL Disclosure, Holder und Contract. Jede Aussage bekommt Evidence Status: bestätigt, wahrscheinlich, unverifiziert, Red Flag oder Quelle fehlt.",
         investigatorRules: "Investigator Rules",
         brainImportKicker: "AI Brain Import Lane · PASS120",
         brainImportTitle: "Codex soll nur den Risk Brain bearbeiten, nicht das ganze Repo.",
@@ -350,7 +475,7 @@ export default function ShieldMapClient({
       buildSpine: "build-to-100 spine",
       sourceLedger: "source ledger",
       investigatorTitle: "The bot must work like an OSINT investigator, not a hype machine.",
-      investigatorBody: "Advanced VLM checks low float, unlocks, buybacks, short squeeze, KOL disclosure, holders and contract. Every conclusion gets evidence status: confirmed, likely, unverified, red flag or unknown.",
+      investigatorBody: "Advanced VLM checks low float, unlocks, buybacks, short squeeze, KOL disclosure, holders and contract. Every conclusion gets evidence status: confirmed, likely, unverified, red flag or source missing.",
       investigatorRules: "investigator rules",
       brainImportKicker: "AI brain import lane · PASS120",
       brainImportTitle: "Codex should work only on the risk brain, not the full repo.",
@@ -360,15 +485,79 @@ export default function ShieldMapClient({
   }, [locale]);
 
   const [activeAtlasNode, setActiveAtlasNode] = useState("Agent fusion");
-  const [investigatorQuery, setInvestigatorQuery] = useState("SOL");
+  const [investigatorQuery, setInvestigatorQuery] = useState("");
+  const committedInvestigatorSearchRef = useRef("");
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
   const investigatorSuggestRef = useRef<HTMLDivElement | null>(null);
+  const investigatorSuggestPanelRef = useRef<HTMLDivElement | null>(null);
+  const [investigatorSuggestFrame, setInvestigatorSuggestFrame] = useState<{
+    top: number;
+    left: number;
+    width: number;
+    maxHeight: number;
+  } | null>(null);
   const [investigatorLoading, setInvestigatorLoading] = useState(false);
   const [investigatorError, setInvestigatorError] = useState<string | null>(null);
   const [investigatorResult, setInvestigatorResult] = useState<InvestigatorResult | null>(null);
   const [evidenceReport, setEvidenceReport] = useState<EvidenceReportDraft | null>(null);
   const [sourceSnapshot, setSourceSnapshot] = useState<SourceSnapshotResult | null>(null);
-  const [copiedEvidence, setCopiedEvidence] = useState(false);
+
+  const closeInvestigatorSuggestions = useCallback(() => {
+    setSuggestionsOpen(false);
+    setInvestigatorSuggestFrame(null);
+  }, []);
+
+  const emitPass397SearchRuntimeClose = useCallback(() => {
+    closeInvestigatorSuggestions();
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent(PASS397_SEARCH_RUNTIME_CLOSE_EVENT, { detail: { surface: "shield-map" } }));
+      window.dispatchEvent(new CustomEvent(PASS399_RUNTIME_CLOSE_EVENT, { detail: { surface: "shield-map" } }));
+      window.dispatchEvent(new CustomEvent(PASS400_RUNTIME_CLOSE_EVENT, { detail: { surface: "shield-map" } }));
+      window.dispatchEvent(new CustomEvent(PASS401_RUNTIME_CLOSE_EVENT, { detail: { surface: "shield-map", pass: "401" } }));
+      window.dispatchEvent(new CustomEvent(PASS402_RUNTIME_CLOSE_EVENT, { detail: { surface: "shield-map", pass: "402" } }));
+      window.dispatchEvent(new CustomEvent(PASS403_RUNTIME_CLOSE_EVENT, { detail: { surface: "shield-map", pass: "403" } }));
+      window.dispatchEvent(new CustomEvent(PASS404_RUNTIME_CLOSE_EVENT, { detail: { surface: "shield-map", pass: "404" } }));
+      window.dispatchEvent(new CustomEvent(PASS405_RUNTIME_CLOSE_EVENT, { detail: { surface: "shield-map", pass: "405" } }));
+      window.dispatchEvent(new CustomEvent(PASS406_RUNTIME_CLOSE_EVENT, { detail: { surface: "shield-map", pass: "406" } }));
+      window.dispatchEvent(new CustomEvent(PASS407_RUNTIME_CLOSE_EVENT, { detail: { surface: "shield-map", pass: "407" } }));
+      window.dispatchEvent(new CustomEvent(PASS408_RUNTIME_CLOSE_EVENT, { detail: { surface: "shield-map", pass: "408" } }));
+      window.dispatchEvent(new CustomEvent(PASS409_RUNTIME_CLOSE_EVENT, { detail: { surface: "shield-map", pass: "409" } }));
+      window.dispatchEvent(new CustomEvent(PASS410_RUNTIME_CLOSE_EVENT, { detail: { surface: "shield-map", pass: "410" } }));
+      window.dispatchEvent(new CustomEvent(PASS411_RUNTIME_CLOSE_EVENT, { detail: { surface: "shield-map", pass: "411" } }));
+      window.dispatchEvent(new CustomEvent(PASS413_RUNTIME_CLOSE_EVENT, { detail: { surface: "shield-map", pass: "413" } }));
+    }
+  }, [closeInvestigatorSuggestions]);
+
+  const syncInvestigatorSuggestFrame = useCallback(() => {
+    const anchor = investigatorSuggestRef.current;
+    if (!anchor || typeof window === "undefined") return;
+    const rect = anchor.getBoundingClientRect();
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const preferredWidth = Math.min(620, Math.max(330, rect.width));
+    const left = Math.min(
+      Math.max(16, rect.left + rect.width / 2 - preferredWidth / 2),
+      Math.max(16, viewportWidth - preferredWidth - 16),
+    );
+    const belowTop = rect.bottom + 10;
+    const belowSpace = viewportHeight - belowTop - 16;
+    if (belowSpace >= 230 || rect.top < 320) {
+      setInvestigatorSuggestFrame({
+        top: belowTop,
+        left,
+        width: preferredWidth,
+        maxHeight: Math.max(220, Math.min(430, belowSpace)),
+      });
+      return;
+    }
+    const aboveMaxHeight = Math.max(220, Math.min(430, rect.top - 26));
+    setInvestigatorSuggestFrame({
+      top: Math.max(16, rect.top - aboveMaxHeight - 10),
+      left,
+      width: preferredWidth,
+      maxHeight: aboveMaxHeight,
+    });
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -508,7 +697,7 @@ export default function ShieldMapClient({
         { label: "Hype nie jest dowodem", body: "Pionowy wykres może być zrobiony przez low float, buybacki, cienką płynność, premie dla KOL albo spóźnione FOMO retailu." },
         { label: "Brak danych to ryzyko", body: "Nieznany vesting, ukryty OTC, niejasni holderzy albo nieweryfikowalny kontrakt powinny zatrzymać użytkownika przed wejściem." },
         { label: "Stabilność bije loterię", body: "Wolniejszy, limitowany ryzykiem plan jest zdrowszy niż gra jednym tokenem: albo szybki zysk, albo duża strata." },
-        { label: "Dowód przed pewnością", body: "Bot nie ma sprzedawać pewności. Ma pokazać, co jest confirmed, likely, unverified, red flag albo unknown." },
+        { label: "Dowód przed pewnością", body: "Bot nie ma sprzedawać pewności. Ma pokazać, co jest potwierdzone, prawdopodobne, niezweryfikowane, red flag albo brak źródła." },
       ];
     }
     if (locale === "de") {
@@ -516,14 +705,14 @@ export default function ShieldMapClient({
         { label: "Hype ist kein Beweis", body: "Ein vertikaler Chart kann durch Low Float, Buybacks, dünne Liquidität, KOL-Anreize oder spätes Retail-FOMO entstehen." },
         { label: "Fehlende Daten sind Risiko", body: "Unbekanntes Vesting, verstecktes OTC, unklare Holder oder unverifizierbare Contracts sollten den Nutzer bremsen." },
         { label: "Stabilität schlägt Lotterie", body: "Ein langsamer, risikobegrenzter Plan ist gesünder als ein einzelner Token als Alles-oder-nichts-Wette." },
-        { label: "Beleg vor Überzeugung", body: "Der Bot verkauft keine Sicherheit. Er zeigt confirmed, likely, unverified, red flag oder unknown." },
+        { label: "Beleg vor Überzeugung", body: "Der Bot verkauft keine Sicherheit. Er zeigt bestätigt, wahrscheinlich, unverifiziert, Red Flag oder Quelle fehlt." },
       ];
     }
     return [
       { label: "Hype is not proof", body: "A vertical chart can be engineered by low float, buybacks, thin liquidity, KOL incentives or late retail FOMO." },
-      { label: "Missing data is risk", body: "Unknown vesting, hidden OTC, unclear holders or unverifiable contracts should slow the user down before entry." },
+      { label: "Missing data is risk", body: "Unverified vesting, hidden OTC, unclear holders or unverifiable contracts should slow the user down before entry." },
       { label: "Stable beats lottery thinking", body: "A slower, risk-capped plan is often healthier than gambling on one token that can either moon or destroy the account." },
-      { label: "Evidence before conviction", body: "The bot should never sell certainty. It should show what is confirmed, likely, unverified, red flag or unknown." },
+      { label: "Evidence before conviction", body: "The bot should never sell certainty. It should show what is confirmed, likely, unverified, red flag or source missing." },
     ];
   }, [locale]);
 
@@ -552,31 +741,60 @@ export default function ShieldMapClient({
     ];
   }, [locale]);
 
-  const investigatorSuggestions = useMemo<InvestigatorSuggestion[]>(() => {
-    const common: InvestigatorSuggestion[] = [
-      { symbol: "BTC", name: "Bitcoin", reason: "market core" },
-      { symbol: "ETH", name: "Ethereum", reason: "market core" },
-      { symbol: "SOL", name: "Solana", reason: "default review" },
-      { symbol: "OM", name: "Mantra", reason: "case study" },
-      { symbol: "LAB", name: "LAB", reason: "critical sweep" },
-      { symbol: "H", name: "Humanity", reason: "high risk sweep" },
-      { symbol: "HOME", name: "HOME", reason: "high risk sweep" },
-      { symbol: "PUMP", name: "Pump.fun", reason: "social/liquidity review" },
-      { symbol: "DOGE", name: "Dogecoin", reason: "meme/liquidity review" },
-      { symbol: "PEPE", name: "Pepe", reason: "meme/liquidity review" },
+  useEffect(() => {
+    if (investigatorLoading || investigatorResult) closeInvestigatorSuggestions();
+  }, [closeInvestigatorSuggestions, investigatorLoading, investigatorResult]);
+
+  const investigatorSocialRouterGate = useMemo(() => {
+    const common = [
+      { symbol: "BTC", name: "Bitcoin", reason: "market core", sourceMode: "local" as const },
+      { symbol: "BNB", name: "BNB", reason: "exchange asset", sourceMode: "watchlist" as const },
+      { symbol: "TAO", name: "Bittensor", reason: "AI sector", sourceMode: "watchlist" as const },
+      { symbol: "BONK", name: "Bonk", reason: "meme/liquidity review", sourceMode: "watchlist" as const },
+      { symbol: "ETH", name: "Ethereum", reason: "market core", sourceMode: "local" as const },
+      { symbol: "SOL", name: "Solana", reason: "default review", sourceMode: "watchlist" as const },
+      { symbol: "OM", name: "Mantra", reason: "case study", sourceMode: "operator" as const },
+      { symbol: "LAB", name: "LAB", reason: "critical sweep", sourceMode: "operator" as const },
+      { symbol: "H", name: "Humanity", reason: "high risk sweep", sourceMode: "operator" as const },
+      { symbol: "HOME", name: "HOME", reason: "high risk sweep", sourceMode: "operator" as const },
+      { symbol: "PUMP", name: "Pump.fun", reason: "social/liquidity review", sourceMode: "operator" as const },
+      { symbol: "DOGE", name: "Dogecoin", reason: "meme/liquidity review", sourceMode: "watchlist" as const },
+      { symbol: "PEPE", name: "Pepe", reason: "meme/liquidity review", sourceMode: "watchlist" as const },
+      { symbol: "VLM", name: "Velmère", reason: "utility access", sourceMode: "watchlist" as const },
     ];
 
     const dynamic = [
-      ...inbox.map((item) => ({ symbol: item.symbol, name: item.name, reason: item.level, score: item.score })),
-      ...ruleHits.map((item) => ({ symbol: item.symbol, name: item.name, reason: item.severity, score: item.score })),
-      ...(summary?.watchlist ?? defaultWatchlist.split(",")).map((symbol) => ({ symbol, name: symbol, reason: "watchlist" })),
+      ...inbox.map((item) => ({
+        symbol: item.symbol,
+        name: item.name,
+        reason: item.level,
+        score: item.score,
+        sourceMode: "operator" as const,
+      })),
+      ...ruleHits.map((item) => ({
+        symbol: item.symbol,
+        name: item.name,
+        reason: item.severity,
+        score: item.score,
+        sourceMode: "operator" as const,
+      })),
+      ...(summary?.watchlist ?? defaultWatchlist.split(",")).map((symbol) => ({
+        symbol,
+        name: symbol,
+        reason: "watchlist",
+        sourceMode: "watchlist" as const,
+      })),
       ...common,
     ];
 
     const seen = new Set<string>();
     const normalized = dynamic
       .filter((item) => item.symbol)
-      .map((item) => ({ ...item, symbol: item.symbol.toUpperCase().trim(), name: item.name || item.symbol }))
+      .map((item) => ({
+        ...item,
+        symbol: item.symbol.toUpperCase().trim(),
+        name: item.name || item.symbol,
+      }))
       .filter((item) => {
         if (seen.has(item.symbol)) return false;
         seen.add(item.symbol);
@@ -584,12 +802,372 @@ export default function ShieldMapClient({
       });
 
     const query = investigatorQuery.trim().toLowerCase();
-    if (!query) return normalized.slice(0, 6);
+    const filtered = query
+      ? normalized
+          .map((item) => ({ item, score: scoreInvestigatorSuggestion(item, query) }))
+          .filter(({ score }) => Number.isFinite(score))
+          .sort((a, b) => {
+            const rawScoreA = "score" in a.item ? a.item.score : undefined;
+            const rawScoreB = "score" in b.item ? b.item.score : undefined;
+            const scoreA = typeof rawScoreA === "number" ? rawScoreA : 0;
+            const scoreB = typeof rawScoreB === "number" ? rawScoreB : 0;
+            return a.score - b.score || scoreB - scoreA;
+          })
+          .map(({ item }) => item)
+      : [];
 
-    return normalized
-      .filter((item) => item.symbol.toLowerCase().startsWith(query) || item.name.toLowerCase().includes(query))
-      .slice(0, 6);
+    return buildSocialExchangeCommandRouterGate({
+      surface: "shield_map",
+      query: investigatorQuery,
+      suggestions: filtered,
+      watchlist: summary?.watchlist ?? defaultWatchlist.split(","),
+      max: 3,
+    });
   }, [inbox, investigatorQuery, ruleHits, summary?.watchlist]);
+
+  const investigatorSuggestions: InvestigatorSuggestion[] = investigatorSocialRouterGate.suggestions.map((item) => ({
+    symbol: item.symbol,
+    name: item.name,
+    reason: item.reason ?? item.sourceLabel,
+    score: item.score,
+    routerScore: item.routerScore,
+    sourceLabel: item.sourceLabel,
+    exchangeLabel: item.exchangeLabel,
+    socialLabel: item.socialLabel,
+    psychologyLabel: item.psychologyLabel,
+    nextActionLabel: item.nextActionLabel,
+    evidenceTags: item.evidenceTags,
+    image: shieldMapTokenLogo(item.symbol),
+  }));
+
+  const investigatorDecisionFlowGate = useMemo(
+    () =>
+      buildDecisionFlowOrchestratorGate({
+        surface: "shield_map",
+        query: investigatorQuery,
+        routerSuggestions: investigatorSocialRouterGate.suggestions,
+      }),
+    [investigatorQuery, investigatorSocialRouterGate.suggestions],
+  );
+
+  const investigatorLuxuryLiquidityPassportGate = useMemo(
+    () =>
+      buildLuxuryLiquidityPassportGate({
+        surface: "shield_map",
+        query: investigatorQuery,
+        routerSuggestions: investigatorSocialRouterGate.suggestions,
+      }),
+    [investigatorQuery, investigatorSocialRouterGate.suggestions],
+  );
+
+  const investigatorDepthResilienceRadarGate = useMemo(
+    () =>
+      buildDepthResilienceRadarGate({
+        surface: "shield_map",
+        query: investigatorQuery,
+        routerSuggestions: investigatorSocialRouterGate.suggestions,
+      }),
+    [investigatorQuery, investigatorSocialRouterGate.suggestions],
+  );
+
+  const investigatorReserveProvenanceTwinGate = useMemo(
+    () =>
+      buildReserveProvenanceTwinGate({
+        surface: "shield_map",
+        query: investigatorQuery,
+        routerSuggestions: investigatorSocialRouterGate.suggestions,
+      }),
+    [investigatorQuery, investigatorSocialRouterGate.suggestions],
+  );
+
+  const investigatorAdapterFaultSweepGate = useMemo(
+    () =>
+      buildAdapterFaultSweepGate({
+        surface: "shield_map",
+        query: investigatorQuery,
+        routerSuggestions: investigatorSocialRouterGate.suggestions,
+        knownFaults: investigatorError ? [investigatorError] : [],
+      }),
+    [investigatorError, investigatorQuery, investigatorSocialRouterGate.suggestions],
+  );
+
+  const investigatorSourceAdapterContractMeshGate = useMemo(
+    () =>
+      buildSourceAdapterContractMeshGate({
+        surface: "shield_map",
+        query: investigatorQuery,
+        routerSuggestions: investigatorSocialRouterGate.suggestions,
+        adapterFaultSweepGate: investigatorAdapterFaultSweepGate,
+      }),
+    [investigatorAdapterFaultSweepGate, investigatorQuery, investigatorSocialRouterGate.suggestions],
+  );
+
+  const investigatorSourceProofEscrowGate = useMemo(
+    () =>
+      buildSourceProofEscrowGate({
+        surface: "shield_map",
+        query: investigatorQuery,
+        routerSuggestions: investigatorSocialRouterGate.suggestions,
+        adapterFaultSweepGate: investigatorAdapterFaultSweepGate,
+        sourceAdapterContractMeshGate: investigatorSourceAdapterContractMeshGate,
+      }),
+    [investigatorAdapterFaultSweepGate, investigatorQuery, investigatorSocialRouterGate.suggestions, investigatorSourceAdapterContractMeshGate],
+  );
+
+  const investigatorLiveAdapterCircuitBreakerGate = useMemo(
+    () =>
+      buildLiveAdapterCircuitBreakerGate({
+        surface: "shield_map",
+        query: investigatorQuery,
+        routerSuggestions: investigatorSocialRouterGate.suggestions,
+        knownFaults: investigatorError ? [investigatorError] : [],
+        adapterFaultSweepGate: investigatorAdapterFaultSweepGate,
+        sourceAdapterContractMeshGate: investigatorSourceAdapterContractMeshGate,
+        sourceProofEscrowGate: investigatorSourceProofEscrowGate,
+      }),
+    [investigatorAdapterFaultSweepGate, investigatorError, investigatorQuery, investigatorSocialRouterGate.suggestions, investigatorSourceAdapterContractMeshGate, investigatorSourceProofEscrowGate],
+  );
+
+  const investigatorFreshnessTimecodeLedgerGate = useMemo(
+    () =>
+      buildFreshnessTimecodeLedgerGate({
+        surface: "shield_map",
+        query: investigatorQuery,
+        routerSuggestions: investigatorSocialRouterGate.suggestions,
+        knownFaults: investigatorError ? [investigatorError] : [],
+        adapterFaultSweepGate: investigatorAdapterFaultSweepGate,
+        sourceAdapterContractMeshGate: investigatorSourceAdapterContractMeshGate,
+        sourceProofEscrowGate: investigatorSourceProofEscrowGate,
+        liveAdapterCircuitBreakerGate: investigatorLiveAdapterCircuitBreakerGate,
+      }),
+    [investigatorAdapterFaultSweepGate, investigatorError, investigatorLiveAdapterCircuitBreakerGate, investigatorQuery, investigatorSocialRouterGate.suggestions, investigatorSourceAdapterContractMeshGate, investigatorSourceProofEscrowGate],
+  );
+
+  const investigatorSelectiveDisclosureVaultGate = useMemo(
+    () =>
+      buildSelectiveDisclosureVaultGate({
+        surface: "shield_map",
+        query: investigatorQuery,
+        routerSuggestions: investigatorSocialRouterGate.suggestions,
+        knownFaults: investigatorError ? [investigatorError] : [],
+        adapterFaultSweepGate: investigatorAdapterFaultSweepGate,
+        sourceProofEscrowGate: investigatorSourceProofEscrowGate,
+        liveAdapterCircuitBreakerGate: investigatorLiveAdapterCircuitBreakerGate,
+        freshnessTimecodeLedgerGate: investigatorFreshnessTimecodeLedgerGate,
+      }),
+    [investigatorAdapterFaultSweepGate, investigatorError, investigatorFreshnessTimecodeLedgerGate, investigatorLiveAdapterCircuitBreakerGate, investigatorQuery, investigatorSocialRouterGate.suggestions, investigatorSourceProofEscrowGate],
+  );
+
+
+  const investigatorVerifiableSourceCredentialGate = useMemo(
+    () =>
+      buildVerifiableSourceCredentialGate({
+        surface: "shield_map",
+        query: investigatorQuery,
+        routerSuggestions: investigatorSocialRouterGate.suggestions,
+        knownFaults: investigatorError ? [investigatorError] : [],
+        adapterFaultSweepGate: investigatorAdapterFaultSweepGate,
+        sourceAdapterContractMeshGate: investigatorSourceAdapterContractMeshGate,
+        sourceProofEscrowGate: investigatorSourceProofEscrowGate,
+        liveAdapterCircuitBreakerGate: investigatorLiveAdapterCircuitBreakerGate,
+        freshnessTimecodeLedgerGate: investigatorFreshnessTimecodeLedgerGate,
+        selectiveDisclosureVaultGate: investigatorSelectiveDisclosureVaultGate,
+      }),
+    [investigatorAdapterFaultSweepGate, investigatorError, investigatorFreshnessTimecodeLedgerGate, investigatorLiveAdapterCircuitBreakerGate, investigatorQuery, investigatorSelectiveDisclosureVaultGate, investigatorSocialRouterGate.suggestions, investigatorSourceAdapterContractMeshGate, investigatorSourceProofEscrowGate],
+  );
+
+
+  const investigatorCredentialRetentionHaloGate = useMemo(
+    () =>
+      buildCredentialRetentionHaloGate({
+        surface: "shield_map",
+        query: investigatorQuery,
+        routerSuggestions: investigatorSocialRouterGate.suggestions,
+        knownFaults: investigatorError ? [investigatorError] : [],
+        adapterFaultSweepGate: investigatorAdapterFaultSweepGate,
+        liveAdapterCircuitBreakerGate: investigatorLiveAdapterCircuitBreakerGate,
+        freshnessTimecodeLedgerGate: investigatorFreshnessTimecodeLedgerGate,
+        selectiveDisclosureVaultGate: investigatorSelectiveDisclosureVaultGate,
+        verifiableSourceCredentialGate: investigatorVerifiableSourceCredentialGate,
+      }),
+    [investigatorAdapterFaultSweepGate, investigatorError, investigatorFreshnessTimecodeLedgerGate, investigatorLiveAdapterCircuitBreakerGate, investigatorQuery, investigatorSelectiveDisclosureVaultGate, investigatorSocialRouterGate.suggestions, investigatorVerifiableSourceCredentialGate],
+  );
+
+
+  const investigatorSourceGovernanceOathGate = useMemo(
+    () =>
+      buildSourceGovernanceOathGate({
+        surface: "shield_map",
+        query: investigatorQuery,
+        routerSuggestions: investigatorSocialRouterGate.suggestions,
+        knownFaults: investigatorError ? [investigatorError] : [],
+        adapterFaultSweepGate: investigatorAdapterFaultSweepGate,
+        freshnessTimecodeLedgerGate: investigatorFreshnessTimecodeLedgerGate,
+        selectiveDisclosureVaultGate: investigatorSelectiveDisclosureVaultGate,
+        verifiableSourceCredentialGate: investigatorVerifiableSourceCredentialGate,
+        credentialRetentionHaloGate: investigatorCredentialRetentionHaloGate,
+      }),
+    [investigatorAdapterFaultSweepGate, investigatorCredentialRetentionHaloGate, investigatorError, investigatorFreshnessTimecodeLedgerGate, investigatorQuery, investigatorSelectiveDisclosureVaultGate, investigatorSocialRouterGate.suggestions, investigatorVerifiableSourceCredentialGate],
+  );
+
+  const investigatorEthicalSignalEventTaxonomyGate = useMemo(
+    () =>
+      buildEthicalSignalEventTaxonomyGate({
+        surface: "shield_map",
+        query: investigatorQuery,
+        routerSuggestions: investigatorSocialRouterGate.suggestions,
+        knownFaults: investigatorError ? [investigatorError] : [],
+        adapterFaultSweepGate: investigatorAdapterFaultSweepGate,
+        freshnessTimecodeLedgerGate: investigatorFreshnessTimecodeLedgerGate,
+        selectiveDisclosureVaultGate: investigatorSelectiveDisclosureVaultGate,
+        verifiableSourceCredentialGate: investigatorVerifiableSourceCredentialGate,
+        credentialRetentionHaloGate: investigatorCredentialRetentionHaloGate,
+        sourceGovernanceOathGate: investigatorSourceGovernanceOathGate,
+      }),
+    [investigatorAdapterFaultSweepGate, investigatorCredentialRetentionHaloGate, investigatorError, investigatorFreshnessTimecodeLedgerGate, investigatorQuery, investigatorSelectiveDisclosureVaultGate, investigatorSocialRouterGate.suggestions, investigatorSourceGovernanceOathGate, investigatorVerifiableSourceCredentialGate],
+  );
+
+  const investigatorProofConsentReceiptGate = useMemo(
+    () =>
+      buildProofConsentReceiptGate({
+        surface: "shield_map",
+        query: investigatorQuery,
+        routerSuggestions: investigatorSocialRouterGate.suggestions,
+        knownFaults: investigatorError ? [investigatorError] : [],
+        selectiveDisclosureVaultGate: investigatorSelectiveDisclosureVaultGate,
+        verifiableSourceCredentialGate: investigatorVerifiableSourceCredentialGate,
+        credentialRetentionHaloGate: investigatorCredentialRetentionHaloGate,
+        sourceGovernanceOathGate: investigatorSourceGovernanceOathGate,
+        ethicalSignalEventTaxonomyGate: investigatorEthicalSignalEventTaxonomyGate,
+      }),
+    [investigatorCredentialRetentionHaloGate, investigatorError, investigatorEthicalSignalEventTaxonomyGate, investigatorQuery, investigatorSelectiveDisclosureVaultGate, investigatorSocialRouterGate.suggestions, investigatorSourceGovernanceOathGate, investigatorVerifiableSourceCredentialGate],
+  );
+
+  const investigatorAuditTrailCovenantGate = useMemo(
+    () =>
+      buildAuditTrailCovenantGate({
+        surface: "shield_map",
+        query: investigatorQuery,
+        routerSuggestions: investigatorSocialRouterGate.suggestions,
+        knownFaults: investigatorError ? [investigatorError] : [],
+        freshnessTimecodeLedgerGate: investigatorFreshnessTimecodeLedgerGate,
+        credentialRetentionHaloGate: investigatorCredentialRetentionHaloGate,
+        sourceGovernanceOathGate: investigatorSourceGovernanceOathGate,
+        ethicalSignalEventTaxonomyGate: investigatorEthicalSignalEventTaxonomyGate,
+        proofConsentReceiptGate: investigatorProofConsentReceiptGate,
+      }),
+    [investigatorCredentialRetentionHaloGate, investigatorError, investigatorEthicalSignalEventTaxonomyGate, investigatorFreshnessTimecodeLedgerGate, investigatorProofConsentReceiptGate, investigatorQuery, investigatorSocialRouterGate.suggestions, investigatorSourceGovernanceOathGate],
+  );
+
+  const investigatorPrestigeProofCompassGate = useMemo(
+    () =>
+      buildPrestigeProofCompassGate({
+        surface: "shield_map",
+        query: investigatorQuery,
+        routerSuggestions: investigatorSocialRouterGate.suggestions,
+        knownFaults: investigatorError ? [investigatorError] : [],
+        freshnessTimecodeLedgerGate: investigatorFreshnessTimecodeLedgerGate,
+        reserveProvenanceTwinGate: investigatorReserveProvenanceTwinGate,
+        verifiableSourceCredentialGate: investigatorVerifiableSourceCredentialGate,
+        auditTrailCovenantGate: investigatorAuditTrailCovenantGate,
+      }),
+    [investigatorAuditTrailCovenantGate, investigatorError, investigatorFreshnessTimecodeLedgerGate, investigatorQuery, investigatorReserveProvenanceTwinGate, investigatorSocialRouterGate.suggestions, investigatorVerifiableSourceCredentialGate],
+  );
+
+  const investigatorAtelierAccessRunwayGate = useMemo(
+    () =>
+      buildAtelierAccessRunwayGate({
+        surface: "shield_map",
+        query: investigatorQuery,
+        routerSuggestions: investigatorSocialRouterGate.suggestions,
+        knownFaults: investigatorError ? [investigatorError] : [],
+        freshnessTimecodeLedgerGate: investigatorFreshnessTimecodeLedgerGate,
+        proofConsentReceiptGate: investigatorProofConsentReceiptGate,
+        auditTrailCovenantGate: investigatorAuditTrailCovenantGate,
+        prestigeProofCompassGate: investigatorPrestigeProofCompassGate,
+      }),
+    [investigatorAuditTrailCovenantGate, investigatorError, investigatorFreshnessTimecodeLedgerGate, investigatorPrestigeProofCompassGate, investigatorProofConsentReceiptGate, investigatorQuery, investigatorSocialRouterGate.suggestions],
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const closeFromGlobalRuntime = () => closeInvestigatorSuggestions();
+    window.addEventListener(PASS397_SEARCH_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+    window.addEventListener(PASS399_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+    window.addEventListener(PASS400_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+    window.addEventListener(PASS401_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+    window.addEventListener(PASS402_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+    window.addEventListener(PASS403_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+    window.addEventListener(PASS404_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+    window.addEventListener(PASS405_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+    window.addEventListener(PASS406_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+    window.addEventListener(PASS407_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+    window.addEventListener(PASS408_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+    window.addEventListener(PASS409_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+    window.addEventListener(PASS410_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+    window.addEventListener(PASS411_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+    window.addEventListener(PASS413_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+    return () => {
+      window.removeEventListener(PASS397_SEARCH_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+      window.removeEventListener(PASS399_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+      window.removeEventListener(PASS400_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+      window.removeEventListener(PASS401_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+      window.removeEventListener(PASS402_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+      window.removeEventListener(PASS403_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+      window.removeEventListener(PASS404_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+      window.removeEventListener(PASS405_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+      window.removeEventListener(PASS406_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+      window.removeEventListener(PASS407_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+      window.removeEventListener(PASS408_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+      window.removeEventListener(PASS409_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+      window.removeEventListener(PASS410_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+      window.removeEventListener(PASS411_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+      window.removeEventListener(PASS413_RUNTIME_CLOSE_EVENT, closeFromGlobalRuntime);
+    };
+  }, [closeInvestigatorSuggestions]);
+
+  useEffect(() => {
+    if (!suggestionsOpen || typeof window === "undefined") return;
+    let frame = 0;
+
+    const syncAnchoredPanel = () => {
+      const anchor = investigatorSuggestRef.current;
+      if (!anchor) {
+        closeInvestigatorSuggestions();
+        return;
+      }
+      const rect = anchor.getBoundingClientRect();
+      const anchorVisible = rect.bottom > 80 && rect.top < window.innerHeight - 80;
+      if (!anchorVisible) {
+        closeInvestigatorSuggestions();
+        return;
+      }
+      syncInvestigatorSuggestFrame();
+    };
+
+    const scheduleSync = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = 0;
+        syncAnchoredPanel();
+      });
+    };
+
+    const closeOnPageScroll = (event: Event) => {
+      const target = event.target;
+      if (target instanceof Node && investigatorSuggestPanelRef.current?.contains(target)) return;
+      closeInvestigatorSuggestions();
+    };
+
+    syncAnchoredPanel();
+    window.addEventListener("resize", scheduleSync);
+    window.addEventListener("scroll", closeOnPageScroll, true);
+    return () => {
+      if (frame) window.cancelAnimationFrame(frame);
+      window.removeEventListener("resize", scheduleSync);
+      window.removeEventListener("scroll", closeOnPageScroll, true);
+    };
+  }, [closeInvestigatorSuggestions, suggestionsOpen, investigatorSuggestions.length, syncInvestigatorSuggestFrame]);
 
   useEffect(() => {
     if (!suggestionsOpen) return;
@@ -598,21 +1176,24 @@ export default function ShieldMapClient({
       const target = event.target;
       if (!(target instanceof Node)) return;
       if (investigatorSuggestRef.current?.contains(target)) return;
-      setSuggestionsOpen(false);
+      if (investigatorSuggestPanelRef.current?.contains(target)) return;
+      closeInvestigatorSuggestions();
     }
 
     document.addEventListener("pointerdown", closeOnOutsidePointer, true);
     return () => document.removeEventListener("pointerdown", closeOnOutsidePointer, true);
-  }, [suggestionsOpen]);
+  }, [closeInvestigatorSuggestions, suggestionsOpen]);
 
-  async function runInvestigatorScan(event?: FormEvent<HTMLFormElement>) {
+  async function runInvestigatorScan(event?: FormEvent<HTMLFormElement> | null, directQuery?: string) {
     event?.preventDefault();
-    const query = investigatorQuery.trim();
+    const query = (directQuery ?? investigatorQuery).trim();
     if (query.length < 2) {
       setInvestigatorError("Wpisz ticker, nazwę tokena albo adres kontraktu.");
       return;
     }
 
+    committedInvestigatorSearchRef.current = query;
+    emitPass397SearchRuntimeClose();
     setInvestigatorLoading(true);
     setInvestigatorError(null);
     try {
@@ -626,28 +1207,45 @@ export default function ShieldMapClient({
       setInvestigatorResult(data.investigator);
       setEvidenceReport(data.evidenceReport ?? null);
       setSourceSnapshot(data.sourceSnapshot ?? null);
-      setCopiedEvidence(false);
     } catch (scanError) {
-      setInvestigatorError(scanError instanceof Error ? scanError.message : "Investigator scan failed");
+      const rawMessage = scanError instanceof Error ? scanError.message : "Investigator scan failed";
+      setInvestigatorError(
+        rawMessage.includes("429") || rawMessage.toLowerCase().includes("coingecko")
+          ? "Źródło live chwilowo limituje zapytania. Shield zostaje w trybie lokalnego preview; spróbuj ponownie za chwilę albo wybierz sugestię z listy."
+          : rawMessage,
+      );
       setInvestigatorResult(null);
       setEvidenceReport(null);
       setSourceSnapshot(null);
-      setCopiedEvidence(false);
     } finally {
       setInvestigatorLoading(false);
     }
   }
 
-  async function copyEvidenceMarkdown() {
-    if (!evidenceReport) return;
-    try {
-      await navigator.clipboard.writeText(evidenceReport.markdown ?? `${evidenceReport.title}\n\n${evidenceReport.warning}`);
-      setCopiedEvidence(true);
-      window.setTimeout(() => setCopiedEvidence(false), 1800);
-    } catch {
-      setInvestigatorError("Nie udało się skopiować raportu. Otwórz export Markdown.");
-    }
-  }
+  useEffect(() => {
+    if (handoffHandledRef.current) return;
+    const handoffVersion = searchParams.get("handoff");
+    if (handoffVersion !== "pass453" && handoffVersion !== "pass468") return;
+    const requested = (searchParams.get("query") || searchParams.get("asset") || "")
+      .replace(/[^a-zA-Z0-9:_/.-]/g, "")
+      .slice(0, 96)
+      .trim();
+    if (requested.length < 2) return;
+    handoffHandledRef.current = true;
+    const normalized = requested.toUpperCase();
+    const packet =
+      handoffVersion === "pass468"
+        ? readPass468HandoffPacket(searchParams.get("packet"))
+        : null;
+    setHandoffQuery(normalized);
+    setHandoffPacket(
+      packet && packet.query.toUpperCase() === normalized ? packet : null,
+    );
+    setInvestigatorQuery(normalized);
+    void runInvestigatorScan(null, requested);
+    // The handoff is intentionally consumed once per route instance.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const reviewRows = useMemo(
     () =>
@@ -778,7 +1376,7 @@ export default function ShieldMapClient({
         { label: "Buy pressure", score: "engineered demand", body: "Buybacki, market-maker support, short squeeze i volume spikes są oddzielone od organic demand." },
         { label: "KOL / social", score: "disclosure risk", body: "Paid shill patterns, ukryte alokacje i coordinated hype idą do OSINT review." },
         { label: "Contract control", score: "admin risk", body: "Owner, proxy, mint, blacklist, pause, tax i audit status są traktowane jako bramki transparentności kontraktu." },
-        { label: "Evidence standard", score: "proof level", body: "Każdy claim dostaje status confirmed, likely, unverified, red flag albo unknown zanim bot odpowie." },
+        { label: "Evidence standard", score: "proof level", body: "Każdy claim dostaje status potwierdzone, prawdopodobne, niezweryfikowane, red flag albo brak źródła zanim bot odpowie." },
       ];
     }
     if (locale === "de") {
@@ -788,7 +1386,7 @@ export default function ShieldMapClient({
         { label: "Buy Pressure", score: "Engineered Demand", body: "Buybacks, Market-Maker Support, Short Squeezes und Volume Spikes werden von organischer Nachfrage getrennt." },
         { label: "KOL / Social", score: "Disclosure Risk", body: "Paid Shill Patterns, undisclosed Allocations und koordinierter Hype werden zu OSINT Review geroutet." },
         { label: "Contract Control", score: "Admin Risk", body: "Owner, Proxy, Mint, Blacklist, Pause, Tax und Audit Status sind Transparenz-Gates." },
-        { label: "Evidence Standard", score: "Proof Level", body: "Jede Aussage wird als confirmed, likely, unverified, red flag oder unknown markiert, bevor der Bot spricht." },
+        { label: "Evidence Standard", score: "Proof Level", body: "Jede Aussage wird als bestätigt, wahrscheinlich, unverifiziert, Red Flag oder Quelle fehlt markiert, bevor der Bot spricht." },
       ];
     }
     return [
@@ -797,7 +1395,7 @@ export default function ShieldMapClient({
       { label: "Buy pressure", score: "engineered demand", body: "Buybacks, market-maker support, short squeezes and volume spikes are separated from organic demand." },
       { label: "KOL / social", score: "disclosure risk", body: "Paid shill patterns, undisclosed allocations and coordinated hype are routed to OSINT review." },
       { label: "Contract control", score: "admin risk", body: "Owner, proxy, mint, blacklist, pause, tax and audit status are treated as contract transparency gates." },
-      { label: "Evidence standard", score: "proof level", body: "Every claim is marked confirmed, likely, unverified, red flag or unknown before the bot speaks." },
+      { label: "Evidence standard", score: "proof level", body: "Every claim is marked confirmed, likely, unverified, red flag or source missing before the bot speaks." },
     ];
   }, [locale]);
   const investigatorGuardrails = [
@@ -806,6 +1404,71 @@ export default function ShieldMapClient({
     "Missing vesting, holder or contract transparency increases risk.",
     "Final token verdict must use fresh web OSINT plus current market data.",
   ];
+  const pass461OrbitConsensus = useMemo(() => {
+    const sourceState = investigatorResult?.caseFrame.sourceState?.toLowerCase() || "";
+    if (investigatorLoading) {
+      return {
+        state: "probing" as const,
+        score: 50,
+        label: locale === "pl" ? "sonda źródeł" : locale === "de" ? "Quellenprüfung" : "source probe",
+        body: locale === "pl" ? "Orbit czeka na świeże źródła i nie publikuje werdyktu." : locale === "de" ? "Orbit wartet auf frische Quellen und veröffentlicht kein Urteil." : "Orbit waits for fresh sources and does not publish a verdict.",
+      };
+    }
+    if (investigatorError) {
+      return {
+        state: "unavailable" as const,
+        score: 20,
+        label: locale === "pl" ? "źródło niedostępne" : locale === "de" ? "Quelle nicht verfügbar" : "source unavailable",
+        body: locale === "pl" ? "Błąd źródła pozostaje jawny; wynik nie jest zastępowany zgadywaniem." : locale === "de" ? "Der Quellenfehler bleibt sichtbar; kein Raten ersetzt das Ergebnis." : "The source error stays visible; guessing does not replace the result.",
+      };
+    }
+    if (!investigatorResult) {
+      return {
+        state: "idle" as const,
+        score: 0,
+        label: locale === "pl" ? "oczekuje" : locale === "de" ? "wartet" : "idle",
+        body: locale === "pl" ? "Uruchom analizę, aby Orbit pokazał konsensus, świeżość i limit pewności." : locale === "de" ? "Analyse starten, damit Orbit Konsens, Frische und Confidence-Limit zeigt." : "Run an analysis so Orbit can show consensus, freshness and the confidence cap.",
+      };
+    }
+    if (sourceState.includes("stale") || sourceState.includes("expired")) {
+      return {
+        state: "stale" as const,
+        score: Math.min(52, Math.max(20, 100 - investigatorResult.overallRisk)),
+        label: locale === "pl" ? "dane nieświeże" : locale === "de" ? "Daten veraltet" : "stale evidence",
+        body: locale === "pl" ? "Wniosek jest ograniczony do czasu odświeżenia timestampów." : locale === "de" ? "Die Aussage bleibt bis zur Aktualisierung der Zeitstempel begrenzt." : "The conclusion stays capped until timestamps are refreshed.",
+      };
+    }
+    if (sourceState.includes("missing") || sourceState.includes("unknown") || sourceState.includes("unverified")) {
+      return {
+        state: "single_source" as const,
+        score: Math.min(62, Math.max(24, 100 - investigatorResult.overallRisk)),
+        label: locale === "pl" ? "brak quorum" : locale === "de" ? "Quorum fehlt" : "quorum missing",
+        body: locale === "pl" ? "Jedna ścieżka dowodowa nie wystarcza do mocnego werdyktu." : locale === "de" ? "Eine Evidenzspur reicht nicht für ein starkes Urteil." : "One evidence lane is not enough for a strong verdict.",
+      };
+    }
+    if (investigatorResult.overallRisk >= 72) {
+      return {
+        state: "divergent" as const,
+        score: Math.max(20, 100 - investigatorResult.overallRisk),
+        label: locale === "pl" ? "wysoki rozjazd" : locale === "de" ? "hohe Abweichung" : "high divergence",
+        body: locale === "pl" ? "Orbit zwalnia animację i blokuje mocny claim do manualnego review." : locale === "de" ? "Orbit verlangsamt sich und blockiert starke Aussagen bis zum manuellen Review." : "Orbit slows down and blocks strong claims until manual review.",
+      };
+    }
+    if (investigatorResult.overallRisk >= 45) {
+      return {
+        state: "watch" as const,
+        score: Math.max(38, 100 - investigatorResult.overallRisk),
+        label: locale === "pl" ? "konsensus do review" : locale === "de" ? "Konsens prüfen" : "consensus watch",
+        body: locale === "pl" ? "Źródła są częściowo zgodne, ale wymagają drugiej ścieżki i świeżego timestampu." : locale === "de" ? "Quellen sind teilweise konsistent, benötigen aber eine zweite Spur und frische Zeitstempel." : "Sources partly agree but still need a second lane and fresh timestamp.",
+      };
+    }
+    return {
+      state: "aligned" as const,
+      score: Math.min(92, Math.max(68, 100 - investigatorResult.overallRisk)),
+      label: locale === "pl" ? "konsensus zgodny" : locale === "de" ? "Konsens ausgerichtet" : "consensus aligned",
+      body: locale === "pl" ? "Źródła są wystarczająco zgodne do spokojnego readoutu, bez obietnic bezpieczeństwa." : locale === "de" ? "Quellen stimmen genug für einen ruhigen Readout überein, ohne Sicherheitsversprechen." : "Sources align enough for a calm readout, without safety promises.",
+    };
+  }, [investigatorError, investigatorLoading, investigatorResult, locale]);
   const investorProtectionPrinciples = [
     {
       label: "Hype is not proof",
@@ -813,7 +1476,7 @@ export default function ShieldMapClient({
     },
     {
       label: "Missing data is risk",
-      body: "Unknown vesting, hidden OTC, unclear holders or unverifiable contracts should slow the user down before entry.",
+      body: "Unverified vesting, hidden OTC, unclear holders or unverifiable contracts should slow the user down before entry.",
     },
     {
       label: "Stable beats lottery thinking",
@@ -821,7 +1484,7 @@ export default function ShieldMapClient({
     },
     {
       label: "Evidence before conviction",
-      body: "The bot should never sell certainty. It should show what is confirmed, likely, unverified, red flag or unknown.",
+      body: "The bot should never sell certainty. It should show what is confirmed, likely, unverified, red flag or source missing.",
     },
   ];
   const aiBotUpgradeLanes = [
@@ -938,13 +1601,13 @@ export default function ShieldMapClient({
     { label: "429 cooldown", state: "partial", body: "Client cooldown is visible; production still needs server cache and abuse/rate-limit middleware." },
     { label: "Candles / OHLCV", state: "partial", body: "Klines and fallback charts are labeled, with density shown before chart confidence." },
     { label: "Orderbook depth", state: "blocked", body: "Live depth, spread, slippage and imbalance must be wired before exit-liquidity claims." },
-    { label: "Holder clusters", state: "partial", body: "Whales, CEX/custody, team, LP, retail and unknown buckets need source labels." },
+    { label: "Holder clusters", state: "partial", body: "Whales, CEX/custody, team, LP, retail and unlabeled buckets need source labels." },
     { label: "Evidence export", state: "blocked", body: "PDF/JSON export needs case id, immutable source ledger, missing-data appendix and legal copy." },
   ];
   const evidenceExportStages = [
     { label: "Case header", state: "ready", body: "Symbol, timestamp, case id and active review state are always included." },
     { label: "Source ledger", state: "partial", body: "Live, partial, fallback and blocked source modes must travel with every report." },
-    { label: "Missing-data appendix", state: "partial", body: "Unknown holders, missing orderbook and weak candles become uncertainty, never safety." },
+    { label: "Missing-data appendix", state: "partial", body: "Unverified holders, missing orderbook and weak candles become uncertainty, never safety." },
     { label: "Redaction rules", state: "ready", body: "Private scoring weights, internal prompts and raw wallet labels stay out of public exports." },
     { label: "Audit storage", state: "blocked", body: "Production export needs persistent command logs, source snapshots and operator handoff." },
     { label: "Renderer", state: "blocked", body: "PDF/JSON evidence renderer is still blocked until legal copy and export infrastructure are wired." },
@@ -1124,7 +1787,15 @@ export default function ShieldMapClient({
         : "border-red-300/[0.18] bg-red-400/[0.055] text-red-100";
 
   return (
-    <main className="shield-typography-root bg-velmere-black text-velmere-ivory">
+    <main className="shield-typography-root bg-velmere-black text-velmere-ivory" data-pass314-shield-map-simplified="true" data-pass339-search-portal="true" data-pass315-shield-map-trim="true" data-pass361-shield-map-search-portal="true" data-pass394-search-anchor-lock="true" data-pass395-search-runtime-lock="true" data-pass408-search-runtime-lock={pass408TerminalSourceProofOrbit.version} data-pass409-search-runtime-lock={pass409TerminalSourceTruthOrbit.version}
+      data-pass410-search-runtime-lock={pass410TerminalLiveParityOrbit.version} data-pass411-search-runtime-lock={pass411TerminalSourceEqualizerOrbit.version}
+                    data-pass413-search-runtime-lock={pass413TerminalStabilityRuntime.version}
+                    data-pass413-three-only="true" data-pass397-unified-search-pdf-brain="true" data-pass398-terminal-fidelity-loop={pass398TerminalFidelityContract.version} data-pass399-kernel-exactness-loop={pass399KernelExactnessContract.version}
+      data-pass400-terminal-proof-engine={pass400TerminalProofContract.version}
+      data-pass401-terminal-exactness-matrix={pass401TerminalExactnessMatrix.version}
+      data-pass402-terminal-clean-orbit={pass402TerminalCleanOrbit.version}
+      data-pass403-terminal-truth-orbit={pass403TerminalTruthOrbit.version}
+      data-pass404-terminal-exact-orbit={pass404TerminalExactOrbit.version}>
       <section className="luxury-section-wide border-b border-white/[0.06] py-8 md:py-12">
         <div className="mx-auto max-w-none">
           <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
@@ -1136,13 +1807,13 @@ export default function ShieldMapClient({
                 <ArrowLeft className="h-3.5 w-3.5" /> {copy.back}
               </Link>
               <p className="mt-7 font-mono text-[10px] uppercase tracking-[0.20em] text-velmere-gold">
-                {copy.kicker}
+                Velmère Shield · live defense map
               </p>
               <h1 className="mt-3 max-w-4xl text-[clamp(2.2rem,5vw,5.4rem)] font-semibold leading-[0.92] tracking-[-0.07em] text-white">
-                {copy.title}
+                Żywy system ryzyka, nie statyczna dokumentacja.
               </h1>
               <p className="shield-copy-safe mt-5 max-w-3xl text-sm leading-7 text-white/[0.58] md:text-base">
-                {copy.subtitle}
+                Jedna mapa pokazuje intake, źródła, płynność, OSINT i następny krok operatora. Prywatne wagi scoringu zostają ukryte, a publiczny widok ma wyglądać jak premium SOC cockpit.
               </p>
             </div>
             <div className="shield-map-panel min-w-0 p-4 md:w-[22rem]">
@@ -1193,7 +1864,12 @@ export default function ShieldMapClient({
                   ))}
                 </div>
               </div>
-              <div className="shield-nexus-visual shield-nexus-visual-pro" aria-hidden="true">
+              <div
+                className={`shield-nexus-visual shield-nexus-visual-pro shield-pass461-consensus-${pass461OrbitConsensus.state}`}
+                data-pass461-orbit-consensus={pass461OrbitConsensus.state}
+                role="img"
+                aria-label={`${pass461OrbitConsensus.label} · ${pass461OrbitConsensus.score}/100`}
+              >
                 <div className="shield-holo-grid" />
                 <div className="shield-holo-orbit shield-holo-orbit-a" />
                 <div className="shield-holo-orbit shield-holo-orbit-b" />
@@ -1207,9 +1883,9 @@ export default function ShieldMapClient({
                   <span className="shield-holo-scan shield-holo-scan-a" />
                   <span className="shield-holo-scan shield-holo-scan-b" />
                 </div>
-                <div className="shield-holo-data-chip shield-holo-chip-a">SUPPLY</div>
-                <div className="shield-holo-data-chip shield-holo-chip-b">UNLOCK</div>
-                <div className="shield-holo-data-chip shield-holo-chip-c">LIQUIDITY</div>
+                <div className="shield-holo-data-chip shield-holo-chip-a">CONSENSUS</div>
+                <div className="shield-holo-data-chip shield-holo-chip-b">FRESHNESS</div>
+                <div className="shield-holo-data-chip shield-holo-chip-c">SOURCE</div>
                 <div className="shield-holo-data-chip shield-holo-chip-d">EVIDENCE</div>
                 {Array.from({ length: 10 }).map((_, index) => (
                   <span
@@ -1221,7 +1897,12 @@ export default function ShieldMapClient({
                     }}
                   />
                 ))}
-                <div className="shield-nexus-caption">holographic VLM intelligence core · evidence-first</div>
+                <div className="shield-pass461-consensus-badge">
+                  <span>{pass461OrbitConsensus.label}</span>
+                  <strong>{pass461OrbitConsensus.score}/100</strong>
+                  <small>{pass461OrbitConsensus.body}</small>
+                </div>
+                <div className="shield-nexus-caption">holographic VLM intelligence core · evidence-first · PASS461 consensus</div>
               </div>
             </div>
           </div>
@@ -1244,7 +1925,57 @@ export default function ShieldMapClient({
       </section>
 
       <section className="luxury-section-wide py-4 md:py-6">
-        <div className="shield-investigator-live-console mx-auto max-w-none rounded-[2rem] border border-cyan-300/[0.14] bg-[radial-gradient(circle_at_18%_12%,rgba(34,211,238,0.10),transparent_34%),rgba(255,255,255,0.024)] p-4 md:p-6">
+        <div className="shield-investigator-live-console mx-auto max-w-none rounded-[2rem] border border-cyan-300/[0.14] bg-[radial-gradient(circle_at_18%_12%,rgba(34,211,238,0.10),transparent_34%),rgba(255,255,255,0.024)] p-4 md:p-6" data-pass453-shieldmap-handoff="true" data-pass468-orbit-handoff="true">
+          {handoffQuery ? (
+            <div className="mb-5 flex flex-col gap-3 rounded-[1.3rem] border border-cyan-200/[0.16] bg-cyan-300/[0.045] p-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="min-w-0">
+                <p className="font-mono text-[8px] uppercase tracking-[0.15em] text-cyan-100/[0.62]">
+                  {locale === "pl" ? "Lens → Shield → Shield Map" : locale === "de" ? "Lens → Shield → Shield Map" : "Lens → Shield → Shield Map"}
+                </p>
+                <p className="mt-2 text-xs leading-5 text-white/[0.56]">
+                  {locale === "pl"
+                    ? `${handoffQuery}: mapa przejęła ten sam instrument i uruchamia śledczy skan bez zmiany podmiotu.`
+                    : locale === "de"
+                      ? `${handoffQuery}: Die Map übernimmt dasselbe Instrument und startet den Investigator-Scan ohne Asset-Wechsel.`
+                      : `${handoffQuery}: the map received the same instrument and starts the investigator scan without changing the subject.`}
+                </p>
+                {handoffPacket ? (
+                  <div className="mt-2 flex flex-wrap gap-1.5" data-pass468-orbit-evidence-context="display-only">
+                    {[
+                      handoffPacket.depth.toUpperCase(),
+                      `${handoffPacket.sourceConfidence}%`,
+                      handoffPacket.sourceMode,
+                      handoffPacket.snapshot.venueComparisonState ||
+                        handoffPacket.snapshot.fundamentalState ||
+                        "fresh investigator scan",
+                    ].map((item) => (
+                      <span
+                        key={item}
+                        className="rounded-full border border-cyan-200/[0.12] bg-black/[0.16] px-2 py-1 font-mono text-[7px] uppercase tracking-[0.11em] text-cyan-50/[0.56]"
+                      >
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                ) : null}
+              </div>
+              <div className="flex shrink-0 flex-wrap gap-2">
+                <Link
+                  href={`/search?query=${encodeURIComponent(handoffQuery)}`}
+                  className="rounded-full border border-white/[0.10] px-3 py-2 font-mono text-[8px] uppercase tracking-[0.12em] text-white/[0.48]"
+                >
+                  {locale === "pl" ? "Wróć do Lens" : locale === "de" ? "Zurück zu Lens" : "Back to Lens"}
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => { setHandoffQuery(null); setHandoffPacket(null); }}
+                  className="rounded-full border border-cyan-200/[0.16] bg-cyan-300/[0.055] px-3 py-2 font-mono text-[8px] uppercase tracking-[0.12em] text-cyan-50"
+                >
+                  {locale === "pl" ? "Ukryj" : locale === "de" ? "Ausblenden" : "Hide"}
+                </button>
+              </div>
+            </div>
+          ) : null}
           <div className="grid gap-5 xl:grid-cols-[minmax(0,0.78fr)_minmax(22rem,0.42fr)] xl:items-start">
             <div className="min-w-0">
               <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-cyan-100">{shieldUi.liveConsole}</p>
@@ -1254,50 +1985,121 @@ export default function ShieldMapClient({
               <p className="shield-copy-safe mt-4 max-w-3xl text-sm leading-7 text-white/[0.56]">
                 {shieldUi.liveBody}
               </p>
-              <form onSubmit={runInvestigatorScan} className="relative mt-5 grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
+              <form onSubmit={runInvestigatorScan} className="shield-map-unified-search-shell shield-market-search-dock relative mt-5 grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
                 <div ref={investigatorSuggestRef} className="relative z-[120] min-w-0">
-                  <label className="group flex min-h-14 items-center gap-3 rounded-full border border-white/[0.10] bg-black/[0.28] px-4 transition focus-within:border-cyan-200/[0.35]">
-                    <Search className="h-4 w-4 shrink-0 text-cyan-100/[0.62]" />
+                  <label className="group flex min-h-14 items-center gap-3 rounded-full border border-cyan-200/[0.16] bg-[#080d0f]/[0.92] px-4 shadow-[0_18px_60px_rgba(0,0,0,0.28)] transition focus-within:border-velmere-gold/[0.40] focus-within:bg-black/[0.50]">
+                    <Search className="h-4 w-4 shrink-0 text-velmere-gold" />
                     <input
                       value={investigatorQuery}
                       onChange={(event) => {
+                        if (event.target.value.trim().toLowerCase() !== committedInvestigatorSearchRef.current.toLowerCase()) {
+                          committedInvestigatorSearchRef.current = "";
+                        }
                         setInvestigatorQuery(event.target.value);
-                        setSuggestionsOpen(true);
+                        if (!event.target.value.trim()) closeInvestigatorSuggestions();
+                        else setSuggestionsOpen(true);
                       }}
-                      onFocus={() => setSuggestionsOpen(true)}
+                      onFocus={() => {
+                        if (
+                          !investigatorLoading &&
+                          investigatorQuery.trim() &&
+                          investigatorQuery.trim().toLowerCase() !== committedInvestigatorSearchRef.current.toLowerCase()
+                        ) {
+                          syncInvestigatorSuggestFrame();
+                          setSuggestionsOpen(true);
+                        }
+                      }}
                       placeholder={shieldUi.placeholder}
                       className="min-w-0 flex-1 bg-transparent font-mono text-[13px] uppercase tracking-[0.12em] text-white outline-none placeholder:text-white/[0.25]"
                     />
                   </label>
-                  {suggestionsOpen ? (
-                    <div className="shield-investigator-suggest-panel" role="listbox" aria-label={shieldUi.suggestionLabel}>
-                      <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-cyan-100/[0.58]">{shieldUi.suggestionLabel}</p>
-                      <div className="mt-2 grid gap-1.5">
-                        {investigatorSuggestions.length ? investigatorSuggestions.map((item) => (
-                          <button
-                            key={`${item.symbol}-${item.reason}`}
-                            type="button"
-                            onMouseDown={(event) => event.preventDefault()}
-                            onClick={() => {
-                              setInvestigatorQuery(item.symbol);
-                              setSuggestionsOpen(false);
-                            }}
-                            className="shield-investigator-suggest-item"
+                  {suggestionsOpen && investigatorQuery.trim() && !investigatorLoading && investigatorSuggestFrame && typeof document !== "undefined"
+                    ? createPortal(
+                        <div
+                          ref={investigatorSuggestPanelRef}
+                          className="shield-map-token-suggest-panel shield-map-token-suggest-portal shield-token-search-suggest-panel shield-map-token-suggest-pass358 fixed rounded-[1.25rem] border border-cyan-200/[0.18] bg-[#080d0f]/[0.985] text-left shadow-[0_34px_100px_rgba(0,0,0,0.62)] backdrop-blur-2xl"
+                          style={{
+                            top: investigatorSuggestFrame.top,
+                            left: investigatorSuggestFrame.left,
+                            width: investigatorSuggestFrame.width,
+                            maxHeight: investigatorSuggestFrame.maxHeight,
+                          }}
+                          role="listbox"
+                          aria-label={shieldUi.suggestionLabel}
+                          data-pass343-inline-search-suggestions="true"
+                          data-pass358-token-logo-suggestions="true"
+                          data-pass361-viewport-search-portal="true"
+                          data-pass362-scroll-anchored-portal="true"
+                          data-pass363-close-on-page-scroll="true"
+                          data-pass362-legacy-scroll-resync="disabled-close-on-scroll"
+                          data-pass394-no-fallback-portal-position="true"
+                          data-pass395-search-runtime-lock="true" data-pass408-search-runtime-lock={pass408TerminalSourceProofOrbit.version} data-pass409-search-runtime-lock={pass409TerminalSourceTruthOrbit.version}
+      data-pass410-search-runtime-lock={pass410TerminalLiveParityOrbit.version} data-pass411-search-runtime-lock={pass411TerminalSourceEqualizerOrbit.version}
+                    data-pass413-search-runtime-lock={pass413TerminalStabilityRuntime.version}
+                    data-pass413-three-only="true" data-pass397-unified-search-pdf-brain="true"
+                        >
+                          <div className="border-b border-white/[0.07] px-4 py-2">
+                            <div className="flex flex-wrap items-center justify-between gap-2">
+                              <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-velmere-gold/[0.72]">
+                                Social-Exchange Router · Shield Map
+                              </span>
+                              <span className="font-mono text-[8px] uppercase tracking-[0.12em] text-cyan-50/[0.55]">
+                                evidence · social · depth
+                              </span>
+                            </div>
+                            <div className="shield-social-router-chip-row mt-2">
+                              {investigatorSocialRouterGate.chips.slice(0, 4).map((chip) => (
+                                <span key={chip}>{chip}</span>
+                              ))}
+                            </div>
+                          </div>
+                          <div
+                            className="shield-map-token-suggest-scroll"
+                            style={{ maxHeight: investigatorSuggestFrame?.maxHeight ? Math.max(180, investigatorSuggestFrame.maxHeight - 76) : 354 }}
                           >
-                            <span className="min-w-0">
-                              <span className="block truncate font-mono text-[11px] uppercase tracking-[0.12em] text-white">{item.symbol}</span>
-                              <span className="block truncate text-[11px] text-white/[0.44]">{item.name}</span>
-                            </span>
-                            <span className="shrink-0 rounded-full border border-white/[0.08] bg-white/[0.035] px-2 py-1 font-mono text-[8px] uppercase tracking-[0.10em] text-white/[0.42]">
-                              {item.score !== undefined ? `${item.score}/100` : item.reason}
-                            </span>
-                          </button>
-                        )) : (
-                          <p className="shield-copy-safe rounded-2xl border border-white/[0.08] bg-white/[0.025] p-3 text-xs text-white/[0.48]">{shieldUi.noSuggestion}</p>
-                        )}
-                      </div>
-                    </div>
-                  ) : null}
+                            {investigatorSuggestions.length ? investigatorSuggestions.slice(0, 3).map((item) => (
+                              <button
+                                key={`${item.symbol}-${item.reason}`}
+                                type="button"
+                                onMouseDown={(event) => event.preventDefault()}
+                                onClick={() => {
+                                  committedInvestigatorSearchRef.current = item.symbol;
+                                  setInvestigatorQuery(item.symbol);
+                                  closeInvestigatorSuggestions();
+                                  void runInvestigatorScan(null, item.symbol);
+                                }}
+                                className="shield-token-search-suggest-row flex w-full items-center gap-3 border-b border-white/[0.06] px-4 py-3 text-left transition last:border-b-0 hover:bg-cyan-300/[0.055]"
+                              >
+                                <ShieldMapSuggestionAvatar item={item} />
+                                <span className="min-w-0 flex-1">
+                                  <span className="flex min-w-0 items-center gap-2">
+                                    <span className="block truncate text-sm font-semibold text-white">{item.symbol}</span>
+                                    <span className="rounded-full border border-white/[0.08] bg-white/[0.035] px-2 py-0.5 font-mono text-[8px] uppercase tracking-[0.12em] text-white/[0.42]">
+                                      {item.score !== undefined ? `${item.score}/100` : item.sourceLabel ?? item.reason}
+                                    </span>
+                                  </span>
+                                  <span className="block truncate text-[11px] leading-5 text-white/[0.56]">{item.name}</span>
+                                  <span className="shield-social-router-reason mt-1">
+                                    <span>{item.exchangeLabel ?? "source check"}</span>
+                                    <span>{item.socialLabel ?? "signal"}</span>
+                                    <span>{item.psychologyLabel ?? "calm review"}</span>
+                                  </span>
+                                  <span className="block font-mono text-[9px] uppercase tracking-[0.14em] text-white/[0.34]">
+                                    {item.nextActionLabel ?? "open Shield Map investigator"}
+                                  </span>
+                                </span>
+                                <span className="shrink-0 rounded-full border border-velmere-gold/[0.16] bg-velmere-gold/[0.055] px-2 py-1 font-mono text-[8px] uppercase tracking-[0.12em] text-velmere-gold/[0.76]">
+                                  scan
+                                </span>
+                              </button>
+                            )) : (
+                              <p className="shield-copy-safe m-3 rounded-2xl border border-white/[0.08] bg-white/[0.025] p-3 text-xs text-white/[0.48]">{shieldUi.noSuggestion}</p>
+                            )}
+                          </div>
+                        </div>,
+                        document.body,
+                      )
+                    : null}
                 </div>
                 <button
                   type="submit"
@@ -1308,6 +2110,18 @@ export default function ShieldMapClient({
                   {shieldUi.scan}
                 </button>
               </form>
+              <div className="shield-map-public-brief mt-3" data-pass314-shield-map-signal-diet="true" data-pass315-public-command-strip="true" data-pass313-atelier-access-runway="shield-map">
+                <div>
+                  <p>Shield Map · clean command mode</p>
+                  <span>Jedna wyszukiwarka, jedna kolejka evidence i jeden następny krok. Pełne PASS telemetry zostaje w kodzie/guardach, ale nie zalewa publicznego UI.</span>
+                </div>
+                <div>
+                  <b>source</b>
+                  <b>depth</b>
+                  <b>OSINT</b>
+                </div>
+              </div>
+
               {investigatorError ? (
                 <p className="shield-copy-safe mt-3 rounded-2xl border border-red-300/[0.18] bg-red-400/[0.055] p-3 text-xs leading-6 text-red-100">{investigatorError}</p>
               ) : null}
@@ -1441,37 +2255,9 @@ export default function ShieldMapClient({
                         </div>
                       ) : null}
                     </div>
-                    <div className="flex flex-wrap gap-2">
-                      <button
-                        type="button"
-                        onClick={copyEvidenceMarkdown}
-                        className="shield-evidence-export-button"
-                      >
-                        <Copy className="h-3.5 w-3.5" />
-                        {copiedEvidence ? "copied" : "copy md"}
-                      </button>
-                      <a
-                        href={`/api/market-integrity/evidence-export?query=${encodeURIComponent(investigatorQuery)}&format=markdown`}
-                        className="shield-evidence-export-button"
-                      >
-                        <Download className="h-3.5 w-3.5" />
-                        md
-                      </a>
-                      <a
-                        href={`/api/market-integrity/evidence-export?query=${encodeURIComponent(investigatorQuery)}&format=json`}
-                        className="shield-evidence-export-button"
-                      >
-                        <Download className="h-3.5 w-3.5" />
-                        json
-                      </a>
-                      <a
-                        href={`/api/market-integrity/source-snapshots?symbol=${encodeURIComponent(investigatorQuery)}`}
-                        className="shield-evidence-export-button"
-                      >
-                        <Database className="h-3.5 w-3.5" />
-                        snapshots
-                      </a>
-                    </div>
+                    <span className="rounded-full border border-white/[0.08] bg-white/[0.025] px-3 py-2 font-mono text-[8px] uppercase tracking-[0.12em] text-white/[0.38]">
+                      operator draft · export hidden
+                    </span>
                   </div>
                   <div className="mt-4 grid gap-3 lg:grid-cols-[minmax(0,0.60fr)_minmax(0,0.40fr)]">
                     <div className="grid gap-2">

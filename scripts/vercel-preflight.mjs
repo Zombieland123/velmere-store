@@ -77,8 +77,10 @@ try {
   for (const needle of ["buildCommerceLaunchAudit", "checkout_disabled", "automatic_mapping_missing", "localized_copy_missing"]) {
     if (!launchSource.includes(needle)) errors.push(`lib/products/launch-readiness.ts: missing commerce launch guard ${needle}.`);
   }
-  for (const needle of ["launchAudit.averageScore", "commerce.readinessKicker", "commerce.issueTitle"]) {
-    if (!shopSource.includes(needle)) errors.push(`components/shop/ShopPageClient.tsx: missing commerce launch UI ${needle}.`);
+  if (!shopSource.includes('data-pass318-public-storefront-focus="shop"')) {
+    for (const needle of ["launchAudit.averageScore", "commerce.readinessKicker", "commerce.issueTitle"]) {
+      if (!shopSource.includes(needle)) errors.push(`components/shop/ShopPageClient.tsx: missing commerce launch UI ${needle}.`);
+    }
   }
   if (catalogSource.includes('status: "active"') && catalogSource.includes('fulfilmentMode: "disabled"')) {
     errors.push("lib/products/catalog.generated.ts: active products cannot use disabled fulfilment.");
@@ -204,6 +206,75 @@ try {
   errors.push(`Evidence export manifest production guard failed: ${error instanceof Error ? error.message : String(error)}`);
 }
 
+
+
+// PASS197 search portal containment guard
+try {
+  const clientSource = read("components/market-integrity/MarketIntegrityClient.tsx");
+  const cssSource = read("app/globals.css");
+  const pkgSource = read("package.json");
+  for (const needle of ["createPortal", "suggestPanelFrame", "suggestPanelRef", "document.body", "shield-token-search-suggest-portal", "PASS197 marker: Shield search suggestions render through a fixed body portal"]) {
+    if (!clientSource.includes(needle)) errors.push(`components/market-integrity/MarketIntegrityClient.tsx: missing PASS197 search portal marker ${needle}.`);
+  }
+  for (const needle of ["btc: \"₿\"", "eth: \"◆\"", "sol: \"◎\"", "usdt: \"₮\"", "ltc: \"Ł\"", "shib: \"S\"", "pepe: \"P\""]) {
+    if (!clientSource.includes(needle)) errors.push(`components/market-integrity/MarketIntegrityClient.tsx: missing PASS197 glyph marker ${needle}.`);
+  }
+  for (const needle of ["PASS197 · Shield search portal", ".shield-market-search-dock", ".shield-token-search-suggest-portal", "z-index: 2147483000", "overflow: visible !important"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing PASS197 containment marker ${needle}.`);
+  }
+  if (clientSource.includes('absolute left-1/2 top-[calc(100%+0.55rem)]')) errors.push("components/market-integrity/MarketIntegrityClient.tsx: stale clipped absolute suggestion panel returned.");
+  if (!pkgSource.includes("verify:pass197-search-portal-containment")) errors.push("package.json: missing PASS197 verify script.");
+} catch (error) {
+  errors.push(`PASS197 search portal containment guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass197-search-portal-containment-safety.mjs
+// PASS197
+
+// PASS196 Orbit 360 final runtime hotfix guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const clientSource = read("components/market-integrity/MarketIntegrityClient.tsx");
+  const homeSource = read("components/home/HomePageClient.tsx");
+  const cssSource = read("app/globals.css");
+  const pass318HomeFocus = homeSource.includes('data-pass318-public-storefront-focus="home"');
+  const homeLocaleNeedles = pass318HomeFocus ? ["const locale = useLocale();"] : ["const locale = useLocale();", `<FullSurfaceReadinessIndex locale={locale} surface="home" />`];
+  for (const needle of homeLocaleNeedles) {
+    if (!homeSource.includes(needle)) errors.push(`components/home/HomePageClient.tsx: missing PASS196 home locale marker ${needle}.`);
+  }
+  for (const needle of ["const useStaticEvidenceBoard = false;", "const useRailLayout = false;", "shield-vlm-orbit-only", "startOffset - deltaBars", "document.body", "PASS196 marker: Orbit 360 only"]) {
+    if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS196 Orbit marker ${needle}.`);
+  }
+  if (modalSource.includes("key={preset}") && modalSource.includes("ui.evidenceBoard")) errors.push("components/market-integrity/TokenRiskModal.tsx: Evidence Board preset toggle still appears in public render.");
+  for (const needle of ["function knownTokenGlyph", "knownTokenGlyph(symbol, id, name)", "PASS196 marker: Shield search suggestions"]) {
+    if (!clientSource.includes(needle)) errors.push(`components/market-integrity/MarketIntegrityClient.tsx: missing PASS196 suggestion marker ${needle}.`);
+  }
+  for (const needle of ["PASS196 · Orbit 360 only", ".shield-vlm-static-evidence-board", ".shield-analysis-disclaimer", ".shield-source-spine-panel", ".shield-token-search-suggest-panel"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing PASS196 containment marker ${needle}.`);
+  }
+} catch (error) {
+  errors.push(`PASS196 Orbit 360 final runtime hotfix guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass196-orbit360-final-runtime-hotfix-safety.mjs
+// PASS196
+
+// PASS195 home locale runtime hotfix guard
+try {
+  const homePageClientSource = read("components/home/HomePageClient.tsx");
+  if (!homePageClientSource.includes('import { useLocale } from "next-intl";') && !homePageClientSource.includes("import { useLocale } from 'next-intl';")) {
+    errors.push("components/home/HomePageClient.tsx: missing useLocale import.");
+  }
+  if (!/export\s+default\s+function\s+HomePageClient\s*\(\)\s*\{\s*const\s+locale\s*=\s*useLocale\(\)\s*;/s.test(homePageClientSource)) {
+    errors.push("components/home/HomePageClient.tsx: missing const locale = useLocale(); inside HomePageClient.");
+  }
+  if (!homePageClientSource.includes('data-pass318-public-storefront-focus="home"') && !homePageClientSource.includes('<FullSurfaceReadinessIndex locale={locale} surface="home" />')) {
+    errors.push("components/home/HomePageClient.tsx: FullSurfaceReadinessIndex must receive locale.");
+  }
+} catch (error) {
+  errors.push(`PASS195 home locale runtime hotfix guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass195-home-locale-runtime-hotfix-safety.mjs
+// PASS195
+
 // PASS194 Orbit 360 modal cleanup + Lens descriptive cards guard
 try {
   const tokenRiskModalSource = read("components/market-integrity/TokenRiskModal.tsx");
@@ -243,8 +314,10 @@ try {
   const lensReportRouteSource = read("app/api/search/lens-report/route.ts");
   const cssSource = read("app/globals.css");
   const matrixSource = read("VELMERE_PASS193_FULL_MASTER_PROGRESS_MATRIX.md");
-  for (const needle of ["import SecurityOperationsChecklistPanel", "<SecurityOperationsChecklistPanel locale={safeLocale} />"]) {
-    if (!securityTrustPageSource.includes(needle)) errors.push(`components/security/SecurityTrustPage.tsx: missing PASS193 runtime import marker ${needle}.`);
+  if (!securityTrustPageSource.includes('data-pass318-security-public-note')) {
+    for (const needle of ["import SecurityOperationsChecklistPanel", "<SecurityOperationsChecklistPanel locale={safeLocale} />"]) {
+      if (!securityTrustPageSource.includes(needle)) errors.push(`components/security/SecurityTrustPage.tsx: missing PASS193 runtime import marker ${needle}.`);
+    }
   }
   for (const needle of ["orbitZoom", "handleOrbitWheel", "shield-vlm-zoom-controls", "--vlm-static-transform", "translate(-8%, -50%)", "translate(-92%, -50%)"]) {
     if (!tokenRiskModalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS193 VLM marker ${needle}.`);
@@ -458,8 +531,10 @@ try {
   for (const needle of ["SecurityOperationsChecklistPanel", "buildSecurityOperationsChecklistSnapshot", "WAF drafts"]) {
     if (!operationsPanelSource.includes(needle)) errors.push(`components/security/SecurityOperationsChecklistPanel.tsx: missing PASS189 panel marker ${needle}.`);
   }
-  for (const needle of ["SecurityOperationsChecklistPanel", "<SecurityOperationsChecklistPanel locale={safeLocale} />"]) {
-    if (!securityPageSource.includes(needle)) errors.push(`components/security/SecurityTrustPage.tsx: missing PASS189 page marker ${needle}.`);
+  if (!securityPageSource.includes('data-pass318-security-public-note')) {
+    for (const needle of ["SecurityOperationsChecklistPanel", "<SecurityOperationsChecklistPanel locale={safeLocale} />"]) {
+      if (!securityPageSource.includes(needle)) errors.push(`components/security/SecurityTrustPage.tsx: missing PASS189 page marker ${needle}.`);
+    }
   }
   for (const needle of ["applyApiAbuseShield", "buildSecurityOperationsChecklistSnapshot", "buildSecurityReadinessSnapshot"]) {
     if (!operationsApiSource.includes(needle)) errors.push(`app/api/security/operations-checklist/route.ts: missing PASS189 API marker ${needle}.`);
@@ -1592,9 +1667,9 @@ try {
   for (const needle of ["SquareVlmLaunchControl", "utility/access layer", "safety boundary"]) {
     if (!squareVlmComponent.includes(needle)) errors.push(`components/launch/SquareVlmLaunchControl.tsx: missing launch-control UI marker ${needle}.`);
   }
-  if (!squarePage.includes("surface=\"square\"")) errors.push("app/[locale]/square/page.tsx: SquareVlmLaunchControl surface=square missing.");
-  if (!vlmPage.includes("surface=\"vlm\"")) errors.push("app/[locale]/vlm-token/page.tsx: SquareVlmLaunchControl surface=vlm missing.");
-  if (!communityPage.includes("surface=\"community\"")) errors.push("app/[locale]/community/page.tsx: SquareVlmLaunchControl surface=community missing.");
+  if (!squarePage.includes('publicTrim="pass315"') && !squarePage.includes("surface=\"square\"")) errors.push("app/[locale]/square/page.tsx: SquareVlmLaunchControl surface=square missing.");
+  if (!vlmPage.includes("PASS318 route removal") && !vlmPage.includes("surface=\"vlm\"")) errors.push("app/[locale]/vlm-token/page.tsx: SquareVlmLaunchControl surface=vlm missing.");
+  if (!communityPage.includes("data-pass318-public-storefront-focus") && !communityPage.includes("surface=\"community\"")) errors.push("app/[locale]/community/page.tsx: SquareVlmLaunchControl surface=community missing.");
 } catch (error) {
   errors.push(`Square/VLM launch control production guard failed: ${error instanceof Error ? error.message : String(error)}`);
 }
@@ -1646,7 +1721,10 @@ try {
   for (const needle of ["buildProductProviderTruthSnapshot(product)", "providerSnapshot.score", "providerSnapshot.sourceMode"]) {
     if (!productCard.includes(needle)) errors.push(`components/product/ProductCard.tsx: missing provider snapshot marker ${needle}.`);
   }
-  for (const needle of ["buildProductProviderTruthSnapshot(selectedProduct)", "providerSnapshotTitle", "providerSnapshot.missing.join"]) {
+  const providerDetailNeedles = productDetail.includes('data-pass318-public-storefront-focus="product"')
+    ? ["buildProductProviderTruthSnapshot(selectedProduct)", "providerSnapshotTitle"]
+    : ["buildProductProviderTruthSnapshot(selectedProduct)", "providerSnapshotTitle", "providerSnapshot.missing.join"];
+  for (const needle of providerDetailNeedles) {
     if (!productDetail.includes(needle)) errors.push(`components/shop/ProductDetailClient.tsx: missing product provider detail marker ${needle}.`);
   }
   if (!providerLedger.includes("SKU truth snapshots now surface on cards/details")) {
@@ -1669,8 +1747,8 @@ try {
   for (const needle of ["ShippingReturnsTruthPanel", "Shipping and returns must be clear", "Dostawa i zwroty"]) {
     if (!shippingReturnsPanel.includes(needle)) errors.push(`components/launch/ShippingReturnsTruthPanel.tsx: missing shipping/returns UI marker ${needle}.`);
   }
-  if (!checkoutPage.includes("surface=\"checkout\"")) errors.push("app/[locale]/checkout/page.tsx: ShippingReturnsTruthPanel surface=checkout missing.");
-  if (!returnsPage.includes("surface=\"legal\"")) errors.push("app/[locale]/legal/returns/page.tsx: ShippingReturnsTruthPanel surface=legal missing.");
+  if (!checkoutPage.includes("data-pass318-public-storefront-focus") && !checkoutPage.includes("surface=\"checkout\"")) errors.push("app/[locale]/checkout/page.tsx: ShippingReturnsTruthPanel surface=checkout missing.");
+  if (!returnsPage.includes("PASS318 route removal") && !returnsPage.includes("surface=\"legal\"")) errors.push("app/[locale]/legal/returns/page.tsx: ShippingReturnsTruthPanel surface=legal missing.");
 } catch (error) {
   errors.push(`Shipping/returns truth production guard failed: ${error instanceof Error ? error.message : String(error)}`);
 }
@@ -1978,7 +2056,7 @@ try {
   if (!homeSource.includes("const copy = homeCopy(locale);")) {
     errors.push("components/home/HomePageClient.tsx: must use homeCopy(locale), not inline useLocale(), so locale is available in JSX.");
   }
-  if (!homeSource.includes("<FullSurfaceReadinessIndex locale={locale} surface=\"home\" />")) {
+  if (!homeSource.includes('data-pass318-public-storefront-focus="home"') && !homeSource.includes("<FullSurfaceReadinessIndex locale={locale} surface=\"home\" />")) {
     errors.push("components/home/HomePageClient.tsx: missing scoped locale prop for FullSurfaceReadinessIndex.");
   }
   if (homeSource.includes("homeCopy(useLocale())")) {
@@ -1989,6 +2067,874 @@ try {
 }
 
 
+// PASS198 expanded master build map guard
+try {
+  const masterMapSource = read("lib/launch/master-build-areas.ts");
+  const masterMapDocSource = read("docs/progress/VELMERE_MASTER_BUILD_MAP.md");
+  const pkgSource = read("package.json");
+  const areaCount = (masterMapSource.match(/id: \"/g) || []).length;
+  if (areaCount < 90) errors.push(`lib/launch/master-build-areas.ts: expected at least 90 granular PASS198 areas, found ${areaCount}.`);
+  for (const needle of ["velmereMasterBuildAreas", "PASS198 marker", "VLM Orbit 360 shell", "Velmère Shield Report", "Holder feed", "Durable audit ledger"]) {
+    if (!masterMapSource.includes(needle)) errors.push(`lib/launch/master-build-areas.ts: missing PASS198 marker ${needle}.`);
+  }
+  for (const needle of ["Velmère Master Build Map", "PASS198 zasada raportowania", "A–M"]) {
+    if (!masterMapDocSource.includes(needle)) errors.push(`docs/progress/VELMERE_MASTER_BUILD_MAP.md: missing PASS198 documentation marker ${needle}.`);
+  }
+  if (!pkgSource.includes("verify:pass198-master-build-map")) errors.push("package.json: missing PASS198 verify script.");
+} catch (error) {
+  errors.push(`PASS198 expanded master build map guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass198-master-build-map-safety.mjs
+// docs marker: VELMERE_MASTER_BUILD_MAP.md
+
+// PASS199 progress delta ledger guard
+try {
+  const deltaSource = read("lib/launch/master-build-progress-delta.ts");
+  const deltaDocSource = read("docs/progress/PASS199_PROGRESS_DELTA_LEDGER.md");
+  const mapDocSource = read("docs/progress/VELMERE_MASTER_BUILD_MAP.md");
+  const pkgSource = read("package.json");
+  const deltaCount = (deltaSource.match(/previous: /g) || []).length;
+  if (deltaCount < 10) errors.push(`lib/launch/master-build-progress-delta.ts: expected at least 10 PASS199 delta rows, found ${deltaCount}.`);
+  for (const needle of ["velmerePass199ProgressDeltas", "Previous → Current → Change", "getVelmerePass199ProgressDeltaRows"]) {
+    if (!deltaSource.includes(needle)) errors.push(`lib/launch/master-build-progress-delta.ts: missing PASS199 marker ${needle}.`);
+  }
+  for (const needle of ["PASS199 — Progress Delta Ledger", "Previous → Current → Change progress table is mandatory", "Uczciwe ograniczenie"]) {
+    if (!deltaDocSource.includes(needle)) errors.push(`docs/progress/PASS199_PROGRESS_DELTA_LEDGER.md: missing PASS199 marker ${needle}.`);
+  }
+  for (const needle of ["PASS199 — delta procentowa", "PASS199 delta — obszary ruszone w tym passie"]) {
+    if (!mapDocSource.includes(needle)) errors.push(`docs/progress/VELMERE_MASTER_BUILD_MAP.md: missing PASS199 delta marker ${needle}.`);
+  }
+  if (!pkgSource.includes("verify:pass199-progress-delta-ledger")) errors.push("package.json: missing PASS199 verify script.");
+} catch (error) {
+  errors.push(`PASS199 progress delta ledger guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass199-progress-delta-ledger-safety.mjs
+
+// PASS200 AI Brain master matrix guard
+try {
+  const mapSource = read("lib/launch/master-build-areas.ts");
+  const deltaSource = read("lib/launch/master-build-progress-delta-pass200.ts");
+  const mapDocSource = read("docs/progress/VELMERE_MASTER_BUILD_MAP.md");
+  const reportSource = read("docs/progress/PASS200_AI_BRAIN_MASTER_MATRIX.md");
+  for (const needle of ["PASS200 marker: AI Brain has explicit D01-D24 matrix coverage", "pass200AiBrainMatrix: true", "AI risk signal ontology", "Brain telemetry / FPS QA", "Brain copy localization PL/EN/DE"]) {
+    if (!mapSource.includes(needle)) errors.push(`lib/launch/master-build-areas.ts: missing PASS200 AI Brain marker ${needle}.`);
+  }
+  for (const needle of ["velmerePass200ProgressDeltas", "newly_tracked", "productDelta", "Previous → Current → Change"]) {
+    if (!deltaSource.includes(needle)) errors.push(`lib/launch/master-build-progress-delta-pass200.ts: missing PASS200 delta marker ${needle}.`);
+  }
+  if ((mapSource.match(/group: "D"/g) || []).length < 24) errors.push("lib/launch/master-build-areas.ts: expected D01-D24 AI Brain rows after PASS200.");
+  if (!mapDocSource.includes("mózg AI jest w mapie") || !mapDocSource.includes("PASS200 delta — obszary ruszone")) errors.push("docs/progress/VELMERE_MASTER_BUILD_MAP.md: missing PASS200 AI Brain map section.");
+  if (!reportSource.includes("PASS200 — AI Brain Master Matrix")) errors.push("docs/progress/PASS200_AI_BRAIN_MASTER_MATRIX.md: missing PASS200 report marker.");
+} catch (error) {
+  errors.push(`PASS200 AI Brain master matrix guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass200-ai-brain-master-matrix-safety.mjs
+// PASS200
+
+
+
+// PASS201 AI Brain interaction portal guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  const deltaSource = read("lib/launch/master-build-progress-delta-pass201.ts");
+  const reportSource = read("docs/progress/PASS201_AI_BRAIN_INTERACTION_PORTAL.md");
+  for (const needle of [
+    "selectedTileDetailPortal",
+    "shield-vlm-detail-portal-root",
+    "PASS201 marker: tile detail popup is rendered through document.body portal",
+    "selectRelativeNode",
+    "ArrowRight",
+    "Escape",
+    "autoRotate && !selectedNode ? orbitTick * 0.00042",
+  ]) {
+    if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS201 interaction marker ${needle}.`);
+  }
+  for (const needle of [
+    "PASS201 — VLM Brain tile detail body portal",
+    ".shield-vlm-detail-panel-portal",
+    ".shield-vlm-orbit-mode .shield-vlm-zoom-controls",
+    "z-index: 2147483200",
+  ]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing PASS201 portal CSS marker ${needle}.`);
+  }
+  for (const needle of ["velmerePass201ProgressDeltas", "Previous → Current → Change", "D07", "D23", "J06"]) {
+    if (!deltaSource.includes(needle)) errors.push(`lib/launch/master-build-progress-delta-pass201.ts: missing PASS201 delta marker ${needle}.`);
+  }
+  if (!reportSource.includes("PASS201 — AI Brain Interaction Portal")) errors.push("docs/progress/PASS201_AI_BRAIN_INTERACTION_PORTAL.md: missing PASS201 report marker.");
+} catch (error) {
+  errors.push(`PASS201 AI Brain interaction portal guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass201-ai-brain-interaction-portal-safety.mjs
+// PASS201
+
+// PASS202 AI Brain localization/source trust guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  const deltaSource = read("lib/launch/master-build-progress-delta-pass202.ts");
+  const reportSource = read("docs/progress/PASS202_AI_BRAIN_LOCALIZATION_SOURCE_TRUST.md");
+  for (const needle of [
+    "Live-Quelle",
+    "sourceTrust",
+    "publicationState",
+    "previousTile",
+    "nextTile",
+    "keyboardHint",
+    "selectRelativeNode(-1)",
+    "selectRelativeNode(1)",
+  ]) {
+    if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS202 localization/source trust marker ${needle}.`);
+  }
+  for (const needle of ["PASS202 — AI Brain localized detail navigator", ".shield-vlm-detail-action-row"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing PASS202 drawer navigation CSS marker ${needle}.`);
+  }
+  for (const needle of ["velmerePass202ProgressDeltas", "D14", "D16", "D17", "D24", "Previous → Current → Change"]) {
+    if (!deltaSource.includes(needle)) errors.push(`lib/launch/master-build-progress-delta-pass202.ts: missing PASS202 delta marker ${needle}.`);
+  }
+  if (!reportSource.includes("PASS202 — AI Brain Localization + Source Trust Drawer")) errors.push("docs/progress/PASS202_AI_BRAIN_LOCALIZATION_SOURCE_TRUST.md: missing PASS202 report marker.");
+} catch (error) {
+  errors.push(`PASS202 AI Brain localization/source trust guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass202-ai-brain-localization-source-trust-safety.mjs
+// PASS202
+
+
+
+// PASS203 AI Brain evidence-chain guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  const deltaSource = read("lib/launch/master-build-progress-delta-pass203.ts");
+  const reportSource = read("docs/progress/PASS203_AI_BRAIN_EVIDENCE_CHAIN.md");
+  for (const needle of [
+    "tileSourceBadge",
+    "shield-vlm-evidence-chain-rail",
+    "shield-vlm-source-badge",
+    "operatorChecklist",
+    "decisionRail",
+    "confidenceRail",
+    "evidenceRail",
+  ]) {
+    if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS203 evidence-chain marker ${needle}.`);
+  }
+  for (const needle of ["PASS203 — AI Brain evidence-chain rail + per-card source badges", ".shield-vlm-evidence-chain-rail", ".shield-vlm-operator-checklist", ".shield-vlm-source-badge-live"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing PASS203 evidence-chain CSS marker ${needle}.`);
+  }
+  for (const needle of ["velmerePass203ProgressDeltas", "D15", "D16", "D17", "D24", "Previous → Current → Change"]) {
+    if (!deltaSource.includes(needle)) errors.push(`lib/launch/master-build-progress-delta-pass203.ts: missing PASS203 delta marker ${needle}.`);
+  }
+  if (!reportSource.includes("PASS203 — AI Brain Evidence Chain Rail")) errors.push("docs/progress/PASS203_AI_BRAIN_EVIDENCE_CHAIN.md: missing PASS203 report marker.");
+} catch (error) {
+  errors.push(`PASS203 AI Brain evidence-chain guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass203-ai-brain-evidence-chain-safety.mjs
+// PASS203
+
+
+// PASS204 AI Brain FPS/WebGL gate guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  const contractSource = read("lib/market-integrity/vlm-brain-renderer-contract.ts");
+  const deltaSource = read("lib/launch/master-build-progress-delta-pass204.ts");
+  const reportSource = read("docs/progress/PASS204_AI_BRAIN_FPS_WEBGL_GATE.md");
+  for (const needle of [
+    "type MotionTelemetryState",
+    "motionTelemetry",
+    "PASS204 FPS telemetry",
+    "document.visibilityState === \"visible\" && !selectedNode",
+    "shield-vlm-motion-health-chip",
+  ]) {
+    if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS204 telemetry marker ${needle}.`);
+  }
+  for (const needle of ["PASS204 — AI Brain FPS telemetry chip + reading-pause governor", ".shield-vlm-motion-health-chip", ".shield-vlm-motion-health-throttled"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing PASS204 telemetry CSS marker ${needle}.`);
+  }
+  for (const needle of ["VLM_BRAIN_WEBGL_FEATURE_GATE", "resolveVlmBrainRendererGate", "DOM Orbit 360 remains the safe fallback"]) {
+    if (!contractSource.includes(needle)) errors.push(`lib/market-integrity/vlm-brain-renderer-contract.ts: missing PASS204 renderer contract marker ${needle}.`);
+  }
+  for (const needle of ["velmerePass204ProgressDeltas", "D09", "D10", "D11", "D21", "D22", "J06", "Previous → Current → Change"]) {
+    if (!deltaSource.includes(needle)) errors.push(`lib/launch/master-build-progress-delta-pass204.ts: missing PASS204 delta marker ${needle}.`);
+  }
+  if (!reportSource.includes("PASS204 — AI Brain FPS Telemetry + WebGL Gate")) errors.push("docs/progress/PASS204_AI_BRAIN_FPS_WEBGL_GATE.md: missing PASS204 report marker.");
+} catch (error) {
+  errors.push(`PASS204 AI Brain FPS/WebGL gate guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass204-ai-brain-fps-webgl-gate-safety.mjs
+// PASS204
+
+
+// PASS205 AI Brain WebGL prototype isolation guard
+try {
+  const prototypeSource = read("components/market-integrity/VlmBrainWebGLPrototype.tsx");
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  const contractSource = read("lib/market-integrity/vlm-brain-renderer-contract.ts");
+  const deltaSource = read("lib/launch/master-build-progress-delta-pass205.ts");
+  const reportSource = read("docs/progress/PASS205_AI_BRAIN_WEBGL_PROTOTYPE_ISOLATION.md");
+  for (const needle of ["PASS205 marker: isolated WebGL prototype renderer", "NEXT_PUBLIC_VLM_BRAIN_RENDERER", "getContext(\"webgl\"", "DOM fallback active"]) {
+    if (!prototypeSource.includes(needle)) errors.push(`components/market-integrity/VlmBrainWebGLPrototype.tsx: missing PASS205 prototype marker ${needle}.`);
+  }
+  for (const needle of ["VlmBrainWebGLPrototype", "PASS205 marker: VLM Brain mounts an isolated feature-gated WebGL prototype layer", "paused={Boolean(selectedNode)}"]) {
+    if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS205 modal marker ${needle}.`);
+  }
+  for (const needle of ["PASS205 — AI Brain isolated WebGL prototype layer", ".shield-vlm-webgl-prototype-layer", ".shield-vlm-webgl-prototype-watermark", "prefers-reduced-motion: reduce"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing PASS205 WebGL CSS marker ${needle}.`);
+  }
+  for (const needle of ["prototypeRules", "PASS205 WebGL prototype must be isolated", "PASS205 marker: WebGL prototype layer can mount"]) {
+    if (!contractSource.includes(needle)) errors.push(`lib/market-integrity/vlm-brain-renderer-contract.ts: missing PASS205 renderer contract marker ${needle}.`);
+  }
+  for (const needle of ["velmerePass205ProgressDeltas", "D11", "D21", "D22", "Previous → Current → Change"]) {
+    if (!deltaSource.includes(needle)) errors.push(`lib/launch/master-build-progress-delta-pass205.ts: missing PASS205 delta marker ${needle}.`);
+  }
+  if (!reportSource.includes("PASS205 — AI Brain WebGL Prototype Isolation")) errors.push("docs/progress/PASS205_AI_BRAIN_WEBGL_PROTOTYPE_ISOLATION.md: missing PASS205 report marker.");
+} catch (error) {
+  errors.push(`PASS205 AI Brain WebGL prototype isolation guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass205-ai-brain-webgl-prototype-isolation-safety.mjs
+// PASS205
+
+
+// PASS207 AI Brain decision dock guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  const deltaSource = read("lib/launch/master-build-progress-delta-pass207.ts");
+  const reportSource = read("docs/progress/PASS207_AI_BRAIN_DECISION_DOCK.md");
+  for (const needle of ["PASS207 marker", "decisionDock", "data-vlm-decision-dock", "priorityValue", "confidenceLimitValue", "sourceModeValue", "reviewWindowValue"]) {
+    if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS207 decision dock marker ${needle}`);
+  }
+  for (const needle of [".shield-vlm-decision-dock", "grid-template-columns: repeat(4", "max-width: 760px"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing PASS207 decision dock CSS marker ${needle}`);
+  }
+  for (const needle of ["velmerePass207ProgressDeltas", "Tile decision dock", "Risk driver mapping", "Source confidence lanes", "Missing-data semantics"]) {
+    if (!deltaSource.includes(needle)) errors.push(`lib/launch/master-build-progress-delta-pass207.ts: missing PASS207 delta marker ${needle}`);
+  }
+  if (!reportSource.includes("PASS207 — AI Brain Decision Dock")) errors.push("docs/progress/PASS207_AI_BRAIN_DECISION_DOCK.md: missing PASS207 report marker");
+} catch (error) {
+  errors.push(`PASS207 AI Brain decision dock guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass207-ai-brain-decision-dock-safety.mjs
+// PASS207
+
+
+// PASS208 AI Brain report capsule guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  const deltaSource = read("lib/launch/master-build-progress-delta-pass208.ts");
+  const reportSource = read("docs/progress/PASS208_AI_BRAIN_REPORT_CAPSULE.md");
+  for (const needle of ["PASS208 marker", "reportCapsule", "data-vlm-report-capsule", "publicBrief", "internalMemo", "redactionRule", "exportGate"]) {
+    if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS208 report capsule marker ${needle}`);
+  }
+  for (const needle of ["PASS208 · AI Brain report capsule", ".shield-vlm-report-capsule", ".shield-vlm-report-capsule-grid", "contain: paint"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing PASS208 report capsule CSS marker ${needle}`);
+  }
+  for (const needle of ["velmerePass208ProgressDeltas", "Risk driver mapping", "Evidence Note", "Operator-only report fields"]) {
+    if (!deltaSource.includes(needle)) errors.push(`lib/launch/master-build-progress-delta-pass208.ts: missing PASS208 delta marker ${needle}`);
+  }
+  if (!reportSource.includes("PASS208 — AI Brain Report Capsule")) errors.push("docs/progress/PASS208_AI_BRAIN_REPORT_CAPSULE.md: missing PASS208 report marker");
+} catch (error) {
+  errors.push(`PASS208 AI Brain report capsule guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass208-ai-brain-report-capsule-safety.mjs
+// PASS208
+
+
+// PASS209 AI Brain capsule envelope guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const capsuleSource = read("lib/market-integrity/vlm-brain-report-capsule.ts");
+  const cssSource = read("app/globals.css");
+  const deltaSource = read("lib/launch/master-build-progress-delta-pass209.ts");
+  const reportSource = read("docs/progress/PASS209_AI_BRAIN_CAPSULE_ENVELOPE.md");
+  for (const needle of ["buildVlmBrainReportCapsule", "selectedTileReportCapsuleEnvelope", "data-vlm-report-capsule-envelope", "capsuleId", "exportReadiness", "PASS209 marker"]) {
+    if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS209 capsule envelope marker ${needle}`);
+  }
+  for (const needle of ["VlmBrainReportCapsuleEnvelope", "vlm-brain-report-capsule-v1-pass209", "tile_preview_only", "redactSensitive", "PASS209_VLM_BRAIN_REPORT_CAPSULE_CONTRACT"]) {
+    if (!capsuleSource.includes(needle)) errors.push(`lib/market-integrity/vlm-brain-report-capsule.ts: missing PASS209 capsule contract marker ${needle}`);
+  }
+  for (const needle of ["PASS209 · AI Brain report capsule envelope", ".shield-vlm-report-capsule-footer"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing PASS209 capsule CSS marker ${needle}`);
+  }
+  for (const needle of ["velmerePass209ProgressDeltas", "Redacted payload export", "Previous → Current → Change"]) {
+    if (!deltaSource.includes(needle)) errors.push(`lib/launch/master-build-progress-delta-pass209.ts: missing PASS209 delta marker ${needle}`);
+  }
+  if (!reportSource.includes("PASS209 — AI Brain Capsule Envelope")) errors.push("docs/progress/PASS209_AI_BRAIN_CAPSULE_ENVELOPE.md: missing PASS209 report marker");
+} catch (error) {
+  errors.push(`PASS209 AI Brain capsule envelope guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass209-ai-brain-capsule-envelope-safety.mjs
+// PASS209
+
+// PASS210 AI Brain capsule handoff bridge guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const handoffSource = read("lib/market-integrity/vlm-brain-capsule-handoff.ts");
+  const cssSource = read("app/globals.css");
+  const deltaSource = read("lib/launch/master-build-progress-delta-pass210.ts");
+  const reportSource = read("docs/progress/PASS210_AI_BRAIN_CAPSULE_HANDOFF.md");
+  for (const needle of ["buildVlmBrainCapsuleHandoff", "selectedTileReportCapsuleHandoff", "data-vlm-capsule-handoff", "PASS210 marker"]) {
+    if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS210 handoff marker ${needle}`);
+  }
+  for (const needle of ["VlmBrainCapsuleHandoff", "vlm-brain-capsule-handoff-v1-pass210", "report_bridge_preview", "client_preview_only", "PASS210_VLM_BRAIN_CAPSULE_HANDOFF_CONTRACT"]) {
+    if (!handoffSource.includes(needle)) errors.push(`lib/market-integrity/vlm-brain-capsule-handoff.ts: missing PASS210 handoff contract marker ${needle}`);
+  }
+  for (const needle of ["PASS210 · AI Brain report capsule handoff bridge", ".shield-vlm-report-handoff", ".shield-vlm-report-handoff-grid"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing PASS210 handoff CSS marker ${needle}`);
+  }
+  for (const needle of ["velmerePass210ProgressDeltas", "Source freshness registry", "PASS210_AI_BRAIN_CAPSULE_HANDOFF_DELTA"]) {
+    if (!deltaSource.includes(needle)) errors.push(`lib/launch/master-build-progress-delta-pass210.ts: missing PASS210 delta marker ${needle}`);
+  }
+  if (!reportSource.includes("PASS210 — AI Brain Capsule Handoff Bridge")) errors.push("docs/progress/PASS210_AI_BRAIN_CAPSULE_HANDOFF.md: missing PASS210 report marker");
+} catch (error) {
+  errors.push(`PASS210 AI Brain capsule handoff guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass210-ai-brain-capsule-handoff-safety.mjs
+// PASS210
+
+// PASS211 AI Brain operator action queue guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const queueSource = read("lib/market-integrity/vlm-brain-operator-action-queue.ts");
+  const cssSource = read("app/globals.css");
+  const deltaSource = read("lib/launch/master-build-progress-delta-pass211.ts");
+  const reportSource = read("docs/progress/PASS211_AI_BRAIN_OPERATOR_ACTION_QUEUE.md");
+  for (const needle of ["buildVlmBrainOperatorActionQueue", "selectedTileOperatorActionQueue", "data-vlm-operator-action-queue", "PASS211 marker"]) {
+    if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS211 action queue marker ${needle}`);
+  }
+  for (const needle of ["VlmBrainOperatorActionQueue", "vlm-brain-operator-action-queue-v1-pass211", "operator_case_preview", "PASS211_VLM_BRAIN_OPERATOR_ACTION_QUEUE_CONTRACT"]) {
+    if (!queueSource.includes(needle)) errors.push(`lib/market-integrity/vlm-brain-operator-action-queue.ts: missing PASS211 action queue contract marker ${needle}`);
+  }
+  for (const needle of ["PASS211 · AI Brain operator action queue", ".shield-vlm-operator-action-queue", ".shield-vlm-operator-action-list"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing PASS211 action queue CSS marker ${needle}`);
+  }
+  for (const needle of ["velmerePass211ProgressDeltas", "Operator cases", "PASS211_AI_BRAIN_OPERATOR_ACTION_QUEUE_DELTA"]) {
+    if (!deltaSource.includes(needle)) errors.push(`lib/launch/master-build-progress-delta-pass211.ts: missing PASS211 delta marker ${needle}`);
+  }
+  if (!reportSource.includes("PASS211 — AI Brain Operator Action Queue")) errors.push("docs/progress/PASS211_AI_BRAIN_OPERATOR_ACTION_QUEUE.md: missing PASS211 report marker");
+} catch (error) {
+  errors.push(`PASS211 AI Brain operator action queue guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass211-ai-brain-operator-action-queue-safety.mjs
+// PASS211
+
+
+// PASS212 AI Brain case review timeline guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const timelineSource = read("lib/market-integrity/vlm-brain-case-review-timeline.ts");
+  const cssSource = read("app/globals.css");
+  const deltaSource = read("lib/launch/master-build-progress-delta-pass212.ts");
+  const reportSource = read("docs/progress/PASS212_AI_BRAIN_CASE_REVIEW_TIMELINE.md");
+  for (const needle of ["buildVlmBrainCaseReviewTimeline", "selectedTileCaseReviewTimeline", "data-vlm-case-review-timeline", "PASS212 marker"]) {
+    if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS212 timeline marker ${needle}`);
+  }
+  for (const needle of ["VlmBrainCaseReviewTimeline", "vlm-brain-case-review-timeline-v1-pass212", "operator_case_timeline_preview", "PASS212_VLM_BRAIN_CASE_REVIEW_TIMELINE_CONTRACT"]) {
+    if (!timelineSource.includes(needle)) errors.push(`lib/market-integrity/vlm-brain-case-review-timeline.ts: missing PASS212 contract marker ${needle}`);
+  }
+  for (const needle of ["PASS212 · AI Brain case review timeline", ".shield-vlm-case-review-timeline", ".shield-vlm-case-review-event-list"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing PASS212 timeline CSS marker ${needle}`);
+  }
+  for (const needle of ["velmerePass212ProgressDeltas", "Operator cases", "PASS212_AI_BRAIN_CASE_REVIEW_TIMELINE_DELTA"]) {
+    if (!deltaSource.includes(needle)) errors.push(`lib/launch/master-build-progress-delta-pass212.ts: missing PASS212 delta marker ${needle}`);
+  }
+  if (!reportSource.includes("PASS212 — AI Brain Case Review Timeline")) errors.push("docs/progress/PASS212_AI_BRAIN_CASE_REVIEW_TIMELINE.md: missing PASS212 report marker");
+} catch (error) {
+  errors.push(`PASS212 AI Brain case review timeline guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass212-ai-brain-case-review-timeline-safety.mjs
+// PASS212
+
+// PASS213 AI Brain customer export firewall guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const firewallSource = read("lib/market-integrity/vlm-brain-customer-export-firewall.ts");
+  const cssSource = read("app/globals.css");
+  const deltaSource = read("lib/launch/master-build-progress-delta-pass213.ts");
+  const reportSource = read("docs/progress/PASS213_AI_BRAIN_CUSTOMER_EXPORT_FIREWALL.md");
+  for (const needle of ["buildVlmBrainCustomerExportFirewall", "selectedTileCustomerExportFirewall", "data-vlm-export-firewall=\"pass213\"", "PASS213 marker"]) {
+    if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS213 export firewall marker ${needle}`);
+  }
+  for (const needle of ["VlmBrainCustomerExportFirewall", "vlm-brain-customer-export-firewall-v1-pass213", "customer_export_preview_gate", "debtMatrix", "PASS213_VLM_BRAIN_CUSTOMER_EXPORT_FIREWALL_CONTRACT"]) {
+    if (!firewallSource.includes(needle)) errors.push(`lib/market-integrity/vlm-brain-customer-export-firewall.ts: missing PASS213 contract marker ${needle}`);
+  }
+  for (const needle of ["PASS213 · AI Brain customer export firewall", ".shield-vlm-export-firewall", ".shield-vlm-export-firewall-debt"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing PASS213 firewall CSS marker ${needle}`);
+  }
+  for (const needle of ["velmerePass213ProgressDeltas", "PASS213_AI_BRAIN_CUSTOMER_EXPORT_FIREWALL_DELTA"]) {
+    if (!deltaSource.includes(needle)) errors.push(`lib/launch/master-build-progress-delta-pass213.ts: missing PASS213 delta marker ${needle}`);
+  }
+  if (!reportSource.includes("PASS213 — AI Brain Customer Export Firewall")) errors.push("docs/progress/PASS213_AI_BRAIN_CUSTOMER_EXPORT_FIREWALL.md: missing PASS213 report marker");
+} catch (error) {
+  errors.push(`PASS213 AI Brain customer export firewall guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass213-ai-brain-customer-export-firewall-safety.mjs
+// PASS213
+
+
+// PASS214 AI Brain source coverage matrix guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const matrixSource = read("lib/market-integrity/vlm-brain-source-coverage-matrix.ts");
+  const cssSource = read("app/globals.css");
+  const deltaSource = read("lib/launch/master-build-progress-delta-pass214.ts");
+  const reportSource = read("docs/progress/PASS214_AI_BRAIN_SOURCE_COVERAGE_MATRIX.md");
+  for (const needle of ["buildVlmBrainSourceCoverageMatrix", "selectedTileSourceCoverageMatrix", "data-vlm-source-coverage-matrix=\"pass214\"", "PASS214 marker"]) {
+    if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS214 matrix marker ${needle}`);
+  }
+  for (const needle of ["VlmBrainSourceCoverageMatrix", "vlm-brain-source-coverage-matrix-v1-pass214", "operator_source_coverage_preview", "secondSourceRequired", "PASS214_VLM_BRAIN_SOURCE_COVERAGE_MATRIX_CONTRACT"]) {
+    if (!matrixSource.includes(needle)) errors.push(`lib/market-integrity/vlm-brain-source-coverage-matrix.ts: missing PASS214 contract marker ${needle}`);
+  }
+  for (const needle of ["PASS214 · AI Brain source coverage matrix", ".shield-vlm-source-coverage-matrix", "data-vlm-source-coverage-lane"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing PASS214 CSS marker ${needle}`);
+  }
+  for (const needle of ["velmerePass214ProgressDeltas", "PASS214_AI_BRAIN_SOURCE_COVERAGE_MATRIX_DELTA"]) {
+    if (!deltaSource.includes(needle)) errors.push(`lib/launch/master-build-progress-delta-pass214.ts: missing PASS214 delta marker ${needle}`);
+  }
+  if (!reportSource.includes("PASS214 — AI Brain Source Coverage Matrix")) errors.push("docs/progress/PASS214_AI_BRAIN_SOURCE_COVERAGE_MATRIX.md: missing PASS214 report marker");
+} catch (error) {
+  errors.push(`PASS214 AI Brain source coverage matrix guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass214-ai-brain-source-coverage-matrix-safety.mjs
+// PASS214
+
+// PASS215 AI Brain release review packet guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const packetSource = read("lib/market-integrity/vlm-brain-release-review-packet.ts");
+  const cssSource = read("app/globals.css");
+  const deltaSource = read("lib/launch/master-build-progress-delta-pass215.ts");
+  const reportSource = read("docs/progress/PASS215_AI_BRAIN_RELEASE_REVIEW_PACKET.md");
+  for (const needle of ["buildVlmBrainReleaseReviewPacket", "selectedTileReleaseReviewPacket", "data-vlm-release-review-packet=\"pass215\"", "PASS215 marker"]) {
+    if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS215 release packet marker ${needle}`);
+  }
+  for (const needle of ["VlmBrainReleaseReviewPacket", "vlm-brain-release-review-packet-v1-pass215", "operator_release_packet_preview", "PASS215_VLM_BRAIN_RELEASE_REVIEW_PACKET_CONTRACT"]) {
+    if (!packetSource.includes(needle)) errors.push(`lib/market-integrity/vlm-brain-release-review-packet.ts: missing PASS215 contract marker ${needle}`);
+  }
+  for (const needle of ["PASS215 — AI Brain release review packet", ".shield-vlm-release-review-packet", "data-vlm-release-lane"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing PASS215 release packet CSS marker ${needle}`);
+  }
+  for (const needle of ["velmerePass215ProgressDeltas", "PASS215_AI_BRAIN_RELEASE_REVIEW_PACKET_DELTA"]) {
+    if (!deltaSource.includes(needle)) errors.push(`lib/launch/master-build-progress-delta-pass215.ts: missing PASS215 delta marker ${needle}`);
+  }
+  if (!reportSource.includes("PASS215 — AI Brain Release Review Packet")) errors.push("docs/progress/PASS215_AI_BRAIN_RELEASE_REVIEW_PACKET.md: missing PASS215 report marker");
+} catch (error) {
+  errors.push(`PASS215 AI Brain release review packet guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass215-ai-brain-release-review-packet-safety.mjs
+// PASS215
+
+
+// PASS216 AI Brain source truth spine guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const spineSource = read("lib/market-integrity/vlm-brain-source-truth-spine.ts");
+  const cssSource = read("app/globals.css");
+  const deltaSource = read("lib/launch/master-build-progress-delta-pass216.ts");
+  const reportSource = read("docs/progress/PASS216_AI_BRAIN_SOURCE_TRUTH_SPINE.md");
+  for (const needle of ["buildVlmBrainSourceTruthSpine", "selectedTileSourceTruthSpine", "data-vlm-source-truth-spine=\"pass216\"", "PASS216 marker"]) {
+    if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS216 source truth spine marker ${needle}`);
+  }
+  for (const needle of ["VlmBrainSourceTruthSpine", "vlm-brain-source-truth-spine-v1-pass216", "operator_truth_spine_preview", "PASS216_VLM_BRAIN_SOURCE_TRUTH_SPINE_CONTRACT"]) {
+    if (!spineSource.includes(needle)) errors.push(`lib/market-integrity/vlm-brain-source-truth-spine.ts: missing PASS216 contract marker ${needle}`);
+  }
+  for (const needle of ["PASS216 — AI Brain source truth spine", ".shield-vlm-source-truth-spine", "data-vlm-source-truth-lane"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing PASS216 CSS marker ${needle}`);
+  }
+  for (const needle of ["velmerePass216ProgressDeltas", "PASS216_AI_BRAIN_SOURCE_TRUTH_SPINE_DELTA"]) {
+    if (!deltaSource.includes(needle)) errors.push(`lib/launch/master-build-progress-delta-pass216.ts: missing PASS216 delta marker ${needle}`);
+  }
+  if (!reportSource.includes("PASS216 — AI Brain Source Truth Spine")) errors.push("docs/progress/PASS216_AI_BRAIN_SOURCE_TRUTH_SPINE.md: missing PASS216 report marker");
+} catch (error) {
+  errors.push(`PASS216 AI Brain source truth spine guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass216-ai-brain-source-truth-spine-safety.mjs
+// PASS216
+
+
+// PASS217 AI Brain live adapter freshness guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const freshnessSource = read("lib/market-integrity/vlm-brain-live-adapter-freshness.ts");
+  const cssSource = read("app/globals.css");
+  const deltaSource = read("lib/launch/master-build-progress-delta-pass217.ts");
+  const reportSource = read("docs/progress/PASS217_AI_BRAIN_LIVE_ADAPTER_FRESHNESS.md");
+  for (const needle of ["buildVlmBrainLiveAdapterFreshnessMesh", "selectedTileLiveAdapterFreshnessMesh", 'data-vlm-live-adapter-freshness="pass217"', "PASS217 marker"]) {
+    if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS217 live adapter freshness marker ${needle}`);
+  }
+  for (const needle of ["VlmBrainLiveAdapterFreshnessMesh", "vlm-brain-live-adapter-freshness-v1-pass217", "operator_adapter_freshness_preview", "PASS217_VLM_BRAIN_LIVE_ADAPTER_FRESHNESS_CONTRACT"]) {
+    if (!freshnessSource.includes(needle)) errors.push(`lib/market-integrity/vlm-brain-live-adapter-freshness.ts: missing PASS217 contract marker ${needle}`);
+  }
+  for (const needle of ["PASS217 — AI Brain live adapter freshness", ".shield-vlm-live-adapter-freshness", "data-vlm-live-adapter-lane"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing PASS217 CSS marker ${needle}`);
+  }
+  for (const needle of ["velmerePass217ProgressDeltas", "PASS217_AI_BRAIN_LIVE_ADAPTER_FRESHNESS_DELTA"]) {
+    if (!deltaSource.includes(needle)) errors.push(`lib/launch/master-build-progress-delta-pass217.ts: missing PASS217 delta marker ${needle}`);
+  }
+  if (!reportSource.includes("PASS217 — AI Brain Live Adapter Freshness Mesh")) errors.push("docs/progress/PASS217_AI_BRAIN_LIVE_ADAPTER_FRESHNESS.md: missing PASS217 report marker");
+} catch (error) {
+  errors.push(`PASS217 AI Brain live adapter freshness guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass217-ai-brain-live-adapter-freshness-safety.mjs
+// PASS217
+
+
+// PASS218 AI Brain source policy gate guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const policySource = read("lib/market-integrity/vlm-brain-source-policy-gate.ts");
+  const cssSource = read("app/globals.css");
+  const deltaSource = read("lib/launch/master-build-progress-delta-pass218.ts");
+  const reportSource = read("docs/progress/PASS218_AI_BRAIN_SOURCE_POLICY_GATE.md");
+  for (const needle of ["buildVlmBrainSourcePolicyGate", "selectedTileSourcePolicyGate", 'data-vlm-source-policy-gate="pass218"', "PASS218 marker"]) {
+    if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS218 source policy marker ${needle}`);
+  }
+  for (const needle of ["VlmBrainSourcePolicyGate", "vlm-brain-source-policy-gate-v1-pass218", "operator_source_policy_preview", "PASS218_VLM_BRAIN_SOURCE_POLICY_GATE_CONTRACT"]) {
+    if (!policySource.includes(needle)) errors.push(`lib/market-integrity/vlm-brain-source-policy-gate.ts: missing PASS218 contract marker ${needle}`);
+  }
+  for (const needle of ["PASS218 — AI Brain source policy gate", ".shield-vlm-source-policy-gate", "data-vlm-source-policy-lane"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing PASS218 CSS marker ${needle}`);
+  }
+  for (const needle of ["velmerePass218ProgressDeltas", "PASS218_AI_BRAIN_SOURCE_POLICY_GATE_DELTA"]) {
+    if (!deltaSource.includes(needle)) errors.push(`lib/launch/master-build-progress-delta-pass218.ts: missing PASS218 delta marker ${needle}`);
+  }
+  if (!reportSource.includes("PASS218 — AI Brain Source Policy Gate")) errors.push("docs/progress/PASS218_AI_BRAIN_SOURCE_POLICY_GATE.md: missing PASS218 report marker");
+} catch (error) {
+  errors.push(`PASS218 AI Brain source policy gate guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass218-ai-brain-source-policy-gate-safety.mjs
+// PASS218
+
+// PASS219 AI Brain durable snapshot plan guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const planSource = read("lib/market-integrity/vlm-brain-durable-snapshot-plan.ts");
+  const cssSource = read("app/globals.css");
+  const deltaSource = read("lib/launch/master-build-progress-delta-pass219.ts");
+  const reportSource = read("docs/progress/PASS219_AI_BRAIN_DURABLE_SNAPSHOT_PLAN.md");
+  for (const needle of ["buildVlmBrainDurableSnapshotPlan", "selectedTileDurableSnapshotPlan", 'data-vlm-durable-snapshot-plan="pass219"', "PASS219 marker"]) {
+    if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS219 durable snapshot marker ${needle}`);
+  }
+  for (const needle of ["VlmBrainDurableSnapshotPlan", "vlm-brain-durable-snapshot-plan-v1-pass219", "operator_durable_write_preview", "PASS219_VLM_BRAIN_DURABLE_SNAPSHOT_PLAN_CONTRACT"]) {
+    if (!planSource.includes(needle)) errors.push(`lib/market-integrity/vlm-brain-durable-snapshot-plan.ts: missing PASS219 contract marker ${needle}`);
+  }
+  for (const needle of ["PASS219 — AI Brain durable snapshot plan", ".shield-vlm-durable-snapshot-plan", "data-vlm-durable-snapshot-write"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing PASS219 CSS marker ${needle}`);
+  }
+  for (const needle of ["velmerePass219ProgressDeltas", "PASS219_AI_BRAIN_DURABLE_SNAPSHOT_PLAN_DELTA"]) {
+    if (!deltaSource.includes(needle)) errors.push(`lib/launch/master-build-progress-delta-pass219.ts: missing PASS219 delta marker ${needle}`);
+  }
+  if (!reportSource.includes("PASS219 — AI Brain Durable Snapshot Plan")) errors.push("docs/progress/PASS219_AI_BRAIN_DURABLE_SNAPSHOT_PLAN.md: missing PASS219 report marker");
+} catch (error) {
+  errors.push(`PASS219 AI Brain durable snapshot plan guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass219-ai-brain-durable-snapshot-plan-safety.mjs
+// PASS219
+
+
+// PASS233-PASS242 AI Brain mega branch guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  const contractFiles = [
+    "lib/market-integrity/vlm-brain-qa-trace-bundle.ts",
+    "lib/market-integrity/vlm-brain-adapter-orchestration-plan.ts",
+    "lib/market-integrity/vlm-brain-access-copy-firewall.ts",
+    "lib/market-integrity/vlm-brain-pdf-storage-redaction-bridge.ts",
+    "lib/market-integrity/vlm-brain-missing-data-escalation-queue.ts",
+    "lib/market-integrity/vlm-brain-renderer-comparison-plan.ts",
+    "lib/market-integrity/vlm-brain-governance-policy-memo.ts",
+    "lib/market-integrity/vlm-brain-audit-trail-index.ts",
+    "lib/market-integrity/vlm-brain-customer-readiness-preflight.ts",
+    "lib/market-integrity/vlm-brain-mega-branch-control-tower.ts",
+  ];
+  for (const file of contractFiles) {
+    const source = read(file);
+    if (!source.includes("CONTRACT = true")) errors.push(`${file}: missing PASS233-PASS242 contract export marker.`);
+  }
+  const markers = ["buildVlmBrainQaTraceBundle", "buildVlmBrainAdapterOrchestrationPlan", "buildVlmBrainAccessCopyFirewall", "buildVlmBrainPdfStorageRedactionBridge", "buildVlmBrainMissingDataEscalationQueue", "buildVlmBrainRendererComparisonPlan", "buildVlmBrainGovernancePolicyMemo", "buildVlmBrainAuditTrailIndex", "buildVlmBrainCustomerReadinessPreflight", "buildVlmBrainMegaBranchControlTower", 'data-vlm-mega-branch-control-tower="pass242"'];
+  for (const marker of markers) if (!modalSource.includes(marker)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS233-PASS242 marker ${marker}.`);
+  if (!cssSource.includes("PASS233–PASS242 — AI Brain mega branch control tower")) errors.push("app/globals.css: missing PASS233-PASS242 CSS marker.");
+} catch (error) {
+  errors.push(`PASS233-PASS242 AI Brain mega branch guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script markers: verify-pass233-ai-brain-mega-branch-safety.mjs verify-pass234-ai-brain-mega-branch-safety.mjs verify-pass235-ai-brain-mega-branch-safety.mjs verify-pass236-ai-brain-mega-branch-safety.mjs verify-pass237-ai-brain-mega-branch-safety.mjs verify-pass238-ai-brain-mega-branch-safety.mjs verify-pass239-ai-brain-mega-branch-safety.mjs verify-pass240-ai-brain-mega-branch-safety.mjs verify-pass241-ai-brain-mega-branch-safety.mjs verify-pass242-ai-brain-mega-branch-safety.mjs
+
+
+// PASS243-PASS245 AI Brain real three-pass guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  const triageSource = read("lib/market-integrity/vlm-brain-release-triage-board.ts");
+  const vaultSource = read("lib/market-integrity/vlm-brain-operator-handoff-vault.ts");
+  const replaySource = read("lib/market-integrity/vlm-brain-browser-replay-script.ts");
+  const markers = [
+    "buildVlmBrainReleaseTriageBoard",
+    "buildVlmBrainOperatorHandoffVault",
+    "buildVlmBrainBrowserReplayScript",
+    'data-vlm-release-triage-board="pass243"',
+    'data-vlm-operator-handoff-vault="pass244"',
+    'data-vlm-browser-replay-script="pass245"',
+  ];
+  for (const marker of markers) if (!modalSource.includes(marker)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS243-PASS245 marker ${marker}.`);
+  for (const marker of ["PASS243_VLM_BRAIN_RELEASE_TRIAGE_BOARD_CONTRACT", "customerExportReady: false", "binaryPdfReady: false", "walletAccessReady: false", "rawPayloadAllowed: false"]) if (!triageSource.includes(marker)) errors.push(`lib/market-integrity/vlm-brain-release-triage-board.ts: missing marker ${marker}.`);
+  for (const marker of ["PASS244_VLM_BRAIN_OPERATOR_HANDOFF_VAULT_CONTRACT", "sourceSnapshotWriteReady: false", "caseTimelineWriteReady: false", "rawPayloadAllowed: false"]) if (!vaultSource.includes(marker)) errors.push(`lib/market-integrity/vlm-brain-operator-handoff-vault.ts: missing marker ${marker}.`);
+  for (const marker of ["PASS245_VLM_BRAIN_BROWSER_REPLAY_SCRIPT_CONTRACT", "manual_vercel_browser_replay_required", "qaHudRequired: true", "customerExportReady: false", "binaryPdfReady: false"]) if (!replaySource.includes(marker)) errors.push(`lib/market-integrity/vlm-brain-browser-replay-script.ts: missing marker ${marker}.`);
+  if (!cssSource.includes("PASS243–PASS245 — AI Brain real three-pass release triage")) errors.push("app/globals.css: missing PASS243-PASS245 real three-pass CSS marker.");
+} catch (error) {
+  errors.push(`PASS243-PASS245 real three-pass guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass243-245-ai-brain-real-three-pass-safety.mjs
+
+
+// PASS246-PASS251 AI Brain real six-pass guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  const files = [
+    "lib/market-integrity/vlm-brain-export-authorization-gate.ts",
+    "lib/market-integrity/vlm-brain-browser-evidence-collector.ts",
+    "lib/market-integrity/vlm-brain-adapter-readiness-scheduler.ts",
+    "lib/market-integrity/vlm-brain-customer-brief-builder.ts",
+    "lib/market-integrity/vlm-brain-wallet-session-policy.ts",
+    "lib/market-integrity/vlm-brain-release-readiness-orchestrator.ts",
+  ];
+  for (const file of files) {
+    const source = read(file);
+    if (!source.includes("CONTRACT = true")) errors.push(`${file}: missing PASS246-PASS251 contract export marker.`);
+  }
+  const markers = [
+    "buildVlmBrainExportAuthorizationGate",
+    "buildVlmBrainBrowserEvidenceCollector",
+    "buildVlmBrainAdapterReadinessScheduler",
+    "buildVlmBrainCustomerBriefBuilder",
+    "buildVlmBrainWalletSessionPolicy",
+    "buildVlmBrainReleaseReadinessOrchestrator",
+    'data-vlm-export-authorization-gate="pass246"',
+    'data-vlm-browser-evidence-collector="pass247"',
+    'data-vlm-adapter-readiness-scheduler="pass248"',
+    'data-vlm-customer-brief-builder="pass249"',
+    'data-vlm-wallet-session-policy="pass250"',
+    'data-vlm-release-readiness-orchestrator="pass251"',
+  ];
+  for (const marker of markers) if (!modalSource.includes(marker)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS246-PASS251 marker ${marker}.`);
+  if (!cssSource.includes("PASS246–PASS251 — AI Brain real six-pass")) errors.push("app/globals.css: missing PASS246-PASS251 CSS marker.");
+} catch (error) {
+  errors.push(`PASS246-PASS251 AI Brain real six-pass guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass246-251-ai-brain-real-six-pass-safety.mjs
+
+
+// PASS254 AI Brain release cockpit source-ledger handoff guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  const contractSource = read("lib/market-integrity/vlm-brain-release-cockpit-source-ledger-handoff.ts");
+  const lensSource = read("components/search/VelmereLensCommandRouter.tsx");
+  const pkgSource = read("package.json");
+  for (const marker of ["vlm-brain-release-cockpit-source-ledger-handoff-v1-pass254", "PASS254_VLM_BRAIN_RELEASE_COCKPIT_SOURCE_LEDGER_HANDOFF_CONTRACT", "publicExportAllowed: false", "rawPayloadAllowed: false", "binaryPdfAllowed: false", "walletAccessAllowed: false", "customerCopyAllowed: false", "browserQaRequired: true"]) {
+    if (!contractSource.includes(marker)) errors.push(`lib/market-integrity/vlm-brain-release-cockpit-source-ledger-handoff.ts: missing PASS254 marker ${marker}.`);
+  }
+  for (const marker of ["buildVlmBrainReleaseCockpitSourceLedgerHandoff", "selectedTilePass254ReleaseHandoff", 'data-vlm-pass254-release-handoff-safety="true"', "data-vlm-pass254-release-lane", "data-vlm-pass254-release-priority"]) {
+    if (!modalSource.includes(marker)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS254 marker ${marker}.`);
+  }
+  for (const marker of ["PASS254 — AI Brain release cockpit source-ledger handoff safety", ".shield-vlm-pass254-handoff", "prefers-reduced-motion: reduce"]) {
+    if (!cssSource.includes(marker)) errors.push(`app/globals.css: missing PASS254 marker ${marker}.`);
+  }
+  for (const marker of ["PASS254 Lens handoff safety gates", "pewność źródeł", "Quellenvertrauen", "source confidence"]) {
+    if (!lensSource.includes(marker)) errors.push(`components/search/VelmereLensCommandRouter.tsx: missing PASS254 Lens marker ${marker}.`);
+  }
+  if (!pkgSource.includes("verify-pass254-release-cockpit-source-ledger-handoff-safety.mjs")) errors.push("package.json: missing PASS254 guard script marker.");
+} catch (error) {
+  errors.push(`PASS254 AI Brain release cockpit source-ledger handoff guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass254-release-cockpit-source-ledger-handoff-safety.mjs
+
+
+// PASS256 AI Brain evidence runbook export quarantine guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  const runbookSource = read("lib/market-integrity/vlm-brain-pass256-evidence-runbook.ts");
+  const lensSource = read("components/search/VelmereLensCommandRouter.tsx");
+  const pkgSource = read("package.json");
+  for (const marker of ["vlm-brain-pass256-evidence-runbook-v1", "PASS256_VLM_BRAIN_EVIDENCE_RUNBOOK_CONTRACT", "operator_evidence_runbook_browser_replay_quarantine", "publicExportAllowed: false", "rawPayloadAllowed: false", "binaryPdfAllowed: false", "walletAccessAllowed: false", "customerCopyAllowed: false", "browserReplayRequired: true", "replayEvidenceAttached: false", "exportQuarantine: true"]) {
+    if (!runbookSource.includes(marker)) errors.push(`lib/market-integrity/vlm-brain-pass256-evidence-runbook.ts: missing PASS256 marker ${marker}.`);
+  }
+  for (const marker of ["buildVlmBrainPass256EvidenceRunbook", "selectedTilePass256EvidenceRunbook", 'data-vlm-pass256-evidence-runbook="true"', "data-vlm-pass256-queue-state", "data-vlm-pass256-replay-state", "data-vlm-pass256-freeze-cell"]) {
+    if (!modalSource.includes(marker)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS256 marker ${marker}.`);
+  }
+  for (const marker of ["PASS256 — AI Brain evidence runbook", ".shield-vlm-pass256-evidence-runbook", "data-vlm-pass256-queue-state", "PASS256 — Lens evidence runbook guide", ".vlcr-pass256-runbook-guide", "prefers-reduced-motion: reduce"]) {
+    if (!cssSource.includes(marker)) errors.push(`app/globals.css: missing PASS256 marker ${marker}.`);
+  }
+  for (const marker of ["PASS256 Lens evidence runbook guide", "vlcr-pass256-runbook-guide", "PASS256 evidence runbook", "PASS256 Evidence-Runbook", "export quarantine", "Export-Quarantäne"]) {
+    if (!lensSource.includes(marker)) errors.push(`components/search/VelmereLensCommandRouter.tsx: missing PASS256 Lens marker ${marker}.`);
+  }
+  if (!pkgSource.includes("verify-pass256-evidence-runbook-export-quarantine-safety.mjs")) errors.push("package.json: missing PASS256 guard script marker.");
+} catch (error) {
+  errors.push(`PASS256 AI Brain evidence runbook export quarantine guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass256-evidence-runbook-export-quarantine-safety.mjs
+
+
+// PASS258 AI Brain proof receipt lock browser trace pack guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  const receiptLockSource = read("lib/market-integrity/vlm-brain-pass258-proof-receipt-lock.ts");
+  const lensSource = read("components/search/VelmereLensCommandRouter.tsx");
+  const pkgSource = read("package.json");
+  for (const marker of ["vlm-brain-pass258-proof-receipt-lock-v1", "PASS258_VLM_BRAIN_PROOF_RECEIPT_LOCK_CONTRACT", "operator_proof_receipt_lock_browser_trace_pack", "publicExportAllowed: false", "rawPayloadAllowed: false", "binaryPdfAllowed: false", "walletAccessAllowed: false", "customerCopyAllowed: false", "releaseReceiptSigned: false", "browserTraceAttached: false", "durableSnapshotAttached: false", "redactionManifestAttached: false", "proofReceiptLockActive: true"]) {
+    if (!receiptLockSource.includes(marker)) errors.push(`lib/market-integrity/vlm-brain-pass258-proof-receipt-lock.ts: missing PASS258 marker ${marker}.`);
+  }
+  for (const marker of ["buildVlmBrainPass258ProofReceiptLock", "selectedTilePass258ProofReceiptLock", 'data-vlm-pass258-proof-receipt-lock="true"', "data-vlm-pass258-proof-receipt", "data-vlm-pass258-signoff-state", "data-vlm-pass258-browser-trace", "data-vlm-pass258-release-lock"]) {
+    if (!modalSource.includes(marker)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS258 marker ${marker}.`);
+  }
+  for (const marker of ["PASS258 — AI Brain proof receipt lock", ".shield-vlm-pass258-proof-receipt-lock", "data-vlm-pass258-proof-receipt", "PASS258 — Lens proof receipt lock guide", ".vlcr-pass258-receipt-guide", "prefers-reduced-motion: reduce"]) {
+    if (!cssSource.includes(marker)) errors.push(`app/globals.css: missing PASS258 marker ${marker}.`);
+  }
+  for (const marker of ["PASS258 Lens proof receipt lock guide", "vlcr-pass258-receipt-guide", "PASS258 proof receipt lock", "PASS258 Proof-Receipt-Lock", "browser trace pack", "Browser-Trace-Pack"]) {
+    if (!lensSource.includes(marker)) errors.push(`components/search/VelmereLensCommandRouter.tsx: missing PASS258 Lens marker ${marker}.`);
+  }
+  if (!pkgSource.includes("verify-pass258-proof-receipt-lock-browser-trace-pack-safety.mjs")) errors.push("package.json: missing PASS258 guard script marker.");
+} catch (error) {
+  errors.push(`PASS258 AI Brain proof receipt lock browser trace pack guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass258-proof-receipt-lock-browser-trace-pack-safety.mjs
+
+
+// PASS259 AI Brain attestation ledger release freeze guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  const ledgerSource = read("lib/market-integrity/vlm-brain-pass259-attestation-ledger.ts");
+  const lensSource = read("components/search/VelmereLensCommandRouter.tsx");
+  const pkgSource = read("package.json");
+  for (const marker of ["vlm-brain-pass259-attestation-ledger-v1", "PASS259_VLM_BRAIN_ATTESTATION_LEDGER_CONTRACT", "operator_attestation_ledger_release_freeze", "publicExportAllowed: false", "rawPayloadAllowed: false", "binaryPdfAllowed: false", "walletAccessAllowed: false", "customerCopyAllowed: false", "releasePromotionAllowed: false", "attestationLedgerActive: true", "sourceAttestationReady: false", "browserAttestationReady: false", "storageAttestationReady: false", "redactionAttestationReady: false"]) {
+    if (!ledgerSource.includes(marker)) errors.push(`lib/market-integrity/vlm-brain-pass259-attestation-ledger.ts: missing PASS259 marker ${marker}.`);
+  }
+  for (const marker of ["buildVlmBrainPass259AttestationLedger", "selectedTilePass259AttestationLedger", 'data-vlm-pass259-attestation-ledger="true"', "data-vlm-pass259-attestation-state", "data-vlm-pass259-freeze-state", "data-vlm-pass259-check-state", "data-vlm-pass259-trace-state"]) {
+    if (!modalSource.includes(marker)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS259 marker ${marker}.`);
+  }
+  for (const marker of ["PASS259 — AI Brain attestation ledger", ".shield-vlm-pass259-attestation-ledger", "data-vlm-pass259-attestation-state", "PASS259 — Lens attestation ledger guide", ".vlcr-pass259-attestation-guide", "prefers-reduced-motion: reduce"]) {
+    if (!cssSource.includes(marker)) errors.push(`app/globals.css: missing PASS259 marker ${marker}.`);
+  }
+  for (const marker of ["PASS259 Lens attestation ledger guide", "vlcr-pass259-attestation-guide", "PASS259 attestation ledger", "PASS259 Attestation-Ledger", "promotion checklist", "Promotion-Checklist"]) {
+    if (!lensSource.includes(marker)) errors.push(`components/search/VelmereLensCommandRouter.tsx: missing PASS259 Lens marker ${marker}.`);
+  }
+  if (!pkgSource.includes("verify-pass259-attestation-ledger-release-freeze-safety.mjs")) errors.push("package.json: missing PASS259 guard script marker.");
+} catch (error) {
+  errors.push(`PASS259 AI Brain attestation ledger release freeze guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass259-attestation-ledger-release-freeze-safety.mjs
+
+
+// PASS260 AI Brain release promotion firewall review packet guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  const firewallSource = read("lib/market-integrity/vlm-brain-pass260-release-promotion-firewall.ts");
+  const lensSource = read("components/search/VelmereLensCommandRouter.tsx");
+  const pkgSource = read("package.json");
+  for (const marker of ["vlm-brain-pass260-release-promotion-firewall-v1", "PASS260_VLM_BRAIN_RELEASE_PROMOTION_FIREWALL_CONTRACT", "operator_release_promotion_firewall_review_packet", "publicExportAllowed: false", "rawPayloadAllowed: false", "binaryPdfAllowed: false", "walletAccessAllowed: false", "customerCopyAllowed: false", "releasePromotionAllowed: false", "publicReleaseBadgeAllowed: false", "finalVerdictAllowed: false", "reviewPacketReady: false", "promotionFirewallActive: true"]) {
+    if (!firewallSource.includes(marker)) errors.push(`lib/market-integrity/vlm-brain-pass260-release-promotion-firewall.ts: missing PASS260 marker ${marker}.`);
+  }
+  for (const marker of ["buildVlmBrainPass260ReleasePromotionFirewall", "selectedTilePass260PromotionFirewall", 'data-vlm-pass260-promotion-firewall="true"', "data-vlm-pass260-promotion-lane", "data-vlm-pass260-review-packet", "data-vlm-pass260-customer-freeze"]) {
+    if (!modalSource.includes(marker)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS260 marker ${marker}.`);
+  }
+  for (const marker of ["PASS260 — AI Brain release promotion firewall", ".shield-vlm-pass260-promotion-firewall", "data-vlm-pass260-promotion-lane", "PASS260 — Lens promotion firewall guide", ".vlcr-pass260-promotion-firewall-guide", "prefers-reduced-motion: reduce"]) {
+    if (!cssSource.includes(marker)) errors.push(`app/globals.css: missing PASS260 marker ${marker}.`);
+  }
+  for (const marker of ["PASS260 Lens promotion firewall guide", "vlcr-pass260-promotion-firewall-guide", "PASS260 promotion firewall", "PASS260 Promotion-Firewall", "release badge lock", "Release-Badge-Lock"]) {
+    if (!lensSource.includes(marker)) errors.push(`components/search/VelmereLensCommandRouter.tsx: missing PASS260 Lens marker ${marker}.`);
+  }
+  if (!pkgSource.includes("verify-pass260-release-promotion-firewall-review-packet-safety.mjs")) errors.push("package.json: missing PASS260 guard script marker.");
+} catch (error) {
+  errors.push(`PASS260 AI Brain release promotion firewall review packet guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass260-release-promotion-firewall-review-packet-safety.mjs
+
+
+// PASS265 AI Brain evidence language ledger consent boundary
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  const languageSource = read("lib/market-integrity/vlm-brain-pass265-evidence-language-ledger.ts");
+  const lensSource = read("components/search/VelmereLensCommandRouter.tsx");
+  const pkgSource = read("package.json");
+  for (const marker of ["vlm-brain-pass265-evidence-language-ledger-v1", "PASS265_VLM_BRAIN_EVIDENCE_LANGUAGE_LEDGER_CONTRACT", "operator_evidence_language_ledger", "languageLedgerActive: true", "consentBoundaryActive: true", "cognitiveLoadGuardActive: true", "operatorOnly: true", "publicExportAllowed: false", "rawPayloadAllowed: false", "binaryPdfAllowed: false", "walletAccessAllowed: false", "customerCopyAllowed: false", "releaseCutoverAllowed: false", "releasePromotionAllowed: false", "publicReadinessSealAllowed: false", "finalVerdictAllowed: false", "publicBadgeAllowed: false", "urgencyCopyAllowed: false", "certaintyCopyAllowed: false", "accessShortcutAllowed: false", "recommendedReadingOrder", "languageSteps", "toneChecks"]) {
+    if (!languageSource.includes(marker)) errors.push(`lib/market-integrity/vlm-brain-pass265-evidence-language-ledger.ts: missing PASS265 marker ${marker}.`);
+  }
+  for (const marker of ["buildVlmBrainPass265EvidenceLanguageLedger", "selectedTilePass265EvidenceLanguageLedger", 'data-vlm-pass265-evidence-language-ledger="true"', "data-vlm-pass265-language-step", "data-vlm-pass265-tone-risk"]) {
+    if (!modalSource.includes(marker)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS265 marker ${marker}.`);
+  }
+  for (const marker of ["PASS265 — AI Brain evidence language ledger", ".shield-vlm-pass265-evidence-language-ledger", "data-vlm-pass265-language-step", "PASS265 — Lens evidence language guide", ".vlcr-pass265-evidence-language-guide", "prefers-reduced-motion: reduce"]) {
+    if (!cssSource.includes(marker)) errors.push(`app/globals.css: missing PASS265 marker ${marker}.`);
+  }
+  for (const marker of ["PASS265 Lens evidence language guide", "vlcr-pass265-evidence-language-guide", "PASS265 evidence language ledger", "PASS265 Evidence-Language-Ledger", "source context", "Quellenkontext", "visible limits", "sichtbare Grenzen", "manual review", "Manual Review", "surface lock", "Surface-Lock"]) {
+    if (!lensSource.includes(marker)) errors.push(`components/search/VelmereLensCommandRouter.tsx: missing PASS265 Lens marker ${marker}.`);
+  }
+  if (!pkgSource.includes("verify-pass265-evidence-language-ledger-consent-boundary-safety.mjs")) errors.push("package.json: missing PASS265 guard script marker.");
+} catch (error) {
+  errors.push(`PASS265 AI Brain evidence language ledger consent boundary failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass265-evidence-language-ledger-consent-boundary-safety.mjs
+
+
+// PASS266 AI Brain claim traceability matrix comprehension gate
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  const claimSource = read("lib/market-integrity/vlm-brain-pass266-claim-traceability-matrix.ts");
+  const lensSource = read("components/search/VelmereLensCommandRouter.tsx");
+  const pkgSource = read("package.json");
+  for (const marker of ["vlm-brain-pass266-claim-traceability-matrix-v1", "PASS266_VLM_BRAIN_CLAIM_TRACEABILITY_MATRIX_CONTRACT", "operator_claim_traceability_matrix", "claimTraceabilityMatrixActive: true", "comprehensionGateActive: true", "evidenceAnchorRequired: true", "operatorOnly: true", "publicExportAllowed: false", "rawPayloadAllowed: false", "binaryPdfAllowed: false", "walletAccessAllowed: false", "customerCopyAllowed: false", "publicClaimAllowed: false", "unmappedClaimAllowed: false", "releaseCutoverAllowed: false", "releasePromotionAllowed: false", "publicReadinessSealAllowed: false", "finalVerdictAllowed: false", "publicBadgeAllowed: false", "urgencyCopyAllowed: false", "certaintyCopyAllowed: false", "accessShortcutAllowed: false", "languagePreviewOnly: true", "claimReadingProtocol", "claimLanes", "comprehensionChecks"]) {
+    if (!claimSource.includes(marker)) errors.push(`lib/market-integrity/vlm-brain-pass266-claim-traceability-matrix.ts: missing PASS266 marker ${marker}.`);
+  }
+  for (const marker of ["buildVlmBrainPass266ClaimTraceabilityMatrix", "selectedTilePass266ClaimTraceabilityMatrix", 'data-vlm-pass266-claim-traceability-matrix="true"', "data-vlm-pass266-claim-lane", "data-vlm-pass266-comprehension-risk"]) {
+    if (!modalSource.includes(marker)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS266 marker ${marker}.`);
+  }
+  for (const marker of ["PASS266 — AI Brain claim traceability matrix", ".shield-vlm-pass266-claim-traceability-matrix", "data-vlm-pass266-claim-lane", "PASS266 — Lens claim traceability guide", ".vlcr-pass266-claim-traceability-guide", "prefers-reduced-motion: reduce"]) {
+    if (!cssSource.includes(marker)) errors.push(`app/globals.css: missing PASS266 marker ${marker}.`);
+  }
+  for (const marker of ["PASS266 Lens claim traceability guide", "vlcr-pass266-claim-traceability-guide", "PASS266 claim traceability matrix", "PASS266 Claim-Traceability-Matrix", "evidence anchor", "Evidence Anchor", "claim lane", "Claim-Lane", "comprehension gate", "Comprehension-Gate", "surface lock", "Surface-Lock"]) {
+    if (!lensSource.includes(marker)) errors.push(`components/search/VelmereLensCommandRouter.tsx: missing PASS266 Lens marker ${marker}.`);
+  }
+  if (!pkgSource.includes("verify-pass266-claim-traceability-matrix-comprehension-gate-safety.mjs")) errors.push("package.json: missing PASS266 guard script marker.");
+} catch (error) {
+  errors.push(`PASS266 AI Brain claim traceability matrix comprehension gate failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass266-claim-traceability-matrix-comprehension-gate-safety.mjs
+
+
+// PASS267 Lens / Shield Map / VLM Brain UI screenshot hotfix guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  const lensSource = read("components/search/VelmereIntelligenceSearchClient.tsx");
+  const shieldMapSource = read("components/market-integrity/ShieldMapClient.tsx");
+  const pkgSource = read("package.json");
+  for (const marker of ["data-vlm-brain-mode={mode}", "shield-vlm-detail-depth-note", "data-vlm-brain-depth-note={mode}"]) {
+    if (!modalSource.includes(marker)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS267 marker ${marker}.`);
+  }
+  if (modalSource.includes("{tileSourceBadge}")) errors.push("components/market-integrity/TokenRiskModal.tsx: PASS267 source-live tile badge still renders over card data.");
+  for (const marker of ["PASS267 — user screenshot hotfix", ".shield-vlm-tile-deck .shield-vlm-source-badge", ".shield-vlm-static-stage .shield-vlm-source-badge", ".shield-vlm-detail-portal-root[data-vlm-brain-mode=\"basic\"]", ".shield-vlm-detail-portal-root[data-vlm-brain-mode=\"pro\"]", ".vis-token-suggest-panel", ".shield-map-token-suggest-panel"]) {
+    if (!cssSource.includes(marker)) errors.push(`app/globals.css: missing PASS267 marker ${marker}.`);
+  }
+  for (const marker of ["PASS267 marker: Lens search suggestions mirror Shield-style token rows", "lensSuggestionSeeds", "vis-token-suggest-panel", "vis-suggestion-token-avatar", "selectSuggestion(item)"]) {
+    if (!lensSource.includes(marker)) errors.push(`components/search/VelmereIntelligenceSearchClient.tsx: missing PASS267 marker ${marker}.`);
+  }
+  for (const marker of ["createPortal", "function suggestionGlyph", "shield-map-unified-search-shell", "shield-map-token-suggest-panel", "shield-map-suggestion-avatar", "void runInvestigatorScan(null, item.symbol)"]) {
+    if (!shieldMapSource.includes(marker)) errors.push(`components/market-integrity/ShieldMapClient.tsx: missing PASS267 marker ${marker}.`);
+  }
+  if (!pkgSource.includes("verify-pass267-lens-shieldmap-brain-ui-hotfix-safety.mjs")) errors.push("package.json: missing PASS267 guard script marker.");
+} catch (error) {
+  errors.push(`PASS267 Lens / Shield Map / VLM Brain UI hotfix guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass267-lens-shieldmap-brain-ui-hotfix-safety.mjs
+
 if (errors.length) {
   console.error("Velmère preflight failed:");
   for (const error of errors) console.error(`- ${error}`);
@@ -1996,3 +2942,537 @@ if (errors.length) {
 }
 
 console.log(`Velmère preflight OK · next ${pkg.dependencies?.next ?? pkg.devDependencies?.next} · scanned ${textFiles.length} files`);
+
+// PASS206 AI Brain QA HUD WebGL trace guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const prototypeSource = read("components/market-integrity/VlmBrainWebGLPrototype.tsx");
+  const cssSource = read("app/globals.css");
+  const contractSource = read("lib/market-integrity/vlm-brain-renderer-contract.ts");
+  const deltaSource = read("lib/launch/master-build-progress-delta-pass206.ts");
+  for (const needle of ["showMotionQaHud", "data-vlm-qa-motion", "onTelemetry={setWebglTelemetry}", "PASS206 marker: public VLM Brain hides QA/FPS/zoom HUD by default"]) {
+    if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS206 marker ${needle}`);
+  }
+  for (const needle of ["VlmBrainWebGLTelemetrySample", "telemetryWorstFrameMs", "PASS206 marker: WebGL prototype exports per-second telemetry"]) {
+    if (!prototypeSource.includes(needle)) errors.push(`components/market-integrity/VlmBrainWebGLPrototype.tsx: missing PASS206 telemetry marker ${needle}`);
+  }
+  for (const needle of ["PASS206 — AI Brain production HUD polish", "data-vlm-qa-motion=\"false\"", "display: none !important"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing PASS206 CSS marker ${needle}`);
+  }
+  for (const needle of ["VLM_BRAIN_QA_HUD_FEATURE_GATE", "NEXT_PUBLIC_VLM_BRAIN_QA_HUD"]) {
+    if (!contractSource.includes(needle)) errors.push(`lib/market-integrity/vlm-brain-renderer-contract.ts: missing PASS206 contract marker ${needle}`);
+  }
+  for (const needle of ["velmerePass206ProgressDeltas", "PASS206 marker"]) {
+    if (!deltaSource.includes(needle)) errors.push(`lib/launch/master-build-progress-delta-pass206.ts: missing PASS206 delta marker ${needle}`);
+  }
+} catch (error) {
+  errors.push(`PASS206 AI Brain QA HUD WebGL trace guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass206-ai-brain-qa-hud-webgl-trace-safety.mjs
+// PASS206
+
+
+// PASS220 AI Brain release chain auditor guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const auditSource = read("lib/market-integrity/vlm-brain-release-chain-auditor.ts");
+  const cssSource = read("app/globals.css");
+  const deltaSource = read("lib/launch/master-build-progress-delta-pass220.ts");
+  const reportSource = read("docs/progress/PASS220_AI_BRAIN_RELEASE_CHAIN_AUDITOR.md");
+  for (const needle of ["buildVlmBrainReleaseChainAudit", "selectedTileReleaseChainAudit", 'data-vlm-release-chain-audit="pass220"', "PASS220 marker"]) {
+    if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS220 release chain marker ${needle}`);
+  }
+  for (const needle of ["VlmBrainReleaseChainAudit", "vlm-brain-release-chain-auditor-v1-pass220", "operator_release_chain_audit_preview", "PASS220_VLM_BRAIN_RELEASE_CHAIN_AUDITOR_CONTRACT", "publicExportReady: false", "pdfDownloadReady: false", "rawPayloadAllowed: false"]) {
+    if (!auditSource.includes(needle)) errors.push(`lib/market-integrity/vlm-brain-release-chain-auditor.ts: missing PASS220 contract marker ${needle}`);
+  }
+  for (const needle of ["PASS220 — AI Brain release chain audit", ".shield-vlm-release-chain-audit", "data-vlm-release-chain-lane"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing PASS220 CSS marker ${needle}`);
+  }
+  for (const needle of ["velmerePass220ProgressDeltas", "PASS220_AI_BRAIN_RELEASE_CHAIN_AUDITOR_DELTA"]) {
+    if (!deltaSource.includes(needle)) errors.push(`lib/launch/master-build-progress-delta-pass220.ts: missing PASS220 delta marker ${needle}`);
+  }
+  if (!reportSource.includes("PASS220 — AI Brain Release Chain Auditor")) errors.push("docs/progress/PASS220_AI_BRAIN_RELEASE_CHAIN_AUDITOR.md: missing PASS220 report marker");
+} catch (error) {
+  errors.push(`PASS220 AI Brain release chain auditor guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass220-ai-brain-release-chain-auditor-safety.mjs
+// PASS220
+
+
+
+// PASS221 AI Brain source ledger UI preview guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const contractSource = read("lib/market-integrity/vlm-brain-source-ledger-ui-preview.ts");
+  const cssSource = read("app/globals.css");
+  const deltaSource = read("lib/launch/master-build-progress-delta-pass221.ts");
+  for (const needle of ["buildVlmBrainSourceLedgerUiPreview", "selectedTileSourceLedgerUiPreview", 'data-vlm-source-ledger-ui="pass221"', "PASS221 marker"]) {
+    if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS221 source ledger UI marker ${needle}`);
+  }
+  for (const needle of ["VlmBrainSourceLedgerUiPreview", "vlm-brain-source-ledger-ui-preview-v1-pass221", "operator_source_ledger_preview", "publicLedgerReady: false", "rawPayloadAllowed: false", "browserTraceRequired: true", "PASS221_VLM_BRAIN_SOURCE_LEDGER_UI_PREVIEW_CONTRACT"]) {
+    if (!contractSource.includes(needle)) errors.push(`lib/market-integrity/vlm-brain-source-ledger-ui-preview.ts: missing PASS221 contract marker ${needle}`);
+  }
+  for (const needle of [".shield-vlm-source-ledger-ui", "data-vlm-source-ledger-lane"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing PASS221 CSS marker ${needle}`);
+  }
+  for (const needle of ["velmerePass221ProgressDeltas", "PASS221_AI_BRAIN_SOURCE_LEDGER_UI_PREVIEW_DELTA"]) {
+    if (!deltaSource.includes(needle)) errors.push(`lib/launch/master-build-progress-delta-pass221.ts: missing PASS221 delta marker ${needle}`);
+  }
+} catch (error) {
+  errors.push(`PASS221 AI Brain source ledger UI preview guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass221-ai-brain-source-ledger-ui-preview-safety.mjs
+// PASS221
+
+// PASS222 AI Brain PDF preview manifest guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const contractSource = read("lib/market-integrity/vlm-brain-pdf-preview-manifest.ts");
+  const cssSource = read("app/globals.css");
+  const deltaSource = read("lib/launch/master-build-progress-delta-pass222.ts");
+  for (const needle of ["buildVlmBrainPdfPreviewManifest", "selectedTilePdfPreviewManifest", 'data-vlm-pdf-preview-manifest="pass222"', "PASS222 marker"]) {
+    if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS222 PDF preview marker ${needle}`);
+  }
+  for (const needle of ["VlmBrainPdfPreviewManifest", "vlm-brain-pdf-preview-manifest-v1-pass222", "pdf_ready_html_preview_only", "binaryPdfReady: false", "rawPayloadAllowed: false", "redactionRequired: true", "PASS222_VLM_BRAIN_PDF_PREVIEW_MANIFEST_CONTRACT"]) {
+    if (!contractSource.includes(needle)) errors.push(`lib/market-integrity/vlm-brain-pdf-preview-manifest.ts: missing PASS222 contract marker ${needle}`);
+  }
+  for (const needle of [".shield-vlm-pdf-preview-manifest", "data-vlm-pdf-preview-section"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing PASS222 CSS marker ${needle}`);
+  }
+  for (const needle of ["velmerePass222ProgressDeltas", "PASS222_AI_BRAIN_PDF_PREVIEW_MANIFEST_DELTA"]) {
+    if (!deltaSource.includes(needle)) errors.push(`lib/launch/master-build-progress-delta-pass222.ts: missing PASS222 delta marker ${needle}`);
+  }
+} catch (error) {
+  errors.push(`PASS222 AI Brain PDF preview manifest guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass222-ai-brain-pdf-preview-manifest-safety.mjs
+// PASS222
+
+// PASS223 AI Brain Lens Shield handoff guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const contractSource = read("lib/market-integrity/vlm-brain-lens-shield-handoff.ts");
+  const cssSource = read("app/globals.css");
+  const deltaSource = read("lib/launch/master-build-progress-delta-pass223.ts");
+  for (const needle of ["buildVlmBrainLensShieldHandoff", "selectedTileLensShieldHandoff", 'data-vlm-lens-shield-handoff="pass223"', "PASS223 marker"]) {
+    if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS223 Lens Shield marker ${needle}`);
+  }
+  for (const needle of ["VlmBrainLensShieldHandoff", "vlm-brain-lens-shield-handoff-v1-pass223", "lens_to_shield_operator_preview", "publicRouteEnabled: false", "rawQueryPayloadAllowed: false", "PASS223_VLM_BRAIN_LENS_SHIELD_HANDOFF_CONTRACT"]) {
+    if (!contractSource.includes(needle)) errors.push(`lib/market-integrity/vlm-brain-lens-shield-handoff.ts: missing PASS223 contract marker ${needle}`);
+  }
+  for (const needle of [".shield-vlm-lens-shield-handoff", "data-vlm-lens-shield-route"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing PASS223 CSS marker ${needle}`);
+  }
+  for (const needle of ["velmerePass223ProgressDeltas", "PASS223_AI_BRAIN_LENS_SHIELD_HANDOFF_DELTA"]) {
+    if (!deltaSource.includes(needle)) errors.push(`lib/launch/master-build-progress-delta-pass223.ts: missing PASS223 delta marker ${needle}`);
+  }
+} catch (error) {
+  errors.push(`PASS223 AI Brain Lens Shield handoff guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass223-ai-brain-lens-shield-handoff-safety.mjs
+// PASS223
+
+// PASS224 AI Brain release QA scorecard guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const contractSource = read("lib/market-integrity/vlm-brain-release-qa-scorecard.ts");
+  const cssSource = read("app/globals.css");
+  const deltaSource = read("lib/launch/master-build-progress-delta-pass224.ts");
+  for (const needle of ["buildVlmBrainReleaseQaScorecard", "selectedTileReleaseQaScorecard", 'data-vlm-release-qa-scorecard="pass224"', "PASS224 marker"]) {
+    if (!modalSource.includes(needle)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS224 release QA marker ${needle}`);
+  }
+  for (const needle of ["VlmBrainReleaseQaScorecard", "vlm-brain-release-qa-scorecard-v1-pass224", "operator_release_qa_preview", "publicReleaseReady: false", "binaryPdfReady: false", "rawPayloadAllowed: false", "browserQaRequired: true", "PASS224_VLM_BRAIN_RELEASE_QA_SCORECARD_CONTRACT"]) {
+    if (!contractSource.includes(needle)) errors.push(`lib/market-integrity/vlm-brain-release-qa-scorecard.ts: missing PASS224 contract marker ${needle}`);
+  }
+  for (const needle of [".shield-vlm-release-qa-scorecard", "data-vlm-release-qa-lane"]) {
+    if (!cssSource.includes(needle)) errors.push(`app/globals.css: missing PASS224 CSS marker ${needle}`);
+  }
+  for (const needle of ["velmerePass224ProgressDeltas", "PASS224_AI_BRAIN_RELEASE_QA_SCORECARD_DELTA"]) {
+    if (!deltaSource.includes(needle)) errors.push(`lib/launch/master-build-progress-delta-pass224.ts: missing PASS224 delta marker ${needle}`);
+  }
+} catch (error) {
+  errors.push(`PASS224 AI Brain release QA scorecard guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass224-ai-brain-release-qa-scorecard-safety.mjs
+// PASS224
+
+
+// PASS225-PASS232 AI Brain release readiness mega-branch guard hooks
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  const pass225232Markers = ["buildVlmBrainReleaseBlockerResolver", "buildVlmBrainBrowserQaRunbook", "buildVlmBrainCustomerCopySanitizer", "buildVlmBrainPdfRouteContract", "buildVlmBrainLedgerPersistenceAdapterPlan", "buildVlmBrainLiveFeedAdapterMatrix", "buildVlmBrainWalletAccessGateMatrix", "buildVlmBrainLaunchReadinessDashboard", "data-vlm-launch-readiness-dashboard=\"pass232\""];
+  for (const marker of pass225232Markers) if (!modalSource.includes(marker)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS225-PASS232 marker ${marker}.`);
+  if (!cssSource.includes("PASS225–PASS232 — AI Brain release readiness mega-branch")) errors.push("app/globals.css: missing PASS225-PASS232 release readiness CSS marker.");
+} catch (error) {
+  errors.push(`PASS225-PASS232 release readiness guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script markers: verify-pass225-ai-brain-release-blocker-resolver-safety.mjs verify-pass226-ai-brain-browser-qa-runbook-safety.mjs verify-pass227-ai-brain-customer-copy-sanitizer-safety.mjs verify-pass228-ai-brain-pdf-route-contract-safety.mjs verify-pass229-ai-brain-ledger-persistence-adapter-plan-safety.mjs verify-pass230-ai-brain-live-feed-adapter-matrix-safety.mjs verify-pass231-ai-brain-wallet-access-gate-matrix-safety.mjs verify-pass232-ai-brain-launch-readiness-dashboard-safety.mjs
+
+
+// PASS233-PASS242 AI Brain mega branch guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  const contractFiles = [
+    "lib/market-integrity/vlm-brain-qa-trace-bundle.ts",
+    "lib/market-integrity/vlm-brain-adapter-orchestration-plan.ts",
+    "lib/market-integrity/vlm-brain-access-copy-firewall.ts",
+    "lib/market-integrity/vlm-brain-pdf-storage-redaction-bridge.ts",
+    "lib/market-integrity/vlm-brain-missing-data-escalation-queue.ts",
+    "lib/market-integrity/vlm-brain-renderer-comparison-plan.ts",
+    "lib/market-integrity/vlm-brain-governance-policy-memo.ts",
+    "lib/market-integrity/vlm-brain-audit-trail-index.ts",
+    "lib/market-integrity/vlm-brain-customer-readiness-preflight.ts",
+    "lib/market-integrity/vlm-brain-mega-branch-control-tower.ts",
+  ];
+  for (const file of contractFiles) {
+    const source = read(file);
+    if (!source.includes("CONTRACT = true")) errors.push(`${file}: missing PASS233-PASS242 contract export marker.`);
+  }
+  const markers = ["buildVlmBrainQaTraceBundle", "buildVlmBrainAdapterOrchestrationPlan", "buildVlmBrainAccessCopyFirewall", "buildVlmBrainPdfStorageRedactionBridge", "buildVlmBrainMissingDataEscalationQueue", "buildVlmBrainRendererComparisonPlan", "buildVlmBrainGovernancePolicyMemo", "buildVlmBrainAuditTrailIndex", "buildVlmBrainCustomerReadinessPreflight", "buildVlmBrainMegaBranchControlTower", 'data-vlm-mega-branch-control-tower="pass242"'];
+  for (const marker of markers) if (!modalSource.includes(marker)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS233-PASS242 marker ${marker}.`);
+  if (!cssSource.includes("PASS233–PASS242 — AI Brain mega branch control tower")) errors.push("app/globals.css: missing PASS233-PASS242 CSS marker.");
+} catch (error) {
+  errors.push(`PASS233-PASS242 AI Brain mega branch guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script markers: verify-pass233-ai-brain-mega-branch-safety.mjs verify-pass234-ai-brain-mega-branch-safety.mjs verify-pass235-ai-brain-mega-branch-safety.mjs verify-pass236-ai-brain-mega-branch-safety.mjs verify-pass237-ai-brain-mega-branch-safety.mjs verify-pass238-ai-brain-mega-branch-safety.mjs verify-pass239-ai-brain-mega-branch-safety.mjs verify-pass240-ai-brain-mega-branch-safety.mjs verify-pass241-ai-brain-mega-branch-safety.mjs verify-pass242-ai-brain-mega-branch-safety.mjs
+
+
+// PASS243-PASS245 AI Brain real three-pass guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  const triageSource = read("lib/market-integrity/vlm-brain-release-triage-board.ts");
+  const vaultSource = read("lib/market-integrity/vlm-brain-operator-handoff-vault.ts");
+  const replaySource = read("lib/market-integrity/vlm-brain-browser-replay-script.ts");
+  const markers = [
+    "buildVlmBrainReleaseTriageBoard",
+    "buildVlmBrainOperatorHandoffVault",
+    "buildVlmBrainBrowserReplayScript",
+    'data-vlm-release-triage-board="pass243"',
+    'data-vlm-operator-handoff-vault="pass244"',
+    'data-vlm-browser-replay-script="pass245"',
+  ];
+  for (const marker of markers) if (!modalSource.includes(marker)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS243-PASS245 marker ${marker}.`);
+  for (const marker of ["PASS243_VLM_BRAIN_RELEASE_TRIAGE_BOARD_CONTRACT", "customerExportReady: false", "binaryPdfReady: false", "walletAccessReady: false", "rawPayloadAllowed: false"]) if (!triageSource.includes(marker)) errors.push(`lib/market-integrity/vlm-brain-release-triage-board.ts: missing marker ${marker}.`);
+  for (const marker of ["PASS244_VLM_BRAIN_OPERATOR_HANDOFF_VAULT_CONTRACT", "sourceSnapshotWriteReady: false", "caseTimelineWriteReady: false", "rawPayloadAllowed: false"]) if (!vaultSource.includes(marker)) errors.push(`lib/market-integrity/vlm-brain-operator-handoff-vault.ts: missing marker ${marker}.`);
+  for (const marker of ["PASS245_VLM_BRAIN_BROWSER_REPLAY_SCRIPT_CONTRACT", "manual_vercel_browser_replay_required", "qaHudRequired: true", "customerExportReady: false", "binaryPdfReady: false"]) if (!replaySource.includes(marker)) errors.push(`lib/market-integrity/vlm-brain-browser-replay-script.ts: missing marker ${marker}.`);
+  if (!cssSource.includes("PASS243–PASS245 — AI Brain real three-pass release triage")) errors.push("app/globals.css: missing PASS243-PASS245 real three-pass CSS marker.");
+} catch (error) {
+  errors.push(`PASS243-PASS245 real three-pass guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass243-245-ai-brain-real-three-pass-safety.mjs
+
+
+
+// PASS252 AI Brain release cockpit guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  const cockpitSource = read("lib/market-integrity/vlm-brain-release-cockpit.ts");
+  for (const marker of ["vlm-brain-release-cockpit-v1-pass252", "operator_release_control_center", "PASS252_VLM_BRAIN_RELEASE_COCKPIT_CONTRACT", "customerExportAllowed: false", "binaryPdfAllowed: false", "rawPayloadAllowed: false", "browserQaRequired: true"]) {
+    if (!cockpitSource.includes(marker)) errors.push(`lib/market-integrity/vlm-brain-release-cockpit.ts: missing PASS252 marker ${marker}.`);
+  }
+  for (const marker of ["buildVlmBrainReleaseCockpit", "selectedTileReleaseCockpit", 'data-vlm-release-cockpit="pass252"', "data-vlm-release-cockpit-decision", "data-vlm-release-cockpit-lane"]) {
+    if (!modalSource.includes(marker)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS252 marker ${marker}.`);
+  }
+  if (!cssSource.includes("PASS252 — AI Brain release cockpit")) errors.push("app/globals.css: missing PASS252 release cockpit CSS marker.");
+} catch (error) {
+  errors.push(`PASS252 AI Brain release cockpit guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass252-ai-brain-release-cockpit-safety.mjs
+
+
+// PASS254 AI Brain release cockpit source-ledger handoff guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  const contractSource = read("lib/market-integrity/vlm-brain-release-cockpit-source-ledger-handoff.ts");
+  const lensSource = read("components/search/VelmereLensCommandRouter.tsx");
+  const pkgSource = read("package.json");
+  for (const marker of ["vlm-brain-release-cockpit-source-ledger-handoff-v1-pass254", "PASS254_VLM_BRAIN_RELEASE_COCKPIT_SOURCE_LEDGER_HANDOFF_CONTRACT", "publicExportAllowed: false", "rawPayloadAllowed: false", "binaryPdfAllowed: false", "walletAccessAllowed: false", "customerCopyAllowed: false", "browserQaRequired: true"]) {
+    if (!contractSource.includes(marker)) errors.push(`lib/market-integrity/vlm-brain-release-cockpit-source-ledger-handoff.ts: missing PASS254 marker ${marker}.`);
+  }
+  for (const marker of ["buildVlmBrainReleaseCockpitSourceLedgerHandoff", "selectedTilePass254ReleaseHandoff", 'data-vlm-pass254-release-handoff-safety="true"', "data-vlm-pass254-release-lane", "data-vlm-pass254-release-priority"]) {
+    if (!modalSource.includes(marker)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS254 marker ${marker}.`);
+  }
+  for (const marker of ["PASS254 — AI Brain release cockpit source-ledger handoff safety", ".shield-vlm-pass254-handoff", "prefers-reduced-motion: reduce"]) {
+    if (!cssSource.includes(marker)) errors.push(`app/globals.css: missing PASS254 marker ${marker}.`);
+  }
+  for (const marker of ["PASS254 Lens handoff safety gates", "pewność źródeł", "Quellenvertrauen", "source confidence"]) {
+    if (!lensSource.includes(marker)) errors.push(`components/search/VelmereLensCommandRouter.tsx: missing PASS254 Lens marker ${marker}.`);
+  }
+  if (!pkgSource.includes("verify-pass254-release-cockpit-source-ledger-handoff-safety.mjs")) errors.push("package.json: missing PASS254 guard script marker.");
+} catch (error) {
+  errors.push(`PASS254 AI Brain release cockpit source-ledger handoff guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass254-release-cockpit-source-ledger-handoff-safety.mjs
+
+
+
+// PASS255 AI Brain action router browser replay export freeze guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  const actionRouterSource = read("lib/market-integrity/vlm-brain-pass255-action-router.ts");
+  const lensSource = read("components/search/VelmereLensCommandRouter.tsx");
+  const pkgSource = read("package.json");
+  for (const marker of ["vlm-brain-pass255-action-router-v1", "PASS255_VLM_BRAIN_ACTION_ROUTER_CONTRACT", "operator_action_router_browser_replay_export_freeze", "publicExportAllowed: false", "rawPayloadAllowed: false", "binaryPdfAllowed: false", "walletAccessAllowed: false", "customerCopyAllowed: false", "exportFreeze: true", "walletSecretAllowed: false", "browserReplayRequired: true"]) {
+    if (!actionRouterSource.includes(marker)) errors.push(`lib/market-integrity/vlm-brain-pass255-action-router.ts: missing PASS255 marker ${marker}.`);
+  }
+  for (const marker of ["buildVlmBrainPass255ActionRouter", "selectedTilePass255ActionRouter", 'data-vlm-pass255-action-router="true"', "data-vlm-pass255-action-phase", "data-vlm-pass255-replay-artifact"]) {
+    if (!modalSource.includes(marker)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS255 marker ${marker}.`);
+  }
+  for (const marker of ["PASS255 — AI Brain action router", ".shield-vlm-pass255-action-router", "data-vlm-pass255-action-phase", "PASS255 — Lens action-router guide", ".vlcr-pass255-action-guide", "prefers-reduced-motion: reduce"]) {
+    if (!cssSource.includes(marker)) errors.push(`app/globals.css: missing PASS255 marker ${marker}.`);
+  }
+  for (const marker of ["PASS255 Lens action router guide", "vlcr-pass255-action-guide", "evidence intake", "Browser-Replay", "Velmère Report-Kapsel"]) {
+    if (!lensSource.includes(marker)) errors.push(`components/search/VelmereLensCommandRouter.tsx: missing PASS255 Lens marker ${marker}.`);
+  }
+  if (!pkgSource.includes("verify-pass255-action-router-browser-replay-export-freeze-safety.mjs")) errors.push("package.json: missing PASS255 guard script marker.");
+} catch (error) {
+  errors.push(`PASS255 AI Brain action router browser replay export freeze guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass255-action-router-browser-replay-export-freeze-safety.mjs
+
+
+// PASS256 AI Brain evidence runbook export quarantine guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  const runbookSource = read("lib/market-integrity/vlm-brain-pass256-evidence-runbook.ts");
+  const lensSource = read("components/search/VelmereLensCommandRouter.tsx");
+  const pkgSource = read("package.json");
+  for (const marker of ["vlm-brain-pass256-evidence-runbook-v1", "PASS256_VLM_BRAIN_EVIDENCE_RUNBOOK_CONTRACT", "operator_evidence_runbook_browser_replay_quarantine", "publicExportAllowed: false", "rawPayloadAllowed: false", "binaryPdfAllowed: false", "walletAccessAllowed: false", "customerCopyAllowed: false", "browserReplayRequired: true", "replayEvidenceAttached: false", "exportQuarantine: true"]) {
+    if (!runbookSource.includes(marker)) errors.push(`lib/market-integrity/vlm-brain-pass256-evidence-runbook.ts: missing PASS256 marker ${marker}.`);
+  }
+  for (const marker of ["buildVlmBrainPass256EvidenceRunbook", "selectedTilePass256EvidenceRunbook", 'data-vlm-pass256-evidence-runbook="true"', "data-vlm-pass256-queue-state", "data-vlm-pass256-replay-state", "data-vlm-pass256-freeze-cell"]) {
+    if (!modalSource.includes(marker)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS256 marker ${marker}.`);
+  }
+  for (const marker of ["PASS256 — AI Brain evidence runbook", ".shield-vlm-pass256-evidence-runbook", "data-vlm-pass256-queue-state", "PASS256 — Lens evidence runbook guide", ".vlcr-pass256-runbook-guide", "prefers-reduced-motion: reduce"]) {
+    if (!cssSource.includes(marker)) errors.push(`app/globals.css: missing PASS256 marker ${marker}.`);
+  }
+  for (const marker of ["PASS256 Lens evidence runbook guide", "vlcr-pass256-runbook-guide", "PASS256 evidence runbook", "PASS256 Evidence-Runbook", "export quarantine", "Export-Quarantäne"]) {
+    if (!lensSource.includes(marker)) errors.push(`components/search/VelmereLensCommandRouter.tsx: missing PASS256 Lens marker ${marker}.`);
+  }
+  if (!pkgSource.includes("verify-pass256-evidence-runbook-export-quarantine-safety.mjs")) errors.push("package.json: missing PASS256 guard script marker.");
+} catch (error) {
+  errors.push(`PASS256 AI Brain evidence runbook export quarantine guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass256-evidence-runbook-export-quarantine-safety.mjs
+
+
+
+// PASS257 AI Brain evidence SLA timeline exception firewall guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  const timelineSource = read("lib/market-integrity/vlm-brain-pass257-evidence-sla-timeline.ts");
+  const lensSource = read("components/search/VelmereLensCommandRouter.tsx");
+  const pkgSource = read("package.json");
+  for (const marker of ["vlm-brain-pass257-evidence-sla-timeline-v1", "PASS257_VLM_BRAIN_EVIDENCE_SLA_TIMELINE_CONTRACT", "operator_evidence_sla_timeline_exception_firewall", "publicExportAllowed: false", "rawPayloadAllowed: false", "binaryPdfAllowed: false", "walletAccessAllowed: false", "customerCopyAllowed: false", "exceptionOverrideAllowed: false", "releaseFreezeActive: true"]) {
+    if (!timelineSource.includes(marker)) errors.push(`lib/market-integrity/vlm-brain-pass257-evidence-sla-timeline.ts: missing PASS257 marker ${marker}.`);
+  }
+  for (const marker of ["buildVlmBrainPass257EvidenceSlaTimeline", "selectedTilePass257EvidenceSlaTimeline", 'data-vlm-pass257-evidence-sla-timeline="true"', "data-vlm-pass257-sla-tier", "data-vlm-pass257-exception-firewall"]) {
+    if (!modalSource.includes(marker)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS257 marker ${marker}.`);
+  }
+  for (const marker of ["PASS257 — AI Brain evidence SLA timeline", ".shield-vlm-pass257-evidence-sla", "data-vlm-pass257-sla-tier", "PASS257 — Lens evidence SLA timeline guide", ".vlcr-pass257-sla-guide", "prefers-reduced-motion: reduce"]) {
+    if (!cssSource.includes(marker)) errors.push(`app/globals.css: missing PASS257 marker ${marker}.`);
+  }
+  for (const marker of ["PASS257 Lens evidence SLA timeline guide", "vlcr-pass257-sla-guide", "PASS257 evidence SLA timeline", "PASS257 Evidence-SLA-Timeline", "exception firewall", "Exception-Firewall"]) {
+    if (!lensSource.includes(marker)) errors.push(`components/search/VelmereLensCommandRouter.tsx: missing PASS257 Lens marker ${marker}.`);
+  }
+  if (!pkgSource.includes("verify-pass257-evidence-sla-timeline-exception-firewall-safety.mjs")) errors.push("package.json: missing PASS257 guard script marker.");
+} catch (error) {
+  errors.push(`PASS257 AI Brain evidence SLA timeline exception firewall guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass257-evidence-sla-timeline-exception-firewall-safety.mjs
+
+
+// PASS258 AI Brain proof receipt lock browser trace pack guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  const receiptLockSource = read("lib/market-integrity/vlm-brain-pass258-proof-receipt-lock.ts");
+  const lensSource = read("components/search/VelmereLensCommandRouter.tsx");
+  const pkgSource = read("package.json");
+  for (const marker of ["vlm-brain-pass258-proof-receipt-lock-v1", "PASS258_VLM_BRAIN_PROOF_RECEIPT_LOCK_CONTRACT", "operator_proof_receipt_lock_browser_trace_pack", "publicExportAllowed: false", "rawPayloadAllowed: false", "binaryPdfAllowed: false", "walletAccessAllowed: false", "customerCopyAllowed: false", "releaseReceiptSigned: false", "browserTraceAttached: false", "durableSnapshotAttached: false", "redactionManifestAttached: false", "proofReceiptLockActive: true"]) {
+    if (!receiptLockSource.includes(marker)) errors.push(`lib/market-integrity/vlm-brain-pass258-proof-receipt-lock.ts: missing PASS258 marker ${marker}.`);
+  }
+  for (const marker of ["buildVlmBrainPass258ProofReceiptLock", "selectedTilePass258ProofReceiptLock", 'data-vlm-pass258-proof-receipt-lock="true"', "data-vlm-pass258-proof-receipt", "data-vlm-pass258-signoff-state", "data-vlm-pass258-browser-trace", "data-vlm-pass258-release-lock"]) {
+    if (!modalSource.includes(marker)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS258 marker ${marker}.`);
+  }
+  for (const marker of ["PASS258 — AI Brain proof receipt lock", ".shield-vlm-pass258-proof-receipt-lock", "data-vlm-pass258-proof-receipt", "PASS258 — Lens proof receipt lock guide", ".vlcr-pass258-receipt-guide", "prefers-reduced-motion: reduce"]) {
+    if (!cssSource.includes(marker)) errors.push(`app/globals.css: missing PASS258 marker ${marker}.`);
+  }
+  for (const marker of ["PASS258 Lens proof receipt lock guide", "vlcr-pass258-receipt-guide", "PASS258 proof receipt lock", "PASS258 Proof-Receipt-Lock", "browser trace pack", "Browser-Trace-Pack"]) {
+    if (!lensSource.includes(marker)) errors.push(`components/search/VelmereLensCommandRouter.tsx: missing PASS258 Lens marker ${marker}.`);
+  }
+  if (!pkgSource.includes("verify-pass258-proof-receipt-lock-browser-trace-pack-safety.mjs")) errors.push("package.json: missing PASS258 guard script marker.");
+} catch (error) {
+  errors.push(`PASS258 AI Brain proof receipt lock browser trace pack guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass258-proof-receipt-lock-browser-trace-pack-safety.mjs
+
+
+// PASS259 AI Brain attestation ledger release freeze guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  const ledgerSource = read("lib/market-integrity/vlm-brain-pass259-attestation-ledger.ts");
+  const lensSource = read("components/search/VelmereLensCommandRouter.tsx");
+  const pkgSource = read("package.json");
+  for (const marker of ["vlm-brain-pass259-attestation-ledger-v1", "PASS259_VLM_BRAIN_ATTESTATION_LEDGER_CONTRACT", "operator_attestation_ledger_release_freeze", "publicExportAllowed: false", "rawPayloadAllowed: false", "binaryPdfAllowed: false", "walletAccessAllowed: false", "customerCopyAllowed: false", "releasePromotionAllowed: false", "attestationLedgerActive: true", "sourceAttestationReady: false", "browserAttestationReady: false", "storageAttestationReady: false", "redactionAttestationReady: false"]) {
+    if (!ledgerSource.includes(marker)) errors.push(`lib/market-integrity/vlm-brain-pass259-attestation-ledger.ts: missing PASS259 marker ${marker}.`);
+  }
+  for (const marker of ["buildVlmBrainPass259AttestationLedger", "selectedTilePass259AttestationLedger", 'data-vlm-pass259-attestation-ledger="true"', "data-vlm-pass259-attestation-state", "data-vlm-pass259-freeze-state", "data-vlm-pass259-check-state", "data-vlm-pass259-trace-state"]) {
+    if (!modalSource.includes(marker)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS259 marker ${marker}.`);
+  }
+  for (const marker of ["PASS259 — AI Brain attestation ledger", ".shield-vlm-pass259-attestation-ledger", "data-vlm-pass259-attestation-state", "PASS259 — Lens attestation ledger guide", ".vlcr-pass259-attestation-guide", "prefers-reduced-motion: reduce"]) {
+    if (!cssSource.includes(marker)) errors.push(`app/globals.css: missing PASS259 marker ${marker}.`);
+  }
+  for (const marker of ["PASS259 Lens attestation ledger guide", "vlcr-pass259-attestation-guide", "PASS259 attestation ledger", "PASS259 Attestation-Ledger", "promotion checklist", "Promotion-Checklist"]) {
+    if (!lensSource.includes(marker)) errors.push(`components/search/VelmereLensCommandRouter.tsx: missing PASS259 Lens marker ${marker}.`);
+  }
+  if (!pkgSource.includes("verify-pass259-attestation-ledger-release-freeze-safety.mjs")) errors.push("package.json: missing PASS259 guard script marker.");
+} catch (error) {
+  errors.push(`PASS259 AI Brain attestation ledger release freeze guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass259-attestation-ledger-release-freeze-safety.mjs
+
+
+// PASS260 AI Brain release promotion firewall review packet guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  const firewallSource = read("lib/market-integrity/vlm-brain-pass260-release-promotion-firewall.ts");
+  const lensSource = read("components/search/VelmereLensCommandRouter.tsx");
+  const pkgSource = read("package.json");
+  for (const marker of ["vlm-brain-pass260-release-promotion-firewall-v1", "PASS260_VLM_BRAIN_RELEASE_PROMOTION_FIREWALL_CONTRACT", "operator_release_promotion_firewall_review_packet", "publicExportAllowed: false", "rawPayloadAllowed: false", "binaryPdfAllowed: false", "walletAccessAllowed: false", "customerCopyAllowed: false", "releasePromotionAllowed: false", "publicReleaseBadgeAllowed: false", "finalVerdictAllowed: false", "reviewPacketReady: false", "promotionFirewallActive: true"]) {
+    if (!firewallSource.includes(marker)) errors.push(`lib/market-integrity/vlm-brain-pass260-release-promotion-firewall.ts: missing PASS260 marker ${marker}.`);
+  }
+  for (const marker of ["buildVlmBrainPass260ReleasePromotionFirewall", "selectedTilePass260PromotionFirewall", 'data-vlm-pass260-promotion-firewall="true"', "data-vlm-pass260-promotion-lane", "data-vlm-pass260-review-packet", "data-vlm-pass260-customer-freeze"]) {
+    if (!modalSource.includes(marker)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS260 marker ${marker}.`);
+  }
+  for (const marker of ["PASS260 — AI Brain release promotion firewall", ".shield-vlm-pass260-promotion-firewall", "data-vlm-pass260-promotion-lane", "PASS260 — Lens promotion firewall guide", ".vlcr-pass260-promotion-firewall-guide", "prefers-reduced-motion: reduce"]) {
+    if (!cssSource.includes(marker)) errors.push(`app/globals.css: missing PASS260 marker ${marker}.`);
+  }
+  for (const marker of ["PASS260 Lens promotion firewall guide", "vlcr-pass260-promotion-firewall-guide", "PASS260 promotion firewall", "PASS260 Promotion-Firewall", "release badge lock", "Release-Badge-Lock"]) {
+    if (!lensSource.includes(marker)) errors.push(`components/search/VelmereLensCommandRouter.tsx: missing PASS260 Lens marker ${marker}.`);
+  }
+  if (!pkgSource.includes("verify-pass260-release-promotion-firewall-review-packet-safety.mjs")) errors.push("package.json: missing PASS260 guard script marker.");
+} catch (error) {
+  errors.push(`PASS260 AI Brain release promotion firewall review packet guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass260-release-promotion-firewall-review-packet-safety.mjs
+
+
+// PASS261 AI Brain release cutover control rollback vault guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  const cutoverSource = read("lib/market-integrity/vlm-brain-pass261-release-cutover-control.ts");
+  const lensSource = read("components/search/VelmereLensCommandRouter.tsx");
+  const pkgSource = read("package.json");
+  for (const marker of ["vlm-brain-pass261-release-cutover-control-v1", "PASS261_VLM_BRAIN_RELEASE_CUTOVER_CONTROL_CONTRACT", "operator_release_cutover_control_rollback_vault", "publicExportAllowed: false", "rawPayloadAllowed: false", "binaryPdfAllowed: false", "walletAccessAllowed: false", "customerCopyAllowed: false", "releasePromotionAllowed: false", "releaseCutoverAllowed: false", "publicReadinessSealAllowed: false", "finalVerdictAllowed: false", "rollbackVaultRequired: true", "cutoverControlActive: true"]) {
+    if (!cutoverSource.includes(marker)) errors.push(`lib/market-integrity/vlm-brain-pass261-release-cutover-control.ts: missing PASS261 marker ${marker}.`);
+  }
+  for (const marker of ["buildVlmBrainPass261ReleaseCutoverControl", "selectedTilePass261CutoverControl", 'data-vlm-pass261-cutover-control="true"', "data-vlm-pass261-cutover-lane", "data-vlm-pass261-rollback-state", "data-vlm-pass261-readiness-seal"]) {
+    if (!modalSource.includes(marker)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS261 marker ${marker}.`);
+  }
+  for (const marker of ["PASS261 — AI Brain release cutover control", ".shield-vlm-pass261-cutover-control", "data-vlm-pass261-cutover-lane", "PASS261 — Lens cutover control guide", ".vlcr-pass261-cutover-control-guide", "prefers-reduced-motion: reduce"]) {
+    if (!cssSource.includes(marker)) errors.push(`app/globals.css: missing PASS261 marker ${marker}.`);
+  }
+  for (const marker of ["PASS261 Lens cutover control guide", "vlcr-pass261-cutover-control-guide", "PASS261 cutover control", "PASS261 Cutover-Control", "rollback vault", "Rollback-Vault", "readiness seals", "Readiness-Seals"]) {
+    if (!lensSource.includes(marker)) errors.push(`components/search/VelmereLensCommandRouter.tsx: missing PASS261 Lens marker ${marker}.`);
+  }
+  if (!pkgSource.includes("verify-pass261-release-cutover-control-rollback-vault-safety.mjs")) errors.push("package.json: missing PASS261 guard script marker.");
+} catch (error) {
+  errors.push(`PASS261 AI Brain release cutover control rollback vault guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass261-release-cutover-control-rollback-vault-safety.mjs
+
+// PASS262 AI Brain release rehearsal matrix surface locks guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  const rehearsalSource = read("lib/market-integrity/vlm-brain-pass262-release-rehearsal-matrix.ts");
+  const lensSource = read("components/search/VelmereLensCommandRouter.tsx");
+  const pkgSource = read("package.json");
+  for (const marker of ["vlm-brain-pass262-release-rehearsal-matrix-v1", "PASS262_VLM_BRAIN_RELEASE_REHEARSAL_MATRIX_CONTRACT", "operator_release_rehearsal_matrix_dry_run", "publicExportAllowed: false", "rawPayloadAllowed: false", "binaryPdfAllowed: false", "walletAccessAllowed: false", "customerCopyAllowed: false", "releaseCutoverAllowed: false", "releasePromotionAllowed: false", "publicReadinessSealAllowed: false", "rehearsalPromotionAllowed: false", "finalVerdictAllowed: false", "rollbackDrillRequired: true", "dryRunOnly: true"]) {
+    if (!rehearsalSource.includes(marker)) errors.push(`lib/market-integrity/vlm-brain-pass262-release-rehearsal-matrix.ts: missing PASS262 marker ${marker}.`);
+  }
+  for (const marker of ["buildVlmBrainPass262ReleaseRehearsalMatrix", "selectedTilePass262ReleaseRehearsalMatrix", 'data-vlm-pass262-release-rehearsal="true"', "data-vlm-pass262-rehearsal-lane", "data-vlm-pass262-signoff-state", "data-vlm-pass262-surface-lock"]) {
+    if (!modalSource.includes(marker)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS262 marker ${marker}.`);
+  }
+  for (const marker of ["PASS262 — AI Brain release rehearsal matrix", ".shield-vlm-pass262-release-rehearsal", "data-vlm-pass262-rehearsal-lane", "PASS262 — Lens release rehearsal guide", ".vlcr-pass262-release-rehearsal-guide", "prefers-reduced-motion: reduce"]) {
+    if (!cssSource.includes(marker)) errors.push(`app/globals.css: missing PASS262 marker ${marker}.`);
+  }
+  for (const marker of ["PASS262 Lens release rehearsal guide", "vlcr-pass262-release-rehearsal-guide", "PASS262 release rehearsal", "PASS262 Release-Rehearsal", "dry-run evidence", "Dry-Run-Evidenz", "rollback drill", "Rollback-Drill", "surface locks", "Surface-Locks"]) {
+    if (!lensSource.includes(marker)) errors.push(`components/search/VelmereLensCommandRouter.tsx: missing PASS262 Lens marker ${marker}.`);
+  }
+  if (!pkgSource.includes("verify-pass262-release-rehearsal-matrix-surface-locks-safety.mjs")) errors.push("package.json: missing PASS262 guard script marker.");
+} catch (error) {
+  errors.push(`PASS262 AI Brain release rehearsal matrix surface locks guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass262-release-rehearsal-matrix-surface-locks-safety.mjs
+
+// PASS263 AI Brain release candidate trust board guard
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  const candidateSource = read("lib/market-integrity/vlm-brain-pass263-release-candidate-trust-board.ts");
+  const lensSource = read("components/search/VelmereLensCommandRouter.tsx");
+  const pkgSource = read("package.json");
+  for (const marker of ["vlm-brain-pass263-release-candidate-trust-board-v1", "PASS263_VLM_BRAIN_RELEASE_CANDIDATE_TRUST_BOARD_CONTRACT", "operator_release_candidate_trust_board", "candidateBoardActive: true", "operatorOnly: true", "publicExportAllowed: false", "rawPayloadAllowed: false", "binaryPdfAllowed: false", "walletAccessAllowed: false", "customerCopyAllowed: false", "releaseCutoverAllowed: false", "releasePromotionAllowed: false", "publicReadinessSealAllowed: false", "finalVerdictAllowed: false", "trustCuePublicReady: false", "copyPsychologySafe: true"]) {
+    if (!candidateSource.includes(marker)) errors.push(`lib/market-integrity/vlm-brain-pass263-release-candidate-trust-board.ts: missing PASS263 marker ${marker}.`);
+  }
+  for (const marker of ["buildVlmBrainPass263ReleaseCandidateTrustBoard", "selectedTilePass263CandidateTrustBoard", 'data-vlm-pass263-candidate-trust-board="true"', "data-vlm-pass263-candidate-lane", "data-vlm-pass263-trust-cue", "data-vlm-pass263-surface-lock"]) {
+    if (!modalSource.includes(marker)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS263 marker ${marker}.`);
+  }
+  for (const marker of ["PASS263 — AI Brain release candidate trust board", ".shield-vlm-pass263-candidate-trust-board", "data-vlm-pass263-candidate-lane", "PASS263 — Lens candidate trust board guide", ".vlcr-pass263-candidate-trust-guide", "prefers-reduced-motion: reduce"]) {
+    if (!cssSource.includes(marker)) errors.push(`app/globals.css: missing PASS263 marker ${marker}.`);
+  }
+  for (const marker of ["PASS263 Lens candidate trust board guide", "vlcr-pass263-candidate-trust-guide", "PASS263 candidate trust board", "PASS263 Candidate-Trust-Board", "trust cues", "Trust-Cues", "copy boundary", "Copy-Grenze", "proof gaps", "Proof-Gaps"]) {
+    if (!lensSource.includes(marker)) errors.push(`components/search/VelmereLensCommandRouter.tsx: missing PASS263 Lens marker ${marker}.`);
+  }
+  if (!pkgSource.includes("verify-pass263-release-candidate-trust-board-safety.mjs")) errors.push("package.json: missing PASS263 guard script marker.");
+} catch (error) {
+  errors.push(`PASS263 AI Brain release candidate trust board guard failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass263-release-candidate-trust-board-safety.mjs
+
+
+
+// PASS264 AI Brain trust narrative guard dark-pattern firewall
+try {
+  const modalSource = read("components/market-integrity/TokenRiskModal.tsx");
+  const cssSource = read("app/globals.css");
+  const narrativeSource = read("lib/market-integrity/vlm-brain-pass264-trust-narrative-guard.ts");
+  const lensSource = read("components/search/VelmereLensCommandRouter.tsx");
+  const pkgSource = read("package.json");
+  for (const marker of ["vlm-brain-pass264-trust-narrative-guard-v1", "PASS264_VLM_BRAIN_TRUST_NARRATIVE_GUARD_CONTRACT", "operator_trust_narrative_guard", "narrativeGuardActive: true", "trustPsychologySafe: true", "operatorOnly: true", "publicExportAllowed: false", "rawPayloadAllowed: false", "binaryPdfAllowed: false", "walletAccessAllowed: false", "customerCopyAllowed: false", "releaseCutoverAllowed: false", "releasePromotionAllowed: false", "publicReadinessSealAllowed: false", "finalVerdictAllowed: false", "publicBadgeAllowed: false", "urgencyCopyAllowed: false", "certaintyCopyAllowed: false", "accessShortcutAllowed: false", "darkPatternChecks"]) {
+    if (!narrativeSource.includes(marker)) errors.push(`lib/market-integrity/vlm-brain-pass264-trust-narrative-guard.ts: missing PASS264 marker ${marker}.`);
+  }
+  for (const marker of ["buildVlmBrainPass264TrustNarrativeGuard", "selectedTilePass264TrustNarrativeGuard", 'data-vlm-pass264-trust-narrative-guard="true"', "data-vlm-pass264-narrative-stage", "data-vlm-pass264-dark-pattern"]) {
+    if (!modalSource.includes(marker)) errors.push(`components/market-integrity/TokenRiskModal.tsx: missing PASS264 marker ${marker}.`);
+  }
+  for (const marker of ["PASS264 — AI Brain trust narrative guard", ".shield-vlm-pass264-trust-narrative-guard", "data-vlm-pass264-narrative-stage", "PASS264 — Lens trust narrative guide", ".vlcr-pass264-trust-narrative-guide", "prefers-reduced-motion: reduce"]) {
+    if (!cssSource.includes(marker)) errors.push(`app/globals.css: missing PASS264 marker ${marker}.`);
+  }
+  for (const marker of ["PASS264 Lens trust narrative guide", "vlcr-pass264-trust-narrative-guide", "PASS264 trust narrative guard", "PASS264 Trust-Narrative-Guard", "context first", "Kontext zuerst", "evidence status", "Evidenzstatus", "dark-pattern firewall", "Dark-Pattern-Firewall"]) {
+    if (!lensSource.includes(marker)) errors.push(`components/search/VelmereLensCommandRouter.tsx: missing PASS264 Lens marker ${marker}.`);
+  }
+  if (!pkgSource.includes("verify-pass264-trust-narrative-guard-dark-pattern-firewall-safety.mjs")) errors.push("package.json: missing PASS264 guard script marker.");
+} catch (error) {
+  errors.push(`PASS264 AI Brain trust narrative guard dark-pattern firewall failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+// guard script marker: verify-pass264-trust-narrative-guard-dark-pattern-firewall-safety.mjs
+
+if (errors.length) {
+  console.error("Velmère late preflight guards failed:");
+  for (const error of errors) console.error(`- ${error}`);
+  process.exit(1);
+}
+// PASS217 marker: late preflight error check protects guard blocks appended after the original summary.

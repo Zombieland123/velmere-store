@@ -13,11 +13,22 @@ export function generateMetadata({ params: { locale } }: { params: { locale: str
   });
 }
 
-export default function VelmereSearchPage({ params: { locale } }: { params: { locale: string } }) {
+export default function VelmereSearchPage({
+  params: { locale },
+  searchParams,
+}: {
+  params: { locale: string };
+  searchParams?: { query?: string; q?: string };
+}) {
   if (!SUPPORTED_LOCALES.includes(locale as (typeof SUPPORTED_LOCALES)[number])) notFound();
   unstable_setRequestLocale(locale);
 
-  return <VelmereIntelligenceSearchClient locale={locale} />;
+  return (
+    <VelmereIntelligenceSearchClient
+      locale={locale}
+      initialQuery={searchParams?.query || searchParams?.q || ""}
+    />
+  );
 }
 
 // PASS179 public UX marker: TokenMetadataProviderPanel remains available but is no longer rendered on the public Lens page.

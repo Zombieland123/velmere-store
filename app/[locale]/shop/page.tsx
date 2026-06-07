@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
+// PASS316 public commerce trim: launch-control panels stay out of customer routes; operator controls belong in admin/guard surfaces.
 import ShopPageClient from "@/components/shop/ShopPageClient";
-import CommerceLaunchControl from "@/components/launch/CommerceLaunchControl";
-import ProviderTruthLedgerPanel from "@/components/launch/ProviderTruthLedgerPanel";
-import ShippingReturnsTruthPanel from "@/components/launch/ShippingReturnsTruthPanel";
 import { buildVelmereMetadata } from "@/lib/seo/metadata";
 
 export function generateMetadata({ params: { locale } }: { params: { locale: string } }): Metadata {
@@ -19,9 +17,6 @@ export default function ShopPage({ params: { locale } }: { params: { locale: str
   return (
     <>
       <ShopPageClient />
-      <CommerceLaunchControl locale={locale} surface="shop" />
-      <ProviderTruthLedgerPanel locale={locale} surface="shop" />
-      <ShippingReturnsTruthPanel locale={locale} surface="shop" />
     </>
   );
 }

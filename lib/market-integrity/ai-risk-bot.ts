@@ -1,6 +1,7 @@
 import type { TokenRiskResult } from "./risk-types";
 import { buildHolderIntelligence } from "./holder-intelligence";
 import { buildLiquidityIntelligence } from "./liquidity-intelligence";
+import { normalizeConfidencePercent } from "./confidence-calibration";
 
 type HistoryLike = Array<{ score?: number; timestamp?: string; price?: number; volume24h?: number }>;
 
@@ -18,13 +19,13 @@ function n(value: unknown, fallback = 0) {
 }
 
 function pct(value?: number) {
-  if (value === undefined || value === null || Number.isNaN(value)) return "unknown";
+  if (value === undefined || value === null || Number.isNaN(value)) return "source required";
   const sign = value > 0 ? "+" : "";
   return `${sign}${value.toFixed(Math.abs(value) >= 10 ? 1 : 2)}%`;
 }
 
 function money(value?: number) {
-  if (value === undefined || value === null || Number.isNaN(value)) return "unknown";
+  if (value === undefined || value === null || Number.isNaN(value)) return "source required";
   if (Math.abs(value) >= 1_000_000_000) return `$${(value / 1_000_000_000).toFixed(2)}B`;
   if (Math.abs(value) >= 1_000_000) return `$${(value / 1_000_000).toFixed(2)}M`;
   if (Math.abs(value) >= 1_000) return `$${(value / 1_000).toFixed(1)}K`;
@@ -56,7 +57,7 @@ export function buildAiRiskBotBrief(result: TokenRiskResult, history: HistoryLik
   const firstScore = n(history[0]?.score, result.score);
   const lastScore = n(history.at(-1)?.score, result.score);
   const riskDelta = lastScore - firstScore;
-  const confidence = Math.round(n(result.confidence, 0.42) * 100);
+  const confidence = normalizeConfidencePercent(result.confidence, 42);
   const liquidity = n(result.metrics.liquidityUsd);
   const marketCap = n(result.metrics.marketCap);
   const liqCoverage = marketCap > 0 && liquidity > 0 ? (liquidity / marketCap) * 100 : undefined;
@@ -79,7 +80,7 @@ export function buildAiRiskBotBrief(result: TokenRiskResult, history: HistoryLik
       id: "verify_exit",
       label: "Verify exit depth",
       body: liqCoverage === undefined
-        ? "Liquidity coverage is unknown. Treat the score as incomplete until DEX/CEX depth is connected."
+        ? "Liquidity coverage requires a source. Treat the score as incomplete until DEX/CEX depth is connected."
         : `Liquidity coverage is ~${liqCoverage.toFixed(2)}% of market cap (${money(liquidity)} visible). Compare with sell shock, liquidity intelligence and order-book heatmap.`,
       priority: liqCoverage === undefined ? 76 : liqCoverage < 1 ? 92 : liqCoverage < 3 ? 82 : 56,
       layer: "liquidity",
@@ -93,7 +94,7 @@ export function buildAiRiskBotBrief(result: TokenRiskResult, history: HistoryLik
         : `Holder distribution is not confirmed. Keep uncertainty penalty (${dataUncertaintyPercent}%) and connect holder API before strong verdict.`,
       priority: result.metrics.top10HolderPercent && result.metrics.top10HolderPercent > 45 ? 90 : 68,
       layer: "holders",
-      operatorPrompt: "Rozdziel whales, CEX, DEX/LP, team, retail i unknown. Nie traktuj unknown jako bezpieczeństwa.",
+      operatorPrompt: "Rozdziel whales, CEX, DEX/LP, team, retail i portfele nieklasyfikowane. Braku klasyfikacji nie traktuj jako bezpieczeństwa.",
     },
     {
       id: "open_evidence",
@@ -156,7 +157,7 @@ export function buildAiRiskBotBrief(result: TokenRiskResult, history: HistoryLik
       "Explain the risk without hype.",
       "Which layer should I verify first?",
       "What data is missing before evidence report?",
-      "Read holders as whales/CEX/DEX/team/retail/unknown.",
+      "Read holders as whales/CEX/DEX/team/retail/unclassified.",
     ],
     analystResponseTemplate: {
       first: "State the anomaly, confidence and data uncertainty percent.",

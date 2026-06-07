@@ -75,6 +75,7 @@ export type InvestigatorProtocol = {
   lossPrevention: InvestigatorLossPrevention;
   quickVerdict: string;
   finalVerdict:
+    | "Insufficient evidence for a reliable verdict"
     | "Likely organic growth"
     | "Mixed: growth may include engineered pressure"
     | "High manipulation risk"
@@ -99,7 +100,7 @@ function n(value: unknown, fallback = 0) {
 }
 
 function compact(value?: number) {
-  if (value === undefined || value === null || Number.isNaN(value)) return "unknown";
+  if (value === undefined || value === null || Number.isNaN(value)) return "source required";
   const abs = Math.abs(value);
   if (abs >= 1_000_000_000_000) return `$${(value / 1_000_000_000_000).toFixed(2)}T`;
   if (abs >= 1_000_000_000) return `$${(value / 1_000_000_000).toFixed(2)}B`;
@@ -109,7 +110,7 @@ function compact(value?: number) {
 }
 
 function pct(value?: number) {
-  if (value === undefined || value === null || Number.isNaN(value)) return "unknown";
+  if (value === undefined || value === null || Number.isNaN(value)) return "source required";
   const sign = value > 0 ? "+" : "";
   return `${sign}${value.toFixed(Math.abs(value) >= 10 ? 1 : 2)}%`;
 }
@@ -139,6 +140,8 @@ function confidenceLevel(score: number): InvestigatorProtocol["confidence"] {
 export function buildVlmShieldInvestigator(result: TokenRiskResult): InvestigatorProtocol {
   const token = result.token;
   const symbol = token.symbol || "TOKEN";
+  const isBitcoin =
+    symbol.toUpperCase() === "BTC" || token.marketId === "bitcoin";
   const totalSupply = result.metrics.totalSupply ?? result.metrics.maxSupply;
   const circulatingSupply = result.metrics.circulatingSupply;
   const circulatingPercent = ratioPercent(circulatingSupply, totalSupply);
@@ -155,7 +158,8 @@ export function buildVlmShieldInvestigator(result: TokenRiskResult): Investigato
   const contractSignal = hasSignal(result, ["contract_privileges", "honeypot_risk", "high_sell_tax", "mint_risk", "blacklist_risk"]);
   const lowFloat = circulatingPercent !== undefined && circulatingPercent < 18;
   const missingSupply = circulatingPercent === undefined && (fdv > 0 || marketCap > 0);
-  const missingVesting = true;
+  const missingVesting = !isBitcoin;
+  const missingContract = !isBitcoin && token.tokenAddress === undefined;
 
   const supplyRisk = clamp(
     (lowFloat ? 42 : 0) +
@@ -164,12 +168,23 @@ export function buildVlmShieldInvestigator(result: TokenRiskResult): Investigato
       (hasSignal(result, ["fdv_marketcap_gap", "supply_overhang"]) ? 24 : 0),
   );
 
-  const unlockRisk = clamp(
-    (missingVesting ? 38 : 0) +
-      (hasSignal(result, ["supply_overhang", "fdv_marketcap_gap"]) ? 30 : 0) +
-      (fdvRatio && fdvRatio > 6 ? 24 : fdvRatio && fdvRatio > 2.5 ? 14 : 0) +
-      (lowFloat ? 12 : 0),
-  );
+  const unlockRisk = isBitcoin
+    ? clamp(
+        (missingSupply ? 12 : 0) +
+          (hasSignal(result, ["supply_overhang"]) ? 18 : 0),
+      )
+    : clamp(
+        (missingVesting ? 38 : 0) +
+          (hasSignal(result, ["supply_overhang", "fdv_marketcap_gap"])
+            ? 30
+            : 0) +
+          (fdvRatio && fdvRatio > 6
+            ? 24
+            : fdvRatio && fdvRatio > 2.5
+              ? 14
+              : 0) +
+          (lowFloat ? 12 : 0),
+      );
 
   const liquidityRisk = clamp(
     (liquidityCoverage === undefined ? 20 : liquidityCoverage < 0.8 ? 42 : liquidityCoverage < 2 ? 30 : liquidityCoverage < 5 ? 18 : 4) +
@@ -191,11 +206,13 @@ export function buildVlmShieldInvestigator(result: TokenRiskResult): Investigato
       (hasSignal(result, ["parabolic_24h_gain", "parabolic_7d_gain", "multi_timeframe_pump", "volume_spike", "wash_trading_risk"]) ? 30 : 0),
   );
 
-  const contractRisk = clamp(
-    (contractSignal ? 56 : 10) +
-      (result.dataQuality !== "live" ? 16 : 0) +
-      (token.tokenAddress ? 0 : 10),
-  );
+  const contractRisk = isBitcoin
+    ? clamp(result.dataQuality === "live" ? 4 : 12)
+    : clamp(
+        (contractSignal ? 56 : 10) +
+          (result.dataQuality !== "live" ? 16 : 0) +
+          (token.tokenAddress ? 0 : 10),
+      );
 
   const lanes: InvestigatorRiskLane[] = [
     {
@@ -213,10 +230,16 @@ export function buildVlmShieldInvestigator(result: TokenRiskResult): Investigato
       id: "unlock",
       label: "Vesting / unlocks",
       score: unlockRisk,
-      status: "red_flag",
-      headline: "Unlock transparency must be proven",
-      body: "No local source confirms team, investor, advisor, OTC or hidden whale unlocks. Missing vesting transparency is treated as risk, not safety.",
-      nextStep: `Search: ${symbol} token unlock schedule, vesting, OTC allocation, cliff extension.`,
+      status: isBitcoin ? "confirmed" : "red_flag",
+      headline: isBitcoin
+        ? "Protocol issuance replaces team vesting"
+        : "Unlock transparency must be proven",
+      body: isBitcoin
+        ? "Bitcoin has no issuer-controlled team vesting schedule. Review protocol issuance, miner supply and large-holder flows instead of applying a generic token-unlock model."
+        : "No local source confirms team, investor, advisor, OTC or hidden whale unlocks. Missing vesting transparency is treated as risk, not safety.",
+      nextStep: isBitcoin
+        ? "Verify current issuance, miner flows and long-term holder supply from current on-chain sources."
+        : `Search: ${symbol} token unlock schedule, vesting, OTC allocation, cliff extension.`,
     },
     {
       id: "liquidity",
@@ -224,7 +247,7 @@ export function buildVlmShieldInvestigator(result: TokenRiskResult): Investigato
       score: liquidityRisk,
       status: evidenceStatus(liquidityRisk, liquidityCoverage === undefined),
       headline: liquidityCoverage !== undefined ? `${liquidityCoverage.toFixed(2)}% liquidity coverage` : "Liquidity depth incomplete",
-      body: `Visible liquidity ${compact(liquidity)}. Volume/liquidity ${volumeToLiquidity ? volumeToLiquidity.toFixed(2) : "unknown"}. Exit depth must be checked before trusting the move.`,
+      body: `Visible liquidity ${compact(liquidity)}. Volume/liquidity ${volumeToLiquidity ? volumeToLiquidity.toFixed(2) : "source required"}. Exit depth must be checked before trusting the move.`,
       nextStep: "Compare DEX pool depth, CEX orderbook, slippage simulation and volume quality.",
     },
     {
@@ -233,8 +256,8 @@ export function buildVlmShieldInvestigator(result: TokenRiskResult): Investigato
       score: insiderRisk,
       status: evidenceStatus(insiderRisk, holderTop10 === undefined),
       headline: holderTop10 !== undefined ? `Top 10 holders proxy ${holderTop10.toFixed(1)}%` : "Holder concentration missing",
-      body: "Unknown wallets, team wallets and CEX custody must be separated before calling distribution healthy.",
-      nextStep: "Cluster holders into team, CEX, LP, treasury, whales, retail and unknown.",
+      body: "Unclassified wallets, team wallets and CEX custody must be separated before calling distribution healthy.",
+      nextStep: "Cluster holders into team, CEX, LP, treasury, whales, retail and unclassified.",
     },
     {
       id: "social",
@@ -249,10 +272,24 @@ export function buildVlmShieldInvestigator(result: TokenRiskResult): Investigato
       id: "contract",
       label: "Contract / governance",
       score: contractRisk,
-      status: contractSignal ? "red_flag" : token.tokenAddress ? "likely" : "unknown",
-      headline: contractSignal ? "Contract privilege signal present" : "Contract risk not fully cleared",
-      body: "Audit, owner privileges, upgradeability, mint, blacklist, taxes and pause functions need direct explorer verification.",
-      nextStep: "Verify contract source, owner, proxy/admin, tax settings, mint authority and audit status.",
+      status: isBitcoin
+        ? "confirmed"
+        : contractSignal
+          ? "red_flag"
+          : token.tokenAddress
+            ? "likely"
+            : "unknown",
+      headline: isBitcoin
+        ? "No issuer token contract"
+        : contractSignal
+          ? "Contract privilege signal present"
+          : "Contract risk not fully cleared",
+      body: isBitcoin
+        ? "Bitcoin is a native protocol asset, not an owner-controlled token contract. The relevant risks are protocol, custody, bridge and wrapped-asset exposure."
+        : "Audit, owner privileges, upgradeability, mint, blacklist, taxes and pause functions need direct explorer verification.",
+      nextStep: isBitcoin
+        ? "Separate native BTC risk from exchange custody, bridge and wrapped-BTC contract risk."
+        : "Verify contract source, owner, proxy/admin, tax settings, mint authority and audit status.",
     },
   ];
 
@@ -265,55 +302,86 @@ export function buildVlmShieldInvestigator(result: TokenRiskResult): Investigato
       contractRisk * 0.14,
   );
 
-  const missingPenalty = [missingSupply, missingVesting, holderTop10 === undefined, liquidityCoverage === undefined, token.tokenAddress === undefined].filter(Boolean).length * 8;
+  const missingPenalty = [
+    missingSupply,
+    missingVesting,
+    holderTop10 === undefined,
+    liquidityCoverage === undefined,
+    missingContract,
+  ].filter(Boolean).length * 8;
   const confidenceScore = clamp(n(result.confidence, 0.42) * 100 - missingPenalty + (result.dataQuality === "live" ? 12 : result.dataQuality === "partial" ? 2 : -10));
   const redFlags = lanes
     .filter((lane) => lane.status === "red_flag" || lane.score >= 70)
     .map((lane) => `${lane.label}: ${lane.headline}`)
     .slice(0, 8);
 
+  const missingCoreEvidence = [
+    missingSupply,
+    missingVesting,
+    holderTop10 === undefined,
+    liquidityCoverage === undefined,
+    missingContract,
+    !result.agentAssessments?.some(
+      (assessment) => assessment.id === "microstructure" && assessment.evidenceCount > 0,
+    ),
+  ].filter(Boolean).length;
+
   const finalVerdict: InvestigatorProtocol["finalVerdict"] =
-    confidenceScore < 38 || redFlags.length >= 4
-      ? "Insufficient transparency — treat as high risk until proven otherwise"
+    missingCoreEvidence >= 3
+      ? "Insufficient evidence for a reliable verdict"
+      : confidenceScore < 38 || redFlags.length >= 4
+        ? "Insufficient transparency — treat as high risk until proven otherwise"
       : overallRisk >= 72
         ? "High manipulation risk"
         : overallRisk >= 45
           ? "Mixed: growth may include engineered pressure"
           : "Likely organic growth";
 
-  const quickVerdict = `${symbol}: ${finalVerdict}. Overall VLM Shield Investigator risk ${overallRisk}/100, confidence ${confidenceLevel(confidenceScore)}.`;
+  const quickVerdict = `${symbol}: ${finalVerdict}. Review pressure ${overallRisk}/100, confidence ${confidenceLevel(confidenceScore)}.`;
 
-  const webQueries = [
-    `${symbol} token circulating supply total supply FDV market cap`,
-    `${symbol} token unlock schedule vesting team investors advisors OTC`,
-    `${symbol} buyback short squeeze market maker volume spike`,
-    `${symbol} KOL paid promotion shill controversy scam allegations`,
-    token.tokenAddress ? `${token.tokenAddress} contract audit owner mint blacklist tax honeypot` : `${symbol} contract audit owner mint blacklist tax honeypot`,
-  ];
+  const webQueries = isBitcoin
+    ? [
+        "Bitcoin circulating supply issuance schedule miner reserves",
+        "Bitcoin exchange reserves ETF flows liquidity orderbook",
+        "Bitcoin long term holder supply whale concentration",
+        "Bitcoin derivatives funding open interest liquidation risk",
+        "Bitcoin custody bridge wrapped BTC contract risk",
+      ]
+    : [
+        `${symbol} token circulating supply total supply FDV market cap`,
+        `${symbol} token unlock schedule vesting team investors advisors OTC`,
+        `${symbol} buyback short squeeze market maker volume spike`,
+        `${symbol} KOL paid promotion shill controversy scam allegations`,
+        token.tokenAddress
+          ? `${token.tokenAddress} contract audit owner mint blacklist tax honeypot`
+          : `${symbol} contract audit owner mint blacklist tax honeypot`,
+      ];
 
   const evidence: InvestigatorEvidenceRow[] = [
     {
       label: "Float",
       status: missingSupply ? "red_flag" : lowFloat ? "red_flag" : "confirmed",
-      value: circulatingPercent === undefined ? "unknown" : `${circulatingPercent.toFixed(2)}%`,
+      value: circulatingPercent === undefined ? "source required" : `${circulatingPercent.toFixed(2)}%`,
       body: "Compare circulating supply to total/max supply. Low float can make aggressive price moves easier.",
     },
     {
       label: "FDV gap",
       status: fdvRatio === undefined ? "unknown" : fdvRatio > 3 ? "red_flag" : "confirmed",
-      value: fdvRatio === undefined ? "unknown" : `${fdvRatio.toFixed(2)}x`,
+      value: fdvRatio === undefined ? "source required" : `${fdvRatio.toFixed(2)}x`,
       body: "Large FDV/market-cap gaps can indicate future supply overhang and unlock pressure.",
     },
     {
       label: "Vesting",
-      status: "red_flag",
-      value: "needs web OSINT",
-      body: "No local cache proves team/investor/advisor unlock schedule. Missing unlock data increases risk.",
+      status: isBitcoin ? "confirmed" : "red_flag",
+      value: isBitcoin ? "protocol issuance" : "needs web OSINT",
+      body: isBitcoin
+        ? "Bitcoin issuance follows protocol rules; miner and holder flows remain the relevant supply-pressure checks."
+        : "No local cache proves team/investor/advisor unlock schedule. Missing unlock data increases risk.",
     },
     {
       label: "Liquidity",
       status: liquidityCoverage === undefined ? "unknown" : liquidityRisk > 60 ? "red_flag" : "likely",
-      value: liquidityCoverage === undefined ? "unknown" : `${liquidityCoverage.toFixed(2)}%`,
+      value: liquidityCoverage === undefined ? "source required" : `${liquidityCoverage.toFixed(2)}%`,
       body: "Coverage and slippage determine whether holders can exit without severe price impact.",
     },
     {
@@ -324,9 +392,15 @@ export function buildVlmShieldInvestigator(result: TokenRiskResult): Investigato
     },
     {
       label: "Contract",
-      status: contractSignal ? "red_flag" : "unknown",
-      value: token.tokenAddress ? "address present" : "missing address",
-      body: "Contract privileges must be verified directly from explorer/audit sources.",
+      status: isBitcoin ? "confirmed" : contractSignal ? "red_flag" : "unknown",
+      value: isBitcoin
+        ? "native protocol"
+        : token.tokenAddress
+          ? "address present"
+          : "missing address",
+      body: isBitcoin
+        ? "Native BTC has no issuer-controlled token owner; custody and wrapped versions must be reviewed separately."
+        : "Contract privileges must be verified directly from explorer/audit sources.",
     },
   ];
 
@@ -335,11 +409,12 @@ export function buildVlmShieldInvestigator(result: TokenRiskResult): Investigato
     missingVesting ? "team / investor / advisor unlock schedule" : null,
     holderTop10 === undefined ? "holder concentration and wallet clustering" : null,
     liquidityCoverage === undefined ? "exit liquidity and slippage depth" : null,
-    token.tokenAddress ? null : "contract address / explorer verification",
+    missingContract ? "contract address / explorer verification" : null,
   ].filter((item): item is string => Boolean(item));
 
   const primaryConcern = lanes.slice().sort((a, b) => b.score - a.score)[0]?.label ?? "source uncertainty";
   const operatorMode: InvestigatorCaseFrame["operatorMode"] =
+    finalVerdict === "Insufficient evidence for a reliable verdict" ||
     finalVerdict === "Insufficient transparency — treat as high risk until proven otherwise"
       ? "block_verdict"
       : overallRisk >= 72
@@ -357,7 +432,7 @@ export function buildVlmShieldInvestigator(result: TokenRiskResult): Investigato
     operatorMode,
   };
 
-  const nextActions: InvestigatorNextAction[] = [
+  const nextActionsUnsorted: InvestigatorNextAction[] = [
     {
       id: "verify-supply",
       label: "Verify supply",
@@ -365,13 +440,22 @@ export function buildVlmShieldInvestigator(result: TokenRiskResult): Investigato
       body: "Confirm circulating, total and max supply against explorer and at least one market-data source.",
       command: `Search ${symbol} circulating supply total supply FDV market cap explorer`,
     },
-    {
-      id: "inspect-unlocks",
-      label: "Inspect unlocks",
-      priority: "critical",
-      body: "Find team, investor, advisor, ecosystem, OTC and whale unlock schedules before trusting any pump.",
-      command: `Search ${symbol} unlock schedule vesting team investors OTC cliff`,
-    },
+    isBitcoin
+      ? {
+          id: "inspect-unlocks",
+          label: "Review issuance and flows",
+          priority: "high",
+          body: "Check miner supply, exchange reserves, ETF flows and long-term-holder distribution instead of a token vesting calendar.",
+          command:
+            "Review Bitcoin issuance, miner reserves, exchange balances and ETF flows",
+        }
+      : {
+          id: "inspect-unlocks",
+          label: "Inspect unlocks",
+          priority: "critical",
+          body: "Find team, investor, advisor, ecosystem, OTC and whale unlock schedules before trusting any pump.",
+          command: `Search ${symbol} unlock schedule vesting team investors OTC cliff`,
+        },
     {
       id: "check-liquidity",
       label: "Check liquidity",
@@ -386,15 +470,31 @@ export function buildVlmShieldInvestigator(result: TokenRiskResult): Investigato
       body: "Search for paid promotions, undisclosed allocations, coordinated hype and controversy.",
       command: `Search ${symbol} KOL paid promotion shill controversy manipulation allegations`,
     },
-    {
-      id: "audit-contract",
-      label: "Audit contract",
-      priority: contractRisk >= 60 ? "high" : "medium",
-      body: "Verify owner, proxy, mint, blacklist, pause, taxes and audit status from explorer/audit sources.",
-      command: token.tokenAddress ? `Inspect ${token.tokenAddress} contract owner proxy mint blacklist tax audit` : `Find ${symbol} contract address and audit`,
-    },
-  ].sort((a, b) => {
-    const rank = { critical: 4, high: 3, medium: 2, low: 1 };
+    isBitcoin
+      ? {
+          id: "audit-contract",
+          label: "Separate custody risk",
+          priority: "medium",
+          body: "Review exchange custody, bridges and wrapped-BTC contracts separately from native Bitcoin protocol risk.",
+          command: "Review BTC custody, bridge and wrapped-token exposure",
+        }
+      : {
+          id: "audit-contract",
+          label: "Audit contract",
+          priority: contractRisk >= 60 ? "high" : "medium",
+          body: "Verify owner, proxy, mint, blacklist, pause, taxes and audit status from explorer/audit sources.",
+          command: token.tokenAddress
+            ? `Inspect ${token.tokenAddress} contract owner proxy mint blacklist tax audit`
+            : `Find ${symbol} contract address and audit`,
+        },
+  ];
+  const nextActions = nextActionsUnsorted.sort((a, b) => {
+    const rank: Record<InvestigatorNextAction["priority"], number> = {
+      critical: 4,
+      high: 3,
+      medium: 2,
+      low: 1,
+    };
     return rank[b.priority] - rank[a.priority];
   });
 

@@ -41,6 +41,8 @@ type ErrorPayload = { mode: "error"; error: string };
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const query = searchParams.get("query")?.trim();
+  const localeCandidate = searchParams.get("locale")?.trim() || "pl";
+  const locale = localeCandidate === "de" || localeCandidate === "en" ? localeCandidate : "pl";
   if (!query) return NextResponse.json<ErrorPayload>({ mode: "error", error: "Missing query" }, { status: 400 });
 
   try {
@@ -59,7 +61,7 @@ export async function GET(request: Request) {
     const riskReplay = buildRiskReplay(result, history);
     const aiRiskBot = buildAiRiskBotBrief(result, history);
     const aiOrchestrator = buildAiRiskOrchestrator(result, history);
-    const shieldChat = buildShieldChatResponse(result, history, searchParams.get("prompt") ?? "Explain the current risk.");
+    const shieldChat = buildShieldChatResponse(result, history, searchParams.get("prompt") ?? "Explain the current risk.", locale);
     const chartRegime = buildChartRegime(result, {
       bars: result.chart?.sevenDay?.length ?? 0,
       source: result.chart?.sevenDay?.length ? "result.chart.sevenDay" : "market metrics",

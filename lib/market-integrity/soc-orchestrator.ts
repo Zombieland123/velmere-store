@@ -44,13 +44,13 @@ function clamp(value: number, min = 0, max = 100) {
 }
 
 function pct(value?: number) {
-  if (value === undefined || value === null || Number.isNaN(value)) return "unknown";
+  if (value === undefined || value === null || Number.isNaN(value)) return "source required";
   const sign = value > 0 ? "+" : "";
   return `${sign}${value.toFixed(Math.abs(value) >= 10 ? 1 : 2)}%`;
 }
 
 function money(value?: number) {
-  if (value === undefined || value === null || Number.isNaN(value)) return "unknown";
+  if (value === undefined || value === null || Number.isNaN(value)) return "source required";
   if (Math.abs(value) >= 1_000_000_000) return `$${(value / 1_000_000_000).toFixed(2)}B`;
   if (Math.abs(value) >= 1_000_000) return `$${(value / 1_000_000).toFixed(2)}M`;
   if (Math.abs(value) >= 1_000) return `$${(value / 1_000).toFixed(1)}K`;
@@ -122,7 +122,7 @@ export function buildSocTerminalBrief(result: TokenRiskResult, history: HistoryL
       label: "Verify exit liquidity",
       priority: 90,
       severity: worstStress?.score >= 75 ? "critical" : "warning",
-      reason: `Liquidity coverage=${liquidityCoverage === undefined ? "unknown" : pct(liquidityCoverage)}, worst stress=${worstStress?.score ?? "unknown"}/100.`,
+      reason: `Liquidity coverage=${liquidityCoverage === undefined ? "source required" : pct(liquidityCoverage)}, worst stress=${worstStress?.score ?? "source required"}/100.`,
       action: "Open depth/heatmap, check bid support, simulate sell pressure and mark unsupported pairs as uncertainty.",
       layer: "liquidity",
     });
@@ -135,7 +135,7 @@ export function buildSocTerminalBrief(result: TokenRiskResult, history: HistoryL
       priority: holders.holderRiskScore >= 70 ? 88 : 66,
       severity: holders.holderRiskScore >= 70 ? "warning" : "watch",
       reason: `Holder brain=${holders.holderRiskScore}/100, data completeness=${holders.dataCompleteness}%.`,
-      action: "Separate whales, CEX, team and unknown wallets. Missing chain data must not be treated as safety.",
+      action: "Separate whales, CEX, team and unclassified wallets. Missing chain data must not be treated as safety.",
       layer: "holders",
     });
   }
@@ -194,7 +194,7 @@ export function buildSocTerminalBrief(result: TokenRiskResult, history: HistoryL
       id: "liquidity-context",
       label: "Liquidity context",
       status: liquidityCoverage === undefined ? "watch" : liquidityCoverage >= 8 ? "pass" : liquidityCoverage >= 3 ? "watch" : "fail",
-      value: liquidityCoverage === undefined ? "unknown" : pct(liquidityCoverage),
+      value: liquidityCoverage === undefined ? "source required" : pct(liquidityCoverage),
       fix: "Compare visible liquidity with market cap and stress simulator.",
     },
     {

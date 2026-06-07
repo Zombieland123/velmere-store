@@ -2423,3 +2423,819 @@ Scenario runtime uses project dependencies (`zod`, `ts-node`). In this artifact 
 - Browser QA on target monitor still required.
 - Real PDF generator is not built yet; PDF-ready route remains backend-ready only.
 - Evidence Board is hidden, not deleted; future mode needs better design before re-enable.
+
+---
+## PASS 196 — Orbit 360 Final Runtime Hotfix + Home Locale Repair
+
+### What changed
+- Fixed Home page locale runtime safety by keeping `const locale = useLocale()` in component scope.
+- Moved VLM Orbit 360 overlay outside the clipped token popup shell.
+- Removed Evidence Board from the public Basic/Pro/Advanced flow for now.
+- Basic, Pro and Advanced all open Orbit 360.
+- Portaled mode guide popup above all panels.
+- Hid Source Spine / VLM disclaimer clutter under mode description.
+- Reversed chart drag direction to match browser QA request.
+- Strengthened Shield search logo/glyph fallback and panel glow containment.
+
+### Validation
+- PASS196 guard: OK.
+- PASS195 guard: OK.
+- PASS194 guard: OK.
+- Vercel preflight: OK.
+- i18n check: OK.
+
+---
+## PASS 197 — Shield Search Portal Containment Hotfix
+
+### What changed
+- Moved Shield search suggestions from the clipped sticky search form into a fixed `document.body` portal.
+- Added viewport-aware positioning, max-height calculation, premium scroll area and outside-click support for the portaled dropdown.
+- Raised the Shield search dock above Investigator/terminal panels without removing the premium glow.
+- Expanded fallback glyph coverage for BTC, ETH, SOL, USDT, USDC, XRP, DOGE, BNB, ADA, TRX, LINK, AVAX, DOT, LTC, SHIB and PEPE.
+- Added a new PASS197 guard and wired it into `verify:shield-all` and Vercel preflight.
+
+### Progress estimate
+
+| Area | Previous | After PASS 197 | Change |
+|---|---:|---:|---:|
+| Search suggestions UX | 90% | 94% | +4% |
+| Shield market table | 64% | 66% | +2% |
+| Shield Map overlay containment | 82% | 90% | +8% |
+| Token logo/glyph fallback | 88% | 94% | +6% |
+| Vercel/static guard coverage | 98% | 99% | +1% |
+
+### Current blockers
+- Needs real-browser QA on the exact Vercel page to confirm the dropdown never sits under sticky/Investigator layers.
+- Live holder/orderbook/contract adapters, durable source ledger and rate-limit tuning remain launch blockers.
+- This pass fixes the search overlay/containment bug; it does not replace the VLM Brain renderer.
+
+
+---
+## PASS 198 — Expanded Master Build Map / No More Truncated Areas
+
+### What changed
+- Restored a granular master build map instead of a shortened progress table.
+- Added `lib/launch/master-build-areas.ts` with 100+ tracked subareas across A–M.
+- Added `docs/progress/VELMERE_MASTER_BUILD_MAP.md` as the readable planning/reporting source.
+- Added a PASS198 guard so future passes cannot silently shrink the matrix again.
+- Wired the new guard into `verify:shield-all` and Vercel preflight.
+
+### Progress estimate
+
+| Area | Previous | After PASS 198 | Change |
+|---|---:|---:|---:|
+| Master build area coverage | 35% | 100% | +65% |
+| Progress reporting discipline | 62% | 94% | +32% |
+| A–M granular tracking | 55% | 98% | +43% |
+| Blocker visibility | 70% | 92% | +22% |
+| Future pass handoff quality | 74% | 95% | +21% |
+
+### Current blockers
+- This pass expands tracking/reporting; it does not connect missing live adapters, payments, durable storage or PDF generation.
+- Full browser QA on Vercel is still required for Search portal, Orbit 360 and chart interactions.
+- Future reports must keep the matrix broad enough to cover Core, Brand, Shield, VLM Brain, Lens, Security, Commerce, VLM Access, Square, SEO/Mobile, Backbone, Live Feeds and Reports.
+
+---
+## PASS 199 — Progress Delta Ledger / Percent Movement Table
+
+### What changed
+- Added a guarded pass-delta reporting layer so every future pass can show exactly how many percent each touched area moved.
+- Added `lib/launch/master-build-progress-delta.ts` with explicit `Previous → Current → Change` rows for PASS199.
+- Regenerated `docs/progress/VELMERE_MASTER_BUILD_MAP.md` with the full A–M map plus a PASS199 delta table.
+- Added `docs/progress/PASS199_PROGRESS_DELTA_LEDGER.md` as the rulebook for future progress reporting.
+- Updated project progress and route audit rows for Shield, Lens, Reports/Evidence and portal/z-index QA.
+- Added a PASS199 guard and wired it into `verify:shield-all` and Vercel preflight.
+
+### Progress delta
+
+| Area | Previous | After PASS 199 | Change |
+|---|---:|---:|---:|
+| Preflight guard system | 99% | 100% | +1% |
+| Runtime observability | 64% | 68% | +4% |
+| Psychology of sales copy | 66% | 68% | +2% |
+| Shield terminal shell | 66% | 67% | +1% |
+| Shield search dropdown | 94% | 95% | +1% |
+| Global token lookup | 62% | 63% | +1% |
+| Token logo fallback | 94% | 95% | +1% |
+| Velmère Lens command router | 82% | 83% | +1% |
+| Lens search UX | 82% | 83% | +1% |
+| Scroll lock / z-index layers | 88% | 91% | +3% |
+| Analytics event taxonomy | 35% | 39% | +4% |
+| Operator cases | 38% | 40% | +2% |
+| Evidence Note | 52% | 54% | +2% |
+| Safe export wording | 76% | 78% | +2% |
+| Operator-only report fields | 38% | 41% | +3% |
+
+### Current blockers
+- This pass improves progress tracking/reporting and guards; it does not connect live holder/orderbook/contract/OSINT adapters.
+- Durable source ledger, Stripe/order persistence, wallet/session gating and real PDF binary generation remain blocked.
+- Real Vercel/browser QA is still required for Shield search portal, Orbit 360 and chart interactions.
+
+
+---
+## PASS 200 — AI Brain Master Matrix / D01-D24 Explicit Tracking
+
+### What changed
+- Confirmed that the VLM AI Brain is in the master map and expanded it from a broad D01-D12 block into explicit D01-D24 tracking rows.
+- Added AI risk ontology, tile explainer taxonomy, source confidence lanes, missing-data semantics, depth contract, click coverage, portal layering, FPS telemetry, WebGL migration, accessibility and PL/EN/DE copy localization rows.
+- Added `lib/launch/master-build-progress-delta-pass200.ts` and `docs/progress/PASS200_AI_BRAIN_MASTER_MATRIX.md`.
+- Updated `VELMERE_MASTER_BUILD_MAP.md`, project progress and route audit so the brain cannot disappear from future pass reports.
+- Added PASS200 guard and wired it into Vercel preflight and `verify:shield-all`.
+
+### Progress delta
+
+| Area | Previous | After PASS 200 | Change | Type |
+|---|---:|---:|---:|---|
+| VLM Orbit 360 shell | 94% | 95% | +1% | improved |
+| Advanced Analysis brain | 84% | 85% | +1% | improved |
+| Tile detail popup | 90% | 91% | +1% | improved |
+| Reduced motion / mobile downgrade | 78% | 79% | +1% | improved |
+| WebGL / Three.js lane | 36% | 38% | +2% | improved |
+| AI risk signal ontology | 0% | 72% | +72% | newly_tracked |
+| Tile-specific explainer taxonomy | 0% | 88% | +88% | newly_tracked |
+| Risk driver mapping | 0% | 58% | +58% | newly_tracked |
+| Source confidence lanes | 0% | 52% | +52% | newly_tracked |
+| Missing-data semantics | 0% | 62% | +62% | newly_tracked |
+| Basic / Pro / Advanced depth contract | 0% | 86% | +86% | newly_tracked |
+| Brain interaction click coverage | 0% | 84% | +84% | newly_tracked |
+| Brain portal layering / scroll lock | 0% | 92% | +92% | newly_tracked |
+| Brain telemetry / FPS QA | 0% | 46% | +46% | newly_tracked |
+| WebGL migration contract | 0% | 40% | +40% | newly_tracked |
+| Brain accessibility / keyboard flow | 0% | 44% | +44% | newly_tracked |
+| Brain copy localization PL/EN/DE | 0% | 72% | +72% | newly_tracked |
+| Token modal shell | 93% | 94% | +1% | improved |
+| Animation performance | 90% | 91% | +1% | improved |
+
+Real product movement on existing rows: **+8%**. Newly tracked AI Brain baseline rows: **12**.
+
+### Current blockers
+- AI Brain still needs real-browser FPS QA and weaker-device testing.
+- Live holder/orderbook/contract/OSINT adapters remain blocked, so many brain tiles still depend on partial/fallback evidence.
+- WebGL/Three.js remains a migration lane, not yet the production renderer.
+- Durable source ledger and PDF export remain separate launch blockers.
+
+
+---
+## PASS 201 — AI Brain Interaction Portal / Keyboard + Pause-On-Read
+
+### What changed
+- Moved VLM Brain tile detail into a `document.body` portal so it sits above Orbit 360, the token modal and overflow clipping layers.
+- Added ESC close and Arrow key tile navigation for the currently revealed brain cards.
+- Paused/slowed Orbit 360 while a tile detail is open, so the user can read signal evidence without the scene drifting under them.
+- Hid user-facing zoom +/- clutter while preserving wheel zoom and guard-compatible runtime markers.
+- Added PASS201 guard and progress delta rows.
+
+### Progress delta
+
+| Area | Previous | After PASS 201 | Change |
+|---|---:|---:|---:|
+| Tile detail popup | 91% | 94% | +3% |
+| Performance governor | 92% | 93% | +1% |
+| Brain interaction click coverage | 84% | 87% | +3% |
+| Brain portal layering / scroll lock | 92% | 95% | +3% |
+| Brain accessibility / keyboard flow | 44% | 51% | +7% |
+| Scroll lock / z-index layers | 91% | 93% | +2% |
+| Animation performance | 90% | 92% | +2% |
+
+### Current blockers
+- Needs real browser QA on Vercel for pointer, touch, ESC, Arrow navigation and detail panel scroll.
+- Needs real FPS measurement on weaker machines before claiming the Orbit renderer is production smooth.
+- Live holder/orderbook/contract/OSINT feeds and durable source ledger remain separate blockers.
+
+---
+
+## PASS 202 — 2026-06-03
+
+### What changed
+- Localized VLM AI Brain tile drawer copy for PL/EN/DE, with a dedicated German pass instead of English fallback body text.
+- Added source-trust state inside the drawer: live, partial and fallback/missing sources now read differently.
+- Added publication-state guidance so weak evidence routes to internal review / second-source review instead of strong public wording.
+- Added previous/next tile controls in the detail portal so orbit cards can be inspected without hunting moving cards.
+- Added keyboard hint copy in the drawer: ESC closes, arrows switch tiles.
+
+### Progress delta
+
+| Area | Previous | After PASS 202 | Change |
+|---|---:|---:|---:|
+| Tile-specific explainer taxonomy | 88% | 91% | +3% |
+| Source confidence lanes | 52% | 57% | +5% |
+| Missing-data semantics | 62% | 66% | +4% |
+| Basic / Pro / Advanced depth contract | 86% | 87% | +1% |
+| Brain interaction click coverage | 87% | 88% | +1% |
+| Brain accessibility / keyboard flow | 51% | 55% | +4% |
+| Brain copy localization PL/EN/DE | 72% | 80% | +8% |
+| Accessibility / ARIA | 58% | 60% | +2% |
+
+### Current blockers
+- Real Vercel browser QA is still required.
+- Screen-reader QA is not yet complete.
+- FPS telemetry and WebGL comparison are still blockers.
+- Durable source freshness registry and live holder/orderbook/contract/OSINT adapters are still not connected.
+
+
+## PASS 203 — AI Brain Evidence Chain Rail
+
+- Added a localized AI Brain evidence-chain rail in the tile drawer: evidence source state, readout confidence and publication/decision gate are shown before the long explanation.
+- Added per-card source badges on visible Orbit/static tiles so live/partial/fallback context is visible before opening the drawer.
+- Added localized operator checklist items per tile family: risk, liquidity, holders, signals, source and access.
+- Kept safe wording: missing/partial/fallback data routes to review and does not become a clean public verdict.
+
+| ID | Obszar | Previous | Current | Change |
+|---|---|---:|---:|---:|
+| C06 | Risk scoring UI | 70% | 72% | +2% |
+| D15 | Risk driver mapping | 58% | 62% | +4% |
+| D16 | Source confidence lanes | 57% | 61% | +4% |
+| D17 | Missing-data semantics | 66% | 69% | +3% |
+| D19 | Brain interaction click coverage | 88% | 90% | +2% |
+| D21 | Brain telemetry / FPS QA | 46% | 48% | +2% |
+| D23 | Brain accessibility / keyboard flow | 55% | 58% | +3% |
+| D24 | Brain copy localization PL/EN/DE | 80% | 82% | +2% |
+| J02 | Accessibility / ARIA | 60% | 62% | +2% |
+
+**PASS203 product delta:** +24% on touched rows.
+
+## PASS204 — AI Brain FPS Telemetry + WebGL Gate
+
+- Added lightweight one-second FPS telemetry and worst-frame-delta sampling for the VLM Brain.
+- Added a small motion-health chip in Orbit 360 without turning performance into a marketing promise.
+- Paused Orbit update ticks while the user is reading a tile drawer.
+- Added `lib/market-integrity/vlm-brain-renderer-contract.ts` as the typed WebGL migration gate with DOM Orbit fallback.
+- Updated D09/D10/D11/D21/D22/J06 progress deltas.
+
+**PASS204 product delta:** +23% on touched rows.
+
+## PASS205 — AI Brain WebGL Prototype Isolation
+
+- Added an isolated raw WebGL prototype renderer for the VLM AI Brain.
+- Mounted it only behind `NEXT_PUBLIC_VLM_BRAIN_RENDERER=webgl-prototype`.
+- Preserved DOM Orbit as the default fallback with clickable cards, tile detail portals and keyboard flow.
+- Extended the renderer contract with PASS205 prototype rules and QA measurements.
+- Added CSS containment and reduced-motion/mobile hiding for the prototype layer.
+
+| ID | Obszar | Previous | Current | Change |
+|---|---|---:|---:|---:|
+| D09 | Reduced motion / mobile downgrade | 81% | 83% | +2% |
+| D10 | Performance governor | 95% | 96% | +1% |
+| D11 | WebGL / Three.js lane | 42% | 49% | +7% |
+| D21 | Brain telemetry / FPS QA | 55% | 58% | +3% |
+| D22 | WebGL migration contract | 46% | 54% | +8% |
+| J06 | Animation performance | 94% | 95% | +1% |
+
+**PASS205 product delta:** +22% on touched rows.
+
+---
+
+## PASS 206 — 2026-06-03
+
+### What changed
+- Hid public-facing FPS/input/zoom/WebGL watermark clutter from the VLM Brain unless QA gates are explicitly active.
+- Added WebGL prototype per-second trace telemetry: FPS, worst frame, node count, paused state and quality.
+- Added renderer contract language for `NEXT_PUBLIC_VLM_BRAIN_QA_HUD`.
+- Kept DOM Orbit as the default production fallback.
+
+| ID | Obszar | Previous | Current | Change |
+|---|---|---:|---:|---:|
+| A06 | Runtime observability | 68% | 70% | +2% |
+| D10 | Performance governor | 96% | 97% | +1% |
+| D11 | WebGL / Three.js lane | 49% | 54% | +5% |
+| D21 | Brain telemetry / FPS QA | 58% | 64% | +6% |
+| D22 | WebGL migration contract | 54% | 58% | +4% |
+| J04 | Scroll lock / z-index layers | 93% | 94% | +1% |
+| J06 | Animation performance | 95% | 96% | +1% |
+
+**PASS206 product delta:** +20% on touched rows.
+
+---
+
+## PASS 207 — 2026-06-03
+
+### What changed
+- Added a VLM Brain **Decision Dock** inside the clicked tile drawer.
+- The drawer now summarizes: priority, confidence limit, source mode and review window.
+- Partial/fallback/missing data visibly caps confidence and keeps the case in review instead of becoming a clean public verdict.
+- Kept the UI as one portal detail panel; no extra Source Spine or second modal was introduced.
+- Added PASS207 guard and delta tracking.
+
+| ID | Obszar | Previous | Current | Change |
+|---|---|---:|---:|---:|
+| D14 | Tile-specific explainer taxonomy | 91% | 92% | +1% |
+| D15 | Risk driver mapping | 62% | 66% | +4% |
+| D16 | Source confidence lanes | 61% | 64% | +3% |
+| D17 | Missing-data semantics | 69% | 72% | +3% |
+| D19 | Brain interaction click coverage | 90% | 91% | +1% |
+| D23 | Brain accessibility / keyboard flow | 58% | 60% | +2% |
+| D24 | Brain copy localization PL/EN/DE | 82% | 83% | +1% |
+
+**PASS207 product delta:** +15% on touched rows.
+
+## PASS208 — AI Brain Report Capsule
+
+- Added report capsule to selected VLM Brain tile drawer.
+- Capsule splits tile reasoning into public brief, operator memo, redaction rule and export gate.
+- Keeps partial/fallback/missing cases internal or review-gated.
+- Updates D15/D16/D17/D24 and M01/M03/M04/M07 progress rows.
+- Added PASS208 guard and delta tracking.
+
+**PASS208 product delta:** +34% on touched rows.
+
+<!-- PASS208 marker: AI Brain Report Capsule ledger entry -->
+
+
+---
+
+## PASS209 — AI Brain Capsule Envelope
+
+- Added typed selected-tile capsule envelope: `vlm-brain-report-capsule-v1-pass209`.
+- Drawer now shows capsule id, schema version and export readiness.
+- Redaction boundary removes obvious PII/long hex/seed-like strings and replaces forbidden overclaim/trading wording.
+- Public brief and operator memo remain separated before any future PDF/export route.
+
+| ID | Obszar | Previous | Current | Change |
+|---|---|---:|---:|---:|
+| D15 | Risk driver mapping | 68% | 70% | +2% |
+| D16 | Source confidence lanes | 67% | 69% | +2% |
+| D17 | Missing-data semantics | 74% | 76% | +2% |
+| M01 | Velmère Shield Report | 52% | 55% | +3% |
+| M03 | Evidence Note | 59% | 62% | +3% |
+| M04 | Safe export wording | 80% | 83% | +3% |
+| M05 | Redacted payload export | 41% | 49% | +8% |
+| M07 | Operator-only report fields | 46% | 50% | +4% |
+
+**PASS209 product delta:** +27% on touched rows.
+
+<!-- PASS209 marker: AI Brain Capsule Envelope ledger entry -->
+
+---
+
+## PASS210 — AI Brain Capsule Handoff Bridge
+
+- Added freshness-aware selected-tile report handoff bridge before future PDF/report route.
+- Drawer now exposes status/freshness/storage/blocker count without claiming binary PDF readiness.
+- Handoff remains operator-review gated and client-preview only.
+
+**PASS210 product delta:** +26% on touched rows.
+
+<!-- PASS210 marker: AI Brain Capsule Handoff Bridge ledger entry -->
+
+## PASS211 — AI Brain Operator Action Queue
+
+- Added a typed operator action queue from selected Brain tile capsule + handoff + source state.
+- P1/P2/P3 lanes now explain whether a tile blocks export, requires review or documents context.
+- Customer export remains blocked/review-gated; no binary PDF or durable storage proof is claimed.
+
+
+## PASS212 — AI Brain Case Review Timeline
+
+- Added typed `VlmBrainCaseReviewTimeline` contract for selected Brain tiles.
+- Linked capsule envelope, freshness handoff and operator action queue into ordered case events.
+- Added operator-only drawer timeline with status, storage, export gate and durable-write blocker.
+- Kept PDF/customer export blocked until durable case timeline + source/redaction review exist.
+
+**PASS212 product delta:** +31% on touched rows.
+
+<!-- PASS212 marker: AI Brain Case Review Timeline ledger entry -->
+
+---
+
+## PASS213 — AI Brain Customer Export Firewall
+
+- Added typed `VlmBrainCustomerExportFirewall` contract for selected Brain tiles.
+- Drawer now shows release state, customer visibility, PDF gate, evidence coverage, redaction score and source debt count.
+- Source/freshness/redaction/timeline debts are converted into customer-impact rows before any future report/PDF route.
+- Customer export stays disabled until durable case storage, source review and redaction review are connected.
+
+**PASS213 product delta:** +39% on touched rows.
+
+<!-- PASS213 marker: AI Brain Customer Export Firewall ledger entry -->
+
+---
+
+## PASS214 — AI Brain Source Coverage Matrix
+
+- Added typed `VlmBrainSourceCoverageMatrix` contract for selected Brain tiles.
+- Drawer now shows source coverage score, review SLA, export pressure and second-source requirement.
+- Market/liquidity/holder/contract/social/report lanes expose covered/review/missing/blocked states before customer export.
+- Missing source coverage remains internal/operator review and cannot become a clean public verdict.
+
+**PASS214 product delta:** +37% on touched rows.
+
+<!-- PASS214 marker: AI Brain Source Coverage Matrix ledger entry -->
+
+---
+
+## PASS215 — AI Brain Release Review Packet
+
+- Added typed `VlmBrainReleaseReviewPacket` contract for selected Brain tiles.
+- Drawer now combines source coverage, freshness, redaction, durable case, customer copy and PDF route into one release packet.
+- Release packet returns hard block / operator review / internal preview decisions, release score, blocker/review counts and release gate lanes.
+- Customer export remains disabled until durable storage, source review, redaction and PDF route gates pass.
+
+| ID | Obszar | Previous | Current | Change |
+|---|---|---:|---:|---:|
+| D15 | Risk driver mapping | 77% | 80% | +3% |
+| D16 | Source confidence lanes | 83% | 86% | +3% |
+| D17 | Missing-data semantics | 86% | 88% | +2% |
+| M01 | Velmère Shield Report | 65% | 70% | +5% |
+| M05 | Redacted payload export | 69% | 74% | +5% |
+| M06 | Report download route | 34% | 39% | +5% |
+| M07 | Operator-only report fields | 72% | 78% | +6% |
+
+**PASS215 product delta:** +29% on touched rows.
+
+<!-- PASS215 marker: AI Brain Release Review Packet ledger entry -->
+
+
+## PASS216 — AI Brain Source Truth Spine
+
+Selected AI Brain tile export path now includes a source-truth spine: adapter lane, cache decision, trust cap, source debt, next action and customer export gate. Missing/stale/blocked adapter lanes stay operator-only and cannot become PDF/customer copy.
+
+<!-- PASS216 marker: AI Brain Source Truth Spine active. -->
+
+## PASS217 — AI Brain Live Adapter Freshness Mesh
+
+Selected AI Brain tile review now includes a live adapter freshness mesh: TTL window, cache decision, age bucket, refresh priority, hard-stop count and source-ledger preview state. Customer/PDF export stays blocked when freshness is stale, expired, missing or not durably stored.
+
+<!-- PASS217 marker: AI Brain Live Adapter Freshness Mesh active. -->
+
+## PASS218 — AI Brain Source Policy Gate
+
+Selected AI Brain tile review now includes source policy: allowlist mode, source class, reviewer gate, evidence-use boundary and forbidden-claim mapping before customer copy.
+
+<!-- PASS218 marker: AI Brain Source Policy Gate active. -->
+
+## PASS219 — AI Brain Durable Snapshot Plan
+
+Selected AI Brain tile review now includes durable write planning for source snapshot, case timeline, redaction envelope and export manifest stores. All stores remain not connected until server adapters exist.
+
+<!-- PASS219 marker: AI Brain Durable Snapshot Plan active. -->
+
+
+## PASS220 — AI Brain Release Chain Auditor
+
+Selected AI Brain tile review now includes a chain-level auditor combining source coverage, release review packet, source truth, adapter freshness, source policy, durable snapshot plan, customer firewall and PDF route into one operator-only readiness decision. Public export, raw payload export and binary PDF download stay blocked until durable stores and real browser QA exist.
+
+**PASS220 product delta:** +29% on touched rows.
+
+<!-- PASS220 marker: AI Brain Release Chain Auditor active. -->
+
+## PASS221 — AI Brain Source Ledger UI Preview
+
+Selected AI Brain tile review now exposes a source ledger UI preview for adapter snapshot, case timeline, redaction envelope, export manifest, browser trace and reviewer note lanes. Public ledger and raw payload export stay blocked.
+
+<!-- PASS221 marker: AI Brain Source Ledger UI Preview active. -->
+
+## PASS222 — AI Brain PDF Preview Manifest
+
+Selected AI Brain tile review now maps PDF-ready HTML preview sections while binary PDF download remains disabled until durable storage, redaction and browser QA pass.
+
+<!-- PASS222 marker: AI Brain PDF Preview Manifest active. -->
+
+## PASS223 — AI Brain Lens to Shield Handoff
+
+Selected AI Brain tile review now maps Lens search, Shield modal, source ledger, report preview and operator case routes without enabling public route or raw query payload transfer.
+
+<!-- PASS223 marker: AI Brain Lens Shield Handoff active. -->
+
+## PASS224 — AI Brain Release QA Scorecard
+
+Selected AI Brain tile review now aggregates browser, motion, source, redaction, PDF, Lens, durable and copy QA lanes before public release or export.
+
+<!-- PASS224 marker: AI Brain Release QA Scorecard active. -->
+
+
+## PASS225–PASS232 — AI Brain Release Readiness Mega-Branch
+
+- PASS225 Release Blocker Resolver: P0/P1 blocker resolution before customer export.
+- PASS226 Browser QA Runbook: modal layer, Orbit FPS, drawer, search portal, keyboard, mobile and WebGL comparison steps.
+- PASS227 Customer Copy Sanitizer: forbidden-claim removal and review-only public copy.
+- PASS228 PDF Route Contract: binary download remains disabled; HTML preview stays operator-only.
+- PASS229 Ledger Persistence Adapter Plan: server-only source/case/redaction/export stores.
+- PASS230 Live Feed Adapter Matrix: holder/orderbook/contract/OSINT/market adapter gaps are visible.
+- PASS231 Wallet Access Gate Matrix: Basic/Pro/Advanced entitlement preview, no seed phrase flow.
+- PASS232 Launch Readiness Dashboard: aggregate blocker/browser/copy/PDF/persistence/feed/wallet gates.
+
+<!-- PASS225-PASS232 marker: release readiness mega-branch active. -->
+
+
+## PASS233–PASS242 — AI Brain Mega Branch Control Tower
+
+Ten-pass branch added QA trace, adapter orchestration, access copy firewall, PDF/storage/redaction bridge, missing-data escalation, renderer comparison, governance policy memo, audit trail index, customer readiness preflight and final control tower. Public export, binary PDF, wallet access and raw payload stay blocked.
+
+## PASS243–PASS245 — AI Brain Real Three-Pass Branch
+- PASS243: release triage board, jeden go/no-go board z release chain, launch, control tower, PDF, wallet i data-quality gate.
+- PASS244: operator handoff vault, trwały zapis preview dla source snapshot, case timeline, redaction manifest, PDF preview i browser QA trace.
+- PASS245: browser replay script, konkretne kroki real-browser QA zamiast udawania, że guard statyczny wystarcza.
+- Guard: `scripts/verify-pass243-245-ai-brain-real-three-pass-safety.mjs`.
+- ZIP: `velmere_pass245_ai_brain_real_three_pass.zip`.
+
+## PASS246–PASS251 — AI Brain Real Six-Pass Branch
+- PASS246: export authorization gate blocks public export/binary PDF/customer copy/wallet/raw payload until browser QA, durable writes and redaction exist.
+- PASS247: browser evidence collector turns replay script into concrete trace artifacts.
+- PASS248: adapter readiness scheduler creates P0/P1/P2 server tasks for live-feed/source freshness gaps.
+- PASS249: customer brief builder creates sanitized preview sections while public route remains blocked.
+- PASS250: wallet session policy blocks seed phrase/private key/ROI/public-sale copy and requires server entitlement.
+- PASS251: release readiness orchestrator aggregates authorization, browser evidence, adapters, customer brief, wallet session, durable snapshot and PDF manifest.
+
+## PASS252 — AI Brain Release Cockpit
+
+- Added `lib/market-integrity/vlm-brain-release-cockpit.ts`.
+- Connected selected VLM Brain tile drawer to one release cockpit built from readiness, triage, QA, browser evidence, adapter scheduler, customer brief, wallet session and PDF route gates.
+- Added portal drawer UI panel `data-vlm-release-cockpit="pass252"`.
+- Added PASS252 CSS containment and state styling.
+- Added guard `scripts/verify-pass252-ai-brain-release-cockpit-safety.mjs` and wired it to Vercel preflight + `verify:shield-all`.
+
+Progress delta:
+
+| Area | Before | After | Delta |
+|---|---:|---:|---:|
+| D15 Risk driver mapping | 80% | 82% | +2% |
+| D16 Source confidence lanes | 86% | 88% | +2% |
+| D17 Missing-data semantics | 88% | 89% | +1% |
+| D19 Brain interaction click coverage | 91% | 92% | +1% |
+| M01 Velmère Shield Report | 70% | 72% | +2% |
+| M05 Redacted payload export | 74% | 76% | +2% |
+| M06 Report download route | 39% | 41% | +2% |
+| M07 Operator-only report fields | 78% | 82% | +4% |
+
+## PASS254 — AI Brain Release Cockpit Source Ledger Handoff
+
+- Added `lib/market-integrity/vlm-brain-release-cockpit-source-ledger-handoff.ts` as the PASS254 contract.
+- Connected selected VLM Brain tile drawer to `selectedTilePass254ReleaseHandoff`.
+- Added one premium operator panel covering source, freshness, redaction, durable snapshot, browser QA, PDF preview, wallet/session and customer-copy gates.
+- Updated Velmère Lens copy with PL/EN/DE handoff safety gates and kept public export disabled.
+- Added CSS containment, premium scroll/portal treatment and reduced-motion safety for the new handoff panel.
+- Added guard `scripts/verify-pass254-release-cockpit-source-ledger-handoff-safety.mjs` and wired it to Vercel preflight + `verify:shield-all`.
+
+Progress delta:
+
+| Area | Before | After | Delta |
+|---|---:|---:|---:|
+| D15 Risk driver mapping | 82% | 83% | +1% |
+| D16 Source confidence lanes | 88% | 89% | +1% |
+| D17 Missing-data semantics | 89% | 90% | +1% |
+| D19 Brain interaction click coverage | 92% | 93% | +1% |
+| K02 Source freshness registry | 49% | 50% | +1% |
+| K04 Storage adapter contract | 36% | 37% | +1% |
+| K05 Privacy redaction envelope | 48% | 50% | +2% |
+| M01 Velmère Shield Report | 72% | 74% | +2% |
+| M05 Redacted payload export | 76% | 78% | +2% |
+| M06 Report download route | 41% | 42% | +1% |
+| M07 Operator-only report fields | 82% | 84% | +2% |
+
+<!-- PASS254 marker: release cockpit source-ledger handoff active. -->
+
+## PASS255 — AI Brain Action Router Browser Replay Export Freeze
+
+- Added `lib/market-integrity/vlm-brain-pass255-action-router.ts` as the PASS255 contract.
+- Wired the selected AI Brain tile drawer to show ordered operator phases: evidence intake, browser replay, export freeze and access/copy review.
+- Added replay artifacts for modal layering, Orbit pause, search portal, PDF preview gate and wallet/session copy gate.
+- Kept public export, raw payload export, binary PDF, wallet access and customer copy disabled.
+- Added Lens action-router guide without button clutter and localized the DE report capsule copy.
+- Added PASS255 CSS, preflight guard, package script and shield-all hook.
+
+Validation target:
+
+```bash
+node scripts/verify-pass255-action-router-browser-replay-export-freeze-safety.mjs
+node scripts/check-i18n.mjs
+node scripts/vercel-preflight.mjs
+npm run verify:pass255-action-router-browser-replay-export-freeze
+```
+
+<!-- PASS255 marker: action router browser replay export freeze active. -->
+
+## PASS256 — AI Brain Evidence Runbook Export Quarantine
+
+- Added `lib/market-integrity/vlm-brain-pass256-evidence-runbook.ts` as the PASS256 contract.
+- Wired the selected AI Brain tile drawer to show an operator evidence queue, next move, browser replay checklist and export quarantine matrix.
+- Kept public export, raw payload export, binary PDF, wallet access and customer copy disabled.
+- Added Lens evidence-runbook guide in PL/EN/DE without button clutter or release overclaim.
+- Added PASS256 CSS containment, reduced-motion safety, preflight guard, package script and shield-all hook.
+
+Validation target:
+
+```bash
+node scripts/verify-pass256-evidence-runbook-export-quarantine-safety.mjs
+node scripts/check-i18n.mjs
+node scripts/vercel-preflight.mjs
+npm run verify:pass256-evidence-runbook-export-quarantine
+```
+
+<!-- PASS256 marker: evidence runbook export quarantine active. -->
+
+
+## PASS257 — AI Brain Evidence SLA Timeline Exception Firewall
+
+- Added `lib/market-integrity/vlm-brain-pass257-evidence-sla-timeline.ts` as the PASS257 contract.
+- Added selected-tile SLA timeline UI in `TokenRiskModal.tsx`: decision, P0 blockers, capture lane, next SLA move, timeline rows, owner escalation lanes and exception firewall.
+- Added descriptive Lens guide for PASS257 without adding button clutter or public export unlock.
+- Added PASS257 CSS containment, responsive/reduced-motion safety, preflight guard, package script and shield-all hook.
+- Public export, raw payload, binary PDF, wallet/session access, customer copy and release override remain frozen until durable source, redaction and replay proof exist.
+
+<!-- PASS257 marker: evidence SLA timeline exception firewall active. -->
+
+## PASS259 — AI Brain Attestation Ledger Release Freeze
+
+- Added selected-tile attestation ledger in `TokenRiskModal.tsx`: decision, missing/capture/review counts, attestation lanes, freeze reasons, promotion checklist, browser trace refs and customer boundary.
+- Added `lib/market-integrity/vlm-brain-pass259-attestation-ledger.ts` to convert PASS258 proof receipts into owner-reviewed operator lanes.
+- Added descriptive Lens guide for PASS259 without adding button clutter or public export unlock.
+- Added PASS259 CSS containment, responsive/reduced-motion safety, preflight guard, package script and shield-all hook.
+- Public export, raw payload, binary PDF, wallet/session access, customer copy and release promotion remain frozen until source, redaction, storage and browser proof are reviewed.
+
+<!-- PASS259 marker: AI Brain Attestation Ledger active. -->
+
+## PASS268 — Chart natural-pan + no-OPIS VLM mode dock
+
+- Fixed the chart gesture direction: drag right now moves the visible chart window right; drag left moves it left.
+- Removed the extra OPIS mode buttons and mode-guide popup from the Basic/Pro/Advanced dock.
+- Added a small chart-first/status/MwSt-safe trust rail with no buy pressure, no public badge theatre and no investment promise.
+- Added PASS268 progress delta, master-map marker, package script and static guard.
+
+Validation target:
+
+```bash
+node scripts/verify-pass268-chart-gesture-mode-dock-safety.mjs
+node scripts/check-i18n.mjs
+node scripts/vercel-preflight.mjs
+npm run verify:pass268-chart-gesture-mode-dock
+```
+
+<!-- PASS268 marker: Chart natural pan + no-OPIS VLM mode dock active. -->
+
+## PASS270 — Market-pressure anti-FOMO rail
+
+- C10 pump/low-float behavior moved from blocked UI copy to a compact pressure rail.
+- Token modal now shows float, unlock, depth, hype and source-trust cues without heavy description blocks.
+- Pressure language is anti-FOMO and source-first: no buy/sell call, no safety certificate, no ROI pressure.
+- Asset-regime PASS269 and compact Basic/Pro/Advanced dock stay active.
+
+Commands:
+
+```bash
+npm run verify:pass270-market-pressure-anti-fomo
+npm run verify:pass269-compact-mode-asset-regime-chart-drag
+npm run verify:pass268-chart-gesture-mode-dock
+npm run vercel:preflight
+```
+
+## PASS271 — Contract trap gate
+
+- C11 contract trap behavior moved from blocked copy to a compact gate in the token modal.
+- Rails now expose address, owner/proxy, mint/pause, blacklist, tax and sell-path review cues.
+- Missing chain/address, analyzer freshness and tax simulator are explicit blockers.
+- Copy stays safe: review requirement, not accusation, not certification, not financial advice.
+
+Commands:
+
+```bash
+npm run verify:pass271-contract-trap-gate
+npm run verify:pass270-market-pressure-anti-fomo
+npm run verify:pass269-compact-mode-asset-regime-chart-drag
+npm run vercel:preflight
+```
+
+<!-- PASS271 marker: Contract trap gate active. -->
+
+
+## PASS278 — Durable Audit Receipt Vault
+
+- K01 durable audit ledger moved into the token modal as a redacted receipt vault.
+- The vault exposes case ID, receipt fingerprint, storage lock, redaction envelope, retention owner and private proof status.
+- It deliberately keeps durable write/public export blocked until server storage, source policy and retention proof are attached.
+
+<!-- PASS278 marker: durable audit receipt vault active. -->
+
+
+## PASS280 — Analytics Event Taxonomy Gate
+
+- K03 analytics event taxonomy moved from a blocked planning lane into the token modal as a privacy-safe event passport.
+- Added `lib/market-integrity/analytics-event-taxonomy-gate.ts` with event lanes for modal view, chart drag, tier switch, source gate view, export intent and anti-FOMO cooldown.
+- Added a `Velvet Event Passport` rail that keeps product analytics aggregate/redacted/operator-only and blocks raw payload storage until durable receipt and redaction proof exist.
+- Fixed a real TypeScript syntax issue in `source-freshness-registry-gate.ts` where the `result` parameter was duplicated in the PASS279 builder signature.
+- Customer copy remains safe: telemetry may be described as reliability/product-friction improvement only, not safety proof, profit signal, certification, or personalized trading advice.
+
+<!-- PASS280 marker: Analytics event taxonomy gate active. -->
+
+## PASS282 — Privacy Redaction Envelope Gate
+
+- K05 privacy redaction envelope moved into the token modal as `Velvet Redaction Mirror`.
+- Raw customer query, wallet/IP, analytics payload, receipt payload and export manifest lanes are classified as masked, operator-only or blocked raw.
+- Added `lib/market-integrity/privacy-redaction-envelope-gate.ts` with `Private Redaction Seal` status logic.
+- The rail binds PASS278 receipt, PASS280 analytics taxonomy and PASS281 storage covenant before customer/report surfaces may use any proof copy.
+- FOMO/status psychology is inverted: privacy gaps freeze elite/private trust cues instead of increasing urgency.
+- Customer copy remains source-first and limitations-first; no profit, safety, certificate or fraud-confirmation wording.
+
+<!-- PASS282 marker: Privacy redaction envelope gate active. -->
+
+## PASS283 — Operator Case SLA Orchestrator Gate
+
+- K06 operator cases moved into the token modal as a private `Concierge Escalation Rail`.
+- The case timeline now shows intake, source replay, redaction review, storage write, operator note, customer boundary and reopen trigger stages.
+- Missing owner, storage, source replay or redaction freezes public/private status instead of creating urgency pressure.
+- Customer copy remains limitations-first: no raw payload, no wallet/IP, no public safety certificate, no profit claim and no buy/sell instruction.
+
+Commands:
+
+```bash
+npm run verify:pass283-operator-case-sla-orchestrator-gate
+npm run verify:pass282-privacy-redaction-envelope-gate
+npm run verify:pass281-storage-adapter-contract-gate
+npm run vercel:preflight
+```
+
+<!-- PASS283 marker: Operator case SLA orchestrator gate active. -->
+
+## PASS288 — Orbit Scroll + VLM PDF Forge
+
+- D07/D20/J04: Orbit 360 tile details now open from the right edge of the viewport and use a dedicated scroll container with wheel/touch containment.
+- M06: VLM Lens now has a branded Velmère Cybersecurity PDF preview forge with animated source stitching, privacy mirror, PDF assembly and signature preview.
+- M02/M03: Lens report preview and Evidence Note feed the PDF forge, while redaction/source/retention blockers keep customer release bounded.
+- E02: Lens browser narrative shifts from thin search cards into a premium report assembly flow.
+- Anti-FOMO/status psychology is inverted: premium status appears only after proof/redaction/source gates; missing data slows the release instead of pushing urgency.
+
+Commands:
+
+```bash
+npm run verify:pass288-orbit-scroll-pdf-forge
+npm run verify:pass287-evidence-note-integrity-gate
+npm run verify:pass286-lens-report-preview-gate
+npm run vercel:preflight
+```
+
+<!-- PASS288 marker: Orbit right-edge scroll + VLM PDF forge active. -->
+
+## PASS289 — Layout Stability Sentinel Gate
+
+- J03/J04/D20: added a layout sentinel for token modal density, Orbit detail scroll, mobile right-edge drawer and PDF forge control placement.
+- Fixed the layout regression risk from PASS288 mobile CSS: the Orbit tile drawer no longer downgrades to a bottom sheet on small screens; it remains a right-edge sheet with safe-area padding.
+- Added `lib/market-integrity/layout-stability-sentinel-gate.ts` with rails for Orbit drawer, modal density, PDF forge, mobile edge, source hierarchy and anti-FOMO brake.
+- Added compact UI rail `shield-pass289-layout-sentinel` under the PDF forge so layout decisions are visible without covering market data.
+- FOMO/status psychology is inverted: pressure becomes cooldown/replay instruction, and premium status only appears when layout, source hierarchy and preview controls remain readable.
+
+Commands:
+
+```bash
+npm run verify:pass289-layout-stability-sentinel-gate
+npm run verify:pass288-orbit-scroll-pdf-forge
+npm run check:i18n
+npm run vercel:preflight
+```
+
+<!-- PASS289 marker: Layout stability sentinel gate active. -->
+
+## PASS290 — Operator-Only Report Field Gate
+
+- M07: Added Private Disclosure Loom to separate customer-visible report copy, redacted appendix and operator-only reasoning.
+- M06/M05: PDF/report preview now shows field classes before any branded customer packet is treated as release-ready.
+- K04/K05: Raw payload, wallet/IP, storage, retention and privacy locks are reflected in report field visibility.
+- J04/D20: Report field rail keeps compact layout and right-edge drawer/PDF controls readable.
+- A03: Fixed `result.missingInputs` type-contract bug in `layout-stability-sentinel-gate.ts`.
+- Anti-FOMO/status: elite status is earned by evidence separation, not by countdowns, buy/sell prompts or urgency language.
+
+Commands:
+
+```bash
+npm run verify:pass290-operator-only-report-field-gate
+npm run verify:pass289-layout-stability-sentinel-gate
+npm run check:i18n
+npm run vercel:preflight
+```
+
+<!-- PASS290 marker: Operator-only report field gate active. -->
+
+## PASS293 — Social-Exchange Command Router Gate
+
+- Unified Shield, Shield Map and VLM Browser search suggestions through `social-exchange-command-router-gate`.
+- Added router score, source/depth/social/psychology reason pills and safe next-action labels.
+- Upgraded VLM Browser/Lens from thin search toward capsule + Shield handoff.
+- Fixed duplicated `body` type field in Shield Map investigator evidence.
+- Added guard: `verify:pass293-social-exchange-command-router-gate`.
+
+Commands:
+
+```bash
+npm run verify:pass293-social-exchange-command-router-gate
+npm run verify:pass291-pdf-browser-replay-boundary-gate
+npm run check:i18n
+npm run vercel:preflight
+```
+
+<!-- PASS293 marker: Social-Exchange Command Router Gate active. -->
+
+## PASS294 — Trust Signal Feed Gate
+
+- Added `lib/market-integrity/trust-signal-feed-gate.ts` to make ranking reasons visible instead of hidden engagement pressure.
+- VLM Browser results now show priority, transparent signals, source quorum, depth context, social context, operator boundary and anti-FOMO lanes.
+- Shield and Shield Map search surfaces now include PASS294 trust-sync rails aligned with the PASS293 unified router.
+- Added guard: `verify:pass294-trust-signal-feed-gate`.
+
+Commands:
+
+```bash
+npm run verify:pass294-trust-signal-feed-gate
+npm run verify:pass293-social-exchange-command-router-gate
+npm run check:i18n
+npm run vercel:preflight
+```
+
+<!-- PASS294 marker: Trust Signal Feed Gate active. -->

@@ -38,7 +38,7 @@ function pairToRiskInput(pair: DexPair, security: Partial<TokenRiskInput> = {}):
   const token = pair.baseToken ?? {};
   return {
     symbol: token.symbol?.toUpperCase() ?? "UNKNOWN",
-    name: token.name ?? token.symbol ?? "Unknown token",
+    name: token.name ?? token.symbol ?? "Unresolved token",
     image: pair.info?.imageUrl,
     chainId: pair.chainId,
     tokenAddress: token.address,

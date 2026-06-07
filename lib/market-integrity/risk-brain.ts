@@ -1,4 +1,25 @@
 import type { RiskAgentId, RiskLevel, RiskSignalId, TokenRiskResult } from "./risk-types";
+import {
+  normalizeConfidencePercent,
+  normalizeConfidenceRatio,
+} from "./confidence-calibration";
+import { buildPass422BrainMemoryCore } from "./pass422-brain-memory-anti-overfit-core";
+import { buildPass427BrainBugfixIntegrityRuntime } from "./pass427-brain-bugfix-integrity-runtime";
+import { buildPass428BrainNarrativeCoherenceRuntime } from "./pass428-brain-narrative-coherence-runtime";
+import { buildPass429BrainSelfAuditConsensusRuntime } from "./pass429-brain-self-audit-consensus-runtime";
+import { buildPass430BrainAnswerVerifierRuntime } from "./pass430-brain-answer-verifier-runtime";
+import { buildPass431BrainCriticLoopRuntime } from "./pass431-brain-critic-loop-runtime";
+import { buildPass432LiveDataProbeRuntime } from "./pass432-live-data-probe-runtime";
+import { buildPass433RealInternetDataArbitration } from "./pass433-real-internet-data-arbitration";
+import { buildPass434ProviderCrosscheckMissingDataHunter } from "./pass434-provider-crosscheck-missing-data-hunter";
+import { buildPass435LiveQueryTestBench } from "./pass435-live-query-test-bench";
+import { buildPass436WorldBrainSloGraphRuntime } from "./pass436-world-brain-slo-graph-runtime";
+import { buildPass437AdaptiveEvidencePlannerRuntime } from "./pass437-adaptive-evidence-planner-runtime";
+import { buildPass438ProviderExecutionLoopRuntime } from "./pass438-provider-execution-loop-runtime";
+import { buildPass439TruthReplayHarnessRuntime } from "./pass439-truth-replay-harness-runtime";
+import { buildPass440SemanticDriftSourceLineageRuntime } from "./pass440-semantic-drift-source-lineage-runtime";
+import { buildPass441BrainEvalHarnessRuntime } from "./pass441-brain-eval-harness-runtime";
+import { buildPass442BrainRegressionJudgeRuntime } from "./pass442-regression-judge-runtime";
 
 type RiskBrainLayer = {
   id: RiskAgentId | "history";
@@ -43,7 +64,7 @@ function historySlope(history: RiskBrainHistoryPoint[] = []) {
 
 export function buildRiskBrain(result: TokenRiskResult, history: RiskBrainHistoryPoint[] = []) {
   const agents = result.agentAssessments ?? [];
-  const confidence = result.confidence ?? 0.34;
+  const confidence = normalizeConfidenceRatio(result.confidence, 0.34);
   const slope = historySlope(history);
   const historyScore = Math.max(0, Math.min(100, Math.abs(slope) * 3 + (slope > 0 ? 18 : 0)));
   const historyLayer: RiskBrainLayer = {
@@ -124,12 +145,29 @@ export function buildRiskBrain(result: TokenRiskResult, history: RiskBrainHistor
     missingData.includes("persistent risk history") ? "Enable Supabase/cron snapshots to detect risk acceleration." : "Watch for rising risk delta in the next snapshots.",
     result.metaModel?.requiredReview ? "Open evidence report and verify source data manually." : "Keep this as a monitoring case unless score rises.",
   ];
+  const pass422 = buildPass422BrainMemoryCore(result, history);
+  const pass427 = buildPass427BrainBugfixIntegrityRuntime({ result, brain: pass422, history });
+  const pass428 = buildPass428BrainNarrativeCoherenceRuntime({ result, brain: pass422, pass427 });
+  const pass429 = buildPass429BrainSelfAuditConsensusRuntime({ result, brain: pass422, pass427, pass428 });
+  const pass430 = buildPass430BrainAnswerVerifierRuntime({ result, brain: pass422, pass427, pass428, pass429 });
+  const pass431 = buildPass431BrainCriticLoopRuntime({ result, brain: pass422, pass428, pass429, pass430 });
+  const pass432 = buildPass432LiveDataProbeRuntime({ result, pass431 });
+  const pass433 = buildPass433RealInternetDataArbitration({ result, pass432 });
+  const pass434 = buildPass434ProviderCrosscheckMissingDataHunter({ result, pass433 });
+  const pass435 = buildPass435LiveQueryTestBench({ result, pass433, pass434 });
+  const pass436 = buildPass436WorldBrainSloGraphRuntime({ result, pass435 });
+  const pass437 = buildPass437AdaptiveEvidencePlannerRuntime({ result, pass435, pass436 });
+  const pass438 = buildPass438ProviderExecutionLoopRuntime({ result, pass433, pass435, pass436, pass437 });
+  const pass439 = buildPass439TruthReplayHarnessRuntime({ result, pass435, pass436, pass438 });
+  const pass440 = buildPass440SemanticDriftSourceLineageRuntime({ result, pass438, pass439 });
+  const pass441 = buildPass441BrainEvalHarnessRuntime({ result, pass435, pass439, pass440 });
+  const pass442 = buildPass442BrainRegressionJudgeRuntime({ result, pass435, pass439, pass440, pass441 });
   return {
     version: "velmere-shield-risk-brain-v1",
     token: result.token,
     brainScore,
     verdict: verdictFromScore(brainScore),
-    confidence: Math.round(confidence * 100),
+    confidence: normalizeConfidencePercent(confidence, 34),
     activeLayers: layers.sort((a, b) => b.score - a.score),
     strongestLayer: strongest,
     synergyChecks,
@@ -140,7 +178,45 @@ export function buildRiskBrain(result: TokenRiskResult, history: RiskBrainHistor
       strongest ? `Dominant layer: ${strongest.label} (${strongest.score}/100).` : "No dominant high-risk layer.",
       synergyChecks[0] ? `Strongest cross-check: ${synergyChecks[0].label} (${synergyChecks[0].score}/100).` : "No strong cross-layer conflict.",
       missingData.length ? `Missing data increases uncertainty: ${missingData.join(", ")}.` : "Core market-integrity layers are present.",
+      `PASS422 memory: ${pass422.memory.overfitGuard}; trend ${pass422.memory.trend}; source state ${pass422.sourceGenome.providerRisk}.`,
+      `PASS422 anti-overfit: ${pass422.memory.overfitReason}`,
+      `PASS424 correction: ${pass422.pass424.mode}; contradiction ${pass422.pass424.contradictionScore}; ${pass422.pass424.publicSummary}`,
+      `PASS425 arbitration: ${pass422.pass425.arbitrationMode}; confidence ${pass422.pass425.confidenceBand}; hallucination brake ${pass422.pass425.hallucinationBrake.score}; ${pass422.pass425.publicSummary}`,
+      `PASS427 bugfix integrity: ${pass427.runtimeMode}; integrity ${pass427.integrityScore}; ${pass427.publicSummary}`,
+      `PASS428 narrative coherence: ${pass428.coherenceMode}; coherence ${pass428.coherenceScore}; confidence cap ${pass428.confidenceCalibration.displayedConfidenceCap}; ${pass428.operatorSummary}`,
+      `PASS429 self-audit consensus: ${pass429.answerMode}; consensus ${pass429.consensusState}; public confidence ${pass429.confidenceEnvelope.publicAnswerConfidence}; ${pass429.operatorSummary}`,
+      `PASS430 answer verifier: ${pass430.responseMode}; proof ${pass430.proofState}; readiness ${pass430.answerReadinessScore}; ${pass430.publicSummary}`,
+      `PASS431 critic loop: ${pass431.criticMode}; final ${pass431.finalAnswerMode}; score ${pass431.criticScore}; confidence ${pass431.finalPublicConfidence}; ${pass431.publicSummary}`,
+      `PASS432 live data probe: ${pass432.dataTruthMode}; ${pass432.sampleReadout.priceLine}; missing ${pass432.sampleReadout.missingLine}; live score ${pass432.liveDataScore}/100.`,
+      `PASS433 internet arbitration: ${pass433.arbitrationMode}; providers ${pass433.confirmedProviderCount}/${pass433.providerCount}; missing hunts ${pass433.missingDataHunt.length}; confidence cap ${pass433.noFakeLiveEnvelope.publicConfidenceCap}%.`,
+      `PASS434 provider crosscheck: ${pass434.truthTier}; gate ${pass434.answerGate}; evidence ${pass434.internetEvidenceScore}/100; ${pass434.providerCrosscheck.reason}`,
+      `PASS435 live query test bench: ${pass435.releaseMode}; readiness ${pass435.liveReadinessScore}/100; fake-live risk ${pass435.fakeLiveRisk}/100; assertions ${pass435.queryAssertions.filter((item) => item.passed).length}/${pass435.queryAssertions.length}.`,
+      `PASS436 world-brain SLO graph: ${pass436.releaseDecision}; score ${pass436.worldBrainScore}/100; structured ${pass436.structuredOutputReadiness}/100; alert ${pass436.sloEnvelope.alertPolicy}; ${pass436.operatorReadout}`,
+      `PASS437 adaptive evidence planner: ${pass437.plannerMode}; plan ${pass437.evidencePlanScore}/100; next ${pass437.nextBestProbe.provider}; ${pass437.operatorReadout}`,
+      `PASS438 provider execution loop: ${pass438.executionMode}; score ${pass438.executionScore}/100; next ${pass438.nextExecutableProvider.provider}; ${pass438.operatorReadout}`,
+      `PASS439 truth replay harness: ${pass439.replayState}; score ${pass439.replayScore}/100; pdf ${pass439.releaseGate.pdfAllowed ? "allowed" : "blocked"}; ${pass439.operatorReadout}`,
+      `PASS440 semantic drift lineage: ${pass440.driftState}; response ${pass440.responseMode}; drift ${pass440.semanticDriftScore}/100; lineage ${pass440.sourceLineageScore}/100; ${pass440.operatorReadout}`,
+      `PASS441 brain eval harness: ${pass441.evalMode}; score ${pass441.evalScore}/100; pass/warn/fail ${pass441.passedCount}/${pass441.warningCount}/${pass441.failedCount}; ${pass441.operatorReadout}`,
+      `PASS442 regression judge: ${pass442.regressionMode}; score ${pass442.regressionScore}/100; blocked/watch ${pass442.blockedRegressionCount}/${pass442.watchCount}; ${pass442.operatorReadout}`,
     ],
+    pass422,
+    pass425: pass422.pass425,
+    pass427,
+    pass428,
+    pass429,
+    pass430,
+    pass431,
+    pass432,
+    pass433,
+    pass434,
+    pass435,
+    pass436,
+    pass437,
+    pass438,
+    pass439,
+    pass440,
+    pass441,
+    pass442,
     nextActions,
     legalNote: "Signal engine only. Not proof, not accusation, not investment advice.",
     generatedAt: new Date().toISOString(),

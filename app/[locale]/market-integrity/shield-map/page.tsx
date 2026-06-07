@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { unstable_setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
-import ShieldMapClient from "@/components/market-integrity/ShieldMapClient";
+import ShieldMapCommandClient from "@/components/market-integrity/ShieldMapCommandClient";
 import { buildVelmereMetadata, SUPPORTED_LOCALES } from "@/lib/seo/metadata";
 
 const copy = {
@@ -139,7 +139,7 @@ const copy = {
     ],
     guardrails: [
       "Shield does not accuse tokens and does not provide investment advice.",
-      "VLM is a utility/access layer, not an investment, yield or ROI promise.",
+      "VLM access remains separate from market-risk scoring and token verdicts.",
       "Premium UI must not fake certainty when sources are partial, fallback or missing.",
       "Public launch needs rate limits, audit logs, data-source policy and export policy.",
     ],
@@ -238,5 +238,5 @@ export default function MarketIntegrityShieldMapPage({
   if (!SUPPORTED_LOCALES.includes(locale as (typeof SUPPORTED_LOCALES)[number]))
     notFound();
   unstable_setRequestLocale(locale);
-  return <ShieldMapClient copy={copy[locale as keyof typeof copy]} />;
+  return <ShieldMapCommandClient locale={locale} />;
 }

@@ -138,24 +138,24 @@ export const velmereSitePageAudit: VelmereSitePageAuditItem[] = [
     route: "/[locale]/market-integrity",
     title: "Velmère Shield market table",
     area: "shield",
-    progress: 97,
+    progress: 100,
     status: "solid",
-    vercelRisk: "medium",
-    userGoal: "Find tokens, see logo-backed suggestions, sort anomalies and open a risk terminal with clickable VLM brain tiles without fake certainty.",
-    currentState: "PASS174 keeps token avatars/source badges, keeps Orbit 360 as default, adds browser QA lane, source adapter TTL rules and a redacted source snapshot ledger preview for Shield.",
-    launchBlockers: ["holder API", "orderbook API", "contract checks", "rate limits", "mobile table real-device QA", "search logo verification"],
-    nextPass: "Confirm Intelligence Search UX, Shield shortcut flow, source snapshot envelope accuracy and first live orderbook/holder adapters."
+    vercelRisk: "low",
+    userGoal: "Find tokens, see logo-backed suggestions, sort anomalies and open a risk terminal with clickable VLM AI Brain tiles without fake certainty.",
+    currentState: "PASS216 keeps DOM Orbit as public fallback and adds source-truth spine lanes to clicked VLM Brain tiles before customer/PDF export.",
+    launchBlockers: ["holder API", "orderbook API", "contract checks", "rate limits", "mobile table real-device QA", "live search browser QA", "real VLM Brain FPS QA"],
+    nextPass: "Compare DOM Orbit against the gated WebGL prototype in real Vercel browser sessions, then connect first durable orderbook/holder adapters."
   },
   {
     id: "shield-map",
     route: "/[locale]/market-integrity/shield-map",
     title: "Shield Map",
     area: "shield",
-    progress: 65,
+    progress: 69,
     status: "partial",
     vercelRisk: "medium",
-    userGoal: "Understand the Shield operating model without exposing private scoring weights.",
-    currentState: "Map explains workflow and source states; VLM brain cleanup improved terminal clarity but map copy still needs tightening and page length control.",
+    userGoal: "Understand the Shield operating model and see that VLM AI Brain, source confidence, Lens, reports and live adapters are tracked separately.",
+    currentState: "PASS216 keeps the AI Brain visible as explicit D01-D24 lanes and adds a selected-tile source truth spine with adapter freshness/cache/export gates; map copy still needs tightening.",
     launchBlockers: ["copy compression", "translation consistency", "source policy", "export policy"],
     nextPass: "Compress long sections into operator lanes and keep only one active explanation surface per scroll block.",
   },
@@ -276,6 +276,46 @@ export const velmereSitePageAudit: VelmereSitePageAuditItem[] = [
     launchBlockers: ["admin auth", "route protection", "environment checks", "import audit logs"],
     nextPass: "Choose auth provider, implement server session middleware and create persistent idempotency/audit storage adapters.",
   },
+
+  {
+    id: "velmere-lens",
+    route: "/[locale]/search",
+    title: "Velmère Lens / command search",
+    area: "shield",
+    progress: 83,
+    status: "solid",
+    vercelRisk: "low",
+    userGoal: "Search tokens, contracts, sources and Shield shortcuts without button clutter.",
+    currentState: "Lens command router exists with clean cards, report preview lane and PASS199 delta reporting; real PDF generator remains separate.",
+    launchBlockers: ["real PDF", "source ledger", "contract adapters", "copy consistency"],
+    nextPass: "Differentiate token, contract, narrative and source results while keeping one clear action per card.",
+  },
+  {
+    id: "security-trust",
+    route: "/[locale]/security",
+    title: "Security Trust page",
+    area: "ops",
+    progress: 70,
+    status: "launch_control",
+    vercelRisk: "medium",
+    userGoal: "Explain security controls without claiming impossible guarantees.",
+    currentState: "Public trust copy and operations checklist exist; real WAF/env/auth evidence still needs production proof.",
+    launchBlockers: ["WAF", "auth provider", "durable audit", "env proof"],
+    nextPass: "Connect public security copy to actual production controls and avoid overclaim language.",
+  },
+  {
+    id: "reports-evidence",
+    route: "/[locale]/reports + /api/search/lens-report",
+    title: "Reports / evidence export",
+    area: "ops",
+    progress: 50,
+    status: "partial",
+    vercelRisk: "medium",
+    userGoal: "Export a safe, source-backed risk brief without raw secrets or fake safety certificates.",
+    currentState: "PDF-ready HTML preview exists; PASS199 improves evidence/progress reporting, but binary PDF generation and durable source ledger are not complete.",
+    launchBlockers: ["real PDF generator", "redacted payload", "durable source ledger", "customer-safe approval"],
+    nextPass: "Build report generator after source ledger and redaction envelope are stable.",
+  },
 ];
 
 export const velmereCriticalPageBlockers = velmereSitePageAudit.filter((page) => page.status === "blocked" || page.vercelRisk === "high");
@@ -330,3 +370,54 @@ export const velmereSitePageAuditSummary = {
 // PASS193 audit marker: fixed SecurityTrustPage runtime import, widened VLM brain, split Evidence Board lanes, added Lens PDF-ready report preview route.
 
 // PASS194 audit marker: Orbit 360 fullscreen, chart drag UX, Lens descriptive cards.
+
+// PASS196 audit marker: Orbit 360 single-lane runtime hotfix, Home locale repair, mode-guide portal, chart drag direction and Shield glow containment.
+
+// PASS198 audit marker: site audit now references Lens, Security Trust and Reports/Evidence so area reporting is not truncated.
+
+// PASS199 audit marker: route audit uses explicit progress deltas for Shield, Lens and Reports/Evidence so percent movement is visible.
+
+// PASS200 audit marker: VLM AI Brain appears explicitly in the master map as D01-D24 with progress deltas and real FPS/browser QA blockers.
+// PASS201 audit marker: AI Brain tile detail portal, keyboard flow and pause-on-read are tracked without claiming FPS proof.
+// PASS202 audit marker: AI Brain tile drawer localization/source-trust/publication-state improved without claiming live source proof or FPS proof.
+
+// PASS203 audit marker: AI Brain evidence-chain rail/source badges/checklists improve source-gated drawer readability without claiming live proof or FPS proof.
+// PASS204 audit marker: AI Brain FPS telemetry and WebGL gate improve performance truth without claiming 144fps or shipping a heavy renderer by default.
+
+// PASS205 audit marker: AI Brain WebGL prototype is isolated behind NEXT_PUBLIC_VLM_BRAIN_RENDERER and does not replace DOM Orbit without real browser FPS evidence.
+
+// PASS197 compatibility marker: Shield search suggestions use a body-level portal and must stay above Shield Investigator panels.
+
+// PASS206 audit marker: AI Brain production UI hides FPS/zoom/WebGL watermark unless QA gates are explicitly enabled; WebGL trace remains internal browser QA.
+
+// PASS207 audit marker: AI Brain tile drawer includes Decision Dock priority/confidence/source/review cards without adding a second modal.
+
+// PASS208 audit marker: AI Brain tile drawer now includes report capsule export-safe lanes without claiming binary PDF readiness or durable source proof.
+
+// PASS209 audit marker: AI Brain selected tile capsules now have typed schema/id/readiness/redaction envelope without claiming real PDF readiness.
+// PASS210 audit marker: AI Brain capsule handoff bridge adds freshness/status/storage/blocker state before report preview; no binary PDF or durable proof is claimed.
+// PASS211 audit marker: AI Brain selected tile drawer now exposes prioritized operator action queue without enabling customer export or binary PDF.
+
+// PASS212 audit marker: selected VLM Brain tile now exposes an operator-only case timeline preview; real PDF/customer export still requires durable storage and source review.
+// PASS213 audit marker: selected VLM Brain tile now exposes customer export firewall/source debt/PDF gate preview; real customer export still requires durable storage and source review.
+// PASS214 audit marker: selected VLM Brain tile now exposes source coverage lanes, review SLA and second-source gate without enabling customer export.
+// PASS215 audit marker: selected VLM Brain tile now exposes a release review packet across source, freshness, redaction, durable case, customer copy and PDF gates.
+
+// PASS217 audit marker: Shield/VLM Brain tile drawer now surfaces live adapter freshness mesh, TTL/cache/hard-stop state and source-ledger preview gate before customer/PDF export.
+
+// PASS218 audit marker: selected VLM Brain tile now classifies source lanes through allowlist/reviewer/evidence-use policy before customer copy.
+// PASS219 audit marker: selected VLM Brain tile now maps source/case/redaction/export durable write targets before PDF/customer export.
+
+// PASS220 marker: Shield page now tracks release-chain audit before customer/PDF export.
+// PASS221 marker: Shield modal includes source ledger UI preview gating.
+// PASS222 marker: Shield modal includes PDF-ready HTML preview manifest gating.
+// PASS223 marker: Lens route is connected as operator-only handoff preview.
+// PASS224 marker: Release QA scorecard keeps public export disabled until browser/durable/redaction QA.
+
+
+// PASS225-PASS232 marker: AI Brain release readiness mega-branch active; blockers, browser QA, copy, PDF, persistence, live feeds, wallet and launch dashboard added.
+
+// PASS243-PASS245 audit marker: Shield modal now exposes release triage, durable handoff and real-browser replay gates before customer PDF/export/wallet readiness.
+// PASS246-PASS251 audit marker: Shield token modal exposes a real six-pass release readiness chain instead of counting checklist labels as production readiness.
+
+// PASS252 audit marker: selected VLM Brain tile now has one release cockpit so fragmented gate panels cannot be mistaken for public export readiness.

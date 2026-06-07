@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import LegalDraftPage from "@/components/legal/LegalDraftPage";
-import ShippingReturnsTruthPanel from "@/components/launch/ShippingReturnsTruthPanel";
 
+// PASS318 route removal: operator panels are removed from public customer DOM.
 export default async function LegalReturnsPage({ params: { locale } }: { params: { locale: string } }) {
   const t = await getTranslations({ locale, namespace: "Legal.returns" });
 
@@ -15,7 +15,6 @@ export default async function LegalReturnsPage({ params: { locale } }: { params:
         intro={t("intro")}
         sections={t.raw("sections")}
       />
-      <ShippingReturnsTruthPanel locale={locale} surface="legal" />
     </>
   );
 }

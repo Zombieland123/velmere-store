@@ -1,0 +1,402 @@
+
+> velmere-store@0.1.0 dev
+> next dev
+
+  ▲ Next.js 14.2.35
+  - Local:        http://localhost:3000
+
+ ✓ Starting...
+ ✓ Ready in 1959ms
+ ○ Compiling /middleware ...
+ ✓ Compiled /middleware in 527ms (102 modules)
+ ○ Compiling /[locale]/search ...
+ ✓ Compiled /[locale]/search in 30.6s (11653 modules)
+ GET /pl/search 200 in 31412ms
+ ○ Compiling /api/profile ...
+ ✓ Compiled /api/profile in 12.1s (6227 modules)
+ GET /api/profile 200 in 12434ms
+ ○ Compiling /api/search ...
+ ✓ Compiled /api/search in 1404ms (6231 modules)
+ GET /api/search?q=ARB&mode=all&locale=pl 200 in 1655ms
+ GET /api/search?q=ARB&mode=all&locale=pl 200 in 22ms
+ ○ Compiling /api/search/lens-report ...
+ ✓ Compiled /api/search/lens-report in 1710ms (6175 modules)
+ POST /api/search/lens-report 200 in 1823ms
+ ✓ Compiled in 3.8s (11679 modules)
+ ○ Compiling /[locale]/market-integrity/cross-asset ...
+ ✓ Compiled /[locale]/market-integrity/cross-asset in 3.1s (11674 modules)
+ GET /pl/market-integrity/cross-asset 200 in 3806ms
+ ○ Compiling /api/profile ...
+ ✓ Compiled /api/profile in 860ms (6183 modules)
+ ✓ Compiled (6238 modules)
+ GET /api/profile 200 in 2291ms
+ GET /api/market-integrity/real-markets?ids=aapl%2Cnvda%2Cmsft%2Cgoogl%2Camzn%2Cmeta%2Ctsla%2Clvmh&range=5d 200 in 2566ms
+ GET /api/market-integrity/real-markets?ids=aapl&range=5d 200 in 30ms
+ ✓ Compiled in 8.6s (11687 modules)
+ ○ Compiling /[locale]/security ...
+ ✓ Compiled /[locale]/security in 3.7s (11688 modules)
+ GET /pl/security 200 in 4546ms
+ ○ Compiling /api/profile ...
+ ✓ Compiled /api/profile in 962ms (6250 modules)
+ GET /api/profile 200 in 1120ms
+ ○ Compiling /[locale]/research-lab ...
+ ✓ Compiled /[locale]/research-lab in 1871ms (11773 modules)
+ GET /pl/research-lab 200 in 2661ms
+ GET /api/profile 200 in 54ms
+ ○ Compiling /[locale]/market-integrity/shield-map ...
+ ✓ Compiled /[locale]/market-integrity/shield-map in 4.3s (11872 modules)
+ GET /pl/market-integrity/shield-map 200 in 4962ms
+ GET /api/profile 200 in 28ms
+ ○ Compiling /api/market-integrity/sentinel ...
+ ✓ Compiled /api/market-integrity/sentinel in 1817ms (6332 modules)
+ GET /api/market-integrity/sentinel?pages=1&perPage=160&watchlist=BTC%2CETH%2CSOL%2COM%2CPEPE%2CDOGE%2CVLM 200 in 2601ms
+ GET /api/market-integrity/sentinel?pages=1&perPage=160&watchlist=BTC%2CETH%2CSOL%2COM%2CPEPE%2CDOGE%2CVLM 200 in 44ms
+ ✓ Compiled in 4.8s (11895 modules)
+ GET /api/market-integrity/sentinel?pages=1&perPage=160&watchlist=BTC%2CETH%2CSOL%2COM%2CPEPE%2CDOGE%2CVLM 200 in 90ms
+ GET /api/market-integrity/sentinel?pages=1&perPage=160&watchlist=BTC%2CETH%2CSOL%2COM%2CPEPE%2CDOGE%2CVLM 200 in 53ms
+ ✓ Compiled in 2.2s (6244 modules)
+ ○ Compiling /api/market-integrity/investigator ...
+ ✓ Compiled /api/market-integrity/investigator in 1380ms (6291 modules)
+ GET /api/market-integrity/investigator?query=BTC 200 in 1851ms
+ GET /pl/market-integrity/shield-map 200 in 376ms
+ ○ Compiling /api/profile ...
+ ✓ Compiled /api/profile in 856ms (6297 modules)
+ ✓ Compiled in 1ms (6342 modules)
+ ✓ Compiled in 0ms (6342 modules)
+ ✓ Compiled in 0ms (6342 modules)
+ ✓ Compiled in 0ms (6342 modules)
+ GET /api/profile 200 in 6088ms
+ GET /api/market-integrity/sentinel?pages=1&perPage=160&watchlist=BTC%2CETH%2CSOL%2COM%2CPEPE%2CDOGE%2CVLM 200 in 6311ms
+ GET /api/market-integrity/sentinel?pages=1&perPage=160&watchlist=BTC%2CETH%2CSOL%2COM%2CPEPE%2CDOGE%2CVLM 200 in 2123ms
+ GET /pl/search 200 in 289ms
+ GET /api/profile 200 in 50ms
+ ○ Compiling /api/search ...
+ ✓ Compiled /api/search in 3.1s (6346 modules)
+ GET /api/search?q=ARB&mode=all&locale=pl 200 in 3398ms
+ GET /api/search?q=ARB&mode=all&locale=pl 200 in 327ms
+ ○ Compiling /api/search/lens-report ...
+ ✓ Compiled /api/search/lens-report in 1402ms (6339 modules)
+ POST /api/search/lens-report 200 in 1468ms
+ GET /pl/market-integrity/cross-asset 200 in 185ms
+ GET /api/profile 200 in 22ms
+ ○ Compiling /api/market-integrity/real-markets ...
+ ✓ Compiled /api/market-integrity/real-markets in 1152ms (6332 modules)
+ GET /api/market-integrity/real-markets?ids=aapl&range=5d 200 in 636ms
+ GET /api/market-integrity/real-markets?ids=aapl%2Cnvda%2Cmsft%2Cgoogl%2Camzn%2Cmeta%2Ctsla%2Clvmh&range=5d 200 in 1794ms
+ ○ Compiling /api/market-integrity/brand-icon ...
+ ✓ Compiled /api/market-integrity/brand-icon in 6.5s (11990 modules)
+ ✓ Compiled (11992 modules)
+ GET /api/market-integrity/brand-icon?domain=meta.com 200 in 209ms
+ GET /api/market-integrity/brand-icon?domain=microsoft.com 200 in 3349ms
+ GET /api/market-integrity/brand-icon?domain=amazon.com 200 in 3351ms
+ GET /api/market-integrity/brand-icon?domain=google.com 200 in 3360ms
+ GET /api/market-integrity/brand-icon?domain=apple.com 200 in 3405ms
+ GET /api/market-integrity/brand-icon?domain=nvidia.com 200 in 3448ms
+ GET /api/market-integrity/brand-icon?domain=tesla.com 200 in 193ms
+ GET /api/market-integrity/brand-icon?domain=lvmh.com 200 in 231ms
+ GET /api/market-integrity/brand-icon?domain=apple.com 200 in 18ms
+ GET /api/market-integrity/real-markets?ids=aapl&range=5d 200 in 17ms
+ GET /pl/market-integrity/cross-asset 200 in 162ms
+ GET /api/market-integrity/real-markets?ids=aapl%2Cnvda%2Cmsft%2Cgoogl%2Camzn%2Cmeta%2Ctsla%2Clvmh&range=5d 200 in 30ms
+ GET /api/profile 200 in 30ms
+ GET /api/market-integrity/real-markets?ids=aapl%2Cnvda%2Cmsft%2Cgoogl%2Camzn%2Cmeta%2Ctsla%2Clvmh&range=5d 200 in 41ms
+ GET /api/market-integrity/real-markets?ids=aapl&range=5d 200 in 13ms
+ GET /pl/search 200 in 275ms
+ GET /api/profile 200 in 20ms
+ ○ Compiling /[locale] ...
+ ✓ Compiled /[locale] in 4.9s (11824 modules)
+ GET /pl 200 in 5757ms
+ ○ Compiling /api/profile ...
+ ✓ Compiled /api/profile in 1234ms (6340 modules)
+ GET /api/profile 200 in 1360ms
+ ○ Compiling /[locale]/market-integrity ...
+ ✓ Compiled /[locale]/market-integrity in 9s (12175 modules)
+ ✓ Compiled in 1678ms (5729 modules)
+ ○ Compiling /api/market-integrity/sentinel ...
+ ✓ Compiled /api/market-integrity/sentinel in 896ms (6475 modules)
+ ✓ Compiled (6480 modules)
+ GET /api/market-integrity/markets?perPage=250&page=1 200 in 2371ms
+ GET /api/market-integrity/sentinel?pages=1&perPage=120&watchlist=BTC%2CETH%2CSOL%2COM%2CPEPE%2CDOGE%2CVLM 200 in 2402ms
+ GET /api/market-integrity/markets?perPage=250&page=1 200 in 103ms
+ GET /api/market-integrity/sentinel?pages=1&perPage=120&watchlist=BTC%2CETH%2CSOL%2COM%2CPEPE%2CDOGE%2CVLM 200 in 98ms
+ GET /api/market-integrity/sentinel?pages=1&perPage=120&watchlist=BTC%2CETH%2CSOL%2COM%2CPEPE%2CDOGE%2CVLM 200 in 25ms
+ ○ Compiling /api/market-integrity/icon ...
+ ✓ Compiled /api/market-integrity/icon in 827ms (6487 modules)
+ ○ Compiling /api/market-integrity/klines ...
+ ✓ Compiled /api/market-integrity/klines in 703ms (6490 modules)
+ ○ Compiling /api/market-integrity/history ...
+ ✓ Compiled /api/market-integrity/history in 688ms (6493 modules)
+ ✓ Compiled (6495 modules)
+ GET /api/market-integrity/history?id=bitcoin 200 in 1625ms
+ GET /api/market-integrity/orderbook?symbol=BTC 200 in 1977ms
+ GET /api/market-integrity/klines?symbol=BTC&range=7d 200 in 2668ms
+ GET /api/market-integrity/klines?symbol=BTC&range=7d 200 in 12ms
+ ○ Compiling /api/market-integrity/chart ...
+ ✓ Compiled /api/market-integrity/chart in 1066ms (6497 modules)
+ GET /api/market-integrity/chart?id=bitcoin&range=7d 502 in 1379ms
+ GET /api/market-integrity/sentinel?pages=1&perPage=160&watchlist=BTC%2CETH%2CSOL%2COM%2CPEPE%2CDOGE%2CVLM 200 in 548ms
+ GET /api/market-integrity/sentinel?pages=1&perPage=160&watchlist=BTC%2CETH%2CSOL%2COM%2CPEPE%2CDOGE%2CVLM 200 in 642ms
+ ○ Compiling /api/market-integrity/investigator ...
+ ✓ Compiled /api/market-integrity/investigator in 886ms (6500 modules)
+ GET /api/market-integrity/investigator?query=BTC 200 in 1179ms
+ GET /api/market-integrity/markets?perPage=250&page=1 200 in 124ms
+ GET /api/market-integrity/sentinel?pages=1&perPage=120&watchlist=BTC%2CETH%2CSOL%2COM%2CPEPE%2CDOGE%2CVLM 200 in 161ms
+ GET /api/market-integrity/markets?perPage=250&page=1 200 in 114ms
+ GET /api/market-integrity/sentinel?pages=1&perPage=120&watchlist=BTC%2CETH%2CSOL%2COM%2CPEPE%2CDOGE%2CVLM 200 in 102ms
+ GET /api/market-integrity/sentinel?pages=1&perPage=120&watchlist=BTC%2CETH%2CSOL%2COM%2CPEPE%2CDOGE%2CVLM 200 in 30ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F1%2Flarge%2Fbitcoin.png%3F1696501400 200 in 28ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F279%2Flarge%2Fethereum.png%3F1696501628 200 in 50ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F325%2Flarge%2FTether.png%3F1696501661 200 in 61ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F825%2Flarge%2Fbnb-icon2_2x.png%3F1696501970 200 in 98ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F6319%2Flarge%2FUSDC.png%3F1769615602 200 in 129ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F44%2Flarge%2Fxrp-symbol-white-128.png%3F1696501442 200 in 99ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F4128%2Flarge%2Fsolana.png%3F1718769756 200 in 168ms
+ ○ Compiling /[locale]/search ...
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F1094%2Flarge%2Fphoto_2026-04-13_09-59-16.png%3F1776048311 200 in 1254ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F68480%2Flarge%2Ffigure.png%3F1755863954 200 in 1265ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F50882%2Flarge%2Fhyperliquid.jpg%3F1729431300 200 in 1265ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F5%2Flarge%2Fdogecoin.png%3F1696501409 200 in 1274ms
+ ✓ Compiled /[locale]/search in 1277ms (6509 modules)
+ ○ Compiling /api/search ...
+ ✓ Compiled /api/search in 1165ms (6513 modules)
+ GET /api/search?q=btc&mode=all&locale=pl 200 in 196ms
+ GET /api/search?q=a&mode=all&locale=pl 200 in 42ms
+ GET /api/search?q=ADA&mode=all&locale=pl 200 in 41ms
+ GET /api/search?q=ADA&mode=all&locale=pl 200 in 41ms
+ GET /api/search?q=ADA&mode=all&locale=pl 200 in 55ms
+ GET /pl 200 in 277ms
+ ○ Compiling /api/profile ...
+ ✓ Compiled /api/profile in 1190ms (6518 modules)
+ ✓ Compiled (6563 modules)
+ GET /api/profile 200 in 1983ms
+ GET /manifest.webmanifest 200 in 2397ms
+ ○ Compiling /icon.svg ...
+ ✓ Compiled /icon.svg in 1098ms (6565 modules)
+ GET /icon.svg 200 in 1905ms
+ GET /manifest.webmanifest 200 in 17ms
+ GET /icon.svg 200 in 17ms
+ ○ Compiling /[locale]/market-integrity/cross-asset ...
+ ✓ Compiled /[locale]/market-integrity/cross-asset in 5.6s (12294 modules)
+ ✓ Compiled in 1ms (6571 modules)
+ ✓ Compiled in 0ms (6571 modules)
+ ✓ Compiled in 0ms (6571 modules)
+ GET /api/market-integrity/markets?perPage=250&page=1 200 in 6592ms
+ GET /api/market-integrity/sentinel?pages=1&perPage=120&watchlist=BTC%2CETH%2CSOL%2COM%2CPEPE%2CDOGE%2CVLM 200 in 6589ms
+ ✓ Compiled in 0ms (6571 modules)
+ ✓ Compiled in 0ms (6571 modules)
+ ✓ Compiled in 0ms (6571 modules)
+ ✓ Compiled in 1ms (6571 modules)
+ GET /api/market-integrity/markets?perPage=250&page=1 200 in 3501ms
+ GET /api/market-integrity/sentinel?pages=1&perPage=120&watchlist=BTC%2CETH%2CSOL%2COM%2CPEPE%2CDOGE%2CVLM 200 in 3500ms
+ ✓ Compiled in 1ms (6571 modules)
+ ✓ Compiled /api/market-integrity/brand-icon in 0ms (6571 modules)
+ ✓ Compiled in 0ms (6573 modules)
+ GET /api/market-integrity/sentinel?pages=1&perPage=120&watchlist=BTC%2CETH%2CSOL%2COM%2CPEPE%2CDOGE%2CVLM 200 in 3706ms
+ GET /api/market-integrity/brand-icon?domain=apple.com 200 in 2464ms
+ GET /api/market-integrity/brand-icon?domain=nvidia.com 200 in 2462ms
+ GET /api/market-integrity/brand-icon?domain=microsoft.com 200 in 2463ms
+ GET /api/market-integrity/brand-icon?domain=google.com 200 in 2463ms
+ GET /api/market-integrity/brand-icon?domain=amazon.com 200 in 2461ms
+ ○ Compiling /api/market-integrity/real-markets ...
+ ✓ Compiled /api/market-integrity/real-markets in 810ms (6575 modules)
+ GET /api/market-integrity/brand-icon?domain=tesla.com 200 in 1619ms
+ GET /api/market-integrity/brand-icon?domain=meta.com 200 in 1620ms
+ GET /api/market-integrity/brand-icon?domain=lvmh.com 200 in 1611ms
+ GET /manifest.webmanifest 200 in 1633ms
+ GET /icon.svg 200 in 15ms
+ GET /api/market-integrity/real-markets?ids=aapl%2Cnvda%2Cmsft%2Cgoogl%2Camzn%2Cmeta%2Ctsla%2Clvmh&range=5d 200 in 1844ms
+ GET /api/market-integrity/real-markets?ids=eurusd%2Ceurpln%2Cusdpln%2Cusdjpy%2Cgbpusd&range=5d 200 in 230ms
+ GET /api/market-integrity/real-markets?ids=spy%2Cqqq%2Cgld%2Cvnq&range=5d 200 in 120ms
+ GET /api/market-integrity/brand-icon?domain=vanguard.com 200 in 581ms
+ GET /api/market-integrity/brand-icon?domain=ssga.com 200 in 593ms
+ GET /api/market-integrity/brand-icon?domain=invesco.com 200 in 614ms
+ GET /api/market-integrity/real-markets?ids=gold%2Csilver%2Cwti%2Cbrent&range=5d 200 in 113ms
+ GET /api/market-integrity/real-markets?ids=vnq%2Ciyr%2Cxlre%2Cpld&range=5d 200 in 111ms
+ GET /api/market-integrity/brand-icon?domain=prologis.com 200 in 288ms
+ GET /api/market-integrity/brand-icon?domain=ishares.com 200 in 537ms
+ GET /api/market-integrity/real-markets?ids=coin%2Ccme%2Cice%2Cndaq&range=5d 200 in 159ms
+ GET /api/market-integrity/brand-icon?domain=coinbase.com 200 in 180ms
+ GET /api/market-integrity/brand-icon?domain=ice.com 200 in 71ms
+ GET /api/market-integrity/brand-icon?domain=cmegroup.com 200 in 272ms
+ GET /api/market-integrity/brand-icon?domain=okx.com 200 in 449ms
+ GET /api/market-integrity/brand-icon?domain=binance.com 200 in 502ms
+ GET /api/market-integrity/brand-icon?domain=kraken.com 200 in 527ms
+ GET /api/market-integrity/brand-icon?domain=nasdaq.com 200 in 454ms
+ GET /api/market-integrity/real-markets?ids=ndaq&range=5d 200 in 12ms
+ GET /api/market-integrity/real-markets?ids=ndaq&range=1d 200 in 275ms
+ ✓ Compiled in 3.5s (5729 modules)
+ ✓ Compiled in 3.1s (5729 modules)
+ ✓ Compiled in 7.4s (12152 modules)
+ ○ Compiling /api/market-integrity/real-markets ...
+ ✓ Compiled /api/market-integrity/real-markets in 11.9s (12170 modules)
+ ✓ Compiled in 0ms (6458 modules)
+ GET /api/market-integrity/real-markets?symbols=AAPL%2CNVDA%2CMSFT%2CGOOGL%2CAMZN%2CMETA%2CTSLA%2CMC.PA&range=5d 200 in 5913ms
+ ✓ Compiled in 6.3s (12196 modules)
+ ✓ Compiled in 5.8s (12170 modules)
+ ✓ Compiled in 8.3s (12170 modules)
+ ✓ Compiled in 5.7s (12170 modules)
+ ✓ Compiled in 9.2s (12170 modules)
+ ✓ Compiled in 4.7s (12170 modules)
+ ✓ Compiled in 3.7s (5738 modules)
+ ✓ Compiled in 2.9s (5738 modules)
+ ✓ Compiled in 3.9s (5738 modules)
+ ○ Compiling /api/search ...
+ ✓ Compiled /api/search in 6.2s (6458 modules)
+ ✓ Compiled (6462 modules)
+ GET /api/market-integrity/real-markets?symbols=PKN.WA,EURPLN=X&range=5d 200 in 7869ms
+ GET /api/market-integrity/real-markets?q=orlen 200 in 7773ms
+ GET /api/search?q=ARB&mode=all&locale=pl 200 in 7936ms
+ ✓ Compiled in 14s (12170 modules)
+ ✓ Compiled in 1306ms (6432 modules)
+ ○ Compiling /[locale]/security ...
+ ✓ Compiled /[locale]/security in 2.1s (6439 modules)
+ GET /pl/search 200 in 275ms
+ ○ Compiling /api/profile ...
+ ✓ Compiled /api/profile in 2.8s (6500 modules)
+ GET /api/profile 200 in 2986ms
+ GET /pl/market-integrity/cross-asset 200 in 387ms
+ GET /api/profile 200 in 23ms
+ ○ Compiling /api/market-integrity/real-markets ...
+ ✓ Compiled /api/market-integrity/real-markets in 3s (6502 modules)
+ GET /api/market-integrity/real-markets?symbols=AAPL%2CNVDA%2CMSFT%2CGOOGL%2CAMZN%2CMETA%2CTSLA%2CMC.PA&range=5d 200 in 3320ms
+ GET /api/market-integrity/real-markets?symbols=AAPL&range=5d 200 in 12ms
+ ✓ Compiled in 13s (12169 modules)
+ ✓ Compiled in 5.1s (12169 modules)
+ ○ Compiling /api/market-integrity/sentinel ...
+ ✓ Compiled /api/market-integrity/sentinel in 1575ms (6460 modules)
+ ✓ Compiled in 0ms (6465 modules)
+ ✓ Compiled in 0ms (6465 modules)
+ ✓ Compiled in 1ms (6465 modules)
+ ✓ Compiled in 0ms (6465 modules)
+ GET /api/market-integrity/markets?perPage=250&page=1 200 in 5531ms
+ ✓ Compiled /api/market-integrity/real-markets in 0ms (6465 modules)
+ GET /api/market-integrity/sentinel?pages=1&perPage=120&watchlist=BTC%2CETH%2CSOL%2COM%2CPEPE%2CDOGE%2CVLM 200 in 6308ms
+ ✓ Compiled in 0ms (6467 modules)
+ ✓ Compiled in 0ms (6467 modules)
+ GET /api/market-integrity/markets?perPage=250&page=1 200 in 4010ms
+ ✓ Compiled in 0ms (6467 modules)
+ GET /api/market-integrity/sentinel?pages=1&perPage=120&watchlist=BTC%2CETH%2CSOL%2COM%2CPEPE%2CDOGE%2CVLM 200 in 3871ms
+ ✓ Compiled in 1ms (6467 modules)
+ GET /api/market-integrity/real-markets?symbols=NVDA&range=5d 200 in 3710ms
+ GET /api/market-integrity/real-markets?symbols=AAPL%2CNVDA%2CMSFT%2CGOOGL%2CAMZN%2CMETA%2CTSLA%2CMC.PA&range=5d 200 in 4563ms
+ GET /api/market-integrity/sentinel?pages=1&perPage=120&watchlist=BTC%2CETH%2CSOL%2COM%2CPEPE%2CDOGE%2CVLM 200 in 1543ms
+ GET /api/market-integrity/markets?perPage=250&page=1 200 in 110ms
+ GET /api/market-integrity/sentinel?pages=1&perPage=120&watchlist=BTC%2CETH%2CSOL%2COM%2CPEPE%2CDOGE%2CVLM 200 in 139ms
+ GET /api/market-integrity/markets?perPage=250&page=1 200 in 119ms
+ GET /api/market-integrity/sentinel?pages=1&perPage=120&watchlist=BTC%2CETH%2CSOL%2COM%2CPEPE%2CDOGE%2CVLM 200 in 111ms
+ GET /api/market-integrity/sentinel?pages=1&perPage=120&watchlist=BTC%2CETH%2CSOL%2COM%2CPEPE%2CDOGE%2CVLM 200 in 33ms
+ ○ Compiling /api/market-integrity/icon ...
+ ✓ Compiled /api/market-integrity/icon in 933ms (6474 modules)
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F68480%2Flarge%2Ffigure.png%3F1755863954 200 in 1005ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F50882%2Flarge%2Fhyperliquid.jpg%3F1729431300 200 in 1004ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F5%2Flarge%2Fdogecoin.png%3F1696501409 200 in 1004ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F39926%2Flarge%2Fusds.webp%3F1726666683 200 in 997ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F1094%2Flarge%2Fphoto_2026-04-13_09-59-16.png%3F1776048311 200 in 1008ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F100%2Flarge%2FfmpFRHHQ_400x400.jpg%3F1735231350 200 in 176ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F8418%2Flarge%2Fleo-token.png%3F1696508607 200 in 1190ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F486%2Flarge%2Fcircle-zcash-color.png%3F1696501740 200 in 191ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F70468%2Flarge%2FCanton-Ticker_%25281%2529.png%3F1762826299 200 in 193ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F69134%2Flarge%2FRain_logo_1_.png%3F1762952191 200 in 196ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F975%2Flarge%2Fcardano.png%3F1696502090 200 in 197ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F877%2Flarge%2FChainlink_Logo_500.png%3F1760023405 200 in 81ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F69%2Flarge%2Fmonero_logo.png%3F1696501460 200 in 105ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F27045%2Flarge%2Fwbt_token.png%3F1696526096 200 in 95ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F54977%2Flarge%2FUSD1_1000x1000_transparent.png%3F1749297002 200 in 96ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F780%2Flarge%2Fbitcoin-cash-circle.png%3F1696501932 200 in 89ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F33613%2Flarge%2Fusde.png%3F1733810059 200 in 94ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F9956%2Flarge%2FBadge_Dai.png%3F1696509996 200 in 71ms
+ ○ Compiling /[locale]/market-integrity/shield-map ...
+ ✓ Compiled /[locale]/market-integrity/shield-map in 2.2s (6482 modules)
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F53247%2Flarge%2Fsquare-bg-transparent.png%3F1752637478 200 in 965ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F3688%2Flarge%2Fhbar.png%3F1696504364 200 in 956ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F2%2Flarge%2Flitecoin.png%3F1696501400 200 in 963ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F17980%2Flarge%2Fphoto_2024-09-10_17.09.00.jpeg%3F1725963446 200 in 975ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F70014%2Flarge%2Flab.png%3F1760352822 200 in 958ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F12559%2Flarge%2FAvalanche_Circle_RedWhite_Trans.png%3F1696512369 200 in 87ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F51054%2Flarge%2FHashnote_SDYC_200x200.png%3F1730370965 200 in 87ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F31212%2Flarge%2FPYUSD_Token_Logo_2x.png%3F1765987788 200 in 96ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F26375%2Flarge%2Fsui-ocean-square.png%3F1727791290 200 in 109ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F11939%2Flarge%2Fshiba.png%3F1696511800 200 in 118ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F10481%2Flarge%2Flogo.png%3F1774627372 200 in 81ms
+ GET /api/market-integrity/icon?url=https%3A%2F%2Fcoin-images.coingecko.com%2Fcoins%2Fimages%2F7310%2Flarge%2Fcro_token_logo.png%3F1696507599 200 in 91ms
+ GET /api/market-integrity/sentinel?pages=1&perPage=160&watchlist=BTC%2CETH%2CSOL%2COM%2CPEPE%2CDOGE%2CVLM 200 in 744ms
+ GET /api/market-integrity/sentinel?pages=1&perPage=160&watchlist=BTC%2CETH%2CSOL%2COM%2CPEPE%2CDOGE%2CVLM 200 in 684ms
+ GET /api/market-integrity/markets?perPage=250&page=1 200 in 132ms
+ GET /api/market-integrity/sentinel?pages=1&perPage=120&watchlist=BTC%2CETH%2CSOL%2COM%2CPEPE%2CDOGE%2CVLM 200 in 164ms
+ ○ Compiling /api/search/lens-report ...
+ ✓ Compiled /api/search/lens-report in 1273ms (6485 modules)
+ ✓ Compiled in 1ms (6485 modules)
+ GET /api/market-integrity/markets?perPage=250&page=1 200 in 2378ms
+ ✓ Compiled in 0ms (6485 modules)
+ ✓ Compiled in 0ms (6485 modules)
+ GET /api/market-integrity/sentinel?pages=1&perPage=120&watchlist=BTC%2CETH%2CSOL%2COM%2CPEPE%2CDOGE%2CVLM 200 in 4541ms
+ POST /api/search/lens-report 200 in 4578ms
+ ✓ Compiled in 1ms (6485 modules)
+ POST /api/search/lens-report 200 in 2023ms
+ GET /api/market-integrity/sentinel?pages=1&perPage=120&watchlist=BTC%2CETH%2CSOL%2COM%2CPEPE%2CDOGE%2CVLM 200 in 2067ms
+ ○ Compiling /api/market-integrity/orderbook ...
+ ✓ Compiled /api/market-integrity/history in 1002ms (6488 modules)
+ ✓ Compiled (6493 modules)
+ GET /api/market-integrity/history?id=bitcoin 200 in 1120ms
+ GET /api/market-integrity/klines?symbol=BTC&range=7d 200 in 2459ms
+ GET /api/market-integrity/klines?symbol=BTC&range=7d 200 in 344ms
+ ○ Compiling /api/market-integrity/chart ...
+ ✓ Compiled /api/market-integrity/chart in 1318ms (6495 modules)
+ GET /api/market-integrity/orderbook?symbol=BTC 200 in 3746ms
+ GET /api/market-integrity/chart?id=bitcoin&range=7d 502 in 1703ms
+ ○ Compiling /[locale]/research-lab ...
+ ✓ Compiled /[locale]/research-lab in 1965ms (6519 modules)
+ GET /pl/research-lab 200 in 2421ms
+ ○ Compiling /api/profile ...
+ ✓ Compiled /api/profile in 4.3s (6564 modules)
+ GET /api/profile 200 in 5115ms
+ GET /api/market-integrity/real-markets?q=WIG20 200 in 198ms
+ ○ Compiling /[locale]/square ...
+ ✓ Compiled /[locale]/square in 9.7s (12297 modules)
+ ○ Compiling /api/square/posts ...
+ ✓ Compiled /api/square/posts in 1437ms (6544 modules)
+ GET /api/square/posts?locale=pl 200 in 1590ms
+ ✓ Compiled in 6.9s (12105 modules)
+ ○ Compiling /[locale]/community ...
+ ✓ Compiled /[locale]/community in 2.3s (12019 modules)
+ GET /pl/community?_rsc=1d7lc 200 in 44ms
+ ○ Compiling /api/market-integrity/real-markets ...
+ ✓ Compiled /api/market-integrity/real-markets in 5.1s (12021 modules)
+ ✓ Compiled in 0ms (6290 modules)
+ GET /api/market-integrity/real-markets?symbols=AAPL%2CNVDA%2CMSFT%2CGOOGL%2CAMZN%2CMETA%2CTSLA%2CMC.PA&range=1w 200 in 3799ms
+ GET /api/market-integrity/real-markets?symbols=%5EGSPC,%5ENDX,%5EGDAXI,%5EFTSE,WIG20TR.WA&range=1w 200 in 193ms
+ GET /api/market-integrity/real-markets?symbols=AAPL&range=1h 200 in 342ms
+ GET /api/market-integrity/real-markets?symbols=AAPL&range=4h 200 in 148ms
+ GET /api/market-integrity/real-markets?symbols=AAPL&range=1d 200 in 19ms
+ GET /api/market-integrity/real-markets?symbols=AAPL&range=1w 200 in 13ms
+ GET /pl/market-integrity/cross-asset 200 in 405ms
+ GET /api/market-integrity/real-markets?symbols=AAPL%2CNVDA%2CMSFT%2CGOOGL%2CAMZN%2CMETA%2CTSLA%2CMC.PA&range=1w 200 in 24ms
+ ○ Compiling /api/profile ...
+ ✓ Compiled /api/profile in 2.8s (6345 modules)
+ GET /api/profile 200 in 5695ms
+ GET /api/market-integrity/real-markets?symbols=AAPL%2CNVDA%2CMSFT%2CGOOGL%2CAMZN%2CMETA%2CTSLA%2CMC.PA&range=1w 200 in 5705ms
+ GET /api/market-integrity/real-markets?symbols=AAPL&range=1w 200 in 13ms
+ GET /pl/research-lab 200 in 276ms
+ GET /api/profile 200 in 13ms
+ ○ Compiling /[locale]/market-integrity ...
+ ✓ Compiled /[locale]/market-integrity in 4.4s (6530 modules)
+ ○ Compiling /api/market-integrity/sentinel ...
+ ✓ Compiled /api/market-integrity/sentinel in 1578ms (6535 modules)
+ ✓ Compiled (6540 modules)
+ GET /api/market-integrity/sentinel?pages=1&perPage=120&watchlist=BTC%2CETH%2CSOL%2COM%2CPEPE%2CDOGE%2CVLM 200 in 3561ms
+ GET /api/market-integrity/sentinel?pages=1&perPage=120&watchlist=BTC%2CETH%2CSOL%2COM%2CPEPE%2CDOGE%2CVLM 200 in 835ms
+ GET /api/market-integrity/sentinel?pages=1&perPage=120&watchlist=BTC%2CETH%2CSOL%2COM%2CPEPE%2CDOGE%2CVLM 200 in 827ms
+ ○ Compiling /[locale]/search ...
+ GET /api/market-integrity/markets?perPage=250&page=1 200 in 4257ms
+ GET /api/market-integrity/markets?perPage=250&page=1 200 in 1407ms
+ ✓ Compiled /[locale]/search in 1710ms (6549 modules)
+ ○ Compiling /api/search ...
+ ✓ Compiled /api/search in 1129ms (6553 modules)
+ GET /api/search?q=v&mode=all&locale=pl 200 in 1162ms
+ GET /api/search?q=b&mode=all&locale=pl 200 in 37ms
+ GET /api/search?q=BTC&mode=all&locale=pl 200 in 37ms
+ GET /api/search?q=BTC&mode=all&locale=pl 200 in 32ms
+ ○ Compiling /api/search/lens-report ...
+ ✓ Compiled /api/search/lens-report in 880ms (6556 modules)
+ POST /api/search/lens-report 200 in 925ms
+ POST /api/search/lens-report 200 in 12ms

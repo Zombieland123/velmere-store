@@ -30,7 +30,7 @@ function clamp(value: number, min = 0, max = 100) {
 }
 
 function pct(value?: number) {
-  if (value === undefined || value === null || !Number.isFinite(value)) return "unknown";
+  if (value === undefined || value === null || !Number.isFinite(value)) return "source required";
   const sign = value > 0 ? "+" : "";
   return `${sign}${value.toFixed(Math.abs(value) >= 10 ? 1 : 2)}%`;
 }
@@ -69,7 +69,7 @@ export function buildChartRegime(result: TokenRiskResult, input: ChartRegimeInpu
       id: "bar_density",
       label: "Candle density",
       status: bars >= 120 ? "clear" : bars >= 64 ? "watch" : "warning",
-      value: `${bars || "unknown"} bars`,
+      value: `${bars || "source required"} bars`,
     },
     {
       id: "range_pressure",
@@ -104,7 +104,7 @@ export function buildChartRegime(result: TokenRiskResult, input: ChartRegimeInpu
     confidence: clamp(0.72 - dataQualityPenalty / 100 - (input.hasOrderBook ? 0 : 0.08), 0.25, 0.92),
     density,
     headline: headlineByRegime[regime],
-    narrative: `Bars=${bars || "unknown"}, 24h=${pct(change24h)}, 7d=${pct(change7d)}, source=${input.source ?? "mixed"}. Shield treats chart analysis as a risk signal, not a price prediction.`,
+    narrative: `Bars=${bars || "source required"}, 24h=${pct(change24h)}, 7d=${pct(change7d)}, source=${input.source ?? "mixed"}. Shield treats chart analysis as a risk signal, not a price prediction.`,
     checks,
     nextActions,
   };

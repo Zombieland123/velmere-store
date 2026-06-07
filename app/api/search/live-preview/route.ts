@@ -5,7 +5,14 @@ import { sanitizeSearchInput, velmereSearchSafetyBoundary } from "@/lib/search/i
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const allowedModes = new Set<VelmereSearchMode>(["all", "token", "contract", "velmere", "osint"]);
+const allowedModes = new Set<VelmereSearchMode>([
+  "all",
+  "token",
+  "market",
+  "contract",
+  "velmere",
+  "osint",
+]);
 
 function jsonResponse(body: unknown, status = 200) {
   return new Response(JSON.stringify(body, null, 2), {

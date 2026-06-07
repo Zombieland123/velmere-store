@@ -592,7 +592,7 @@ function buildScoreBreakdown(
   }));
   rows.push({
     id: "data",
-    label: "Data uncertainty",
+    label: "Data uncertainty / review pressure",
     score: Math.round((1 - confidence) * 100),
     weight: 0,
     confidence,
@@ -648,6 +648,19 @@ function computeFusedRiskScore(
     "fdv_marketcap_gap",
   ]);
   const dataUncertaintyScore = dataRow?.score ?? 0;
+  const insufficientDataSignal = signals.find(
+    (signal) => signal.id === "insufficient_data",
+  );
+  const missingCoreCount =
+    finiteNumber(insufficientDataSignal?.metrics?.missingCoreCount) ?? 0;
+
+  if (insufficientDataSignal) {
+    const reviewPressureFloor = Math.min(
+      34,
+      10 + missingCoreCount * 4 + dataUncertaintyScore * 0.12,
+    );
+    score = Math.max(score, reviewPressureFloor);
+  }
 
   if (hasSignal(signals, "honeypot_risk")) score = Math.max(score, 92);
   if (
@@ -1062,7 +1075,11 @@ function buildMetaModel(
   const verdict: RiskMetaModel["verdict"] =
     level === "critical"
       ? "critical"
-      : confidence < 0.35
+      : signals.some(
+            (signal) =>
+              signal.id === "insufficient_data" &&
+              (finiteNumber(signal.metrics?.missingCoreCount) ?? 0) >= 3,
+          ) || confidence < 0.35
         ? "insufficient_data"
         : level === "high"
           ? "warning"
@@ -1112,7 +1129,7 @@ function buildMetaModel(
   const limitationText = blockedBy ? ` Blocked by: ${blockedBy}.` : "";
 
   return {
-    version: "velmere-shield-deterministic-fusion-v6",
+    version: "velmere-shield-deterministic-fusion-v7",
     verdict,
     finalVerdict,
     dominantAgent: dominant?.id,
@@ -2103,7 +2120,7 @@ export function analyzeTokenRisk(
       url: safeInput.url,
     },
     score,
-    scoreFormula: "deterministic_weighted_multi_agent_fusion_v6",
+    scoreFormula: "deterministic_weighted_multi_agent_fusion_v7",
     confidence,
     scoreBreakdown,
     agentAssessments,

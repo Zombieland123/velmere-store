@@ -1,6 +1,7 @@
 import type { TokenRiskResult } from "./risk-types";
 import type { ShieldOperatorCaseFile, ShieldOperatorLane, ShieldOperatorLaneId } from "./operator-casefile";
 import type { InvestigatorProtocol, InvestigatorRiskLane } from "./shield-investigator";
+import { normalizeConfidencePercent } from "./confidence-calibration";
 
 export type ShieldEvidenceSourceMode = "live" | "partial" | "fallback" | "missing" | "blocked";
 
@@ -77,7 +78,7 @@ function normalizeId(value: string) {
 }
 
 function confidencePercent(result: TokenRiskResult) {
-  return Math.round((result.confidence ?? 0.35) * 100);
+  return normalizeConfidencePercent(result.confidence, 35);
 }
 
 function metricKnown(value: unknown) {

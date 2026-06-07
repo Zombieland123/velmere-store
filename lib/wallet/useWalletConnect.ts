@@ -7,6 +7,11 @@ import type { WalletKind, ConnectedWallet, WalletConnectionState } from "./types
 import { clearWalletUiSnapshot, setWalletUiSnapshot } from "@/store/useWalletUiStore";
 import { consumePendingMobileWallet, isMobileViewport, openMetaMaskMobileDapp, openPhantomMobileBrowser } from "@/lib/wallet/mobile-deeplinks";
 
+type EvmEventProvider = {
+  on?: (event: "accountsChanged" | "chainChanged", listener: (payload: unknown) => void) => void;
+  removeListener?: (event: "accountsChanged" | "chainChanged", listener: (payload: unknown) => void) => void;
+};
+
 type PhantomSolanaProvider = {
   isPhantom?: boolean;
   publicKey?: { toString: () => string } | null;
@@ -50,6 +55,11 @@ function getPhantomProvider() {
 
 function hasEvmProvider() {
   return typeof window !== "undefined" && Boolean(window.ethereum);
+}
+
+function getEvmEventProvider(): EvmEventProvider | undefined {
+  if (typeof window === "undefined" || !window.ethereum) return undefined;
+  return window.ethereum as EvmEventProvider;
 }
 
 export function useWalletConnect() {
@@ -225,6 +235,34 @@ export function useWalletConnect() {
     disconnect();
     clearWalletUiSnapshot();
   }, [disconnect, phantomAddress]);
+
+  useEffect(() => {
+    const provider = getEvmEventProvider();
+    if (!provider?.on) return;
+
+    const resetEvmSession = () => {
+      setLastError(null);
+      clearWalletUiSnapshot();
+      disconnect();
+    };
+
+    const onAccountsChanged = (payload: unknown) => {
+      const nextAddress = Array.isArray(payload) && typeof payload[0] === "string" ? payload[0].toLowerCase() : "";
+      const currentAddress = address?.toLowerCase() ?? "";
+      if (!nextAddress || (currentAddress && nextAddress !== currentAddress)) resetEvmSession();
+    };
+
+    const onChainChanged = () => {
+      clearWalletUiSnapshot();
+    };
+
+    provider.on("accountsChanged", onAccountsChanged);
+    provider.on("chainChanged", onChainChanged);
+    return () => {
+      provider.removeListener?.("accountsChanged", onAccountsChanged);
+      provider.removeListener?.("chainChanged", onChainChanged);
+    };
+  }, [address, disconnect]);
 
   return {
     state,

@@ -1,13 +1,12 @@
 "use client";
 
-import { ArrowUpRight, ClipboardCheck, MessageSquare, PackageCheck, Radar, ShieldCheck, Truck, WalletCards } from "lucide-react";
+import { ArrowUpRight, MessageSquare, PackageCheck, Radar, ShieldCheck, Truck, WalletCards } from "lucide-react";
 import { useLocale } from "next-intl";
 import { Link } from "@/navigation";
 import Reveal from "@/components/ui/Reveal";
 import NeuralBrainVisual from "@/components/home/NeuralBrainVisual";
 import LuxuryProductCarousel from "@/components/home/LuxuryProductCarousel";
 import EditorialFeatureSwitcher from "@/components/home/EditorialFeatureSwitcher";
-import FullSurfaceReadinessIndex from "@/components/launch/FullSurfaceReadinessIndex";
 
 function homeCopy(locale: string) {
   if (locale === "pl") {
@@ -193,10 +192,12 @@ function homeCopy(locale: string) {
 export default function HomePageClient() {
   const locale = useLocale();
   const copy = homeCopy(locale);
-  const { pillars, flow, clothingFirstAtelier, launchReality, shieldRails } = copy;
+  const { pillars, flow, clothingFirstAtelier, shieldRails } = copy;
+  // PASS324: public home no longer renders the customer-focus/proof concierge stack; proof logic stays in shop/product/cart/checkout gates.
+
 
   return (
-    <main className="bg-velmere-black text-velmere-ivory">
+    <main className="bg-velmere-black text-velmere-ivory" data-pass318-public-storefront-focus="home" data-pass319-public-first-purchase-flow="home" data-pass320-public-atelier-trust-ribbon="home" data-pass321-public-copy-polish="home" data-pass322-public-product-pathway-receipt="home" data-pass323-public-provenance-drop-concierge="home" data-pass324-public-size-confidence-concierge="home">
       <section className="luxury-section min-h-[calc(100dvh-4.5rem)] pt-28 md:pt-32">
         <div className="grid gap-8 pb-16 lg:grid-cols-[minmax(0,0.92fr)_minmax(24rem,0.88fr)] lg:items-stretch">
           <Reveal className="flex flex-col justify-between rounded-[2rem] border border-white/[0.10] bg-[#0B0B0D] p-6 shadow-velmere-card md:p-10 lg:min-h-[35rem]">
@@ -231,6 +232,9 @@ export default function HomePageClient() {
         </div>
       </section>
 
+      {/* PASS324: removed the homepage customer-focus/proof stack from the public surface. */}
+
+
       <section className="luxury-section py-14 md:py-20">
         <Reveal className="rounded-[2rem] border border-velmere-gold/[0.13] bg-[linear-gradient(145deg,rgba(212,175,55,0.07),rgba(255,255,255,0.025)_45%,rgba(0,0,0,0.18))] p-6 md:p-9">
           <div className="grid gap-8 lg:grid-cols-[0.65fr_1.35fr] lg:items-end">
@@ -259,46 +263,6 @@ export default function HomePageClient() {
         <LuxuryProductCarousel />
       </section>
 
-      <section className="luxury-section pb-14 md:pb-20">
-        <Reveal className="overflow-hidden rounded-[2rem] border border-amber-300/[0.14] bg-[radial-gradient(circle_at_16%_12%,rgba(200,169,106,0.14),transparent_36%),linear-gradient(135deg,#101012,#070708)] p-6 shadow-velmere-card md:p-8">
-          <div className="grid gap-7 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,0.58fr)] lg:items-start">
-            <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-amber-300/[0.18] bg-amber-300/[0.06] px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-velmere-gold">
-                <ClipboardCheck className="h-3.5 w-3.5" />
-                {copy.launchKicker}
-              </div>
-              <h2 className="mt-5 max-w-3xl font-serif text-4xl leading-[0.95] tracking-[-0.045em] text-white md:text-6xl">
-                {copy.launchTitle}
-              </h2>
-              <p className="mt-5 max-w-2xl text-sm leading-7 text-velmere-grey-soft">
-                {copy.launchBody}
-              </p>
-              <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-                <Link href="/market-integrity/shield-map" className="velmere-button-primary">
-                  {copy.openShieldRoadmap} <ShieldCheck className="h-4 w-4" />
-                </Link>
-                <Link href="/vlm-token" className="velmere-button-secondary">
-                  {copy.vlmAccessLayer} <WalletCards className="h-4 w-4" />
-                </Link>
-              </div>
-            </div>
-            <div className="grid gap-3">
-              {launchReality.map(([label, value, body]) => (
-                <div key={label} className="rounded-2xl border border-white/[0.09] bg-black/[0.24] p-4">
-                  <div className="flex items-center justify-between gap-3">
-                    <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/[0.50]">{label}</p>
-                    <p className="font-mono text-sm text-velmere-gold">{value}</p>
-                  </div>
-                  <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/[0.06]">
-                    <div className="h-full rounded-full bg-velmere-gold/[0.72]" style={{ width: value }} />
-                  </div>
-                  <p className="mt-3 text-xs leading-6 text-white/[0.50]">{body}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </Reveal>
-      </section>
 
       <section className="luxury-section pb-14 md:pb-20">
         <Reveal className="overflow-hidden rounded-[2rem] border border-cyan-200/[0.12] bg-[radial-gradient(circle_at_18%_8%,rgba(34,211,238,0.10),transparent_34%),linear-gradient(135deg,#101115,#080809)] p-6 shadow-velmere-card md:p-8">
@@ -333,7 +297,6 @@ export default function HomePageClient() {
         </Reveal>
       </section>
 
-      <FullSurfaceReadinessIndex locale={locale} surface="home" />
 
       <section className="luxury-section pb-20 md:pb-24">
         <EditorialFeatureSwitcher />
@@ -401,3 +364,5 @@ export default function HomePageClient() {
     </main>
   );
 }
+
+// PASS196 marker: Home page keeps a scoped const locale = useLocale() before JSX to avoid runtime locale reference errors.
